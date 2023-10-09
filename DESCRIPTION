@@ -1,0 +1,16 @@
+Package: spatrans
+Type: Package
+Title: Analyze Spatial Transcriptomics and Other Spatial Omics Data on the Single Molecule Scale
+Version: 0.1.0
+Authors@R: 
+    c(person(given = "Stijn", family = "Hawinkel", 
+    email = "stijn.hawinkel@psb.ugent.be", 
+    role=c("cre", "aut"), comment = c(ORCID = "0000-0002-4501-5180")))
+Description: Test for univariate and multivariate spatial patterns in 
+    spatial omics data with single-molecule resolution. The tests implemented 
+    allow for analysis of nested designs and are automatically calibrated to different
+    biological specimens. Tests for aggregation, colocalozation and vicinity to cell edge are provided.
+License: GPL-2
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.2.3
