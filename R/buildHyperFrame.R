@@ -2,16 +2,17 @@
 #'  be used throughout the analysis. Both matrices, dataframe and SpatialExperiment inputs are accepted.
 #' @rdname buildHyperFrame
 #' @import spatstat
+#' @import methods
 #' @export
 setGeneric("buildHyperFrame", function(x, ...) standardGeneric("buildHyperFrame"))
 #' @param data.frame
 #'
 #' @rdname buildHyperFrame
 #' @export
-setMethod("buildHyperFrame", "data.frame", function(x, coordVars, designVar, coVars, ...) {
-    buildHyperFrame(x[, coordVars], design = x[,designVar], covariates = x[, coVars],...)
+setMethod("buildHyperFrame", "data.frame", function(x, coordVars, designVar, coVars = setdiff(names(x), c(designVar, coordVars)), ...) {
+    buildHyperFrame(as.matrix(x[, coordVars]), design = x[,designVar], covariates = x[, coVars],...)
 })
-#' @param matrix
+#' @param matrix The input matrix
 #' @param design A single design variable distinguishing the different point patterns
 #'
 #' @rdname buildHyperFrame
@@ -34,6 +35,8 @@ setMethod("buildHyperFrame", "matrix", function(x, design, covariates,...) {
     hypFrame = hyperframe("ppp" = ppps, design = names(ppps))
     return(hypFrame)
 })
+#' @param list A list of point patterns of class "ppp"
+#'
 #' @rdname buildHyperFrame
 #' @export
 setMethod("buildHyperFrame", "list", function(x,...) {
