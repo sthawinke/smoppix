@@ -28,7 +28,7 @@ setMethod("buildHyperFrame", "matrix", function(x, design, covariates,...) {
         stop("Design variabel distinguishes different ppint patterns and should be one dimensionsal")
     }
     stopifnot(is.null(covariates) || nrow(x) == NROW(covariates))
-    cat("Found", length(unDesignFactors <- unique(design)), "unique design factors")
+    message("Found", length(unDesignFactors <- unique(design)), "unique design factors")
     ppps = tapply(seq_len(nrow(x)), design, function(i){
         ppp(x = x[i, 1], y = x[i, 2], marks = covariates[i,])
     })

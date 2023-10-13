@@ -18,6 +18,14 @@ gene <- factor(gene, gs)
 cell <- factor(cell, cs)
 # construct data.frame of molecule coordinates
 df <- data.frame(gene, cell, x, y, fov)
+#A list of point patterns
+listPPP = tapply(seq(nrow(df)), df$fov, function(i){
+    ppp(x = df$x[i], y = df$y[i], marks = df[i, c("gene", "cell")])
+    }, simplify = FALSE)
 testthat("Reading in data proceeds without errors", {
   expect_message(hypFrame <- buildHyperFrame(df, coordVars = c("x", "y"), designVar = "fov"))
+  expect_s3_class(hypFrame, c("hyperframe", "list"))
+  expect_message(hypFrame2 <- buildHyperFrame(as.matrix(df[, c("x", "y")]), design = df$fov, covariates = df[, c("gene", "cell")]))
+  expect_silent(hypFrame3 <- buildHyperFrame(lapply(listPPP, identity)))
+  expect_identical(hypFrame, hypFrame2, hypFrame3)
 })
