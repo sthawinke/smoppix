@@ -1,4 +1,5 @@
 context("Test input spatrans package")
+library(spatstat)
 n <- 1e3  # number of molecules
 ng <- 50  # number of genes
 nc <- 20  # number of cells

@@ -9,6 +9,10 @@ setGeneric("buildHyperFrame", function(x, ...) standardGeneric("buildHyperFrame"
 #'
 #' @rdname buildHyperFrame
 #' @export
+#' @param coordVars Names of coordinates
+#' @param designVar A single character vector, name of the design variable
+#' @param coVars Names of covariates such as gene or cell for each single point
+
 setMethod("buildHyperFrame", "data.frame", function(x, coordVars, designVar, coVars = setdiff(names(x), c(designVar, coordVars)), ...) {
     buildHyperFrame(as.matrix(x[, coordVars]), design = x[,designVar], covariates = x[, coVars],...)
 })
@@ -25,14 +29,17 @@ setMethod("buildHyperFrame", "matrix", function(x, design, covariates,...) {
         stop("Number of rows of design and coordinate matrix must match")
     }
     if(NCOL(design)!=1){
-        stop("Design variabel distinguishes different ppint patterns and should be one dimensionsal")
+        stop("Design variable distinguishes different ppint patterns and should be one dimensionsal")
+    }
+    if(!any("gene" == colnames(covariate))){
+        stop("Gene identity must be supplied in covariate matrix")
     }
     stopifnot(is.null(covariates) || nrow(x) == NROW(covariates))
     message("Found", length(unDesignFactors <- unique(design)), "unique design factors")
     ppps = tapply(seq_len(nrow(x)), design, function(i){
-        ppp(x = x[i, 1], y = x[i, 2], marks = covariates[i,])
+        spatstat::ppp(x = x[i, 1], y = x[i, 2], marks = covariates[i,])
     })
-    hypFrame = hyperframe("ppp" = ppps, design = names(ppps))
+    hypFrame = spatstat::hyperframe("ppp" = ppps, design = names(ppps))
     return(hypFrame)
 })
 #' @param list A list of point patterns of class "ppp"
@@ -40,7 +47,7 @@ setMethod("buildHyperFrame", "matrix", function(x, design, covariates,...) {
 #' @rdname buildHyperFrame
 #' @export
 setMethod("buildHyperFrame", "list", function(x,...) {
-    hypFrame = hyperframe("ppp" = x, design = names(x))
+    hypFrame = spatstat::hyperframe("ppp" = x, design = names(x))
     return(hypFrame)
 })
 #' @rdname buildHyperFrame
