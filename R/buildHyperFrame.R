@@ -1,13 +1,47 @@
 #' Built the hyperframe containing all separate point patterns that will
 #'  be used throughout the analysis. Both matrices, dataframe and SpatialExperiment inputs are accepted.
 #' @rdname buildHyperFrame
+#' @import spatstat
 #' @export
 setGeneric("buildHyperFrame", function(x, ...) standardGeneric("buildHyperFrame"))
+#' @param data.frame
+#'
 #' @rdname buildHyperFrame
 #' @export
-setMethod("buildHyperFrame", "data.frame", function(x, ...) {
+setMethod("buildHyperFrame", "data.frame", function(x, coordVars, designVar, coVars, ...) {
+    buildHyperFrame(x[, coordVars], design = x[,designVar], covariates = x[, coVars],...)
+})
+#' @param matrix
+#' @param design A single design variable distinguishing the different point patterns
+#'
+#' @rdname buildHyperFrame
+#' @export
+setMethod("buildHyperFrame", "matrix", function(x, design, covariates,...) {
+    if(ncol(x)!=2){
+        stop("Coordinates must be 2 dimensional")
+    }
+    if(nrow(x) != NROW(design)){
+        stop("Number of rows of design and coordinate matrix must match")
+    }
+    if(NCOL(design)!=1){
+        stop("Design variabel distinguishes different ppint patterns and should be one dimensionsal")
+    }
+    stopifnot(is.null(covariates) || nrow(x) == NROW(covariates))
+    cat("Found", length(unDesignFactors <- unique(design)), "unique design factors")
+    ppps = tapply(seq_len(nrow(x)), design, function(i){
+        ppp(x = x[i, 1], y = x[i, 2], marks = covariates[i,])
+    })
+    hypFrame = hyperframe("ppp" = ppps, design = names(ppps))
+    return(hypFrame)
+})
+#' @rdname buildHyperFrame
+#' @export
+setMethod("buildHyperFrame", "list", function(x,...) {
+    hypFrame = hyperframe("ppp" = x, design = names(x))
+    return(hypFrame)
 })
 #' @rdname buildHyperFrame
 #' @export
 setMethod("buildHyperFrame", "SpatialExperiment", function(x, ...) {
+
 })
