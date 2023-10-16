@@ -34,8 +34,6 @@ buildHyperFrame(x, ...)
 
 \item{design}{A single design variable distinguishing the different point patterns}
 
-\item{data.frame}{}
-
 \item{matrix}{The input matrix}
 
 \item{list}{A list of point patterns of class "ppp"}

@@ -4,6 +4,9 @@
 #' @inheritParams estPims
 #'
 #' @importFrom matrixStats rowMins
+#' @importFrom spatstat.geom nndist crossdist npoints area
+#' @importFrom spatstat.random rpoispp
+#' @importFrom stats ecdf
 #' @return The estimated probabilistic index
 calcNNPI = function(pSub, p, null, nSims){
     obsDistNN = nndist(pSub)
@@ -16,7 +19,7 @@ calcNNPI = function(pSub, p, null, nSims){
             #Keep this for bivariate analysis: Average over all points, single ecdf per point
         })
         piEsts = vapply(seq_len(npoints(pSub)), FUN.VALUE = double(1), function(i){
-            ecdf(simDists[i,])(obsDist[i])
+            ecdf(simDistsNN[i,])(obsDistNN[i])
         })
         mean(piEsts)
     } else if(null == "CSR"){

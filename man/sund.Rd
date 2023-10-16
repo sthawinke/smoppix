@@ -6,6 +6,11 @@
 \usage{
 sund(x, sep = "_")
 }
+\arguments{
+\item{x}{character string}
+
+\item{sep}{The character used to split}
+}
 \description{
 Helper function to spit gene pairs
 }

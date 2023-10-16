@@ -7,7 +7,14 @@
 makeDesignVar(x, designVars, sep = "_")
 }
 \arguments{
-\item{sep}{}
+\item{x}{the design matrix}
+
+\item{designVars}{the design variables to be combined}
+
+\item{sep}{The string to separate the components}
+}
+\value{
+a vector of design levels
 }
 \description{
 Make design variable by combining different design variables

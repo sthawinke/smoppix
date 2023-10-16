@@ -1,11 +1,11 @@
 #' Built the hyperframe containing all separate point patterns that will
 #'  be used throughout the analysis. Both matrices, dataframe and SpatialExperiment inputs are accepted.
 #' @rdname buildHyperFrame
-#' @import spatstat
+#' @importFrom spatstat.geom ppp hyperframe
 #' @import methods
 #' @export
+#' @param x the input object, see methods("buildHyperFrame")
 setGeneric("buildHyperFrame", function(x, ...) standardGeneric("buildHyperFrame"))
-#' @param data.frame
 #'
 #' @rdname buildHyperFrame
 #' @export
@@ -31,15 +31,15 @@ setMethod("buildHyperFrame", "matrix", function(x, design, covariates,...) {
     if(NCOL(design)!=1){
         stop("Design variable distinguishes different ppint patterns and should be one dimensionsal")
     }
-    if(!any("gene" == colnames(covariate))){
+    if(!any("gene" == colnames(covariates))){
         stop("Gene identity must be supplied in covariate matrix")
     }
     stopifnot(is.null(covariates) || nrow(x) == NROW(covariates))
     message("Found", length(unDesignFactors <- unique(design)), "unique design factors")
     ppps = tapply(seq_len(nrow(x)), design, function(i){
-        spatstat::ppp(x = x[i, 1], y = x[i, 2], marks = covariates[i,])
+        spatstat.geom::ppp(x = x[i, 1], y = x[i, 2], marks = covariates[i,])
     })
-    hypFrame = spatstat::hyperframe("ppp" = ppps, design = names(ppps))
+    hypFrame = spatstat.geom::hyperframe("ppp" = ppps, design = names(ppps))
     return(hypFrame)
 })
 #' @param list A list of point patterns of class "ppp"
@@ -47,7 +47,7 @@ setMethod("buildHyperFrame", "matrix", function(x, design, covariates,...) {
 #' @rdname buildHyperFrame
 #' @export
 setMethod("buildHyperFrame", "list", function(x,...) {
-    hypFrame = spatstat::hyperframe("ppp" = x, design = names(x))
+    hypFrame = spatstat.geom::hyperframe("ppp" = x, design = names(x))
     return(hypFrame)
 })
 #' @rdname buildHyperFrame
@@ -55,3 +55,4 @@ setMethod("buildHyperFrame", "list", function(x,...) {
 setMethod("buildHyperFrame", "SpatialExperiment", function(x, ...) {
 
 })
+

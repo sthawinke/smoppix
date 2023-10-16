@@ -1,5 +1,5 @@
 context("Test input spatrans package")
-library(spatstat)
+library(spatstat.random)
 n <- 1e3 # number of molecules
 ng <- 50 # number of genes
 nc <- 20 # number of cells
@@ -23,7 +23,7 @@ df <- data.frame(gene, cell, x, y, fov)
 listPPP = tapply(seq(nrow(df)), df$fov, function(i){
     ppp(x = df$x[i], y = df$y[i], marks = df[i, c("gene", "cell")])
     }, simplify = FALSE)
-testthat("Reading in data proceeds without errors", {
+test_that("Reading in data proceeds without errors", {
   expect_message(hypFrame <- buildHyperFrame(df, coordVars = c("x", "y"), designVar = "fov"))
   expect_s3_class(hypFrame, c("hyperframe", "list"))
   expect_message(hypFrame2 <- buildHyperFrame(as.matrix(df[, c("x", "y")]), design = df$fov, covariates = df[, c("gene", "cell")]))

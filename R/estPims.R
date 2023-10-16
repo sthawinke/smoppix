@@ -12,6 +12,9 @@
 #' @return Data frames with estimated quantities per gene and/or gene pair
 #' @export
 #' @importFrom BiocParallel bplapply
+#' @importFrom stats ecdf dist
+#' @import spatstat.geom
+#' @importFrom spatstat.random runifpoint
 #' @details
 #' The null distribution used to calculate the PIs. Can be either "background",
 #' in which case the observed distributions of all genes is used. Alternatively,

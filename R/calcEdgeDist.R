@@ -6,7 +6,8 @@
 #'
 #' @importFrom matrixStats rowMins
 #' @return The estimated probabilistic index
-calcFixedDistPI = function(pSub, edge, ecdfAll){
+#' @importFrom spatstat.geom nncross crossdist
+calcEdgeDistPI = function(pSub, edge, ecdfAll){
     obsDistEdge = nncross(pSub, edge, what = "dist")
     mean(ecdfAll(obsDistEdge))
 }
