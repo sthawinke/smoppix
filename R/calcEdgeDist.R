@@ -3,6 +3,7 @@
 #' @param pSub The subset point pattern containing only a single gene
 #' @param edge The psp object to which the distances are calculated
 #' @param point The fixed point to which the distance is to be calculated
+#' @param ecdfAll the cumulative distribution function under the null
 #'
 #' @importFrom matrixStats rowMins
 #' @return The estimated probabilistic index
