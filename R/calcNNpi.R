@@ -1,3 +1,10 @@
+#' Estimate the PI for the nearest neighbour distances
+#'
+#' @param pSub The subset point pattern containing only a single gene
+#' @inheritParams estPims
+#'
+#' @importFrom matrixStats rowMins
+#' @return The estimated probabilistic index
 calcNNPI = function(pSub, p, null, nSims){
     obsDistNN = nndist(pSub)
     if(null == "background"){
