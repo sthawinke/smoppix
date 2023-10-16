@@ -8,7 +8,7 @@
 #' @export
 #' @importFrom BiocParallel bplapply
 #' @examples
-estPims = function(p, pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", "centroid"),
+estPims = function(p, pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", "fixedpoint"),
                    null = c("background", "CSR"), nSims = 1e2, nPointsAll = 1e4, ...){
     pis = match.arg(pis, several.ok = TRUE)
     null = match.arg(null)
@@ -21,10 +21,15 @@ estPims = function(p, pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", 
                               #Limit memory usage
                               "CSR" = runifpoint(nPointsAll, win = p$window))))
     }
+    #Univariate patterns
     uniPIs = bplapply(unFeatures, function(feat){
         pSub = subset(p, gene == feat)
         NNdistPI = if(any(pis == "nn")){calcNNPI(pSub, null, nSims)} else NULL
         allDistPI = if(any(pis == "allDist")){calcAllDistPI(pSub, ecdfAll)} else NULL
+        edgeDistPI = if(any(pis == "edge")){calcEdgeDistPI(pSub, null, nSims, ...)} else NULL
+        pointDistPI = if(any(pis == "fixedpoint")){calcPointDistPI(pSub, null, nSims, ...)} else NULL
         c("NNdistPI" = NNdistPI, "allDistPI" = allDistPI)
     })
+    #Bivariate patterns
+
 }
