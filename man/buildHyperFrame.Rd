@@ -26,6 +26,12 @@ buildHyperFrame(x, ...)
 \S4method{buildHyperFrame}{SpatialExperiment}(x, ...)
 }
 \arguments{
+\item{coordVars}{Names of coordinates}
+
+\item{designVar}{A single character vector, name of the design variable}
+
+\item{coVars}{Names of covariates such as gene or cell for each single point}
+
 \item{design}{A single design variable distinguishing the different point patterns}
 
 \item{data.frame}{}
