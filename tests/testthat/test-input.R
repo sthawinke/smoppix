@@ -1,9 +1,9 @@
 context("Test input spatrans package")
 library(spatstat)
-n <- 1e3  # number of molecules
-ng <- 50  # number of genes
-nc <- 20  # number of cells
-nfov = 3#Number of fields of view
+n <- 1e3 # number of molecules
+ng <- 50 # number of genes
+nc <- 20 # number of cells
+nfov = 3 # Number of fields of view
 # sample xy-coordinates in [0, 1]
 x <- runif(n)
 y <- runif(n)

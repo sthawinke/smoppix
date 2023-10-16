@@ -16,24 +16,17 @@ estPims = function(p, pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", 
     tabObs = table(marks(p)$gene)
     unFeatures = names(tabObs); names(unFeatures) = unFeatures
     dfFeat = data.frame("feature" = unFeatures)
-    if(any(pis == "nn")){
-        #obsNNdists = nndist(pp, by = "gene")
-        NNdists = bplapply(unFeatures, function(feat){
-            pSub = subset(p, gene == feat)
-            obsDist = nndist(pSub)
-            simDists = vapply(integer(nSims), FUN.VALUE = double(npoints(pSub)), function(i){
-                distMat = crossdist(pSub, p[sample(npoints(p), npoints(pSub)-1),])
-                #Keep observed points fixed
-                matrixStats::rowMins(distMat)
-            })
-            piEsts = vapply(seq(npoints(pSub)), FUN.VALUE = double(1), function(i){
-                ecdf(simDists[i,])(obsDist[i])
-            })
-            mean(piEsts)#Average over all points, single ecdf per point
-            #Resampling amounts to permutation
-        })
-    } else if(any(pis == "allDist")){
+    if(any(pis == "allDist")){
+        simDists = vapply(integer(nSims), FUN.VALUE = double(npoints(pSub)), function(i){
 
+        })
+    }
+    uniPIs = bplapply(unFeatures, function(feat){
+        pSub = subset(p, gene == feat)
+        NNdistPI = if(any(pis == "nn")){calcNNPI(pSub, null, nSims)} else NULL
+        allDistPI = if(any(pis == "allDist")){} else NULL
+        c("NNdistPI" = NNdistPI, "allDistPI" = allDistPI)
+    })
     }
 
 }
