@@ -1,15 +1,26 @@
-#' A wrapper fucntion for the different pims
+#' A wrapper function for the different probabilistic indices (PIs)
 #'
 #' @param p The point patterns
 #' @param pis the Probabilitstic indices to be estimated
 #' @param ... Additional arguments passed on to the appropriate functions
+#' @param null A character vector, indicating how the null distribution is defined. See details.
+#' @param nSims The number of Monte-Carlo simulations used to determine the null distribution if null = "CSR
+#' @param nPointsAll How many points to subsample to calculate overall distance distribution
+#' @param allowManyGenePairs A boolean, set to true to suppress warning messages for large numbers of gene pairs
+#' @param manyPairs An integer, what are considered many gene pairs
 #'
 #' @return Data frames with estimated quantities per gene and/or gene pair
 #' @export
 #' @importFrom BiocParallel bplapply
+#' @details
+#' The null distribution used to calculate the PIs. Can be either "background",
+#' in which case the observed distributions of all genes is used. Alternatively,
+#' for null = "CSR", Monte-Carlo simulation under complete spatial randomness is performed within the given window.
+#'
 #' @examples
 estPims = function(p, pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", "fixedpoint"),
-                   null = c("background", "CSR"), nSims = 1e2, nPointsAll = 1e4, ...){
+                   null = c("background", "CSR"), nSims = 1e2, nPointsAll = 1e4,
+                   allowManyGenePairs = FALSE, manyPairs = 1e6, ...){
     pis = match.arg(pis, several.ok = TRUE)
     null = match.arg(null)
     tabObs = table(marks(p)$gene)
@@ -31,5 +42,9 @@ estPims = function(p, pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", 
         c("NNdistPI" = NNdistPI, "allDistPI" = allDistPI)
     })
     #Bivariate patterns
+    if(any(grepl(pis, "genePair")) && !allowManyGenePairs && (numGenePairs <- choose(length(unFeatures), 2)) > 1e6){
+        warning(immediate. = TRUE, "Calculating probablistic indices for", numGenePairs, "gene pairs may take a long time")
+    }
+
 
 }
