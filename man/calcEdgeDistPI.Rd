@@ -11,6 +11,8 @@ calcEdgeDistPI(pSub, edge, ecdfAll)
 
 \item{edge}{The psp object to which the distances are calculated}
 
+\item{ecdfAll}{the cumulative distribution function under the null}
+
 \item{point}{The fixed point to which the distance is to be calculated}
 }
 \value{

@@ -26,6 +26,8 @@ buildHyperFrame(x, ...)
 \S4method{buildHyperFrame}{SpatialExperiment}(x, ...)
 }
 \arguments{
+\item{x}{the input object, see methods("buildHyperFrame")}
+
 \item{coordVars}{Names of coordinates}
 
 \item{designVar}{A single character vector, name of the design variable}

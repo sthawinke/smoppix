@@ -6,6 +6,14 @@
 \usage{
 addCell(hypFrame, rois)
 }
+\arguments{
+\item{hypFrame}{The hyperframe}
+
+\item{rois}{the list of list of rois per hyperframe}
+}
+\value{
+the modified hyperframe
+}
 \description{
 Check in which cell each event lies and add a cell marker
 }
