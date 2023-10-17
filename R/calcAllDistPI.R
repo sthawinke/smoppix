@@ -6,8 +6,9 @@
 #' @return The probabilistic index for all distances
 #' @importFrom spatstat.geom pairdist
 #' @inheritParams estPims
+#' @importFrom stats dist
 calcAllDistPI = function(pSub, p, ecdfAll, null, nSims){
-    obsDist = pairdist(pSub)
+    obsDist = dist(coords(pSub))
     if(null == "CSR"){
         mean(ecdfAll(obsDist))
     } else if(null == "background"){

@@ -13,7 +13,8 @@ calcNNPI = function(pSub, p, null, nSims){
     if(null == "background"){
         simDistsNN = vapply(integer(nSims), FUN.VALUE = double(npoints(pSub)), function(i){
             #nndist(p[sample(npoints(p), npoints(p)),])
-            distMat = crossdist(pSub, p[sample(npoints(p), npoints(p)-1),])
+            distMat = crossdist(pSub, p[sample(npoints(p), npoints(pSub)-1),])
+            distMat[distMat==0] = Inf
             # #Keep observed points fixed
             matrixStats::rowMins(distMat)
             #Keep this for bivariate analysis: Average over all points, single ecdf per point

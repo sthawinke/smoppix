@@ -8,6 +8,7 @@
 #' @param nPointsAll How many points to subsample to calculate overall distance distribution
 #' @param allowManyGenePairs A boolean, set to true to suppress warning messages for large numbers of gene pairs
 #' @param manyPairs An integer, what are considered many gene pairs
+#' @param verbose Should verbose output be printed?
 #'
 #' @return Data frames with estimated quantities per gene and/or gene pair
 #' @export
@@ -23,7 +24,7 @@
 #' @examples
 estPims = function(p, pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", "fixedpoint"),
                    null = c("background", "CSR"), nSims = 1e2, nPointsAll = 1e4,
-                   allowManyGenePairs = FALSE, manyPairs = 1e6, ...){
+                   allowManyGenePairs = FALSE, manyPairs = 1e6, verbose = FALSE,...){
     pis = match.arg(pis, several.ok = TRUE)
     null = match.arg(null)
     tabObs = table(marks(p)$gene)
@@ -34,18 +35,24 @@ estPims = function(p, pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", 
         #"background" = if(np <- npoints(p) > nPointsAll) p[sample(np, nPointsAll)] else p)
     }
     #Univariate patterns
-    uniPIs = bplapply(unFeatures, function(feat){
+    if(any(idZero <- (tabObs==1)) && verbose){
+        message("Features\n", paste(sep = ", ", names(tabObs)[idZero]),
+                "\nhave only one observations, so no intervent distances were calculated for them\n")
+    }
+    uniPIs = simplify2array(bplapply(unFeatures[!idZero], function(feat){
         pSub = subset(p, gene == feat)
-        NNdistPI = if(any(pis == "nn")){calcNNPI(pSub, p, null, nSims)} else NULL
-        allDistPI = if(any(pis == "allDist")){calcAllDistPI(pSub, p, ecdfAll = ecdfAll, null = null, nSims = nPointsAll)} else NULL
+        NNdistPI = if(any(pis == "nn") && (npoints(pSub) > 1)){calcNNPI(pSub, p, null, nSims)} else NULL
+        allDistPI = if(any(pis == "allDist")&& (npoints(pSub) > 1)){calcAllDistPI(pSub, p, ecdfAll = ecdfAll, null = null, nSims = nPointsAll)} else NULL
         edgeDistPI = if(any(pis == "edge")){calcEdgeDistPI(pSub, null, nSims, ...)} else NULL
         pointDistPI = if(any(pis == "fixedpoint")){calcPointDistPI(pSub, null, nSims, ...)} else NULL
         c("NNdistPI" = NNdistPI, "allDistPI" = allDistPI, "edgeDistPI" = edgeDistPI, "pointDistPI" = pointDistPI)
-    })
+    }))
     #Bivariate patterns
-    if(any(grepl(pis, "genePair")) && !allowManyGenePairs && (numGenePairs <- choose(length(unFeatures), 2)) > 1e6){
+    if(any(grepl(pis, pattern = "Pair"))){
+        if(!allowManyGenePairs && (numGenePairs <- choose(length(unFeatures), 2)) > 1e6){
         warning(immediate. = TRUE, "Calculating probablistic indices for", numGenePairs, "gene pairs may take a long time!")
-    }
-
-
+        }
+    } else biPIs = NULL
+    biPIs = NULL
+    list("uniPIs" = uniPIs, "biPIs" = biPIs)
 }
