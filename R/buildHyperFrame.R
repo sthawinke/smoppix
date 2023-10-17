@@ -5,6 +5,8 @@
 #' @import methods
 #' @export
 #' @param x the input object, see methods("buildHyperFrame")
+#' @param ... additional constructor arguments
+#' @param covariates A vector of covariates
 setGeneric("buildHyperFrame", function(x, ...) standardGeneric("buildHyperFrame"))
 #'
 #' @rdname buildHyperFrame
@@ -13,7 +15,8 @@ setGeneric("buildHyperFrame", function(x, ...) standardGeneric("buildHyperFrame"
 #' @param designVar A single character vector, name of the design variable
 #' @param coVars Names of covariates such as gene or cell for each single point
 
-setMethod("buildHyperFrame", "data.frame", function(x, coordVars, designVar, coVars = setdiff(names(x), c(designVar, coordVars)), ...) {
+setMethod("buildHyperFrame", "data.frame",
+          function(x, coordVars, designVar, coVars = setdiff(names(x), c(designVar, coordVars)), ...) {
     buildHyperFrame(as.matrix(x[, coordVars]), design = x[,designVar], covariates = x[, coVars],...)
 })
 #' @param matrix The input matrix

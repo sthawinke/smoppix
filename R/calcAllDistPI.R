@@ -5,7 +5,17 @@
 #'
 #' @return The probabilistic index for all distances
 #' @importFrom spatstat.geom pairdist
-calcAllDistPI = function(pSub, ecdfAll){
+#' @inheritParams estPims
+calcAllDistPI = function(pSub, ecdfAll, null, nSims){
     obsDist = pairdist(pSub)
-    mean(ecdfAll(obsDist))
+    if(null == "CSR"){
+        mean(ecdfAll(obsDist))
+    } else if(null == "background"){
+        simDists = crossdist(pSub, if(npoints(p) > nSims) p[sample(npoints(p), nSims),] else p)
+            # #Keep observed points fixed
+        piEsts = vapply(seq_len(npoints(pSub)), FUN.VALUE = double(1), function(i){
+            ecdf(simDists[i,])(obsDist[i])
+        })
+        mean(piEsts)
+    }
 }

@@ -29,17 +29,15 @@ estPims = function(p, pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", 
     tabObs = table(marks(p)$gene)
     unFeatures = names(tabObs); names(unFeatures) = unFeatures
     dfFeat = data.frame("feature" = unFeatures)
-    if(any(pis == "allDist")){
-        ecdfAll = ecdf(dist(coords(switch(null,
-                              "background" = if(np <- npoints(p) > nPointsAll) p[sample(np, nPointsAll)] else p),
-                              #Limit memory usage
-                              "CSR" = runifpoint(nPointsAll, win = p$window))))
+    if(any(pis == "allDist") && null =="CSR"){
+        ecdfAll = ecdf(dist(coords(runifpoint(nPointsAll, win = p$window))))
+        #"background" = if(np <- npoints(p) > nPointsAll) p[sample(np, nPointsAll)] else p)
     }
     #Univariate patterns
     uniPIs = bplapply(unFeatures, function(feat){
         pSub = subset(p, gene == feat)
         NNdistPI = if(any(pis == "nn")){calcNNPI(pSub, null, nSims)} else NULL
-        allDistPI = if(any(pis == "allDist")){calcAllDistPI(pSub, ecdfAll)} else NULL
+        allDistPI = if(any(pis == "allDist")){calcAllDistPI(pSub, ecdfAll = ecdfAll, null = null, nSims = nPointsAll)} else NULL
         edgeDistPI = if(any(pis == "edge")){calcEdgeDistPI(pSub, null, nSims, ...)} else NULL
         pointDistPI = if(any(pis == "fixedpoint")){calcPointDistPI(pSub, null, nSims, ...)} else NULL
         c("NNdistPI" = NNdistPI, "allDistPI" = allDistPI)
