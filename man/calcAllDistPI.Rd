@@ -4,12 +4,18 @@
 \alias{calcAllDistPI}
 \title{Estimate the probabilistic index for the collection of all distances}
 \usage{
-calcAllDistPI(pSub, ecdfAll)
+calcAllDistPI(pSub, p, ecdfAll, null, nSims)
 }
 \arguments{
 \item{pSub}{The subset point pattern wiht only one feature}
 
+\item{p}{The point patterns}
+
 \item{ecdfAll}{The empirical cumulative distribution function of all distances under the null}
+
+\item{null}{A character vector, indicating how the null distribution is defined. See details.}
+
+\item{nSims}{The number of Monte-Carlo simulations used to determine the null distribution if null = "CSR}
 }
 \value{
 The probabilistic index for all distances

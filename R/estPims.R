@@ -36,15 +36,15 @@ estPims = function(p, pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", 
     #Univariate patterns
     uniPIs = bplapply(unFeatures, function(feat){
         pSub = subset(p, gene == feat)
-        NNdistPI = if(any(pis == "nn")){calcNNPI(pSub, null, nSims)} else NULL
-        allDistPI = if(any(pis == "allDist")){calcAllDistPI(pSub, ecdfAll = ecdfAll, null = null, nSims = nPointsAll)} else NULL
+        NNdistPI = if(any(pis == "nn")){calcNNPI(pSub, p, null, nSims)} else NULL
+        allDistPI = if(any(pis == "allDist")){calcAllDistPI(pSub, p, ecdfAll = ecdfAll, null = null, nSims = nPointsAll)} else NULL
         edgeDistPI = if(any(pis == "edge")){calcEdgeDistPI(pSub, null, nSims, ...)} else NULL
         pointDistPI = if(any(pis == "fixedpoint")){calcPointDistPI(pSub, null, nSims, ...)} else NULL
-        c("NNdistPI" = NNdistPI, "allDistPI" = allDistPI)
+        c("NNdistPI" = NNdistPI, "allDistPI" = allDistPI, "edgeDistPI" = edgeDistPI, "pointDistPI" = pointDistPI)
     })
     #Bivariate patterns
     if(any(grepl(pis, "genePair")) && !allowManyGenePairs && (numGenePairs <- choose(length(unFeatures), 2)) > 1e6){
-        warning(immediate. = TRUE, "Calculating probablistic indices for", numGenePairs, "gene pairs may take a long time")
+        warning(immediate. = TRUE, "Calculating probablistic indices for", numGenePairs, "gene pairs may take a long time!")
     }
 
 

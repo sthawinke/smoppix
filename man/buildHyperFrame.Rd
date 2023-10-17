@@ -28,6 +28,8 @@ buildHyperFrame(x, ...)
 \arguments{
 \item{x}{the input object, see methods("buildHyperFrame")}
 
+\item{...}{additional constructor arguments}
+
 \item{coordVars}{Names of coordinates}
 
 \item{designVar}{A single character vector, name of the design variable}
@@ -35,6 +37,8 @@ buildHyperFrame(x, ...)
 \item{coVars}{Names of covariates such as gene or cell for each single point}
 
 \item{design}{A single design variable distinguishing the different point patterns}
+
+\item{covariates}{A vector of covariates}
 
 \item{matrix}{The input matrix}
 
