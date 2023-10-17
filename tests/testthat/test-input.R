@@ -30,3 +30,8 @@ test_that("Reading in data proceeds without errors", {
   expect_silent(hypFrame3 <- buildHyperFrame(lapply(listPPP, identity)))
   expect_identical(hypFrame, hypFrame2, hypFrame3)
 })
+#Read in spatial experiment
+example(read10xVisium)
+test_that("Reading in data from SpatialExperiment class proceeds without errors", {
+    expect_message(hypFrame4 <- buildHyperFrame(spe, designVar = "sample_id", coVar = "in_tissue"))
+})

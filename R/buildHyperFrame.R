@@ -40,7 +40,8 @@ setMethod("buildHyperFrame", "matrix", function(x, design, covariates,...) {
     stopifnot(is.null(covariates) || nrow(x) == NROW(covariates))
     message("Found ", length(unDesignFactors <- unique(design)), " unique design factors")
     ppps = tapply(seq_len(nrow(x)), design, function(i){
-        spatstat.geom::ppp(x = x[i, 1], y = x[i, 2], marks = covariates[i,])
+        spatstat.geom::ppp(x = x[i, 1], y = x[i, 2], marks = covariates[i,],
+                           xrange = range(x[i, 1]), yrange = range(x[i, 2]))
     })
     hypFrame = spatstat.geom::hyperframe("ppp" = ppps, design = names(ppps))
     return(hypFrame)
@@ -55,7 +56,8 @@ setMethod("buildHyperFrame", "list", function(x,...) {
 })
 #' @rdname buildHyperFrame
 #' @export
-setMethod("buildHyperFrame", "SpatialExperiment", function(x, ...) {
-
+setMethod("buildHyperFrame", "SpatialExperiment", function(x, designVar, coVar, ...) {
+    buildHyperFrame(spatialCoords(x), design = colData(x)[, designVar],
+                    covariates = cbind("gene" = rownames(colData(x)), as.data.frame(colData(x))[, coVar, drop = FALSE]))
 })
 

@@ -24,15 +24,18 @@
 #' @examples
 estPims = function(p, pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", "fixedpoint"),
                    null = c("background", "CSR"), nSims = 1e2, nPointsAll = 1e4,
-                   allowManyGenePairs = FALSE, manyPairs = 1e6, verbose = FALSE,...){
+                   allowManyGenePairs = FALSE, manyPairs = 1e6, verbose = FALSE, roi,...){
     pis = match.arg(pis, several.ok = TRUE)
     null = match.arg(null)
     tabObs = table(marks(p)$gene)
     unFeatures = names(tabObs); names(unFeatures) = unFeatures
     dfFeat = data.frame("feature" = unFeatures)
-    if(any(pis == "allDist") && null =="CSR"){
-        ecdfAll = ecdf(dist(coords(runifpoint(nPointsAll, win = p$window))))
-        #"background" = if(np <- npoints(p) > nPointsAll) p[sample(np, nPointsAll)] else p)
+    if(any(pis %in% c("allDist", "edge", "fixedpoint")) && null =="CSR"){
+        pSim = runifpoint(nPointsAll, win = p$window)
+        if(any(pis == "allDist"))
+           ecdfAll = ecdf(dist(coords(pSim)))
+          if(any(pis == "edge"))
+              ecdfAll = ecdf(nncross(pSim, roi))
     }
     #Univariate patterns
     if(any(idZero <- (tabObs==1)) && verbose){
@@ -43,8 +46,8 @@ estPims = function(p, pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", 
         pSub = subset(p, gene == feat)
         NNdistPI = if(any(pis == "nn") && (npoints(pSub) > 1)){calcNNPI(pSub, p, null, nSims)} else NULL
         allDistPI = if(any(pis == "allDist")&& (npoints(pSub) > 1)){calcAllDistPI(pSub, p, ecdfAll = ecdfAll, null = null, nSims = nPointsAll)} else NULL
-        edgeDistPI = if(any(pis == "edge")){calcEdgeDistPI(pSub, null, nSims, ...)} else NULL
-        pointDistPI = if(any(pis == "fixedpoint")){calcPointDistPI(pSub, null, nSims, ...)} else NULL
+        edgeDistPI = if(any(pis == "edge")){calcEdgeDistPI(pSub, p, ecdfAll = ecdfAll, null = null, nSims = nPointsAll, ...)} else NULL
+        pointDistPI = if(any(pis == "fixedpoint")){calcPointDistPI(pSub, p, ecdfAll = ecdfAll, null = null, nSims = nPointsAll, ...)} else NULL
         c("NNdistPI" = NNdistPI, "allDistPI" = allDistPI, "edgeDistPI" = edgeDistPI, "pointDistPI" = pointDistPI)
     }))
     #Bivariate patterns
