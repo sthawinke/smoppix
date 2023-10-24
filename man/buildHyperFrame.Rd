@@ -19,11 +19,11 @@ buildHyperFrame(x, ...)
   ...
 )
 
-\S4method{buildHyperFrame}{matrix}(x, design, covariates, ...)
+\S4method{buildHyperFrame}{matrix}(x, design, covariates, rois = NULL, ...)
 
 \S4method{buildHyperFrame}{list}(x, ...)
 
-\S4method{buildHyperFrame}{SpatialExperiment}(x, ...)
+\S4method{buildHyperFrame}{SpatialExperiment}(x, designVar, coVar, ...)
 }
 \arguments{
 \item{x}{the input object, see methods("buildHyperFrame")}

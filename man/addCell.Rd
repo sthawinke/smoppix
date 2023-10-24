@@ -2,18 +2,22 @@
 % Please edit documentation in R/addCell.R
 \name{addCell}
 \alias{addCell}
-\title{Check in which cell each event lies and add a cell marker}
+\title{Check in which cell each event lies and add a cell marker, plus include the list of regions}
 \usage{
-addCell(hypFrame, rois)
+addCell(hypFrame, rois, checkOverlap = TRUE, warnOut = TRUE)
 }
 \arguments{
 \item{hypFrame}{The hyperframe}
 
 \item{rois}{the list of list of rois per hyperframe}
+
+\item{checkOverlap}{a boolean, should windows be checked for overlap}
+
+\item{warnout}{a boolean, should warning be issued when points are not contained in window}
 }
 \value{
 the modified hyperframe
 }
 \description{
-Check in which cell each event lies and add a cell marker
+Check in which cell each event lies and add a cell marker, plus include the list of regions
 }

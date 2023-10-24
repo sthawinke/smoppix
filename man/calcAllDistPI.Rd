@@ -9,7 +9,7 @@ calcAllDistPI(pSub, p, ecdfAll, null, nSims)
 \arguments{
 \item{pSub}{The subset point pattern wiht only one feature}
 
-\item{p}{The point patterns}
+\item{p}{The point pattern}
 
 \item{ecdfAll}{The empirical cumulative distribution function of all distances under the null}
 

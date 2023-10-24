@@ -12,11 +12,14 @@ estPims(
   nPointsAll = 10000,
   allowManyGenePairs = FALSE,
   manyPairs = 1e+06,
+  verbose = FALSE,
+  roi,
+  point,
   ...
 )
 }
 \arguments{
-\item{p}{The point patterns}
+\item{p}{The point pattern}
 
 \item{pis}{the Probabilitstic indices to be estimated}
 
@@ -29,6 +32,8 @@ estPims(
 \item{allowManyGenePairs}{A boolean, set to true to suppress warning messages for large numbers of gene pairs}
 
 \item{manyPairs}{An integer, what are considered many gene pairs}
+
+\item{verbose}{Should verbose output be printed?}
 
 \item{...}{Additional arguments passed on to the appropriate functions}
 }

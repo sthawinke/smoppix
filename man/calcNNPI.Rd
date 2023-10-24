@@ -9,7 +9,7 @@ calcNNPI(pSub, p, null, nSims)
 \arguments{
 \item{pSub}{The subset point pattern containing only a single gene}
 
-\item{p}{The point patterns}
+\item{p}{The point pattern}
 
 \item{null}{A character vector, indicating how the null distribution is defined. See details.}
 

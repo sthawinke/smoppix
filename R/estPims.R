@@ -1,6 +1,6 @@
 #' A wrapper function for the different probabilistic indices (PIs)
 #'
-#' @param p The point patterns
+#' @param p The point pattern
 #' @param pis the Probabilitstic indices to be estimated
 #' @param ... Additional arguments passed on to the appropriate functions
 #' @param null A character vector, indicating how the null distribution is defined. See details.
@@ -24,7 +24,7 @@
 #' @examples
 estPims = function(p, pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", "fixedpoint"),
                    null = c("background", "CSR"), nSims = 1e2, nPointsAll = 1e4,
-                   allowManyGenePairs = FALSE, manyPairs = 1e6, verbose = FALSE, roi,...){
+                   allowManyGenePairs = FALSE, manyPairs = 1e6, verbose = FALSE, roi, point,...){
     pis = match.arg(pis, several.ok = TRUE)
     null = match.arg(null)
     tabObs = table(marks(p)$gene)
@@ -34,8 +34,10 @@ estPims = function(p, pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", 
         pSim = runifpoint(nPointsAll, win = p$window)
         if(any(pis == "allDist"))
            ecdfAll = ecdf(dist(coords(pSim)))
-          if(any(pis == "edge"))
-              ecdfAll = ecdf(nncross(pSim, roi))
+        if(any(pis == "edge"))
+            ecdfEdge = ecdf(nncross(pSim, roi, what = "dist"))
+        if(any(pis == "fixedpoint"))
+            ecdfPoint = ecdf(nncross(pSim, point, what = "dist"))
     }
     #Univariate patterns
     if(any(idZero <- (tabObs==1)) && verbose){
@@ -45,9 +47,12 @@ estPims = function(p, pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", 
     uniPIs = simplify2array(bplapply(unFeatures[!idZero], function(feat){
         pSub = subset(p, gene == feat)
         NNdistPI = if(any(pis == "nn") && (npoints(pSub) > 1)){calcNNPI(pSub, p, null, nSims)} else NULL
-        allDistPI = if(any(pis == "allDist")&& (npoints(pSub) > 1)){calcAllDistPI(pSub, p, ecdfAll = ecdfAll, null = null, nSims = nPointsAll)} else NULL
-        edgeDistPI = if(any(pis == "edge")){calcEdgeDistPI(pSub, p, ecdfAll = ecdfAll, null = null, nSims = nPointsAll, ...)} else NULL
-        pointDistPI = if(any(pis == "fixedpoint")){calcPointDistPI(pSub, p, ecdfAll = ecdfAll, null = null, nSims = nPointsAll, ...)} else NULL
+        allDistPI = if(any(pis == "allDist")&& (npoints(pSub) > 1)){
+            calcAllDistPI(pSub, p, ecdfAll = ecdfAll, null = null, nSims = nPointsAll)} else NULL
+        edgeDistPI = if(any(pis == "edge")){
+            calcEdgeDistPI(pSub, p, ecdfAll = ecdfEdge, null = null, nSims = nPointsAll, ...)} else NULL
+        pointDistPI = if(any(pis == "fixedpoint")){
+            calcPointDistPI(pSub, p, ecdfAll = ecdfPoint, null = null, nSims = nPointsAll, ...)} else NULL
         c("NNdistPI" = NNdistPI, "allDistPI" = allDistPI, "edgeDistPI" = edgeDistPI, "pointDistPI" = pointDistPI)
     }))
     #Bivariate patterns

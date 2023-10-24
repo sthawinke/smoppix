@@ -16,15 +16,15 @@ setGeneric("buildHyperFrame", function(x, ...) standardGeneric("buildHyperFrame"
 #' @param coVars Names of covariates such as gene or cell for each single point
 
 setMethod("buildHyperFrame", "data.frame",
-          function(x, coordVars, designVar, coVars = setdiff(names(x), c(designVar, coordVars)), ...) {
-    buildHyperFrame(as.matrix(x[, coordVars]), design = x[,designVar], covariates = x[, coVars],...)
+          function(x, coordVars, designVar, coVars = setdiff(names(x), c(designVar, coordVars)),...) {
+    buildHyperFrame(as.matrix(x[, coordVars]), design = x[,designVar], covariates = x[, coVars, drop = FALSE],...)
 })
 #' @param matrix The input matrix
 #' @param design A single design variable distinguishing the different point patterns
 #'
 #' @rdname buildHyperFrame
 #' @export
-setMethod("buildHyperFrame", "matrix", function(x, design, covariates,...) {
+setMethod("buildHyperFrame", "matrix", function(x, design, covariates, rois = NULL,...) {
     if(ncol(x)!=2){
         stop("Coordinates must be 2 dimensional")
     }
@@ -39,7 +39,7 @@ setMethod("buildHyperFrame", "matrix", function(x, design, covariates,...) {
     }
     stopifnot(is.null(covariates) || nrow(x) == NROW(covariates))
     message("Found ", length(unDesignFactors <- unique(design)), " unique design factors")
-    ppps = tapply(seq_len(nrow(x)), design, function(i){
+    ppps = tapply(seq_len(nrow(x)), design, simplify = FALSE, function(i){
         spatstat.geom::ppp(x = x[i, 1], y = x[i, 2], marks = covariates[i,],
                            xrange = range(x[i, 1]), yrange = range(x[i, 2]))
     })
@@ -56,6 +56,7 @@ setMethod("buildHyperFrame", "list", function(x,...) {
 })
 #' @rdname buildHyperFrame
 #' @export
+#' @importFrom SpatialExperiment SpatialExperiment
 setMethod("buildHyperFrame", "SpatialExperiment", function(x, designVar, coVar, ...) {
     buildHyperFrame(spatialCoords(x), design = colData(x)[, designVar],
                     covariates = cbind("gene" = rownames(colData(x)), as.data.frame(colData(x))[, coVar, drop = FALSE]))
