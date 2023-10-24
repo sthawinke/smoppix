@@ -28,7 +28,7 @@ addCell = function(hypFrame, rois, checkOverlap = TRUE, warnOut = TRUE){
                 stop("All points lie outside all windows for point pattern ", nn, " check your input!")
             }
             warning(length(idOut), " points lie outside all windows for point pattern ", nn,
-                    "and were not assigned to a cell.\n")
+                    " and were not assigned to a cell.\n")
         }
         cellOut = character(NP)
         cellOut[idOut] = NA
@@ -42,7 +42,8 @@ findOverlap = function(rois){
     combs = combn(length(rois), 2)
     lapply(seq_len(ncol(combs)), function(i){
         if(overlap.owin(rois[[combs[1, i]]], rois[[combs[2, i]]])>0){
-            stop("Overlap detected between windows ", combs[1, i], " and ", combs[2, i], " !")
+            stop("Overlap detected between windows ", combs[1, i], " and ", combs[2, i],
+                 "!\nWindows must be non-overlapping.")
         }
     })
 }

@@ -1,7 +1,7 @@
 #' Estimate the PI for the nearest neighbour distances
 #'
 #' @param pSub The subset point pattern containing only a single gene
-#' @inheritParams estPims
+#' @inheritParams estPimsSingle
 #'
 #' @importFrom matrixStats rowMins
 #' @importFrom spatstat.geom nndist crossdist npoints area

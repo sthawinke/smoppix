@@ -35,4 +35,6 @@ wList2 = lapply(seq_len(nfov), function(x){
     list("w1" = w1, "w2" = w2, "w3" = w3, "w4" = w4, "w5" = w5, "wWrong" = wWrong)
 })
 names(wList) = names(wList2) = seq_len(nfov)
+hypFrame <- buildHyperFrame(df, coordVars = c("x", "y"), designVar = "fov")
+hypFrame2 = addCell(hypFrame, wList)
 test_check("spatrans")

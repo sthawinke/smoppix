@@ -40,8 +40,8 @@ setMethod("buildHyperFrame", "matrix", function(x, design, covariates, rois = NU
     stopifnot(is.null(covariates) || nrow(x) == NROW(covariates))
     message("Found ", length(unDesignFactors <- unique(design)), " unique design factors")
     ppps = tapply(seq_len(nrow(x)), design, simplify = FALSE, function(i){
-        spatstat.geom::ppp(x = x[i, 1], y = x[i, 2], marks = covariates[i,],
-                           xrange = range(x[i, 1]), yrange = range(x[i, 2]))
+        spatstat.geom::ppp(x = x[i, 1], y = x[i, 2], marks = covariates[i,,drop = FALSE],
+                           xrange = range(x[i, 1]), yrange = range(x[i, 2]), drop = FALSE)
     })
     hypFrame = spatstat.geom::hyperframe("ppp" = ppps, design = names(ppps))
     return(hypFrame)

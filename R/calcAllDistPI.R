@@ -5,7 +5,7 @@
 #'
 #' @return The probabilistic index for all distances
 #' @importFrom spatstat.geom pairdist
-#' @inheritParams estPims
+#' @inheritParams estPimsSingle
 #' @importFrom stats dist
 calcAllDistPI = function(pSub, p, ecdfAll, null, nSims){
     obsDist = dist(coords(pSub))

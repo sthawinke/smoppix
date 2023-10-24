@@ -10,5 +10,6 @@
 calcEdgeDistPI = function(pSub, edge, ecdfAll){
     obsDistEdge = nncross(pSub, edge, what = "dist")
     mean(ecdfAll(obsDistEdge))
+    #Convert to psp, plus vectorize. FIX ME!
 }
 

@@ -20,22 +20,27 @@
 #' The null distribution used to calculate the PIs. Can be either "background",
 #' in which case the observed distributions of all genes is used. Alternatively,
 #' for null = "CSR", Monte-Carlo simulation under complete spatial randomness is performed within the given window.
+#' For the 'edge' and 'fixedpoint' probabilistic indices, always CSR is used for the null.
 #'
 #' @examples
-estPims = function(p, pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", "fixedpoint"),
+estPimsSingle = function(p, pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", "fixedpoint"),
                    null = c("background", "CSR"), nSims = 1e2, nPointsAll = 1e4,
-                   allowManyGenePairs = FALSE, manyPairs = 1e6, verbose = FALSE, roi, point,...){
+                   allowManyGenePairs = FALSE, manyPairs = 1e6, verbose = FALSE, rois = NULL, point,...){
     pis = match.arg(pis, several.ok = TRUE)
+    if(any(pis == "edge") && is.null(rois)){
+        stop("No region of interest provided for edge calculation. Add it using the addCell() function")
+    }
     null = match.arg(null)
-    tabObs = table(marks(p)$gene)
+    tabObs = table(marks(p, drop = FALSE)$gene)
     unFeatures = names(tabObs); names(unFeatures) = unFeatures
     dfFeat = data.frame("feature" = unFeatures)
-    if(any(pis %in% c("allDist", "edge", "fixedpoint")) && null =="CSR"){
-        pSim = runifpoint(nPointsAll, win = p$window)
-        if(any(pis == "allDist"))
+    if(any(pis %in% c("edge", "fixedpoint")) || (any(pis == "allDist") && null =="CSR")){
+        if(any(pis == "allDist")){
+            pSim = runifpoint(nPointsAll, win = p$window)
            ecdfAll = ecdf(dist(coords(pSim)))
+        }
         if(any(pis == "edge"))
-            ecdfEdge = ecdf(nncross(pSim, roi, what = "dist"))
+            ecdfsEdge = lapply(rois, function(rr) ecdf(nncross(runifpoint(nPointsAll, win = rr), rr, what = "dist")))
         if(any(pis == "fixedpoint"))
             ecdfPoint = ecdf(nncross(pSim, point, what = "dist"))
     }
@@ -50,9 +55,9 @@ estPims = function(p, pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", 
         allDistPI = if(any(pis == "allDist")&& (npoints(pSub) > 1)){
             calcAllDistPI(pSub, p, ecdfAll = ecdfAll, null = null, nSims = nPointsAll)} else NULL
         edgeDistPI = if(any(pis == "edge")){
-            calcEdgeDistPI(pSub, p, ecdfAll = ecdfEdge, null = null, nSims = nPointsAll, ...)} else NULL
+            calcEdgeDistPI(pSub, p, ecdfAll = ecdfsEdge, ...)} else NULL
         pointDistPI = if(any(pis == "fixedpoint")){
-            calcPointDistPI(pSub, p, ecdfAll = ecdfPoint, null = null, nSims = nPointsAll, ...)} else NULL
+            calcPointDistPI(pSub, p, ecdfAll = ecdfPoint, ...)} else NULL
         c("NNdistPI" = NNdistPI, "allDistPI" = allDistPI, "edgeDistPI" = edgeDistPI, "pointDistPI" = pointDistPI)
     }))
     #Bivariate patterns
@@ -63,4 +68,7 @@ estPims = function(p, pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", 
     } else biPIs = NULL
     biPIs = NULL
     list("uniPIs" = uniPIs, "biPIs" = biPIs)
+}
+estPims = function(y, ...){
+   with(y, estPimsSingle(ppp, rois = rois, ...))
 }
