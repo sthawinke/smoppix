@@ -4,10 +4,21 @@
 \alias{estPims}
 \title{Estimate pims on a hyperframe}
 \usage{
-estPims(hypFrame, ...)
+estPims(
+  hypFrame,
+  pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint", "fixedpoint"),
+  null = c("background", "CSR"),
+  ...
+)
 }
 \arguments{
 \item{hypFrame}{the hyperframe}
+
+\item{pis}{the Probabilitstic indices to be estimated}
+
+\item{null}{A character vector, indicating how the null distribution is defined. See details.}
+
+\item{...}{additional arguments, passed on to estPimsSingle}
 }
 \value{
 A list of estimated pims

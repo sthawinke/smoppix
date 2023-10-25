@@ -2,7 +2,6 @@
 #'
 #' @param p The point pattern
 #' @param pis the Probabilitstic indices to be estimated
-#' @param ... Additional arguments passed on to the appropriate functions
 #' @param null A character vector, indicating how the null distribution is defined. See details.
 #' @param nSims The number of Monte-Carlo simulations used to determine the null distribution if null = "CSR
 #' @param nPointsAll How many points to subsample or simulate to calculate overall interpoint distance
@@ -10,7 +9,8 @@
 #' @param allowManyGenePairs A boolean, set to true to suppress warning messages for large numbers of gene pairs
 #' @param manyPairs An integer, what are considered many gene pairs
 #' @param verbose Should verbose output be printed?
-#' @param points A list of points to which the distances are to be calculated
+#' @param owins The list of windows corresponding to cells
+#' @param point The point to which the distances are to be calculated
 #'
 #' @return Data frames with estimated quantities per gene and/or gene pair
 #' @export
@@ -30,7 +30,7 @@
 #' 'fixedpoint' calculates the distances to a supplied list of points.
 #' @examples
 estPimsSingle = function(p, pis, null, nSims = 1e2, nPointsAll = 5e3,
-                   allowManyGenePairs = FALSE, manyPairs = 1e6, verbose = FALSE, owins = NULL, point,...){
+                   allowManyGenePairs = FALSE, manyPairs = 1e6, verbose = FALSE, owins = NULL, point){
     tabObs = table(marks(p, drop = FALSE)$gene)
     unFeatures = names(tabObs); names(unFeatures) = unFeatures
     dfFeat = data.frame("feature" = unFeatures)
@@ -53,22 +53,26 @@ estPimsSingle = function(p, pis, null, nSims = 1e2, nPointsAll = 5e3,
         message("Features\n", paste(sep = ", ", names(tabObs)[idZero]),
                 "\nhave only one observations, so no intervent distances were calculated for them\n")
     }
+    if(verbose)
+        message("Calculating univariate probabilistic indices...")
     uniPIs = bplapply(unFeatures[!idZero], function(feat){
         pSub = subset(p, gene == feat)
         NNdistPI = if(any(pis == "nn") && (npoints(pSub) > 1)){calcNNPI(pSub, p, null, nSims)}
         allDistPI = if(any(pis == "allDist")&& (npoints(pSub) > 1)){
             calcAllDistPI(pSub, p, ecdfAll = ecdfAll, null = null, nSims = nPointsAll)}
         edgeDistPI = if(any(pis == "edge")){
-            calcWindowDistPI(pSub, owins, ecdfAll = ecdfsEdge)}
+            calcWindowDistPI(pSub, owins, ecdfAll = ecdfsEdge, towhat = "edge")}
         midPointDistPI = if(any(pis == "midpoint")){
-            calcWindowDistPI(pSub, owins, ecdfAll = ecdfMidPoint, midPoint = TRUE)}
+            calcWindowDistPI(pSub, owins, ecdfAll = ecdfMidPoint, towhat = "midpoint")}
         fixedPointDistPI = if(any(pis == "fixedpoint")){
             calcFixedPointDistPI(pSub, pointPPP, ecdfAll = ecdfFixedPoint)}
-        list("pointDists" = c("NNdistPI" = NNdistPI, "allDistPI" = allDistPI, "fixedPointDistPI" = fixedPointDistPI),
-             "windowDists" = list("edgeDistPI" = edgeDistPI, "midPointDistPI" = midPointDistPI))
+        list("pointDists" = c("nn" = NNdistPI, "allDist" = allDistPI, "fixedpoint" = fixedPointDistPI),
+             "windowDists" = list("edge" = edgeDistPI, "midpoint" = midPointDistPI))
     })
     #Bivariate patterns
     if(any(grepl(pis, pattern = "Pair"))){
+        if(verbose)
+            message("Calculating bivariate probabilistic indices...")
         if(!allowManyGenePairs && (numGenePairs <- choose(length(unFeatures), 2)) > 1e6){
         warning(immediate. = TRUE, "Calculating probablistic indices for", numGenePairs, "gene pairs may take a long time!\n",
                 "Set allowManyGenePairs to TRUE to suppress this message.")
@@ -80,6 +84,8 @@ estPimsSingle = function(p, pis, null, nSims = 1e2, nPointsAll = 5e3,
 #' Estimate pims on a hyperframe
 #' @export
 #' @param hypFrame the hyperframe
+#' @param ... additional arguments, passed on to estPimsSingle
+#' @inheritParams estPimsSingle
 #' @return A list of estimated pims
 #' @examples
 estPims = function(hypFrame, pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint", "fixedpoint"),
@@ -92,5 +98,5 @@ estPims = function(hypFrame, pis = c("nn", "allDist", "nnPair", "allDistPair", "
     if(any(pis %in% c("edge", "fixedpoint", "midpoint")) && null == "background"){
         message("For distance to edge, cell centroid and fixed point, only CSR is implemented as null and will be used")
     }
-   with(hypFrame, estPimsSingle(ppp, owins = owins, ...))
+   with(hypFrame, estPimsSingle(ppp, owins = owins, pis = pis, null = null, ...))
 }

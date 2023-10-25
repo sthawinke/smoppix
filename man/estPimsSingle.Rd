@@ -6,16 +6,15 @@
 \usage{
 estPimsSingle(
   p,
-  pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint", "fixedpoint"),
-  null = c("background", "CSR"),
+  pis,
+  null,
   nSims = 100,
-  nPointsAll = 10000,
+  nPointsAll = 5000,
   allowManyGenePairs = FALSE,
   manyPairs = 1e+06,
   verbose = FALSE,
   owins = NULL,
-  point,
-  ...
+  point
 )
 }
 \arguments{
@@ -27,7 +26,8 @@ estPimsSingle(
 
 \item{nSims}{The number of Monte-Carlo simulations used to determine the null distribution if null = "CSR}
 
-\item{nPointsAll}{How many points to subsample to calculate overall distance distribution}
+\item{nPointsAll}{How many points to subsample or simulate to calculate overall interpoint distance
+and distance to point or edge distribution}
 
 \item{allowManyGenePairs}{A boolean, set to true to suppress warning messages for large numbers of gene pairs}
 
@@ -35,9 +35,9 @@ estPimsSingle(
 
 \item{verbose}{Should verbose output be printed?}
 
-\item{...}{Additional arguments passed on to the appropriate functions}
+\item{owins}{The list of windows corresponding to cells}
 
-\item{points}{A list of points to which the distances are to be calculated}
+\item{point}{The point to which the distances are to be calculated}
 }
 \value{
 Data frames with estimated quantities per gene and/or gene pair

@@ -12,7 +12,7 @@ Description: Test for univariate and multivariate spatial patterns in
     biological specimens. Tests for aggregation, colocalozation and vicinity to cell edge are provided.
 License: GPL-2
 Encoding: UTF-8
-Imports: spatstat.geom, spatstat.random, SpatialExperiment, methods, BiocParallel, matrixStats
+Imports: spatstat.geom, spatstat.random, SpatialExperiment, methods, BiocParallel, matrixStats, SummarizedExperiment
 Suggests: testthat
 LazyData: true
 RoxygenNote: 7.2.3

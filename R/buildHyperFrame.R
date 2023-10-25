@@ -56,7 +56,8 @@ setMethod("buildHyperFrame", "list", function(x,...) {
 })
 #' @rdname buildHyperFrame
 #' @export
-#' @importFrom SpatialExperiment SpatialExperiment
+#' @importFrom SpatialExperiment SpatialExperiment spatialCoords
+#' @importFrom SummarizedExperiment colData
 setMethod("buildHyperFrame", "SpatialExperiment", function(x, designVar, coVars, ...) {
     buildHyperFrame(spatialCoords(x), design = colData(x)[, designVar],
                     covariates = cbind("gene" = rownames(colData(x)), as.data.frame(colData(x))[, coVars, drop = FALSE]))

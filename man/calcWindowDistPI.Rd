@@ -4,14 +4,16 @@
 \alias{calcWindowDistPI}
 \title{Estimate the PI for the distance to a fixed region of interest}
 \usage{
-calcWindowDistPI(pSub, owins, ecdfAll, midPoint = FALSE)
+calcWindowDistPI(pSub, owins, ecdfAll, towhat)
 }
 \arguments{
 \item{pSub}{The subset point pattern containing only a single gene}
 
+\item{owins}{the list of windows describing the cells}
+
 \item{ecdfAll}{the cumulative distribution function under the null}
 
-\item{edge}{The psp object to which the distances are calculated}
+\item{towhat}{a character vector, either "edge" or "midpoint", indicating with respect to what the distance should be calculated}
 }
 \value{
 The estimated probabilistic index

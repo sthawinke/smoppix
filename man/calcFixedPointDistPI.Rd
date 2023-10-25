@@ -9,9 +9,9 @@ calcFixedPointDistPI(pSub, pointPPP, ecdfAll)
 \arguments{
 \item{pSub}{The subset point pattern containing only a single gene}
 
-\item{ecdfAll}{the cumulative distribution function under the null}
+\item{pointPPP}{The point pattern containing the fixed point to which the distance is to be calculated}
 
-\item{point}{The fixed point to which the distance is to be calculated}
+\item{ecdfAll}{the cumulative distribution function under the null}
 }
 \description{
 Estimate the PI for the distance to a fixed region of interest
