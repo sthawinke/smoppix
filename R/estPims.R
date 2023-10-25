@@ -57,8 +57,9 @@ estPimsSingle = function(p, pis, null, nSims = 1e2, nPointsAll = 5e3,
         message("Calculating univariate probabilistic indices...")
     uniPIs = bplapply(unFeatures[!idZero], function(feat){
         pSub = subset(p, gene == feat)
-        NNdistPI = if(any(pis == "nn") && (npoints(pSub) > 1)){calcNNPI(pSub, p, null, nSims)}
-        allDistPI = if(any(pis == "allDist")&& (npoints(pSub) > 1)){
+        NP = npoints(pSub)
+        NNdistPI = if(any(pis == "nn") && (NP > 1)){calcNNPI(pSub, p, null, nSims)}
+        allDistPI = if(any(pis == "allDist")&& (NP > 1)){
             calcAllDistPI(pSub, p, ecdfAll = ecdfAll, null = null, nSims = nPointsAll)}
         edgeDistPI = if(any(pis == "edge")){
             calcWindowDistPI(pSub, owins, ecdfAll = ecdfsEdge, towhat = "edge")}
@@ -66,7 +67,7 @@ estPimsSingle = function(p, pis, null, nSims = 1e2, nPointsAll = 5e3,
             calcWindowDistPI(pSub, owins, ecdfAll = ecdfMidPoint, towhat = "midpoint")}
         fixedPointDistPI = if(any(pis == "fixedpoint")){
             calcFixedPointDistPI(pSub, pointPPP, ecdfAll = ecdfFixedPoint)}
-        list("pointDists" = c("nn" = NNdistPI, "allDist" = allDistPI, "fixedpoint" = fixedPointDistPI),
+        list("pointDists" = c("nn" = NNdistPI, "allDist" = allDistPI, "fixedpoint" = fixedPointDistPI, "NP" = NP),
              "windowDists" = list("edge" = edgeDistPI, "midpoint" = midPointDistPI))
     })
     #Bivariate patterns

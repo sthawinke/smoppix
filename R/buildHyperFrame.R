@@ -43,6 +43,7 @@ setMethod("buildHyperFrame", "matrix", function(x, design, covariates, ...) {
         spatstat.geom::ppp(x = x[i, 1], y = x[i, 2], marks = covariates[i,,drop = FALSE],
                            xrange = range(x[i, 1]), yrange = range(x[i, 2]), drop = FALSE)
     })
+    #Replace underscore in gene names => Used to build pairs
     hypFrame = spatstat.geom::hyperframe("ppp" = ppps, design = names(ppps))
     return(hypFrame)
 })
