@@ -6,11 +6,11 @@
 #'
 #' @importFrom matrixStats rowMins
 #' @return The estimated probabilistic index
-#' @importFrom spatstat.geom nncross
+#' @importFrom spatstat.geom nncross centroid.owin edges
 calcWindowDistPI = function(pSub, owins, ecdfAll, midPoint = FALSE){
     splitPPP = split.ppp(pSub, f = "gene")
     obsDistEdge = lapply(names(splitPPP), function(x){
-        nncross(splitPPP[[x]], (if(midPoint) centroid.owin else edge)(owins[[x]]), what = "dist")
+        nncross(splitPPP[[x]], (if(midPoint) centroid.owin else edges)(owins[[x]]), what = "dist")
     })
     mean(ecdfAll(unlist(obsDistEdge)))
 }

@@ -81,6 +81,11 @@ estPimsSingle = function(p, pis = c("nn", "allDist", "nnPair", "allDistPair", "e
     biPIs = NULL
     list("uniPIs" = uniPIs, "biPIs" = biPIs)
 }
-estPims = function(y, ...){
-   with(y, estPimsSingle(ppp, owins = owins, ...))
+#' Estimate pims on a hyperframe
+#' @export
+#' @param hypFrame the hyperframe
+#' @return A list of estimated pims
+#' @examples
+estPims = function(hypFrame, ...){
+   with(hypFrame, estPimsSingle(ppp, owins = owins, ...))
 }

@@ -1,6 +1,6 @@
 context("Test pim calculation spatrans package")
 test_that("Calculating pims proceeds without errors", {
-  expect_silent(piEsts <- estPims(hypFrame2, pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", "fixedpoint"),
+  expect_silent(piEsts <- estPims(hypFrame2, pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", "fixedpoint", "midpoint"),
                                     point = c(0.5, 0.5)))
 })
 test_that("Calculating pims throws errors where appropriate", {
