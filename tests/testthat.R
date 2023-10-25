@@ -39,6 +39,7 @@ names(wList) = names(wList2) = seq_len(nfov)
 hypFrame <- buildHyperFrame(df, coordVars = c("x", "y"), designVar = "fov")
 hypFrame2 = addCell(hypFrame, wList)
 #Register the parallel backend
-nCores = 2
-register(MulticoreParam(nCores))
+register(SerialParam())
+# nCores = 2
+# register(MulticoreParam(nCores))
 test_check("spatrans")

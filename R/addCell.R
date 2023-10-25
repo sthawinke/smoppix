@@ -13,7 +13,7 @@ addCell = function(hypFrame, owins, checkOverlap = TRUE, warnOut = TRUE){
               all(rownames(hypFrame) %in% names(owins)))
     for(nn in rownames(hypFrame)){
         ppp = hypFrame[[nn, "ppp"]]
-        if(any("cell" == names(marks(ppp)))){
+        if(any("cell" == names(marks(ppp, drop = FALSE)))){
             stop("Cell markers already present in point pattern ", nn)
         }
         if(checkOverlap){
@@ -32,7 +32,7 @@ addCell = function(hypFrame, owins, checkOverlap = TRUE, warnOut = TRUE){
         }
         cellOut = character(NP)
         cellOut[idOut] = NA
-        cellOut[-idOut] = names(owins[[nn]])[which(idWindow, arr.ind = TRUE)[, "col"]]
+        cellOut[-idOut] = rownames(which(t(idWindow[-idOut, ]), arr.ind = TRUE))
         hypFrame[[nn, "ppp"]] = setmarks(hypFrame[[nn, "ppp"]], cbind(marks(hypFrame[[nn, "ppp"]], drop = FALSE), cell = cellOut))
     }
     hypFrame$owins = owins

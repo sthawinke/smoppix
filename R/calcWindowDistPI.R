@@ -8,7 +8,7 @@
 #' @return The estimated probabilistic index
 #' @importFrom spatstat.geom nncross centroid.owin edges
 calcWindowDistPI = function(pSub, owins, ecdfAll, midPoint = FALSE){
-    splitPPP = split.ppp(pSub, f = "gene")
+    splitPPP = split.ppp(pSub, f = "cell")
     obsDistEdge = vapply(FUN.VALUE = double(1), names(splitPPP), function(x){
         Dist = if(midPoint){
             crossdist(splitPPP[[x]], centroid.owin(owins[[x]], as.ppp = TRUE))
