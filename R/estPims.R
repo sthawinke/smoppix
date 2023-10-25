@@ -99,5 +99,8 @@ estPims = function(hypFrame, pis = c("nn", "allDist", "nnPair", "allDistPair", "
     if(any(pis %in% c("edge", "fixedpoint", "midpoint")) && null == "background"){
         message("For distance to edge, cell centroid and fixed point, only CSR is implemented as null and will be used")
     }
-   with(hypFrame, estPimsSingle(ppp, owins = owins, pis = pis, null = null, ...))
+   out = with(hypFrame, estPimsSingle(ppp, owins = owins, pis = pis, null = null, ...))
+   attr(out, "pis") = pis
+   out
+
 }

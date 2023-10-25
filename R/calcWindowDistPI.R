@@ -10,7 +10,7 @@
 #' @importFrom spatstat.geom nncross centroid.owin edges
 calcWindowDistPI = function(pSub, owins, ecdfAll, towhat){
     splitPPP = split.ppp(pSub, f = "cell")
-    obsDistEdge = vapply(FUN.VALUE = double(1), names(splitPPP), function(x){
+    obsDistEdge = lapply(names(splitPPP), function(x){
         Dist = switch(towhat,
             "edge" = crossdist(splitPPP[[x]], centroid.owin(owins[[x]], as.ppp = TRUE)),
             "midpoint" = nncross(splitPPP[[x]], edges(owins[[x]]), what = "dist"))

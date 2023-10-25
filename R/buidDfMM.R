@@ -11,6 +11,9 @@
 buildDfMM = function(pimRes, gene, pi = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint", "fixedpoint")){
     stopifnot(length(gene)==1)
     pi = match.arg(pi)
+    if(!(pi %in% attr(pimRes, "pis"))){
+        stop("Required PI not present in object. Rerun estPims with correct 'pis' argument")
+    }
     piListName = if(pairId <- grepl("Pair", pi)) "biPIs" else "uniPIs"
     piListNameInner = if(winId <- any(pi == c("edge", "midpoint"))) "windowDists" else "pointDists"
     nameVec = if(winId) pi else if(pairId) c(pi, "minNP", "maxNP") else c(pi, "NP")
@@ -18,11 +21,11 @@ buildDfMM = function(pimRes, gene, pi = c("nn", "allDist", "nnPair", "allDistPai
     piEsts = lapply(pimRes, function(x){
         vec = (if(pairId) getGp(x[[piListName]], gene) else x[[piListName]][[gene]])[[piListNameInner]][nameVec]
         if(winId) {
-            cbind("pi" = vec, "cell" = names(vec))
+            c("pi" = vec, "cell" = names(vec))
         } else
-            cbind(vec)
+            c(vec)
     })
-    piMat = Reduce(piEsts, f = cbind)
+    piMat = Reduce(piEsts, f = rbind)
     if(!winId){
         piMat = cbind(piMat, "weight" = if(pairId){
                         wVec = switch(pi,
