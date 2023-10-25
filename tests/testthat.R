@@ -1,6 +1,7 @@
 library(testthat)
 library(spatrans)
 library(spatstat.random)
+library(BiocParallel)
 n <- 1e3 # number of molecules
 ng <- 50 # number of genes
 cellsnc <- 20 # number of
@@ -37,4 +38,7 @@ wList2 = lapply(seq_len(nfov), function(x){
 names(wList) = names(wList2) = seq_len(nfov)
 hypFrame <- buildHyperFrame(df, coordVars = c("x", "y"), designVar = "fov")
 hypFrame2 = addCell(hypFrame, wList)
+#Register the parallel backend
+nCores = 2
+register(MulticoreParam(nCores))
 test_check("spatrans")

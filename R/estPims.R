@@ -48,9 +48,10 @@ estPimsSingle = function(p, pis = c("nn", "allDist", "nnPair", "allDistPair", "e
         if(any(pis == "edge"))
             ecdfsEdge = lapply(owins, function(rr) ecdf(nncross(runifpoint(nPointsAll, win = rr), edges(rr), what = "dist")))
         if(any(pis == "midpoint"))
-            ecdfMidPoint = lapply(owins, function(rr) ecdf(nncross(runifpoint(nPointsAll, win = rr), centroid.owin(rr), what = "dist")))
+            ecdfMidPoint = lapply(owins, function(rr) ecdf(crossdist(runifpoint(nPointsAll, win = rr), centroid.owin(rr, as.ppp = TRUE))))
         if(any(pis == "fixedpoint"))
-            ecdfFixedPoint = ecdf(nncross(pSim, point, what = "dist"))
+            pointPPP = ppp(point[1], point[2])
+            ecdfFixedPoint = ecdf(nncross(pSim, pointPPP, what = "dist"))
     }
     #Univariate patterns
     if(any(idZero <- (tabObs==1)) && verbose){
@@ -67,7 +68,7 @@ estPimsSingle = function(p, pis = c("nn", "allDist", "nnPair", "allDistPair", "e
         midPointDistPI = if(any(pis == "midpoint")){
             calcWindowDistPI(pSub, owins, ecdfAll = ecdfMidPoint, midPoint = TRUE)}
         fixedPointDistPI = if(any(pis == "fixedpoint")){
-            calcFixedPointDistPI(pSub, point, ecdfAll = ecdfFixedPoint)}
+            calcFixedPointDistPI(pSub, pointPPP, ecdfAll = ecdfFixedPoint)}
         c("NNdistPI" = NNdistPI, "allDistPI" = allDistPI, "edgeDistPI" = edgeDistPI,
           "midPointDistPI" = midPointDistPI, "fixedPointDistPI" = fixedPointDistPI)
     }))

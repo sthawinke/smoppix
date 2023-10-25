@@ -25,9 +25,9 @@ calcNNPI = function(pSub, p, null, nSims){
         mean(piEsts)
     } else if(null == "CSR"){
         lambda = npoints(pSub)/area(p$window)
-        simDistsNN = vapply(integer(nSims), FUN.VALUE = double(npoints(pSub)), function(i){
+        simDistsNN = lapply(integer(nSims), function(i){
             nndist(rpoispp(lambda, win = pSub$window))
         })
-        mean(ecdf(simDistsNN)(obsDistNN))
+        mean(ecdf(unlist(simDistsNN))(obsDistNN))
     }
 }

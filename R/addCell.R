@@ -33,7 +33,7 @@ addCell = function(hypFrame, owins, checkOverlap = TRUE, warnOut = TRUE){
         cellOut = character(NP)
         cellOut[idOut] = NA
         cellOut[-idOut] = names(owins[[nn]])[which(idWindow, arr.ind = TRUE)[, "col"]]
-        hypFrame[[nn, "ppp"]] = setmarks(hypFrame[[nn, "ppp"]], cbind(marks(hypFrame[[nn, "ppp"]]), cell = cellOut))
+        hypFrame[[nn, "ppp"]] = setmarks(hypFrame[[nn, "ppp"]], cbind(marks(hypFrame[[nn, "ppp"]], drop = FALSE), cell = cellOut))
     }
     hypFrame$owins = owins
     return(hypFrame)

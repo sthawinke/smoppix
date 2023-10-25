@@ -4,14 +4,14 @@
 \alias{calcFixedPointDistPI}
 \title{Estimate the PI for the distance to a fixed region of interest}
 \usage{
-calcFixedPointDistPI(pSub, point, ecdfAll)
+calcFixedPointDistPI(pSub, pointPPP, ecdfAll)
 }
 \arguments{
 \item{pSub}{The subset point pattern containing only a single gene}
 
-\item{point}{The fixed point to which the distance is to be calculated}
-
 \item{ecdfAll}{the cumulative distribution function under the null}
+
+\item{point}{The fixed point to which the distance is to be calculated}
 }
 \description{
 Estimate the PI for the distance to a fixed region of interest
