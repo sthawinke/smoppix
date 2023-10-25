@@ -9,6 +9,7 @@
 #' @param allowManyGenePairs A boolean, set to true to suppress warning messages for large numbers of gene pairs
 #' @param manyPairs An integer, what are considered many gene pairs
 #' @param verbose Should verbose output be printed?
+#' @param points A list of points to which the distances are to be calculated
 #'
 #' @return Data frames with estimated quantities per gene and/or gene pair
 #' @export
@@ -20,14 +21,18 @@
 #' The null distribution used to calculate the PIs. Can be either "background",
 #' in which case the observed distributions of all genes is used. Alternatively,
 #' for null = "CSR", Monte-Carlo simulation under complete spatial randomness is performed within the given window.
-#' For the 'edge' and 'fixedpoint' probabilistic indices, always CSR is used for the null.
+#' For the 'edge', 'midpoint' and 'fixedpoint' probabilistic indices, always CSR is used for the null.
 #'
+#' The 'nn' prefix indicates that nearest neighbour distances are being used, whereas 'all' indicates all distances are being used.
+#' The suffix 'Pair' indicates that bivariate probabilistic indices, testing for co- and antilocalization are being used.
+#' 'edge' and 'midpoint' calculate the distance to the edge respectively the midpoint of the windows added using the addCell() function.
+#' 'fixedpoint' calculates the distances to a supplied list of points.
 #' @examples
-estPimsSingle = function(p, pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", "fixedpoint"),
+estPimsSingle = function(p, pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint", "fixedpoint"),
                    null = c("background", "CSR"), nSims = 1e2, nPointsAll = 1e4,
-                   allowManyGenePairs = FALSE, manyPairs = 1e6, verbose = FALSE, rois = NULL, point,...){
+                   allowManyGenePairs = FALSE, manyPairs = 1e6, verbose = FALSE, owins = NULL, point,...){
     pis = match.arg(pis, several.ok = TRUE)
-    if(any(pis == "edge") && is.null(rois)){
+    if(any(pis == "edge") && is.null(owins)){
         stop("No region of interest provided for edge calculation. Add it using the addCell() function")
     }
     null = match.arg(null)
@@ -35,14 +40,17 @@ estPimsSingle = function(p, pis = c("nn", "allDist", "nnPair", "allDistPair", "e
     unFeatures = names(tabObs); names(unFeatures) = unFeatures
     dfFeat = data.frame("feature" = unFeatures)
     if(any(pis %in% c("edge", "fixedpoint")) || (any(pis == "allDist") && null =="CSR")){
-        if(any(pis == "allDist")){
-            pSim = runifpoint(nPointsAll, win = p$window)
-           ecdfAll = ecdf(dist(coords(pSim)))
+        if(any(pis %in% c("allDist", "fixedpoint"))){
+           pSim = runifpoint(nPointsAll, win = p$window)
         }
+        if(any(pis == "allDist"))
+            ecdfAll = ecdf(dist(coords(pSim)))
         if(any(pis == "edge"))
-            ecdfsEdge = lapply(rois, function(rr) ecdf(nncross(runifpoint(nPointsAll, win = rr), rr, what = "dist")))
+            ecdfsEdge = lapply(owins, function(rr) ecdf(nncross(runifpoint(nPointsAll, win = rr), edges(rr), what = "dist")))
+        if(any(pis == "midpoint"))
+            ecdfMidPoint = lapply(owins, function(rr) ecdf(nncross(runifpoint(nPointsAll, win = rr), centroid.owin(rr), what = "dist")))
         if(any(pis == "fixedpoint"))
-            ecdfPoint = ecdf(nncross(pSim, point, what = "dist"))
+            ecdfFixedPoint = ecdf(nncross(pSim, point, what = "dist"))
     }
     #Univariate patterns
     if(any(idZero <- (tabObs==1)) && verbose){
@@ -51,24 +59,28 @@ estPimsSingle = function(p, pis = c("nn", "allDist", "nnPair", "allDistPair", "e
     }
     uniPIs = simplify2array(bplapply(unFeatures[!idZero], function(feat){
         pSub = subset(p, gene == feat)
-        NNdistPI = if(any(pis == "nn") && (npoints(pSub) > 1)){calcNNPI(pSub, p, null, nSims)} else NULL
+        NNdistPI = if(any(pis == "nn") && (npoints(pSub) > 1)){calcNNPI(pSub, p, null, nSims)}
         allDistPI = if(any(pis == "allDist")&& (npoints(pSub) > 1)){
-            calcAllDistPI(pSub, p, ecdfAll = ecdfAll, null = null, nSims = nPointsAll)} else NULL
+            calcAllDistPI(pSub, p, ecdfAll = ecdfAll, null = null, nSims = nPointsAll)}
         edgeDistPI = if(any(pis == "edge")){
-            calcEdgeDistPI(pSub, p, ecdfAll = ecdfsEdge, ...)} else NULL
-        pointDistPI = if(any(pis == "fixedpoint")){
-            calcPointDistPI(pSub, p, ecdfAll = ecdfPoint, ...)} else NULL
-        c("NNdistPI" = NNdistPI, "allDistPI" = allDistPI, "edgeDistPI" = edgeDistPI, "pointDistPI" = pointDistPI)
+            calcWindowDistPI(pSub, owins, ecdfAll = ecdfsEdge)}
+        midPointDistPI = if(any(pis == "midpoint")){
+            calcWindowDistPI(pSub, owins, ecdfAll = ecdfMidPoint, midPoint = TRUE)}
+        fixedPointDistPI = if(any(pis == "fixedpoint")){
+            calcFixedPointDistPI(pSub, point, ecdfAll = ecdfFixedPoint)}
+        c("NNdistPI" = NNdistPI, "allDistPI" = allDistPI, "edgeDistPI" = edgeDistPI,
+          "midPointDistPI" = midPointDistPI, "fixedPointDistPI" = fixedPointDistPI)
     }))
     #Bivariate patterns
     if(any(grepl(pis, pattern = "Pair"))){
         if(!allowManyGenePairs && (numGenePairs <- choose(length(unFeatures), 2)) > 1e6){
-        warning(immediate. = TRUE, "Calculating probablistic indices for", numGenePairs, "gene pairs may take a long time!")
+        warning(immediate. = TRUE, "Calculating probablistic indices for", numGenePairs, "gene pairs may take a long time!\n",
+                "Set allowManyGenePairs to TRUE to suppress this message.")
         }
     } else biPIs = NULL
     biPIs = NULL
     list("uniPIs" = uniPIs, "biPIs" = biPIs)
 }
 estPims = function(y, ...){
-   with(y, estPimsSingle(ppp, rois = rois, ...))
+   with(y, estPimsSingle(ppp, owins = owins, ...))
 }

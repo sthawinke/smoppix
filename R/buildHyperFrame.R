@@ -24,7 +24,7 @@ setMethod("buildHyperFrame", "data.frame",
 #'
 #' @rdname buildHyperFrame
 #' @export
-setMethod("buildHyperFrame", "matrix", function(x, design, covariates, rois = NULL,...) {
+setMethod("buildHyperFrame", "matrix", function(x, design, covariates, ...) {
     if(ncol(x)!=2){
         stop("Coordinates must be 2 dimensional")
     }
@@ -57,8 +57,8 @@ setMethod("buildHyperFrame", "list", function(x,...) {
 #' @rdname buildHyperFrame
 #' @export
 #' @importFrom SpatialExperiment SpatialExperiment
-setMethod("buildHyperFrame", "SpatialExperiment", function(x, designVar, coVar, ...) {
+setMethod("buildHyperFrame", "SpatialExperiment", function(x, designVar, coVars, ...) {
     buildHyperFrame(spatialCoords(x), design = colData(x)[, designVar],
-                    covariates = cbind("gene" = rownames(colData(x)), as.data.frame(colData(x))[, coVar, drop = FALSE]))
+                    covariates = cbind("gene" = rownames(colData(x)), as.data.frame(colData(x))[, coVars, drop = FALSE]))
 })
 
