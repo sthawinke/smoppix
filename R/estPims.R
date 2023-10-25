@@ -29,17 +29,8 @@
 #' 'edge' and 'midpoint' calculate the distance to the edge respectively the midpoint of the windows added using the addCell() function.
 #' 'fixedpoint' calculates the distances to a supplied list of points.
 #' @examples
-estPimsSingle = function(p, pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint", "fixedpoint"),
-                   null = c("background", "CSR"), nSims = 1e2, nPointsAll = 5e3,
+estPimsSingle = function(p, pis, null, nSims = 1e2, nPointsAll = 5e3,
                    allowManyGenePairs = FALSE, manyPairs = 1e6, verbose = FALSE, owins = NULL, point,...){
-    pis = match.arg(pis, several.ok = TRUE)
-    if(any(pis == "edge") && is.null(owins)){
-        stop("No region of interest provided for edge calculation. Add it using the addCell() function")
-    }
-    if(any(pis %in% c("edge", "fixedpoint", "midpoint")) && null == "background"){
-        message("For distance to edge, cell centroid and fixed point, only CSR is implemented as null and will be used")
-    }
-    null = match.arg(null)
     tabObs = table(marks(p, drop = FALSE)$gene)
     unFeatures = names(tabObs); names(unFeatures) = unFeatures
     dfFeat = data.frame("feature" = unFeatures)
@@ -91,6 +82,15 @@ estPimsSingle = function(p, pis = c("nn", "allDist", "nnPair", "allDistPair", "e
 #' @param hypFrame the hyperframe
 #' @return A list of estimated pims
 #' @examples
-estPims = function(hypFrame, ...){
+estPims = function(hypFrame, pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint", "fixedpoint"),
+                   null = c("background", "CSR"), ...){
+    pis = match.arg(pis, several.ok = TRUE)
+    null = match.arg(null)
+    if(any(pis %in% c("edge", "midpoint")) && is.null(hypFrame$owins)){
+        stop("No window provided for distance to edge or midpoint calculation. Add it using the addCell() function")
+    }
+    if(any(pis %in% c("edge", "fixedpoint", "midpoint")) && null == "background"){
+        message("For distance to edge, cell centroid and fixed point, only CSR is implemented as null and will be used")
+    }
    with(hypFrame, estPimsSingle(ppp, owins = owins, ...))
 }
