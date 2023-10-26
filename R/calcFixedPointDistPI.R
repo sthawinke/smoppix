@@ -5,5 +5,5 @@
 #' @importFrom spatstat.geom crossdist
 calcFixedPointDistPI = function(pSub, pointPPP, ecdfAll){
     obsDistPoint = crossdist(pSub, pointPPP)
-    mean(ecdfAll(obsDistPoint))
+    ecdfAll(obsDistPoint)
 }

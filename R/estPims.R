@@ -17,6 +17,7 @@
 #' @importFrom BiocParallel bplapply
 #' @importFrom stats ecdf dist
 #' @importFrom spatstat.random runifpoint
+#' @importFrom utils combn
 #' @import spatstat.geom
 #' @details
 #' The null distribution used to calculate the PIs. Can be either "background",
@@ -51,7 +52,7 @@ estPimsSingle = function(p, pis, null, nSims = 1e2, nPointsAll = 5e3,
     #Univariate patterns
     if(any(idZero <- (tabObs==1)) && verbose){
         message("Features\n", paste(sep = ", ", names(tabObs)[idZero]),
-                "\nhave only one observations, so no intervent distances were calculated for them\n")
+                "\nhave only one observation, so no intervent distances were calculated for them\n")
     }
     if(verbose)
         message("Calculating univariate probabilistic indices...")
@@ -67,19 +68,30 @@ estPimsSingle = function(p, pis, null, nSims = 1e2, nPointsAll = 5e3,
             calcWindowDistPI(pSub, owins, ecdfAll = ecdfMidPoint, towhat = "midpoint")}
         fixedPointDistPI = if(any(pis == "fixedpoint")){
             calcFixedPointDistPI(pSub, pointPPP, ecdfAll = ecdfFixedPoint)}
-        list("pointDists" = c("nn" = NNdistPI, "allDist" = allDistPI, "fixedpoint" = fixedPointDistPI, "NP" = NP),
-             "windowDists" = list("edge" = edgeDistPI, "midpoint" = midPointDistPI))
+        list("pointDists" = c("nn" = NNdistPI, "allDist" = allDistPI, "NP" = NP),
+             "windowDists" = list("edge" = edgeDistPI, "midpoint" = midPointDistPI, "fixedpoint" = fixedPointDistPI))
     })
     #Bivariate patterns
-    if(any(grepl(pis, pattern = "Pair"))){
-        if(verbose)
-            message("Calculating bivariate probabilistic indices...")
+    biPIs = if(any(grepl(pis, pattern = "Pair"))){
         if(!allowManyGenePairs && (numGenePairs <- choose(length(unFeatures), 2)) > 1e6){
         warning(immediate. = TRUE, "Calculating probablistic indices for", numGenePairs, "gene pairs may take a long time!\n",
                 "Set allowManyGenePairs to TRUE to suppress this message.")
+        } else  if(verbose){
+            message("Calculating bivariate probabilistic indices...")
         }
-    } else biPIs = NULL
-    biPIs = NULL
+        genePairsMat = combn(unFeatures, 2)
+        bplapply(seq_len(ncol(genePairsMat)), function(i){
+            feat1 = genePairsMat[1, i];feat2 = genePairsMat[2, i]
+            pSub1 = subset(p, gene == feat1);NP1 = npoints(pSub1)
+            pSub2 = subset(p, gene == feat2);NP2 = npoints(pSub2)
+            p = subset(p, !(gene %in% genePairsMat[, i]))
+            NNdistPI = if(any(pis == "nn") && NP1 && NP2){calcNNPIpair(pSub1, pSub2, p, null, nSims)}
+            allDistPI = if(any(pis == "allDist") && NP1 && NP2){
+                calcAllDistPI(pSub, p, ecdfAll = ecdfAll, null = null, nSims = nPointsAll)}
+            c("nn" = NNdistPI, "allDist" = allDistPI)
+        })
+
+    }
     list("uniPIs" = uniPIs, "biPIs" = biPIs)
 }
 #' Estimate pims on a hyperframe
