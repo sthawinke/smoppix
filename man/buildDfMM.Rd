@@ -4,10 +4,21 @@
 \alias{buildDfMM}
 \title{Build a data frame for a single gene and measure to prepare for mixed model building}
 \usage{
-buildDfMM(pimRes, gene, pi)
+buildDfMM(
+  pimRes,
+  gene,
+  pi = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint", "fixedpoint")
+)
 }
 \arguments{
-\item{pi}{}
+\item{pimRes}{The result of a call to estPims()}
+
+\item{gene}{A character string indicating the desired gene or gene pair}
+
+\item{pi}{character string indicating the desired pim as outcome in the linear mixed model}
+}
+\value{
+A dataframe
 }
 \description{
 Build a data frame for a single gene and measure to prepare for mixed model building
