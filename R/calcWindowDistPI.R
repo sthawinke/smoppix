@@ -16,5 +16,7 @@ calcWindowDistPI = function(pSub, owins, ecdfAll, towhat){
             "midpoint" = nncross(splitPPP[[x]], edges(owins[[x]]), what = "dist"))
         ecdfAll[[x]](Dist) #Do not average here, independent observations
     })
+    names(obsDistEdge) = names(splitPPP)
+    obsDistEdge
 }
 

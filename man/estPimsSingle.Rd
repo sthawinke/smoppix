@@ -8,8 +8,9 @@ estPimsSingle(
   p,
   pis,
   null,
-  nSims = 100,
-  nPointsAll = 5000,
+  nSims = 50,
+  nPointsAll = 2000,
+  features = NULL,
   allowManyGenePairs = FALSE,
   manyPairs = 1e+06,
   verbose = FALSE,
@@ -28,6 +29,8 @@ estPimsSingle(
 
 \item{nPointsAll}{How many points to subsample or simulate to calculate overall interpoint distance
 and distance to point or edge distribution}
+
+\item{features}{A character vector, for which features should the probablilistic indices be calculated?}
 
 \item{allowManyGenePairs}{A boolean, set to true to suppress warning messages for large numbers of gene pairs}
 

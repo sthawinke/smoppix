@@ -11,6 +11,7 @@
 #' @param verbose Should verbose output be printed?
 #' @param owins The list of windows corresponding to cells
 #' @param point The point to which the distances are to be calculated
+#' @param features A character vector, for which features should the probablilistic indices be calculated?
 #'
 #' @return Data frames with estimated quantities per gene and/or gene pair
 #' @export
@@ -30,11 +31,15 @@
 #' 'edge' and 'midpoint' calculate the distance to the edge respectively the midpoint of the windows added using the addCell() function.
 #' 'fixedpoint' calculates the distances to a supplied list of points.
 #' @examples
-estPimsSingle = function(p, pis, null, nSims = 1e2, nPointsAll = 5e3,
-                   allowManyGenePairs = FALSE, manyPairs = 1e6, verbose = FALSE, owins = NULL, point){
+estPimsSingle = function(p, pis, null, nSims = 5e1, nPointsAll = 2e3, features = NULL,
+                   allowManyGenePairs = FALSE, manyPairs = 1e6, verbose = FALSE,
+                   owins = NULL, point){
     tabObs = table(marks(p, drop = FALSE)$gene)
-    unFeatures = names(tabObs); names(unFeatures) = unFeatures
+    unFeatures = if(is.null(features)) names(tabObs) else features
+    names(unFeatures) = unFeatures
     dfFeat = data.frame("feature" = unFeatures)
+    if(any(pis == "fixedpoint"))
+        pointPPP = ppp(point[1], point[2])
     if(any(pis %in% c("edge", "fixedpoint")) || (any(pis == "allDist") && null =="CSR")){
         if(any(pis %in% c("allDist", "fixedpoint"))){
            pSim = runifpoint(nPointsAll, win = p$window)
@@ -46,8 +51,15 @@ estPimsSingle = function(p, pis, null, nSims = 1e2, nPointsAll = 5e3,
         if(any(pis == "midpoint"))
             ecdfMidPoint = lapply(owins, function(rr) ecdf(crossdist(runifpoint(nPointsAll, win = rr), centroid.owin(rr, as.ppp = TRUE))))
         if(any(pis == "fixedpoint"))
-            pointPPP = ppp(point[1], point[2])
             ecdfFixedPoint = ecdf(nncross(pSim, pointPPP, what = "dist"))
+    } else if(any(pis %in% c("edge", "fixedpoint", "midpoint")) && null =="background"){
+        pSubAll = subSampleP(p, nPointsAll)
+        if(any(pis == "edge"))
+            ecdfsEdge = lapply(owins, function(rr) ecdf(nncross(pSubAll, edges(rr), what = "dist")))
+        if(any(pis == "midpoint"))
+            ecdfMidPoint = lapply(owins, function(rr) ecdf(crossdist(pSubAll, centroid.owin(rr, as.ppp = TRUE))))
+        if(any(pis == "fixedpoint"))
+            ecdfFixedPoint = ecdf(nncross(pSubAll, pointPPP, what = "dist"))
     }
     #Univariate patterns
     if(any(idZero <- (tabObs==1)) && verbose){
@@ -80,17 +92,19 @@ estPimsSingle = function(p, pis, null, nSims = 1e2, nPointsAll = 5e3,
             message("Calculating bivariate probabilistic indices...")
         }
         genePairsMat = combn(unFeatures, 2)
-        bplapply(seq_len(ncol(genePairsMat)), function(i){
+        out = simplify2array(bplapply(seq_len(ncol(genePairsMat)), function(i){
             feat1 = genePairsMat[1, i];feat2 = genePairsMat[2, i]
             pSub1 = subset(p, gene == feat1);NP1 = npoints(pSub1)
             pSub2 = subset(p, gene == feat2);NP2 = npoints(pSub2)
             p = subset(p, !(gene %in% genePairsMat[, i]))
             NNdistPI = if(any(pis == "nn") && NP1 && NP2){calcNNPIpair(pSub1, pSub2, p, null, nSims)}
             allDistPI = if(any(pis == "allDist") && NP1 && NP2){
-                calcAllDistPI(pSub, p, ecdfAll = ecdfAll, null = null, nSims = nPointsAll)}
-            c("nn" = NNdistPI, "allDist" = allDistPI)
-        })
-
+                calcAllDistPIpair(pSub1, pSub2, p, ecdfAll = ecdfAll, null = null, nSims = nPointsAll)}
+            NPsort = sort(c(NP1, NP2)); names(NPsort) = c("minNP", "maxNP")
+            c("nnPair" = NNdistPI, "allDistPair" = allDistPI, NPsort)
+        }))
+        colnames(out) = apply(genePairsMat, 2, paste, collapse = "_")
+        out
     }
     list("uniPIs" = uniPIs, "biPIs" = biPIs)
 }
@@ -107,9 +121,6 @@ estPims = function(hypFrame, pis = c("nn", "allDist", "nnPair", "allDistPair", "
     null = match.arg(null)
     if(any(pis %in% c("edge", "midpoint")) && is.null(hypFrame$owins)){
         stop("No window provided for distance to edge or midpoint calculation. Add it using the addCell() function")
-    }
-    if(any(pis %in% c("edge", "fixedpoint", "midpoint")) && null == "background"){
-        message("For distance to edge, cell centroid and fixed point, only CSR is implemented as null and will be used")
     }
    out = with(hypFrame, estPimsSingle(ppp, owins = owins, pis = pis, null = null, ...))
    attr(out, "pis") = pis

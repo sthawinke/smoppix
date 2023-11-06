@@ -32,23 +32,28 @@ calcNNPI = function(pSub, p, null, nSims){
     }
 }
 calcNNPIpair = function(pSub1, pSub2, p, null, nSims, distMat){
-    obsDistNN = nncross(pSub1, pSub2, what = "dist")
+    obsDistNN1 = nncross(pSub1, pSub2, what = "dist");obsDistNN2 = nncross(pSub2, pSub1, what = "dist")
     np1 = npoints(pSub1);np2 = npoints(pSub2); npTot <- (np1 + np2)
     if(null == "background"){
-        simDistsNN = vapply(integer(nSims), FUN.VALUE = double(npTot), function(i){
-            c(nncross(pSub1, p[sample(npoints(p), np2),], what = "dist"),
-            nncross(pSub2, p[sample(npoints(p), np1),], what = "dist"))
+        simDistsNN1 = vapply(integer(nSims), FUN.VALUE = double(np1), function(i){
+            nncross(pSub1, p[sample(npoints(p), np2),], what = "dist")
         })
-        piEsts = vapply(FUN.VALUE = double(1), seq_len(npTot), function(i){
-            ecdf(simDistsNN[i,])(obsDistNN[i])
+        simDistsNN2 = vapply(integer(nSims), FUN.VALUE = double(np2), function(i){
+            nncross(pSub2, p[sample(npoints(p), np1),], what = "dist")
         })
-        mean(piEsts)
+        piEsts1 = vapply(FUN.VALUE = double(1), seq_len(np1), function(i){
+            ecdf(simDistsNN1[i,])(obsDistNN1[i])
+        })
+        piEsts2 = vapply(FUN.VALUE = double(1), seq_len(np2), function(i){
+            ecdf(simDistsNN2[i,])(obsDistNN2[i ])
+        })
+        mean(c(piEsts1, piEsts2))
     } else if(null == "CSR"){
         simDistsNN = lapply(integer(nSims), function(i){
             pSim = runifpoint(npTot, win = p$window)
             p1 = pSim[id <- sample(npTot, np1),];p2 = pSim[-id,]
             c(nncross(what = "dist", p1, p2), nncross(what = "dist", p2, p1))
         })
-        mean(ecdf(unlist(simDistsNN))(obsDistNN))
+        mean(ecdf(unlist(simDistsNN))(c(obsDistNN1, obsDistNN2)))
     }
 }
