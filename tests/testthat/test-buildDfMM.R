@@ -1,8 +1,4 @@
-context("Test building of dataframes of probablistic indices for mixed model building")
-piEstsBG <- estPims(hypFrame2, pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", "fixedpoint", "midpoint"),
-                     point = c(0.5, 0.5), null = "background")
-piEstsCSR <- estPims(hypFrame2, pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", "fixedpoint", "midpoint"),
-                      point = c(0.5, 0.5), null = "CSR")
+context("Test building of dataframes of probabilistic indices for mixed model building")
 test_that("Building data frames for mixed modelling proceeds without errors", {
     expect_s3_class(dfBG1 <- buildDfMM(piEstsBG, gene = "gene1", pi = "nn"), "data.frame")
     expect_s3_class(dfBG2 <- buildDfMM(piEstsBG, gene = "gene1_gene2", pi = "nnPair"), "data.frame")
@@ -13,19 +9,20 @@ test_that("Building data frames for mixed modelling proceeds without errors", {
     expect_s3_class(dfBG5 <- buildDfMM(piEstsBG, gene = "gene1", pi = "midpoint"), "data.frame")
     expect_s3_class(dfBG6 <- buildDfMM(piEstsBG, gene = "gene10", pi = "fixedpoint"), "data.frame")
     expect_s3_class(dfBG7 <- buildDfMM(piEstsBG, gene = "gene1", pi = "edge"), "data.frame")
-    expect_s3_class(dfCSR1 <- buildDfMM(piEstsCSR, gene = "gene1", pi = "edge"), "data.frame")
-    expect_s3_class(dfCSR2 <- buildDfMM(piEstsCSR, gene = "gene3", pi = "fixedpoint"), "data.frame")
+    expect_s3_class(dfCSR1 <- buildDfMM(piEstsCSR, gene = "gene42", pi = "edge"), "data.frame")
+    expect_s3_class(dfCSR2 <- buildDfMM(piEstsCSR, gene = "gene2", pi = "fixedpoint"), "data.frame")
     expect_s3_class(dfCSR3 <- buildDfMM(piEstsCSR, gene = "gene2", pi = "midpoint"), "data.frame")
-    expect_s3_class(dfCSR4 <- buildDfMM(piEstsCSR, gene = "gene1", pi = "allDist"), "data.frame")
-    expect_s3_class(dfCSR5 <- buildDfMM(piEstsCSR, gene = "gene3", pi = "nn"), "data.frame")
-    expect_s3_class(dfCSR6 <- buildDfMM(piEstsCSR, gene = "gene2_gene3", pi = "nnPair"), "data.frame")
-    expect_s3_class(dfCSR7 <- buildDfMM(piEstsCSR, gene = "gene2_gene3", pi = "allDistPair"), "data.frame")
+    expect_s3_class(dfCSR4 <- buildDfMM(piEstsCSR, gene = "gene2", pi = "allDist"), "data.frame")
+    expect_s3_class(dfCSR5 <- buildDfMM(piEstsCSR, gene = "gene20", pi = "nn"), "data.frame")
+    expect_s3_class(dfCSR6 <- buildDfMM(piEstsCSR, gene = "gene2_gene20", pi = "nnPair"), "data.frame")
+    expect_s3_class(dfCSR7 <- buildDfMM(piEstsCSR, gene = "gene2_gene42", pi = "allDistPair"), "data.frame")
 })
 piEstsCSR2 <- estPims(hypFrame2, pis = c("nn"),
                      point = c(0.5, 0.5), null = "CSR")
-test_that("Calculating pims throws errors where appropriate", {
+test_that("Building data frames throws errors where appropriate", {
     expect_error(buildDfMM(piEstsCSR, gene = c("gene1", "gene2"), pi = "nn"))
     expect_error(buildDfMM(piEstsCSR, gene = "gene1", pi = "Kest"))
     expect_error(buildDfMM(piEstsBG, gene = "protein1", pi = "nn"))
     expect_error(buildDfMM(piEstsCSR2, gene = "gene1", pi = "allDist"))
+    expect_error(buildDfMM(piEstsCSR, gene = "gene1_gene2", pi = "nnPair"))
 })

@@ -3,8 +3,7 @@ library(spatrans)
 library(spatstat.random)
 library(BiocParallel)
 n <- 1e3 # number of molecules
-ng <- 30 # number of genes
-cellsnc <- 20 # number of
+ng <- 25 # number of genes
 nfov = 3 # Number of fields of view
 # sample xy-coordinates in [0, 1]
 x <- runif(n)
@@ -42,4 +41,8 @@ hypFrame2 = addCell(hypFrame, wList)
 register(SerialParam())
 # nCores = 2
 # register(MulticoreParam(nCores))
+piEstsBG <- estPims(hypFrame2, pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", "fixedpoint", "midpoint"),
+                    point = c(0.5, 0.5), null = "background")
+piEstsCSR <- estPims(hypFrame2, pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", "fixedpoint", "midpoint"),
+                     point = c(0.5, 0.5), null = "CSR", features = c("gene2", "gene20", "gene42"))
 test_check("spatrans")

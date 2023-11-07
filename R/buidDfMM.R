@@ -3,12 +3,11 @@
 #' @param pimRes The result of a call to estPims()
 #' @param gene A character string indicating the desired gene or gene pair
 #' @param pi character string indicating the desired pim as outcome in the linear mixed model
+#' @param weightFun The weighing function, obtained by the buildWeightFunction() function
 #'
 #' @return A dataframe
-#' @export
-#'
-#' @examples
-buildDfMM = function(pimRes, gene, pi = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint", "fixedpoint")){
+#' @importFrom scam predict.scam
+buildDfMM = function(pimRes, gene, pi = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint", "fixedpoint"), weightFun){
     stopifnot(length(gene) %in% c(1, 2))
     if(length(gene) ==2){
         if(!any(grepl(pattern = "Pair", pi)))
@@ -16,7 +15,7 @@ buildDfMM = function(pimRes, gene, pi = c("nn", "allDist", "nnPair", "allDistPai
         gene = paste(gene, collapse = "_")
     }
     pi = match.arg(pi)
-    foo = checkAttr(pimRes, pim)
+    foo = checkAttr(pimRes, pi)
     piListName = if(pairId <- grepl("Pair", pi)) "biPIs" else "uniPIs"
     piListNameInner = if(fixedId <- any(pi == c("edge", "midpoint", "fixedpoint"))) "windowDists" else "pointDists"
     nameVec = if(fixedId) pi else if(pairId) c(pi, "minNP", "maxNP") else c(pi, "NP")
@@ -35,14 +34,20 @@ buildDfMM = function(pimRes, gene, pi = c("nn", "allDist", "nnPair", "allDistPai
     if(is.null(piMat))
         stop("Gene or gene pair not found!\n")
     if(!fixedId){
-        piMat = cbind(piMat, "weight" = if(pairId){
-                        wVec = switch(pi,
-                                      "allDistPair" = piMat[, "minNP"],
-                                      "nnPair" = rowSums(piMat[, c("minNP", "maxNP")], na.rm = TRUE))
-                        wVec/sum(wVec, na.rm = TRUE)
-                      } else {
-                          piMat[, "NP"]/sum(piMat[, "NP"], na.rm = TRUE)
-                      })
+        weight = if(missing(weightFun)){
+            if(pairId){
+                switch(pi, "allDistPair" = piMat[, "minNP"],
+                       "nnPair" = rowSums(piMat[, c("minNP", "maxNP")], na.rm = TRUE))
+
+            } else {
+                piMat[, "NP"]/sum(piMat[, "NP"], na.rm = TRUE)
+            }
+        } else {
+            foo = checkAttr(weightFun, pi)
+            weights = predict.scam(weightFun, newdata = data.frame(piMat[, -1]))
+        }
+        weight = weight/sum(weight, na.rm = TRUE)
+        piMat = cbind(piMat, weight)
     }
     piDf = data.frame("design" = Design, piMat)
     return(piDf)

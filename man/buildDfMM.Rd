@@ -7,7 +7,8 @@
 buildDfMM(
   pimRes,
   gene,
-  pi = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint", "fixedpoint")
+  pi = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint", "fixedpoint"),
+  weightFun
 )
 }
 \arguments{
@@ -16,6 +17,8 @@ buildDfMM(
 \item{gene}{A character string indicating the desired gene or gene pair}
 
 \item{pi}{character string indicating the desired pim as outcome in the linear mixed model}
+
+\item{weightFun}{The weighing function, obtained by the buildWeightFunction() function}
 }
 \value{
 A dataframe

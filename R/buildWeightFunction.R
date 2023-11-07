@@ -1,4 +1,5 @@
 #' Build a weight function based on the data
+#'
 #' @param pimRes The object containing all
 #' @param pi A character string, the PI required
 #' @param hypFrame The hyperframe with all the data
@@ -8,6 +9,9 @@
 #' @return A fitted scam object, which can be used to
 #' @details The scam functions fits a decreasing spline of the variance as a function of the number of observations
 #' @importFrom scam scam
+#' @importFrom stats formula
+#' @export
+#' @examples
 buildWeightFunction = function(pimRes, pi = c("nn", "allDist", "nnPair", "allDistPair"), hypFrame, designVars, ...){
     if(any(pi==c("edge", "midpoint", "fixedpoint")))
         stop("Calculating weight matrices for distances to fixed points is unnecessary as they are independent.
@@ -51,5 +55,6 @@ buildWeightFunction = function(pimRes, pi = c("nn", "allDist", "nnPair", "allDis
         "s(log(NP), bs = 'mpd')"
     }))
     scamMod = scam(scamForm, data = data.frame(varElMat), ...)
+    attr(scanMod, "pi") = pi
     return(scamMod)
 }
