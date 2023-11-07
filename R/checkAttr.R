@@ -1,7 +1,7 @@
 #' Check if the required pi's are present in the object
 #'
-#' @param pimRes
-#' @param pi
+#' @param pimRes The result of the PI calculation
+#' @param pi A character string indicating the desired PI
 #'
 #' @return Throws an error when the PIs are not found, otherwise returns invisible
 checkAttr = function(pimRes, pi){

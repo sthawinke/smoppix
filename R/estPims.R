@@ -123,6 +123,7 @@ estPims = function(hypFrame, pis = c("nn", "allDist", "nnPair", "allDistPair", "
     }
    out = with(hypFrame, estPimsSingle(ppp, owins = owins, pis = pis, null = null, ...))
    attr(out, "pis") = pis
+   #attr(out, "features") = features
    out
 
 }

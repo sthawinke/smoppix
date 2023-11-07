@@ -52,5 +52,4 @@ buildWeightFunction = function(pimRes, pi = c("nn", "allDist", "nnPair", "allDis
     }))
     scamMod = scam(scamForm, data = data.frame(varElMat), ...)
     return(scamMod)
-
 }
