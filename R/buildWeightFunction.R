@@ -37,24 +37,29 @@ buildWeightFunction = function(pimRes, pi = c("nn", "allDist", "nnPair", "allDis
     if(pairId){
         features = apply(combn(features, 2), 2, paste, collapse = "_")
     }
-    ncolMat = if(pairId) 3 else 2
     varEls = lapply(features, function(gene){
-        tmp = vapply(piList, FUN.VALUE = double(ncolMat), function(x){
+        tmp = vapply(piList[ordDesign], FUN.VALUE = double(1), function(x){
             x[gene]
-        })[, ordDesign]
-        quadDeps = unlist(tapply(tmp[1,], designVec, function(x){
+        })
+        quadDeps = unlist(tapply(tmp, designVec, function(x){
             if(sum(!is.na(x)) >= 2) (x-mean(x, na.rm = TRUE))^2 else rep_len(NA, length(x))
         })) #The quadratic departures from the conditional mean
-        quadDeps
+        tabEntries = vapply(hypFrame$table[ordDesign], FUN.VALUE = double(if(pairId) 2 else 1), function(x){
+            if(pairId) sort(x[gene]) else x[gene]
+        })
+        out = rbind( "quadDeps" = quadDeps, tabEntries)
+        rownames(out)[-1] = if(pairId) c("minP", "maxP") else "NP"
+        out
     })
+    ncolMat = if(pairId) 3 else 2
     varElMat = matrix(unlist(varEls), ncol = ncolMat, byrow = TRUE,
-                      dimnames = list(NULL, c(if(pairId) c("minP", "maxP") else "NP", "quadDeps"))) #Faster than cbind
+                      dimnames = list(NULL, c("quadDeps", if(pairId) c("minP", "maxP") else "NP"))) #Faster than cbind
     scamForm = formula(paste("quadDeps ~", if(pairId) {
         "s(log(maxNP), bs = 'mpd') + s(log(minNP), bs = 'mpd')"
     } else {
         "s(log(NP), bs = 'mpd')"
     }))
     scamMod = scam(scamForm, data = data.frame(varElMat), ...)
-    attr(scanMod, "pi") = pi
+    attr(scamMod, "pi") = pi
     return(scamMod)
 }
