@@ -41,11 +41,12 @@ calcNNPIpair = function(pSub1, pSub2, p, null, nSims, distMat){
         simDistsNN2 = vapply(integer(nSims), FUN.VALUE = double(np2), function(i){
             nncross(pSub2, p[sample(npoints(p), np1),], what = "dist")
         })
+        isMat1 = np1 > 1;isMat2 = np2 > 1
         piEsts1 = vapply(FUN.VALUE = double(1), seq_len(np1), function(i){
-            ecdf(simDistsNN1[i,])(obsDistNN1[i])
+            ecdf(if(isMat1) simDistsNN1[i,] else simDistsNN1)(obsDistNN1[i])
         })
         piEsts2 = vapply(FUN.VALUE = double(1), seq_len(np2), function(i){
-            ecdf(simDistsNN2[i,])(obsDistNN2[i ])
+            ecdf(if(isMat2) simDistsNN2[i,] else simDistsNN2)(obsDistNN2[i ])
         })
         mean(c(piEsts1, piEsts2))
     } else if(null == "CSR"){

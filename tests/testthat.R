@@ -5,6 +5,7 @@ library(BiocParallel)
 n <- 1e3 # number of molecules
 ng <- 25 # number of genes
 nfov = 3 # Number of fields of view
+conditions = 3
 # sample xy-coordinates in [0, 1]
 x <- runif(n)
 y <- runif(n)
@@ -12,11 +13,12 @@ y <- runif(n)
 gs <- paste0("gene", seq(ng))
 gene <- sample(gs, n, TRUE)
 fov <- sample(nfov, n, TRUE)
+condition = sample(conditions, n, TRUE)
 # assure gene & cell are factors so that
 # missing observations aren't dropped
 gene <- factor(gene, gs)
 # construct data.frame of molecule coordinates
-df <- data.frame(gene, x, y, fov)
+df <- data.frame(gene, x, y, fov, "condition" = condition)
 #A list of point patterns
 listPPP = tapply(seq(nrow(df)), df$fov, function(i){
     ppp(x = df$x[i], y = df$y[i], marks = df[i, "gene", drop = FALSE])
@@ -28,14 +30,15 @@ w3 <- owin(poly=list(x=c(0,.25,.5,.25),y=c(.75,.5,.75,1)-.5))
 w4 <- owin(poly=list(x=c(0,.25,.5,.25)+.5,y=c(.75,.5,.75,1)-.5))
 w5 <- owin(poly=list(x=c(0.25,.5,.75,.5),y=c(.5,.25,.5,.75)))
 wWrong <- owin(poly=list(x=c(0,1,1,0),y=c(.75,.5,.75,1)))
-wList = lapply(seq_len(nfov), function(x){
+hypFrame <- buildHyperFrame(df, coordVars = c("x", "y"), designVar = c("condition", "fov"))
+nDesignFactors = length(unique(hypFrame$design))
+wList = lapply(seq_len(nDesignFactors), function(x){
     list("w1" = w1, "w2" = w2, "w3" = w3, "w4" = w4, "w5" = w5)
 })
-wList2 = lapply(seq_len(nfov), function(x){
+wList2 = lapply(seq_len(nDesignFactors), function(x){
     list("w1" = w1, "w2" = w2, "w3" = w3, "w4" = w4, "w5" = w5, "wWrong" = wWrong)
 })
-names(wList) = names(wList2) = seq_len(nfov)
-hypFrame <- buildHyperFrame(df, coordVars = c("x", "y"), designVar = "fov")
+names(wList) = names(wList2) = seq_len(nDesignFactors)
 hypFrame2 = addCell(hypFrame, wList)
 #Register the parallel backend
 register(SerialParam())

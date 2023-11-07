@@ -35,8 +35,8 @@ estPimsSingle = function(p, pis, null, nSims = 5e1, nPointsAll = 2e3, features =
                    allowManyGenePairs = FALSE, manyPairs = 1e6, verbose = FALSE,
                    owins = NULL, point){
     tabObs = table(marks(p, drop = FALSE)$gene)
-    unFeatures = if(is.null(features)) names(tabObs) else features
-    names(unFeatures) = unFeatures
+    if(is.null(features))
+        features = names(tabObs)
     if(any(pis == "fixedpoint"))
         pointPPP = ppp(point[1], point[2])
     if(any(pis %in% c("edge", "fixedpoint")) || (any(pis == "allDist") && null =="CSR")){
@@ -61,17 +61,16 @@ estPimsSingle = function(p, pis, null, nSims = 5e1, nPointsAll = 2e3, features =
             ecdfFixedPoint = ecdf(nncross(pSubAll, pointPPP, what = "dist"))
     }
     #Univariate patterns
-    if(any(idZero <- (tabObs==1)) && verbose){
-        message("Features\n", paste(sep = ", ", names(tabObs)[idZero]),
+    if(any(idOne <- (tabObs[features]==1)) && verbose){
+        message("Features\n", paste(sep = ", ", names(tabObs[features])[idOne]),
                 "\nhave only one observation, so no intervent distances were calculated for them\n")
     }
     if(verbose)
         message("Calculating univariate probabilistic indices...")
-    uniPIs = bplapply(unFeatures[!idZero], function(feat){
+    uniPIs = bplapply(names(tabObs[features])[!idOne], function(feat){
         pSub = subset(p, gene == feat)
-        NP = npoints(pSub)
-        NNdistPI = if(any(pis == "nn") && (NP > 1)){calcNNPI(pSub, p, null, nSims)}
-        allDistPI = if(any(pis == "allDist")&& (NP > 1)){
+        NNdistPI = if(any(pis == "nn") ){calcNNPI(pSub, p, null, nSims)}
+        allDistPI = if(any(pis == "allDist")){
             calcAllDistPI(pSub, p, ecdfAll = ecdfAll, null = null, nSims = nPointsAll)}
         edgeDistPI = if(any(pis == "edge")){
             calcWindowDistPI(pSub, owins, ecdfAll = ecdfsEdge, towhat = "edge")}
@@ -79,28 +78,29 @@ estPimsSingle = function(p, pis, null, nSims = 5e1, nPointsAll = 2e3, features =
             calcWindowDistPI(pSub, owins, ecdfAll = ecdfMidPoint, towhat = "midpoint")}
         fixedPointDistPI = if(any(pis == "fixedpoint")){
             calcFixedPointDistPI(pSub, pointPPP, ecdfAll = ecdfFixedPoint)}
-        list("pointDists" = c("nn" = NNdistPI, "allDist" = allDistPI, "NP" = NP),
+        list("pointDists" = c("nn" = NNdistPI, "allDist" = allDistPI),
              "windowDists" = list("edge" = edgeDistPI, "midpoint" = midPointDistPI, "fixedpoint" = fixedPointDistPI))
     })
     #Bivariate patterns
     biPIs = if(any(grepl(pis, pattern = "Pair"))){
-        if(!allowManyGenePairs && (numGenePairs <- choose(length(unFeatures), 2)) > 1e6){
+        featuresBi = features[tabObs[features] > 0]
+        if(!allowManyGenePairs && (numGenePairs <- choose(length(featuresBi), 2)) > 1e6){
         warning(immediate. = TRUE, "Calculating probablistic indices for", numGenePairs, "gene pairs may take a long time!\n",
                 "Set allowManyGenePairs to TRUE to suppress this message.")
         } else  if(verbose){
             message("Calculating bivariate probabilistic indices...")
         }
-        genePairsMat = combn(unFeatures, 2)
+        genePairsMat = combn(featuresBi, 2)
         out = simplify2array(bplapply(seq_len(ncol(genePairsMat)), function(i){
             feat1 = genePairsMat[1, i];feat2 = genePairsMat[2, i]
-            pSub1 = subset(p, gene == feat1);NP1 = npoints(pSub1)
-            pSub2 = subset(p, gene == feat2);NP2 = npoints(pSub2)
+            pSub1 = subset(p, gene == feat1)
+            pSub2 = subset(p, gene == feat2)
             p = subset(p, !(gene %in% genePairsMat[, i]))
-            NNdistPI = if(any(pis == "nn") && NP1 && NP2){calcNNPIpair(pSub1, pSub2, p, null, nSims)}
-            allDistPI = if(any(pis == "allDist") && NP1 && NP2){
+            NNdistPI = if(any(pis == "nn") ){calcNNPIpair(pSub1, pSub2, p, null, nSims)}
+            allDistPI = if(any(pis == "allDist")){
                 calcAllDistPIpair(pSub1, pSub2, p, ecdfAll = ecdfAll, null = null, nSims = nPointsAll)}
-            NPsort = sort(c(NP1, NP2)); names(NPsort) = c("minNP", "maxNP")
-            c("nnPair" = NNdistPI, "allDistPair" = allDistPI, NPsort)
+           # NPsort = sort(tabObs[genePairsMat[, i]]); names(NPsort) = c("minNP", "maxNP")
+            c("nnPair" = NNdistPI, "allDistPair" = allDistPI)
         }))
         colnames(out) = apply(genePairsMat, 2, paste, collapse = "_")
         out

@@ -16,8 +16,8 @@ setGeneric("buildHyperFrame", function(x, ...) standardGeneric("buildHyperFrame"
 #' @param coVars Names of covariates such as gene or cell for each single point
 
 setMethod("buildHyperFrame", "data.frame",
-          function(x, coordVars, designVar, coVars = setdiff(names(x), c(designVar, coordVars)),...) {
-    buildHyperFrame(as.matrix(x[, coordVars]), design = x[,designVar], covariates = x[, coVars, drop = FALSE],...)
+        function(x, coordVars, designVar, coVars = setdiff(names(x), c(designVar, coordVars)),...) {
+        buildHyperFrame(as.matrix(x[, coordVars]), design = x[,designVar], covariates = x[, coVars, drop = FALSE],...)
 })
 #' @param matrix The input matrix
 #' @param design A single design variable distinguishing the different point patterns
@@ -31,20 +31,23 @@ setMethod("buildHyperFrame", "matrix", function(x, design, covariates, ...) {
     if(nrow(x) != NROW(design)){
         stop("Number of rows of design and coordinate matrix must match")
     }
-    if(NCOL(design)!=1){
-        stop("Design variable distinguishes different ppint patterns and should be one dimensionsal")
-    }
+    designVec = if(NCOL(design)!=1){
+        apply(design, 1, paste, collapse = "_")
+    } else design
+
     if(!any("gene" == colnames(covariates))){
         stop("Gene identity must be supplied in covariate matrix")
     }
     stopifnot(is.null(covariates) || nrow(x) == NROW(covariates))
-    message("Found ", length(unDesignFactors <- unique(design)), " unique design factors")
-    ppps = tapply(seq_len(nrow(x)), design, simplify = FALSE, function(i){
+    message("Found ", length(unDesignFactors <- unique(designVec)), " unique design factors")
+    ppps = tapply(seq_len(nrow(x)), designVec, simplify = FALSE, function(i){
         spatstat.geom::ppp(x = x[i, 1], y = x[i, 2], marks = covariates[i,,drop = FALSE],
                            xrange = range(x[i, 1]), yrange = range(x[i, 2]), drop = FALSE)
     })
     #Replace underscore in gene names => Used to build pairs
     hypFrame = spatstat.geom::hyperframe("ppp" = ppps, design = names(ppps))
+    desMat = t(simplify2array(strsplit(names(ppps), "_"))); colnames(desMat) = names(design)
+    for(i in names(design)){hypFrame[, i] = desMat[, i]}
     return(hypFrame)
 })
 #' @param list A list of point patterns of class "ppp"

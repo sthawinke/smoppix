@@ -31,7 +31,7 @@ buildWeightFunction = function(pimRes, pi = c("nn", "allDist", "nnPair", "allDis
             })
         }
     })
-    designVec = apply(hypFrame[, designVars], 1, paste, collapse = "_")
+    designVec = apply(as.data.frame(hypFrame[, designVars, drop = FALSE]), 1, paste, collapse = "_")
     ordDesign = order(designVec) #Ensure correct ordering for tapply
     features = unique(unlist(lapply(hypFrame$ppp, function(x) unique(marks(x, drop = FALSE)$gene))))
     if(pairId){
@@ -48,7 +48,8 @@ buildWeightFunction = function(pimRes, pi = c("nn", "allDist", "nnPair", "allDis
         })) #The quadratic departures from the conditional mean
         rbind(tmp[-1,], "quadDeps" = quadDeps)
     })
-    varElMat = matrix(unlist(varEls), ncol = ncolMat, byrow = TRUE) #Faster than cbind
+    varElMat = matrix(unlist(varEls), ncol = ncolMat, byrow = TRUE,
+                      dimnames = list(NULL, c(if(pairId) c("minP", "maxP") else "NP", "quadDeps"))) #Faster than cbind
     scamForm = formula(paste("quadDeps ~", if(pairId) {
         "s(log(maxNP), bs = 'mpd') + s(log(minNP), bs = 'mpd')"
     } else {
