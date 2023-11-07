@@ -16,9 +16,7 @@ buildDfMM = function(pimRes, gene, pi = c("nn", "allDist", "nnPair", "allDistPai
         gene = paste(gene, collapse = "_")
     }
     pi = match.arg(pi)
-    if(!(pi %in% attr(pimRes, "pis"))){
-        stop("Required PI not present in object. Rerun estPims with correct 'pis' argument")
-    }
+    foo = checkAttr(pimRes, pim)
     piListName = if(pairId <- grepl("Pair", pi)) "biPIs" else "uniPIs"
     piListNameInner = if(fixedId <- any(pi == c("edge", "midpoint", "fixedpoint"))) "windowDists" else "pointDists"
     nameVec = if(fixedId) pi else if(pairId) c(pi, "minNP", "maxNP") else c(pi, "NP")
@@ -48,4 +46,31 @@ buildDfMM = function(pimRes, gene, pi = c("nn", "allDist", "nnPair", "allDistPai
     }
     piDf = data.frame("design" = Design, piMat)
     return(piDf)
+}
+buildWeightFunction = function(pimRes, pi = c("nn", "allDist", "nnPair", "allDistPair"), hypFrame, designVars, ...){
+    if(any(pi==c("edge", "midpoint", "fixedpoint")))
+        stop("Calculating weight matrices for distances to fixed points is unnecessary as they are independent.
+             Simply proceed with fitting the model on the indiviual evaluations of the B-function.")
+    pi = match.arg(pi)
+    foo = checkAttr(pimRes, pi)
+    piListName = if(pairId <- grepl("Pair", pi)) "biPIs" else "uniPIs"
+    piList = lapply(pimRes, function(x){
+        if(pairId){
+            x[["biPIs"]][c(pi, "minNP", "maxNP"), ]
+        } else {
+            vapply(x[["uniPIs"]], FUN.VALUE = double(2), function(y){
+                y$pointDists[c(pi, "NP")]
+            })
+        }
+    })
+    designVec = apply(hypFrame[, designVars], 1, paste, collapse = "_")
+    features = unique(unlist(lapply(hypFrame$ppp, function(x) unique(marks(x, drop = FALSE)$gene))))
+    if(pairId){
+        features = apply(combn(features, 2), 2, paste, collapse = "_")
+    }
+}
+checkAttr = function(pimRes, pi){
+    if(!(pi %in% attr(pimRes, "pis"))){
+        stop("Required PI not present in object. Rerun estPims with correct 'pis' argument")
+    } else {invisible()}
 }

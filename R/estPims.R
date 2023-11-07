@@ -37,7 +37,6 @@ estPimsSingle = function(p, pis, null, nSims = 5e1, nPointsAll = 2e3, features =
     tabObs = table(marks(p, drop = FALSE)$gene)
     unFeatures = if(is.null(features)) names(tabObs) else features
     names(unFeatures) = unFeatures
-    dfFeat = data.frame("feature" = unFeatures)
     if(any(pis == "fixedpoint"))
         pointPPP = ppp(point[1], point[2])
     if(any(pis %in% c("edge", "fixedpoint")) || (any(pis == "allDist") && null =="CSR")){
