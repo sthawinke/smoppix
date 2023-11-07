@@ -24,10 +24,10 @@ buildWeightFunction = function(pimRes, pi = c("nn", "allDist", "nnPair", "allDis
     piListName = if(pairId <- grepl("Pair", pi)) "biPIs" else "uniPIs"
     piList = lapply(pimRes, function(x){
         if(pairId){
-            x[["biPIs"]][c(pi, "minNP", "maxNP"), ]
+            x[["biPIs"]][pi, ]
         } else {
-            vapply(x[["uniPIs"]], FUN.VALUE = double(2), function(y){
-                y$pointDists[c(pi, "NP")]
+            vapply(x[["uniPIs"]], FUN.VALUE = double(1), function(y){
+                y$pointDists[pi]
             })
         }
     })
@@ -38,15 +38,14 @@ buildWeightFunction = function(pimRes, pi = c("nn", "allDist", "nnPair", "allDis
         features = apply(combn(features, 2), 2, paste, collapse = "_")
     }
     ncolMat = if(pairId) 3 else 2
-    #Account for missingness
     varEls = lapply(features, function(gene){
         tmp = vapply(piList, FUN.VALUE = double(ncolMat), function(x){
-            x[, gene]
+            x[gene]
         })[, ordDesign]
         quadDeps = unlist(tapply(tmp[1,], designVec, function(x){
             if(sum(!is.na(x)) >= 2) (x-mean(x, na.rm = TRUE))^2 else rep_len(NA, length(x))
         })) #The quadratic departures from the conditional mean
-        rbind(tmp[-1,], "quadDeps" = quadDeps)
+        quadDeps
     })
     varElMat = matrix(unlist(varEls), ncol = ncolMat, byrow = TRUE,
                       dimnames = list(NULL, c(if(pairId) c("minP", "maxP") else "NP", "quadDeps"))) #Faster than cbind

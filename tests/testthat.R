@@ -14,9 +14,6 @@ gs <- paste0("gene", seq(ng))
 gene <- sample(gs, n, TRUE)
 fov <- sample(nfov, n, TRUE)
 condition = sample(conditions, n, TRUE)
-# assure gene & cell are factors so that
-# missing observations aren't dropped
-gene <- factor(gene, gs)
 # construct data.frame of molecule coordinates
 df <- data.frame(gene, x, y, fov, "condition" = condition)
 #A list of point patterns

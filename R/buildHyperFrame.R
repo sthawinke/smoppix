@@ -37,6 +37,8 @@ setMethod("buildHyperFrame", "matrix", function(x, design, covariates, ...) {
 
     if(!any("gene" == colnames(covariates))){
         stop("Gene identity must be supplied in covariate matrix")
+    } else {
+        covariates$gene = as.character(covariates$gene)
     }
     stopifnot(is.null(covariates) || nrow(x) == NROW(covariates))
     message("Found ", length(unDesignFactors <- unique(designVec)), " unique design factors")
@@ -48,6 +50,7 @@ setMethod("buildHyperFrame", "matrix", function(x, design, covariates, ...) {
     hypFrame = spatstat.geom::hyperframe("ppp" = ppps, design = names(ppps))
     desMat = t(simplify2array(strsplit(names(ppps), "_"))); colnames(desMat) = names(design)
     for(i in names(design)){hypFrame[, i] = desMat[, i]}
+    hypFrame$table = lapply(hypFrame$ppp, function(x) table(marks(x, drop = FALSE)$gene))
     return(hypFrame)
 })
 #' @param list A list of point patterns of class "ppp"

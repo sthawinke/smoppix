@@ -31,10 +31,9 @@
 #' 'edge' and 'midpoint' calculate the distance to the edge respectively the midpoint of the windows added using the addCell() function.
 #' 'fixedpoint' calculates the distances to a supplied list of points.
 #' @examples
-estPimsSingle = function(p, pis, null, nSims = 5e1, nPointsAll = 2e3, features = NULL,
+estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3, features = NULL,
                    allowManyGenePairs = FALSE, manyPairs = 1e6, verbose = FALSE,
                    owins = NULL, point){
-    tabObs = table(marks(p, drop = FALSE)$gene)
     if(is.null(features))
         features = names(tabObs)
     if(any(pis == "fixedpoint"))
@@ -67,7 +66,7 @@ estPimsSingle = function(p, pis, null, nSims = 5e1, nPointsAll = 2e3, features =
     }
     if(verbose)
         message("Calculating univariate probabilistic indices...")
-    uniPIs = bplapply(names(tabObs[features])[!idOne], function(feat){
+    uniPIs = bplapply(nams <- names(tabObs[features])[!idOne], function(feat){
         pSub = subset(p, gene == feat)
         NNdistPI = if(any(pis == "nn") ){calcNNPI(pSub, p, null, nSims)}
         allDistPI = if(any(pis == "allDist")){
@@ -80,7 +79,7 @@ estPimsSingle = function(p, pis, null, nSims = 5e1, nPointsAll = 2e3, features =
             calcFixedPointDistPI(pSub, pointPPP, ecdfAll = ecdfFixedPoint)}
         list("pointDists" = c("nn" = NNdistPI, "allDist" = allDistPI),
              "windowDists" = list("edge" = edgeDistPI, "midpoint" = midPointDistPI, "fixedpoint" = fixedPointDistPI))
-    })
+    }); names(uniPIs) = nams
     #Bivariate patterns
     biPIs = if(any(grepl(pis, pattern = "Pair"))){
         featuresBi = features[tabObs[features] > 0]
@@ -121,7 +120,7 @@ estPims = function(hypFrame, pis = c("nn", "allDist", "nnPair", "allDistPair", "
     if(any(pis %in% c("edge", "midpoint")) && is.null(hypFrame$owins)){
         stop("No window provided for distance to edge or midpoint calculation. Add it using the addCell() function")
     }
-   out = with(hypFrame, estPimsSingle(ppp, owins = owins, pis = pis, null = null, ...))
+   out = with(hypFrame, estPimsSingle(ppp, owins = owins, pis = pis, null = null, tabObs = table,...))
    attr(out, "pis") = pis
    #attr(out, "features") = features
    out
