@@ -8,6 +8,9 @@
 #' @importFrom matrixStats rowAnys
 #' @importFrom spatstat.geom is.owin
 #' @export
+#' @examples
+#'
+#'
 addCell = function(hypFrame, owins, checkOverlap = TRUE, warnOut = TRUE){
     stopifnot(nrow(hypFrame) == length(owins), all(unlist(lapply(owins, function(x) sapply(x, is.owin)))),
               all(rownames(hypFrame) %in% names(owins)))

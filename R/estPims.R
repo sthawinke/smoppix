@@ -117,6 +117,9 @@ estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3, fe
 #' @inheritParams estPimsSingle
 #' @return A list of estimated pims
 #' @examples
+#' data(Yang)
+#' hypYang = suppressWarnings(buildHyperFrame(matYang, coordVars = c("x", "y"), designVar = c("day", "root", "section")))
+#' yangPims = estPims(hypYang, pis = c("nn", "nnPair"))
 estPims = function(hypFrame, pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint", "fixedpoint"),
                    null = c("background", "CSR"), features = attr(hypFrame, "features"),...){
     pis = match.arg(pis, several.ok = TRUE)

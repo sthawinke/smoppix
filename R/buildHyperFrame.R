@@ -7,6 +7,9 @@
 #' @param x the input object, see methods("buildHyperFrame")
 #' @param ... additional constructor arguments
 #' @param covariates A vector of covariates
+#' @examples
+#' data(Yang)
+#' hypYang = suppressWarnings(buildHyperFrame(matYang, coordVars = c("x", "y"), designVar = c("day", "root", "section")))
 setGeneric("buildHyperFrame", function(x, ...) standardGeneric("buildHyperFrame"))
 #'
 #' @rdname buildHyperFrame
