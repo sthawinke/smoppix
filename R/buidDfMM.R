@@ -6,6 +6,7 @@
 #' @param weightFun The weighing function, obtained by the buildWeightFunction() function
 #'
 #' @return A dataframe
+#' @export
 #' @importFrom scam predict.scam
 buildDfMM = function(pimRes, gene, pi = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint", "fixedpoint"), weightFun){
     stopifnot(length(gene) %in% c(1, 2))
@@ -44,7 +45,7 @@ buildDfMM = function(pimRes, gene, pi = c("nn", "allDist", "nnPair", "allDistPai
             }
         } else {
             foo = checkAttr(weightFun, pi)
-            weights = predict.scam(weightFun, newdata = data.frame(piMat[, -1]))
+            weights = evalWeightFun(weightFun, newdata = data.frame(piMat[, -1]))
         }
         weight = weight/sum(weight, na.rm = TRUE)
         piMat = cbind(piMat, weight)

@@ -24,7 +24,7 @@ buildWeightFunction = function(pimRes, pi = c("nn", "allDist", "nnPair", "allDis
     piListName = if(pairId <- grepl("Pair", pi)) "biPIs" else "uniPIs"
     piList = lapply(pimRes, function(x){
         if(pairId){
-            x[["biPIs"]][pi, ]
+            x[["biPIs"]][pi, ,drop = FALSE]
         } else {
             vapply(x[["uniPIs"]], FUN.VALUE = double(1), function(y){
                 y$pointDists[pi]
@@ -39,13 +39,18 @@ buildWeightFunction = function(pimRes, pi = c("nn", "allDist", "nnPair", "allDis
     }
     varEls = lapply(features, function(gene){
         tmp = vapply(piList[ordDesign], FUN.VALUE = double(1), function(x){
-            x[gene]
+            if(is.null(baa <- getGp(x,gene))) NA else baa
         })
         quadDeps = unlist(tapply(tmp, designVec, function(x){
             if(sum(!is.na(x)) >= 2) (x-mean(x, na.rm = TRUE))^2 else rep_len(NA, length(x))
         })) #The quadratic departures from the conditional mean
+        if(pairId){
+            gene = sund(gene)
+        }
         tabEntries = vapply(hypFrame$table[ordDesign], FUN.VALUE = double(if(pairId) 2 else 1), function(x){
-            if(pairId) sort(x[gene]) else x[gene]
+            if(pairId) {
+                if(all(gene %in% names(x))) sort(x[gene]) else rep(NA, 2)
+            } else x[gene]
         })
         out = rbind( "quadDeps" = quadDeps, tabEntries)
         rownames(out)[-1] = if(pairId) c("minP", "maxP") else "NP"
@@ -54,8 +59,9 @@ buildWeightFunction = function(pimRes, pi = c("nn", "allDist", "nnPair", "allDis
     ncolMat = if(pairId) 3 else 2
     varElMat = matrix(unlist(varEls), ncol = ncolMat, byrow = TRUE,
                       dimnames = list(NULL, c("quadDeps", if(pairId) c("minP", "maxP") else "NP"))) #Faster than cbind
+    varElMat = varElMat[!is.na(varElMat[,"quadDeps"]) & varElMat[,"quadDeps"] != 0,]
     scamForm = formula(paste("log(quadDeps) ~", if(pairId) {
-        "s(log(maxNP), bs = 'mpd') + s(log(minNP), bs = 'mpd')"
+        "s(log(maxP), bs = 'mpd') + s(log(minP), bs = 'mpd')"
     } else {
         "s(log(NP), bs = 'mpd')"
     }))
@@ -69,6 +75,6 @@ buildWeightFunction = function(pimRes, pi = c("nn", "allDist", "nnPair", "allDis
 #' @param newdata Optional, a data frame with new data
 #' @return A vector of predictions
 #' @export
-evalWeightFunction = function(wf, newdata = NULL){
+evalWeightFunction = function(wf, newdata){
     1/exp(predict(wf, newdata = newdata))
 }

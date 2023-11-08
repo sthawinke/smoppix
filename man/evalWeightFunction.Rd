@@ -4,7 +4,7 @@
 \alias{evalWeightFunction}
 \title{Evaluate the weight function and return (unnormalized) weights}
 \usage{
-evalWeightFunction(wf, newdata = NULL)
+evalWeightFunction(wf, newdata)
 }
 \arguments{
 \item{wf}{The weight function}
