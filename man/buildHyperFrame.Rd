@@ -48,3 +48,7 @@ buildHyperFrame(x, ...)
 Built the hyperframe containing all separate point patterns that will
  be used throughout the analysis. Both matrices, dataframe and SpatialExperiment inputs are accepted.
 }
+\examples{
+data(Yang)
+hypYang = suppressWarnings(buildHyperFrame(Yang, coordVars = c("x", "y"), designVar = c("day", "root", "section")))
+}
