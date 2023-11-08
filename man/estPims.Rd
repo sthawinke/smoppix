@@ -29,3 +29,8 @@ A list of estimated pims
 \description{
 Estimate pims on a hyperframe
 }
+\examples{
+data(Yang)
+hypYang = suppressWarnings(buildHyperFrame(Yang, coordVars = c("x", "y"), designVar = c("day", "root", "section")))
+yangPims = estPims(hypYang, pis = c("nn", "nnPair"))
+}

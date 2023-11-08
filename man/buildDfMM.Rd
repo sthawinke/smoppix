@@ -19,7 +19,7 @@ buildDfMM(
 
 \item{pi}{character string indicating the desired pim as outcome in the linear mixed model}
 
-\item{weightFun}{The weighing function, obtained by the buildWeightFunction() function}
+\item{weightFunction}{The weighing function, obtained by the buildWeightFunction() function}
 }
 \value{
 A dataframe
