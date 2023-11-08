@@ -35,10 +35,11 @@
 estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3, features = NULL,
                    allowManyGenePairs = FALSE, manyPairs = 1e6, verbose = FALSE,
                    owins = NULL, point){
-    if(is.null(features))
+    if(is.null(features)){
         features = names(tabObs)
-    else
+    } else {
         features = intersect(features, names(tabObs))
+    }
     if(any(pis == "fixedpoint"))
         pointPPP = ppp(point[1], point[2])
     if(any(pis %in% c("edge", "fixedpoint")) || (any(pis == "allDist") && null =="CSR")){
@@ -117,15 +118,17 @@ estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3, fe
 #' @return A list of estimated pims
 #' @examples
 estPims = function(hypFrame, pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint", "fixedpoint"),
-                   null = c("background", "CSR"), ...){
+                   null = c("background", "CSR"), features = attr(hypFrame, "features"),...){
     pis = match.arg(pis, several.ok = TRUE)
     null = match.arg(null)
     if(any(pis %in% c("edge", "midpoint")) && is.null(hypFrame$owins)){
         stop("No window provided for distance to edge or midpoint calculation. Add it using the addCell() function")
     }
+    if(any(id <- !(features %in% attr(hypFrame, "features")))){
+        stop("Features ", paste(features[id]), " not found in hyperframe")
+    }
    out = with(hypFrame, estPimsSingle(ppp, owins = owins, pis = pis, null = null, tabObs = table,...))
    attr(out, "pis") = pis
-   #attr(out, "features") = features
    out
 
 }

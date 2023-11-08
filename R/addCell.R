@@ -11,6 +11,7 @@
 addCell = function(hypFrame, owins, checkOverlap = TRUE, warnOut = TRUE){
     stopifnot(nrow(hypFrame) == length(owins), all(unlist(lapply(owins, function(x) sapply(x, is.owin)))),
               all(rownames(hypFrame) %in% names(owins)))
+    Feat = attr(hypFrame, "features")
     for(nn in rownames(hypFrame)){
         ppp = hypFrame[[nn, "ppp"]]
         if(any("cell" == names(marks(ppp, drop = FALSE)))){
@@ -36,6 +37,7 @@ addCell = function(hypFrame, owins, checkOverlap = TRUE, warnOut = TRUE){
         hypFrame[[nn, "ppp"]] = setmarks(hypFrame[[nn, "ppp"]], cbind(marks(hypFrame[[nn, "ppp"]], drop = FALSE), cell = cellOut))
     }
     hypFrame$owins = owins
+    attr(hypFrame, "features") = Feat
     return(hypFrame)
 }
 

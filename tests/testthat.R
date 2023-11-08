@@ -44,5 +44,5 @@ register(SerialParam())
 piEstsBG <- estPims(hypFrame2, pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", "fixedpoint", "midpoint"),
                     point = c(0.5, 0.5), null = "background")
 piEstsCSR <- estPims(hypFrame2, pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", "fixedpoint", "midpoint"),
-                     point = c(0.5, 0.5), null = "CSR", features = c("gene2", "gene20", "gene42"))
+                     point = c(0.5, 0.5), null = "CSR", features = c("gene2", "gene20"))
 test_check("spatrans")

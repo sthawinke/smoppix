@@ -8,6 +8,7 @@ estPims(
   hypFrame,
   pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint", "fixedpoint"),
   null = c("background", "CSR"),
+  features = attr(hypFrame, "features"),
   ...
 )
 }
@@ -17,6 +18,8 @@ estPims(
 \item{pis}{the Probabilitstic indices to be estimated}
 
 \item{null}{A character vector, indicating how the null distribution is defined. See details.}
+
+\item{features}{A character vector, for which features should the probablilistic indices be calculated?}
 
 \item{...}{additional arguments, passed on to estPimsSingle}
 }

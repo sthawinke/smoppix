@@ -66,7 +66,7 @@ buildWeightFunction = function(pimRes, pi = c("nn", "allDist", "nnPair", "allDis
         "s(log(NP), bs = 'mpd')"
     }))
     scamMod = scam(scamForm, data = data.frame(varElMat), ...)
-    attr(scamMod, "pi") = pi
+    attr(scamMod, "pis") = pi
     return(scamMod)
 }
 #' Evaluate the weight function and return (unnormalized) weights
