@@ -3,7 +3,7 @@
 #' @param pimRes The result of a call to estPims()
 #' @param gene A character string indicating the desired gene or gene pair
 #' @param pi character string indicating the desired pim as outcome in the linear mixed model
-#' @param weightFun The weighing function, obtained by the buildWeightFunction() function
+#' @param weightFunction The weighing function, obtained by the buildWeightFunction() function
 #'
 #' @return A dataframe
 #' @export

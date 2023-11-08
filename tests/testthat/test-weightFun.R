@@ -9,8 +9,12 @@ test_that("The built weight function has the desired properties", {
     expect_true(all(pred>0))
     expect_type(predNew <- evalWeightFunction(wf, newdata = data.frame("NP" = 5)), "double")
     expect_true(predNew > evalWeightFunction(wf, newdata = data.frame("NP" = 4)))
+    #With information sharing across features
+    expect_s3_class(dfBG1 <- buildDfMM(piEstsBG, gene = "gene1", pi = "nn", hypFrame = hypFrame2, weightFunction = wf), "data.frame")
+    expect_s3_class(dfBG2 <- buildDfMM(piEstsBG, gene = "gene1_gene2", pi = "nnPair", hypFrame = hypFrame2, weightFunction = wfPair),
+                    "data.frame")
 })
-test_that("The weight function can be used to build the desired dataframe", {
+test_that("Weight function application throws errors where appropriate", {
     expect_s3_class(dfBG1 <- buildDfMM(piEstsBG, gene = "gene1", pi = "nn", hypFrame = hypFrame2, weightFunction = wf), "data.frame")
     expect_s3_class(dfBG2 <- buildDfMM(piEstsBG, gene = "gene1_gene2", pi = "nnPair", hypFrame = hypFrame2, weightFunction = wfPair),
                     "data.frame")
