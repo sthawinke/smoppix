@@ -54,7 +54,7 @@ buildWeightFunction = function(pimRes, pi = c("nn", "allDist", "nnPair", "allDis
     ncolMat = if(pairId) 3 else 2
     varElMat = matrix(unlist(varEls), ncol = ncolMat, byrow = TRUE,
                       dimnames = list(NULL, c("quadDeps", if(pairId) c("minP", "maxP") else "NP"))) #Faster than cbind
-    scamForm = formula(paste("quadDeps ~", if(pairId) {
+    scamForm = formula(paste("log(quadDeps) ~", if(pairId) {
         "s(log(maxNP), bs = 'mpd') + s(log(minNP), bs = 'mpd')"
     } else {
         "s(log(NP), bs = 'mpd')"
@@ -62,4 +62,13 @@ buildWeightFunction = function(pimRes, pi = c("nn", "allDist", "nnPair", "allDis
     scamMod = scam(scamForm, data = data.frame(varElMat), ...)
     attr(scamMod, "pi") = pi
     return(scamMod)
+}
+#' Evaluate the weight function and return (unnormalized) weights
+#'
+#' @param wf The weight function
+#' @param newdata Optional, a data frame with new data
+#' @return A vector of predictions
+#' @export
+evalWeightFunction = function(wf, newdata = NULL){
+    1/exp(predict(wf, newdata = newdata))
 }

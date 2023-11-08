@@ -12,6 +12,7 @@
 #' @param owins The list of windows corresponding to cells
 #' @param point The point to which the distances are to be calculated
 #' @param features A character vector, for which features should the probablilistic indices be calculated?
+#' @param tabObs A table of observed gene frequencies
 #'
 #' @return Data frames with estimated quantities per gene and/or gene pair
 #' @export
@@ -36,6 +37,8 @@ estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3, fe
                    owins = NULL, point){
     if(is.null(features))
         features = names(tabObs)
+    else
+        features = intersect(features, names(tabObs))
     if(any(pis == "fixedpoint"))
         pointPPP = ppp(point[1], point[2])
     if(any(pis %in% c("edge", "fixedpoint")) || (any(pis == "allDist") && null =="CSR")){

@@ -8,6 +8,7 @@ estPimsSingle(
   p,
   pis,
   null,
+  tabObs,
   nSims = 50,
   nPointsAll = 2000,
   features = NULL,
@@ -24,6 +25,8 @@ estPimsSingle(
 \item{pis}{the Probabilitstic indices to be estimated}
 
 \item{null}{A character vector, indicating how the null distribution is defined. See details.}
+
+\item{tabObs}{A table of observed gene frequencies}
 
 \item{nSims}{The number of Monte-Carlo simulations used to determine the null distribution if null = "CSR}
 
