@@ -15,6 +15,7 @@ test_that("The built weight function has the desired properties", {
                     "data.frame")
 })
 test_that("Weight function application throws errors where appropriate", {
+    wf <- buildWeightFunction(piEstsBG, pi = "nn", hypFrame = hypFrame2, designVars = "condition")
     expect_s3_class(dfBG1 <- buildDfMM(piEstsBG, gene = "gene1", pi = "nn", hypFrame = hypFrame2, weightFunction = wf), "data.frame")
     expect_s3_class(dfBG2 <- buildDfMM(piEstsBG, gene = "gene1_gene2", pi = "nnPair", hypFrame = hypFrame2, weightFunction = wfPair),
                     "data.frame")
