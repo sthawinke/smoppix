@@ -30,14 +30,14 @@ calcNNPI = function(pSub, p, null, nSims){
     }
 }
 calcNNPIpair = function(pSub1, pSub2, p, null, nSims, distMat){
-    obsDistNN1 = nncross(pSub1, pSub2, what = "dist");obsDistNN2 = nncross(pSub2, pSub1, what = "dist")
+    obsDistNN1 = nncrossFast(pSub1, pSub2);obsDistNN2 = nncrossFast(pSub2, pSub1)
     np1 = npoints(pSub1);np2 = npoints(pSub2); npTot <- (np1 + np2)
     if(null == "background"){
         simDistsNN1 = vapply(integer(nSims), FUN.VALUE = double(np1), function(i){
-            nncross(pSub1, subSampleP(p, np2), what = "dist")
+            nncrossFast(pSub1, subSampleP(p, np2))
         })
         simDistsNN2 = vapply(integer(nSims), FUN.VALUE = double(np2), function(i){
-            nncross(pSub2, subSampleP(p, np1), what = "dist")
+            nncrossFast(pSub2, subSampleP(p, np1))
         })
         isMat1 = np1 > 1;isMat2 = np2 > 1
         piEsts1 = vapply(FUN.VALUE = double(1), seq_len(np1), function(i){
@@ -51,8 +51,18 @@ calcNNPIpair = function(pSub1, pSub2, p, null, nSims, distMat){
         simDistsNN = lapply(integer(nSims), function(i){
             pSim = runifpoint(npTot, win = p$window)
             p1 = pSim[id <- sample(npTot, np1),];p2 = pSim[-id,]
-            c(nncross(what = "dist", p1, p2), nncross(what = "dist", p2, p1))
+            c(nncrossFast(p1, p2), nncrossFast(p2, p1))
         })
         mean(ecdf(unlist(simDistsNN))(c(obsDistNN1, obsDistNN2)))
     }
+}
+#' Fast version of nncross
+#'
+#' @param p1,p2 The point patterns
+#'
+#' @return A vector of nearest neighbour distances
+#' @importFrom matrixStats rowMins
+#' @importFrom spatstat crossdist
+nncrossFast = function(p1, p2){
+    rowMins(crossdist(p1,p2))
 }
