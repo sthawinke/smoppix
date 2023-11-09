@@ -11,6 +11,7 @@
 #' @importFrom scam scam
 #' @importFrom stats formula
 #' @export
+#' @seealso [buildDfMM]
 #' @examples
 buildWeightFunction = function(pimRes, pi = c("nn", "allDist", "nnPair", "allDistPair"), hypFrame, designVars, ...){
     if(any(pi==c("edge", "midpoint", "fixedpoint")))
