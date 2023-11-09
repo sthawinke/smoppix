@@ -3,7 +3,7 @@
 #' @param pSub The subset point pattern containing only a single gene
 #' @inheritParams estPimsSingle
 #'
-#' @importFrom matrixStats rowMins
+#' @importFrom matrixStats rowMins colMins
 #' @importFrom spatstat.geom nndist crossdist npoints area
 #' @importFrom spatstat.random rpoispp
 #' @importFrom stats ecdf
@@ -12,10 +12,8 @@ calcNNPI = function(pSub, p, null, nSims){
     obsDistNN = nndist(pSub)
     if(null == "background"){
         simDistsNN = vapply(integer(nSims), FUN.VALUE = double(npoints(pSub)), function(i){
-            distMat = crossdist(pSub, subSampleP(p, npoints(pSub)-1))
+            nncrossFast(pSub, subSampleP(p, npoints(pSub)-1))
             # #Keep observed points fixed
-            matrixStats::rowMins(distMat)
-            #Keep this for bivariate analysis: Average over all points, single ecdf per point
         })
         piEsts = vapply(seq_len(npoints(pSub)), FUN.VALUE = double(1), function(i){
             ecdf(simDistsNN[i,])(obsDistNN[i])
@@ -29,31 +27,27 @@ calcNNPI = function(pSub, p, null, nSims){
         mean(ecdf(unlist(simDistsNN))(obsDistNN))
     }
 }
-calcNNPIpair = function(pSub1, pSub2, p, null, nSims, distMat){
-    obsDistNN1 = nncrossFast(pSub1, pSub2);obsDistNN2 = nncrossFast(pSub2, pSub1)
+calcNNPIpair = function(pSub1, pSub2, p, pJoin, null, nSims, distMat){
+    distMatSub = crossdist(pSub1, pSub2)
+    obsDistNN = c(rowMins(distMatSub), colMins(distMatSub))
     np1 = npoints(pSub1);np2 = npoints(pSub2); npTot <- (np1 + np2)
     if(null == "background"){
-        simDistsNN1 = vapply(integer(nSims), FUN.VALUE = double(np1), function(i){
-            nncrossFast(pSub1, subSampleP(p, np2))
+        simDistsNN = vapply(integer(nSims), FUN.VALUE = double(npTot), function(i){
+            tmpDist = crossdist(pJoin, subSampleP(p, npTot))
+            c(rowMins(tmpDist[seq_len(np1),,drop = FALSE]), rowMins(tmpDist[-seq_len(np1),,drop = FALSE]))
         })
-        simDistsNN2 = vapply(integer(nSims), FUN.VALUE = double(np2), function(i){
-            nncrossFast(pSub2, subSampleP(p, np1))
+        piEsts = vapply(FUN.VALUE = double(1), seq_len(np1), function(i){
+            ecdf(simDistsNN[i,])(obsDistNN[i])
         })
-        isMat1 = np1 > 1;isMat2 = np2 > 1
-        piEsts1 = vapply(FUN.VALUE = double(1), seq_len(np1), function(i){
-            ecdf(if(isMat1) simDistsNN1[i,] else simDistsNN1)(obsDistNN1[i])
-        })
-        piEsts2 = vapply(FUN.VALUE = double(1), seq_len(np2), function(i){
-            ecdf(if(isMat2) simDistsNN2[i,] else simDistsNN2)(obsDistNN2[i ])
-        })
-        mean(c(piEsts1, piEsts2))
+        mean(piEsts)
     } else if(null == "CSR"){
         simDistsNN = lapply(integer(nSims), function(i){
             pSim = runifpoint(npTot, win = p$window)
             p1 = pSim[id <- sample(npTot, np1),];p2 = pSim[-id,]
-            c(nncrossFast(p1, p2), nncrossFast(p2, p1))
+            distMatSub = crossdist(p1, p2)
+            c(rowMins(distMatSub), colMins(distMatSub))
         })
-        mean(ecdf(unlist(simDistsNN))(c(obsDistNN1, obsDistNN2)))
+        mean(ecdf(unlist(simDistsNN))(obsDistNN))
     }
 }
 #' Fast version of nncross
@@ -62,7 +56,7 @@ calcNNPIpair = function(pSub1, pSub2, p, null, nSims, distMat){
 #'
 #' @return A vector of nearest neighbour distances
 #' @importFrom matrixStats rowMins
-#' @importFrom spatstat crossdist
+#' @importFrom spatstat.geom crossdist
 nncrossFast = function(p1, p2){
     rowMins(crossdist(p1,p2))
 }

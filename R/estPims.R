@@ -16,10 +16,10 @@
 #' @param tabObs A table of observed gene frequencies
 #'
 #' @return Data frames with estimated quantities per gene and/or gene pair
-#' @importFrom BiocParallel bplapply
 #' @importFrom stats ecdf dist
 #' @importFrom spatstat.random runifpoint
 #' @importFrom utils combn
+#' @importFrom matrixStats colMins rowMins
 #' @import spatstat.geom
 estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3, nPointsAllWin = 2e2, features = NULL,
                    allowManyGenePairs = FALSE, manyPairs = 1e6, verbose = FALSE,
@@ -59,7 +59,7 @@ estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3, nP
     }
     if(verbose)
         message("Calculating univariate probabilistic indices...")
-    uniPIs = bplapply(nams <- names(tabObs[features])[!idOne], function(feat){
+    uniPIs = lapply(nams <- names(tabObs[features])[!idOne], function(feat){
         pSub = subset(p, marks(p, drop = FALSE)$gene == feat)
         p = subset(p, marks(p, drop = FALSE)$gene != feat) #Avoid zero distances by removing observations of gene
         NNdistPI = if(any(pis == "nn") ){calcNNPI(pSub, p, null, nSims)}
@@ -75,7 +75,7 @@ estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3, nP
              "windowDists" = list("edge" = edgeDistPI, "midpoint" = midPointDistPI, "fixedpoint" = fixedPointDistPI))
     }); names(uniPIs) = nams
     #Bivariate patterns
-    biPIs = if(any(grepl(pis, pattern = "Pair"))){
+    biPIs = if(any(piPair <- grepl(pis, pattern = "Pair"))){
         featuresBi = features[tabObs[features] > 0]
         if(!allowManyGenePairs && (numGenePairs <- choose(length(featuresBi), 2)) > manyPairs){
         warning(immediate. = TRUE, "Calculating probablistic indices for", numGenePairs, "gene pairs may take a long time!\n",
@@ -84,16 +84,17 @@ estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3, nP
             message("Calculating bivariate probabilistic indices...")
         }
         genePairsMat = combn(featuresBi, 2)
-        out = matrix(nrow = ncol(genePairsMat), byrow = TRUE, simplify2array(bplapply(seq_len(ncol(genePairsMat)), function(i){
+        out = matrix(nrow = ncol(genePairsMat), byrow = TRUE, vapply(FUN.VALUE = double(sum(piPair)), seq_len(ncol(genePairsMat)), function(i){
             feat1 = genePairsMat[1, i];feat2 = genePairsMat[2, i]
             pSub1 = subset(p, marks(p, drop = FALSE)$gene == feat1)
             pSub2 = subset(p, marks(p, drop = FALSE)$gene == feat2)
-            p = subset(p, !(marks(p, drop = FALSE)$gene %in% genePairsMat[, i]))
-            NNdistPI = if(any(pis == "nn") ){calcNNPIpair(pSub1, pSub2, p, null, nSims)}
+            p = subset(p, !(id <- marks(p, drop = FALSE)$gene %in% genePairsMat[, i]))
+            pJoin = superimpose(pSub1, pSub2)
+            NNdistPI = if(any(pis == "nn") ){calcNNPIpair(pSub1, pSub2, p, pJoin = pJoin, null, nSims)}
             allDistPI = if(any(pis == "allDist")){
                 calcAllDistPIpair(pSub1, pSub2, p, ecdfAll = ecdfAll, null = null, nSims = nPointsAll)}
             c("nnPair" = NNdistPI, "allDistPair" = allDistPI)
-        }))) #Make sure it is a matrix even for one pi
+        })) #Make sure it is a matrix even for one pi
         rownames(out) = apply(genePairsMat, 2, paste, collapse = "&")
         out
     }
@@ -105,6 +106,7 @@ estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3, nP
 #' @param ... additional arguments, passed on to estPimsSingle
 #' @inheritParams estPimsSingle
 #' @return A list of estimated pims
+#' @importFrom BiocParallel bplapply
 #' @examples
 #' data(Yang)
 #' hypYang = suppressWarnings(buildHyperFrame(Yang, coordVars = c("x", "y"),
@@ -131,7 +133,9 @@ estPims = function(hypFrame, pis = c("nn", "allDist", "nnPair", "allDistPair", "
     if(any(id <- !(features %in% attr(hypFrame, "features")))){
         stop("Features ", paste(features[id], collaspe = "_"), " not found in hyperframe")
     }
-   out = with(hypFrame, estPimsSingle(ppp, owins = owins, pis = pis, null = null, tabObs = table,...))
+   out = bplapply(seq_along(hypFrame), function(x){
+       with(hypFrame[x,], {estPimsSingle(ppp, owins = owins, pis = pis, null = null, tabObs = tabObs,...)})
+   })
    attr(out, "pis") = pis #Tag the pims calculated
    attr(out, "features") = features #Remember for which features the pims were calculated
    out
