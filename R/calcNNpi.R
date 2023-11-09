@@ -12,8 +12,7 @@ calcNNPI = function(pSub, p, null, nSims){
     obsDistNN = nndist(pSub)
     if(null == "background"){
         simDistsNN = vapply(integer(nSims), FUN.VALUE = double(npoints(pSub)), function(i){
-            distMat = crossdist(pSub, p[sample(npoints(p), npoints(pSub)-1),])
-            distMat[distMat==0] = Inf
+            distMat = crossdist(pSub, subSampleP(p, npoints(pSub)-1))
             # #Keep observed points fixed
             matrixStats::rowMins(distMat)
             #Keep this for bivariate analysis: Average over all points, single ecdf per point
@@ -35,10 +34,10 @@ calcNNPIpair = function(pSub1, pSub2, p, null, nSims, distMat){
     np1 = npoints(pSub1);np2 = npoints(pSub2); npTot <- (np1 + np2)
     if(null == "background"){
         simDistsNN1 = vapply(integer(nSims), FUN.VALUE = double(np1), function(i){
-            nncross(pSub1, p[sample(npoints(p), np2),], what = "dist")
+            nncross(pSub1, subSampleP(p, np2), what = "dist")
         })
         simDistsNN2 = vapply(integer(nSims), FUN.VALUE = double(np2), function(i){
-            nncross(pSub2, p[sample(npoints(p), np1),], what = "dist")
+            nncross(pSub2, subSampleP(p, np1), what = "dist")
         })
         isMat1 = np1 > 1;isMat2 = np2 > 1
         piEsts1 = vapply(FUN.VALUE = double(1), seq_len(np1), function(i){

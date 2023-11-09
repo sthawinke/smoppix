@@ -32,7 +32,6 @@
 #' The suffix 'Pair' indicates that bivariate probabilistic indices, testing for co- and antilocalization are being used.
 #' 'edge' and 'midpoint' calculate the distance to the edge respectively the midpoint of the windows added using the addCell() function.
 #' 'fixedpoint' calculates the distances to a supplied list of points.
-#' @examples
 estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3, nPointsAllWin = 2e2, features = NULL,
                    allowManyGenePairs = FALSE, manyPairs = 1e6, verbose = FALSE,
                    owins = NULL, point){
@@ -72,7 +71,8 @@ estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3, nP
     if(verbose)
         message("Calculating univariate probabilistic indices...")
     uniPIs = bplapply(nams <- names(tabObs[features])[!idOne], function(feat){
-        pSub = subset(p, gene == feat)
+        pSub = subset(p, marks(p, drop = FALSE)$gene == feat)
+        p = subset(p, marks(p, drop = FALSE)$gene != feat) #Avoid zero distances by removing observations of gene
         NNdistPI = if(any(pis == "nn") ){calcNNPI(pSub, p, null, nSims)}
         allDistPI = if(any(pis == "allDist")){
             calcAllDistPI(pSub, p, ecdfAll = ecdfAll, null = null, nSims = nPointsAll)}
@@ -95,17 +95,16 @@ estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3, nP
             message("Calculating bivariate probabilistic indices...")
         }
         genePairsMat = combn(featuresBi, 2)
-        out = simplify2array(bplapply(seq_len(ncol(genePairsMat)), function(i){
+        out = matrix(nrow = ncol(genePairsMat), byrow = TRUE, simplify2array(bplapply(seq_len(ncol(genePairsMat)), function(i){
             feat1 = genePairsMat[1, i];feat2 = genePairsMat[2, i]
-            pSub1 = subset(p, gene == feat1)
-            pSub2 = subset(p, gene == feat2)
-            p = subset(p, !(gene %in% genePairsMat[, i]))
+            pSub1 = subset(p, marks(p, drop = FALSE)$gene == feat1)
+            pSub2 = subset(p, marks(p, drop = FALSE)$gene == feat2)
+            p = subset(p, !(marks(p, drop = FALSE)$gene %in% genePairsMat[, i]))
             NNdistPI = if(any(pis == "nn") ){calcNNPIpair(pSub1, pSub2, p, null, nSims)}
             allDistPI = if(any(pis == "allDist")){
                 calcAllDistPIpair(pSub1, pSub2, p, ecdfAll = ecdfAll, null = null, nSims = nPointsAll)}
-           # NPsort = sort(tabObs[genePairsMat[, i]]); names(NPsort) = c("minNP", "maxNP")
             c("nnPair" = NNdistPI, "allDistPair" = allDistPI)
-        }))
+        }))) #Make sure it is a matrix even for one pi
         colnames(out) = apply(genePairsMat, 2, paste, collapse = "&")
         out
     }
@@ -122,6 +121,7 @@ estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3, nP
 #' hypYang = suppressWarnings(buildHyperFrame(Yang, coordVars = c("x", "y"),
 #' designVar = c("day", "root", "section")))
 #' yangPims = estPims(hypYang, pis = c("nn", "nnPair"))
+#' #Both univariate and bivariate tests, with nearest neighbour distances
 estPims = function(hypFrame, pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint", "fixedpoint"),
                    null = c("background", "CSR"), features = attr(hypFrame, "features"),...){
     pis = match.arg(pis, several.ok = TRUE)
