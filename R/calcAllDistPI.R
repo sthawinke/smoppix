@@ -35,10 +35,9 @@ calcAllDistPIpair = function(pSub1, pSub2, p, ecdfAll, null, nSims){
         piEsts2 = vapply(seq_len(NP2), FUN.VALUE = double(npoints(pSub1)), function(i){
             ecdf(simDists2[i,])(obsDist[,i])
         })
-        #Fix me
         mean(c(piEsts1, piEsts2))
     }
 }
 subSampleP = function(p, nSims){
-    if(NP <- npoints(p) > nSims) p[sample(NP, nSims),] else p
+    if((NP <- npoints(p)) > nSims) p[sample(NP, nSims),] else p
 }
