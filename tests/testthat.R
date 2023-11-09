@@ -20,12 +20,12 @@ df <- data.frame(gene, x, y, fov, "condition" = condition)
 listPPP = tapply(seq(nrow(df)), df$fov, function(i){
     ppp(x = df$x[i], y = df$y[i], marks = df[i, "gene", drop = FALSE])
 }, simplify = FALSE)
-# Regions of interest (roi)
-w1 <- owin(poly=list(x=c(0,.25,.5,.25),y=c(.75,.5,.75,1)))
-w2 <- owin(poly=list(x=c(0,.25,.5,.25)+.5,y=c(.75,.5,.75,1)))
-w3 <- owin(poly=list(x=c(0,.25,.5,.25),y=c(.75,.5,.75,1)-.5))
-w4 <- owin(poly=list(x=c(0,.25,.5,.25)+.5,y=c(.75,.5,.75,1)-.5))
-w5 <- owin(poly=list(x=c(0.25,.5,.75,.5),y=c(.5,.25,.5,.75)))
+# Regions of interest (roi): Diamond in the center plus four triangles
+w1 <- owin(poly=list(x=c(0,.5,1,.5),y=c(.5,0,.5,1)))
+w2 <- owin(poly=list(x=c(0,0,.5),y = c(.5,0,0)))
+w3 <- owin(poly=list(x=c(0,0,.5),y=c(1,0.5,1)))
+w4 <- owin(poly=list(x=c(1,1,.5),y=c(0.5,1,1)))
+w5 <- owin(poly=list(x=c(1,1,.5),y=c(0,0.5,0)))
 wWrong <- owin(poly=list(x=c(0,1,1,0),y=c(.75,.5,.75,1)))
 hypFrame <- buildHyperFrame(df, coordVars = c("x", "y"), designVar = c("condition", "fov"))
 nDesignFactors = length(unique(hypFrame$design))
@@ -38,9 +38,9 @@ wList2 = lapply(seq_len(nDesignFactors), function(x){
 names(wList) = names(wList2) = seq_len(nDesignFactors)
 hypFrame2 = addCell(hypFrame, wList)
 #Register the parallel backend
-register(SerialParam())
-# nCores = 2
-# register(MulticoreParam(nCores))
+# register(SerialParam())
+nCores = 2
+register(MulticoreParam(nCores))
 piEstsBG <- estPims(hypFrame2, pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", "fixedpoint", "midpoint"),
                     point = c(0.5, 0.5), null = "background")
 piEstsCSR <- estPims(hypFrame2, pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", "fixedpoint", "midpoint"),

@@ -9,7 +9,7 @@ buildDfMM(
   gene,
   pi = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint", "fixedpoint"),
   weightFunction,
-  ...
+  hypFrame
 )
 }
 \arguments{

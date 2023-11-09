@@ -26,16 +26,16 @@ addCell = function(hypFrame, owins, checkOverlap = TRUE, warnOut = TRUE){
         idWindow = vapply(owins[[nn]], FUN.VALUE = logical(NP <- npoints(ppp)), function(rr){
                 inside.owin(ppp, w = rr)
         })
-        idOut = which(!rowAnys(idWindow))
-        if(warnOut){
-            if(length(idOut) == npoints(ppp)){
-                stop("All points lie outside all windows for point pattern ", nn, " check your input!")
-            }
-            warning(length(idOut), " points lie outside all windows for point pattern ", nn,
+        idIn = rowAnys(idWindow)
+        if(all(!idIn)){
+            stop("All points lie outside all windows for point pattern ", nn, " check your input!")
+        }
+        if(warnOut && (LL <- sum(!idIn))){
+            warning(LL, " points lie outside all windows for point pattern ", nn,
                     " and were not assigned to a cell.\n")
         }
         cellOut = rep("NA", NP)
-        cellOut[-idOut] = rownames(which(t(idWindow[-idOut, ]), arr.ind = TRUE))
+        cellOut[idIn] = rownames(which(t(idWindow[idIn, ]), arr.ind = TRUE))
         hypFrame[[nn, "ppp"]] = setmarks(hypFrame[[nn, "ppp"]], cbind(marks(hypFrame[[nn, "ppp"]], drop = FALSE), cell = cellOut))
     }
     hypFrame$owins = owins

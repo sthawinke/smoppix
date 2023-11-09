@@ -19,6 +19,7 @@ buildWeightFunction = function(pimRes, pi = c("nn", "allDist", "nnPair", "allDis
     if(any(idMissing <- !(designVars %in% colnames(hypFrame)))){
         stop("Design variables", designVars[idMissing], "not found in hypFrame object")
     }
+    if(length(attr(pimRes, "features")))
     pi = match.arg(pi)
     foo = checkAttr(pimRes, pi)
     piListName = if(pairId <- grepl("Pair", pi)) "biPIs" else "uniPIs"
@@ -74,6 +75,7 @@ buildWeightFunction = function(pimRes, pi = c("nn", "allDist", "nnPair", "allDis
 #' @param newdata Optional, a data frame with new data
 #' @return A vector of predictions
 #' @export
+#' @importFrom scam predict.scam
 evalWeightFunction = function(wf, newdata){
-    1/exp(predict(wf, newdata = newdata))
+    1/exp(predict.scam(wf, newdata = newdata))
 }
