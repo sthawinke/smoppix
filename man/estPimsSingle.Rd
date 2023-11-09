@@ -11,6 +11,7 @@ estPimsSingle(
   tabObs,
   nSims = 50,
   nPointsAll = 2000,
+  nPointsAllWin = 200,
   features = NULL,
   allowManyGenePairs = FALSE,
   manyPairs = 1e+06,
@@ -31,7 +32,9 @@ estPimsSingle(
 \item{nSims}{The number of Monte-Carlo simulations used to determine the null distribution if null = "CSR}
 
 \item{nPointsAll}{How many points to subsample or simulate to calculate overall interpoint distance
-and distance to point or edge distribution}
+and distance to point}
+
+\item{nPointsAllWin}{How many points to subsample or simulate to calculate distance to cell edge or midpoint distribution}
 
 \item{features}{A character vector, for which features should the probablilistic indices be calculated?}
 

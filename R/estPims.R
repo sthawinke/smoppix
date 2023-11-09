@@ -5,7 +5,8 @@
 #' @param null A character vector, indicating how the null distribution is defined. See details.
 #' @param nSims The number of Monte-Carlo simulations used to determine the null distribution if null = "CSR
 #' @param nPointsAll How many points to subsample or simulate to calculate overall interpoint distance
-#' and distance to point or edge distribution
+#' and distance to point
+#' @param nPointsAllWin How many points to subsample or simulate to calculate distance to cell edge or midpoint distribution
 #' @param allowManyGenePairs A boolean, set to true to suppress warning messages for large numbers of gene pairs
 #' @param manyPairs An integer, what are considered many gene pairs
 #' @param verbose Should verbose output be printed?
@@ -32,7 +33,7 @@
 #' 'edge' and 'midpoint' calculate the distance to the edge respectively the midpoint of the windows added using the addCell() function.
 #' 'fixedpoint' calculates the distances to a supplied list of points.
 #' @examples
-estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3, features = NULL,
+estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3, nPointsAllWin = 2e2, features = NULL,
                    allowManyGenePairs = FALSE, manyPairs = 1e6, verbose = FALSE,
                    owins = NULL, point){
     if(is.null(features)){
@@ -49,9 +50,9 @@ estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3, fe
         if(any(pis == "allDist"))
             ecdfAll = ecdf(dist(coords(pSim)))
         if(any(pis == "edge"))
-            ecdfsEdge = lapply(owins, function(rr) ecdf(nncross(runifpoint(nPointsAll, win = rr), edges(rr), what = "dist")))
+            ecdfsEdge = lapply(owins, function(rr) ecdf(nncross(runifpoint(nPointsAllWin, win = rr), edges(rr), what = "dist")))
         if(any(pis == "midpoint"))
-            ecdfMidPoint = lapply(owins, function(rr) ecdf(crossdist(runifpoint(nPointsAll, win = rr), centroid.owin(rr, as.ppp = TRUE))))
+            ecdfMidPoint = lapply(owins, function(rr) ecdf(crossdist(runifpoint(nPointsAllWin, win = rr), centroid.owin(rr, as.ppp = TRUE))))
         if(any(pis == "fixedpoint"))
             ecdfFixedPoint = ecdf(nncross(pSim, pointPPP, what = "dist"))
     } else if(any(pis %in% c("edge", "fixedpoint", "midpoint")) && null =="background"){
@@ -118,7 +119,8 @@ estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3, fe
 #' @return A list of estimated pims
 #' @examples
 #' data(Yang)
-#' hypYang = suppressWarnings(buildHyperFrame(Yang, coordVars = c("x", "y"), designVar = c("day", "root", "section")))
+#' hypYang = suppressWarnings(buildHyperFrame(Yang, coordVars = c("x", "y"),
+#' designVar = c("day", "root", "section")))
 #' yangPims = estPims(hypYang, pis = c("nn", "nnPair"))
 estPims = function(hypFrame, pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint", "fixedpoint"),
                    null = c("background", "CSR"), features = attr(hypFrame, "features"),...){
@@ -131,7 +133,8 @@ estPims = function(hypFrame, pis = c("nn", "allDist", "nnPair", "allDistPair", "
         stop("Features ", paste(features[id]), " not found in hyperframe")
     }
    out = with(hypFrame, estPimsSingle(ppp, owins = owins, pis = pis, null = null, tabObs = table,...))
-   attr(out, "pis") = pis
+   attr(out, "pis") = pis #Tag the pims calculated
+   attr(out, "features") = features #Remember for which features the pims were calculated
    out
 
 }

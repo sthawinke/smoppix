@@ -4,12 +4,14 @@
 #' @param gene A character string indicating the desired gene or gene pair
 #' @param pi character string indicating the desired pim as outcome in the linear mixed model
 #' @param weightFunction The weighing function, obtained by the buildWeightFunction() function
+#' @param hypFrame The hyperframe with the data
 #'
 #' @return A dataframe
 #' @export
 #' @importFrom scam predict.scam
+#' @examples
 buildDfMM = function(pimRes, gene, pi = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint", "fixedpoint"),
-                     weightFunction, ...){
+                     weightFunction, hypFrame){
     #Establish whether pi and gene match, and call separate functions
     stopifnot((lg <- length(gene)) %in% c(1, 2))
     #Check whether genes are present
@@ -25,12 +27,12 @@ buildDfMM = function(pimRes, gene, pi = c("nn", "allDist", "nnPair", "allDistPai
         if(lg == 2){
             gene = paste(gene, collapse = "&")
         }
-        buildDfMMBi(gene = gene, pi = pi, pimRes = pimRes, weightFunction = weightFunction, ...)
+        buildDfMMBi(gene = gene, pi = pi, pimRes = pimRes, weightFunction = weightFunction)
     } else {
         if(lg !=1){
             stop("Provide a one gene for univariate PIs!")
         }
-        buildDfMMUni(gene = gene, pi = pi, pimRes = pimRes, weightFunction = weightFunction,...)
+        buildDfMMUni(gene = gene, pi = pi, pimRes = pimRes, weightFunction = weightFunction)
     }
 }
 buildDfMMBi = function(pimRes, gene, hypFrame, pi, weightFunction){
