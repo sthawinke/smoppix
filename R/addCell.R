@@ -13,7 +13,7 @@
 #'
 addCell = function(hypFrame, owins, checkOverlap = TRUE, warnOut = TRUE){
     stopifnot(nrow(hypFrame) == length(owins), all(unlist(lapply(owins, function(x) sapply(x, is.owin)))),
-              all(rownames(hypFrame) %in% names(owins)))
+              all(rownames(hypFrame) %in% names(owins)), is(hypFrame, "hyperframe"))
     Feat = attr(hypFrame, "features")
     for(nn in rownames(hypFrame)){
         ppp = hypFrame[[nn, "ppp"]]
@@ -34,13 +34,12 @@ addCell = function(hypFrame, owins, checkOverlap = TRUE, warnOut = TRUE){
             warning(length(idOut), " points lie outside all windows for point pattern ", nn,
                     " and were not assigned to a cell.\n")
         }
-        cellOut = character(NP)
-        cellOut[idOut] = NA
+        cellOut = rep("NA", NP)
         cellOut[-idOut] = rownames(which(t(idWindow[-idOut, ]), arr.ind = TRUE))
         hypFrame[[nn, "ppp"]] = setmarks(hypFrame[[nn, "ppp"]], cbind(marks(hypFrame[[nn, "ppp"]], drop = FALSE), cell = cellOut))
     }
     hypFrame$owins = owins
-    attr(hypFrame, "features") = Feat
+    attr(hypFrame, "features") = Feat #Retain features attribute, which gets lost when setting the marks somehow
     return(hypFrame)
 }
 

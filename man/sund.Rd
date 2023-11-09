@@ -4,7 +4,7 @@
 \alias{sund}
 \title{Helper function to spit gene pairs}
 \usage{
-sund(x, sep = "_")
+sund(x, sep = "&")
 }
 \arguments{
 \item{x}{character string}

@@ -19,3 +19,8 @@ test_that("Adding regions of interest works", {
     expect_error(hypFrame6 <- addCell(hypFrame, wList2))
     expect_type(marks(hypFrame5[[1, "ppp"]])$cell, "character")
 })
+
+test_that("Adding regions of interest throws errors when appropriate", {
+    expect_error(addCell(addCell(hypFrame, wList), wList))
+    expect_error(addCell(hypFrame$ppp[[1]], wList))
+})
