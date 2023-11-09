@@ -28,11 +28,10 @@ calcAllDistPIpair = function(pSub1, pSub2, p, ecdfAll, null, nSims){
         simDists1 = crossdist(pSub1, subSampleP(p, nSims))
         simDists2 = crossdist(pSub2, subSampleP(p, nSims))
         # #Keep observed points fixed
-        NP1 <- npoints(pSub1);NP2 <- npoints(pSub2)
-        piEsts1 = vapply(seq_len(NP1), FUN.VALUE = double(NP2), function(i){
+        piEsts1 = vapply(seq_len(NP1), FUN.VALUE = double(npoints(pSub2)), function(i){
             ecdf(simDists1[i,])(obsDist[i, ])
         })
-        piEsts2 = vapply(seq_len(NP2), FUN.VALUE = double(NP1), function(i){
+        piEsts2 = vapply(seq_len(NP2), FUN.VALUE = double(npoints(pSub1)), function(i){
             ecdf(simDists2[i,])(obsDist[,i])
         })
         #Fix me

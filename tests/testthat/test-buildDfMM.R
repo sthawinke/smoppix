@@ -14,8 +14,8 @@ test_that("Building data frames for mixed modelling proceeds without errors", {
     expect_s3_class(dfCSR3 <- buildDfMM(piEstsCSR, hypFrame = hypFrame2, gene = "gene2", pi = "midpoint"), "data.frame")
     expect_s3_class(dfCSR4 <- buildDfMM(piEstsCSR, hypFrame = hypFrame2, gene = "gene2", pi = "allDist"), "data.frame")
     expect_s3_class(dfCSR5 <- buildDfMM(piEstsCSR, hypFrame = hypFrame2, gene = "gene20", pi = "nn"), "data.frame")
-    expect_s3_class(dfCSR6 <- buildDfMM(piEstsCSR, hypFrame = hypFrame2, gene = "gene2_gene20", pi = "nnPair"), "data.frame")
-    expect_s3_class(dfCSR7 <- buildDfMM(piEstsCSR, hypFrame = hypFrame2, gene = "gene2_gene23", pi = "allDistPair"), "data.frame")
+    expect_s3_class(dfCSR6 <- buildDfMM(piEstsCSR, hypFrame = hypFrame2, gene = "gene2&gene20", pi = "nnPair"), "data.frame")
+    expect_s3_class(dfCSR7 <- buildDfMM(piEstsCSR, hypFrame = hypFrame2, gene = "gene2&gene23", pi = "allDistPair"), "data.frame")
 })
 piEstsCSR2 <- estPims(hypFrame2, pis = c("nn"), features = c("gene1", "gene2"),
                      point = c(0.5, 0.5), null = "CSR")
@@ -24,5 +24,5 @@ test_that("Building data frames throws errors where appropriate", {
     expect_error(buildDfMM(piEstsCSR, hypFrame = hypFrame2, gene = "gene1", pi = "Kest"))
     expect_error(buildDfMM(piEstsBG, hypFrame = hypFrame2, gene = "protein1", pi = "nn"))
     expect_error(buildDfMM(piEstsCSR2, hypFrame = hypFrame2, gene = "gene1", pi = "allDist"))
-    expect_error(buildDfMM(piEstsCSR2, hypFrame = hypFrame2, gene = "gene1_gene2", pi = "nnPair"))
+    expect_error(buildDfMM(piEstsCSR2, hypFrame = hypFrame2, gene = "gene1&gene2", pi = "nnPair"))
 })

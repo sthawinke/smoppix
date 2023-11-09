@@ -16,7 +16,7 @@ buildWeightFunction = function(pimRes, pi = c("nn", "allDist", "nnPair", "allDis
     if(any(pi==c("edge", "midpoint", "fixedpoint")))
         stop("Calculating weight matrices for distances to fixed points is unnecessary as they are independent.
              Simply proceed with fitting the model on the indiviual evaluations of the B-function.")
-    if(!all(idMissing <- designVars %in% colnames(hypFrame))){
+    if(any(idMissing <- !(designVars %in% colnames(hypFrame)))){
         stop("Design variables", designVars[idMissing], "not found in hypFrame object")
     }
     pi = match.arg(pi)
@@ -33,7 +33,7 @@ buildWeightFunction = function(pimRes, pi = c("nn", "allDist", "nnPair", "allDis
     })
     designVec = apply(as.data.frame(hypFrame[, designVars, drop = FALSE]), 1, paste, collapse = "_")
     ordDesign = order(designVec) #Ensure correct ordering for tapply
-    features = unique(unlist(lapply(hypFrame$ppp, function(x) unique(marks(x, drop = FALSE)$gene))))
+    features = attr(hypFrame, "features")
     if(pairId){
         features = apply(combn(features, 2), 2, paste, collapse = "_")
     }
@@ -52,12 +52,11 @@ buildWeightFunction = function(pimRes, pi = c("nn", "allDist", "nnPair", "allDis
                 if(all(gene %in% names(x))) sort(x[gene]) else rep(NA, 2)
             } else x[gene]
         })
-        out = rbind( "quadDeps" = quadDeps, tabEntries)
+        out = rbind("quadDeps" = quadDeps, tabEntries)
         rownames(out)[-1] = if(pairId) c("minP", "maxP") else "NP"
         out
     })
-    ncolMat = if(pairId) 3 else 2
-    varElMat = matrix(unlist(varEls), ncol = ncolMat, byrow = TRUE,
+    varElMat = matrix(unlist(varEls), ncol = if(pairId) 3 else 2, byrow = TRUE,
                       dimnames = list(NULL, c("quadDeps", if(pairId) c("minP", "maxP") else "NP"))) #Faster than cbind
     varElMat = varElMat[!is.na(varElMat[,"quadDeps"]) & varElMat[,"quadDeps"] != 0,]
     scamForm = formula(paste("log(quadDeps) ~", if(pairId) {

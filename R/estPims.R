@@ -105,7 +105,7 @@ estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3, fe
            # NPsort = sort(tabObs[genePairsMat[, i]]); names(NPsort) = c("minNP", "maxNP")
             c("nnPair" = NNdistPI, "allDistPair" = allDistPI)
         }))
-        colnames(out) = apply(genePairsMat, 2, paste, collapse = "_")
+        colnames(out) = apply(genePairsMat, 2, paste, collapse = "&")
         out
     }
     list("uniPIs" = uniPIs, "biPIs" = biPIs)

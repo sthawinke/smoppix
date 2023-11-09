@@ -12,7 +12,6 @@ calcNNPI = function(pSub, p, null, nSims){
     obsDistNN = nndist(pSub)
     if(null == "background"){
         simDistsNN = vapply(integer(nSims), FUN.VALUE = double(npoints(pSub)), function(i){
-            #nncross(what = "dist", pSub, p[sample(npoints(p), npoints(p)),])
             distMat = crossdist(pSub, p[sample(npoints(p), npoints(pSub)-1),])
             distMat[distMat==0] = Inf
             # #Keep observed points fixed

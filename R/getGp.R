@@ -1,5 +1,11 @@
-# Helper function to get gene pair or order reversed
-getGp = function(x, gp){
+#' Helper function to get gene pair or order reversed
+#'
+#' @param x The object in which to look
+#' @param gp A character string describing the gene pair
+#' @param Collapse The character separating the gene pair
+#'
+#' @return The element sought
+getGp = function(x, gp, Collapse = "&"){
     if(isVec <- (is.vector(x) || is.list(x))){
         Names = names(x)
     } else if(isMat <- is.matrix(x)){
@@ -8,8 +14,8 @@ getGp = function(x, gp){
     if(gp %in% Names) {
         if(isVec) x[[gp]] else x[, gp]
     } else {
-        geneSplit = strsplit(gp, "_")[[1]]
-        gp = paste(rev(geneSplit), collapse = "_")
+        geneSplit = sund(gp)
+        gp = paste(rev(geneSplit), collapse = Collapse)
         if(gp %in% Names) {
             if(isVec) x[[gp]] else x[, gp]
         } else {NULL}

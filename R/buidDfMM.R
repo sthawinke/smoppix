@@ -8,26 +8,60 @@
 #' @return A dataframe
 #' @export
 #' @importFrom scam predict.scam
-buildDfMM = function(pimRes, gene, hypFrame, pi = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint", "fixedpoint"), weightFunction){
-    stopifnot(length(gene) %in% c(1, 2))
-    if(length(gene) ==2){
-        if(!any(grepl(pattern = "Pair", pi)))
-            stop("Provide a single gene for univariate PIs!")
-        gene = paste(gene, collapse = "_")
-    }
+buildDfMM = function(pimRes, gene, pi = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint", "fixedpoint"),
+                     weightFunction, ...){
+    #Establish whether pi and gene match, and call separate functions
+    stopifnot((lg <- length(gene)) %in% c(1, 2))
+    #Check whether genes are present
     if(!all(id <- (sund(gene) %in% attr(hypFrame, "features")))){
         stop("Features", sund(gene)[id], "not found in hyperframe")
     }
     pi = match.arg(pi)
     foo = checkAttr(pimRes, pi)
-    piListName = if(pairId <- grepl("Pair", pi)) "biPIs" else "uniPIs"
+    if(!missing(weightFunction))
+        foo = checkAttr(weightFunction, pi)
+    #To do: switch to quixotic gene pair separation tag
+    if(pairId <- grepl(pattern = "Pair", pi)){
+        if(lg == 2){
+            gene = paste(gene, collapse = "&")
+        }
+        buildDfMMBi(gene = gene, pi = pi, pimRes = pimRes, weightFunction = weightFunction, ...)
+    } else {
+        if(lg !=1){
+            stop("Provide a one gene for univariate PIs!")
+        }
+        buildDfMMUni(gene = gene, pi = pi, pimRes = pimRes, weightFunction = weightFunction,...)
+    }
+}
+buildDfMMBi = function(pimRes, gene, hypFrame, pi, weightFunction){
+    piEsts = t(vapply(seq_along(pimRes), FUN.VALUE = double(3), function(n){
+        if(idNull <- is.null(vec <- getGp(pimRes[[n]][["biPIs"]], gene)[pi]))
+            vec = NA
+        npVec = sort(hypFrame[n, "table", drop = TRUE][sund(gene)])
+        names(npVec) = c("minP", "maxP")
+        c("pi" = unname(vec), npVec)
+    }))
+    if(all(is.na(piEsts[,"pi"])))
+        stop("Gene pair not found!\n")
+    weight = if(missing(weightFunction)){
+            piEsts[,"minP"]
+        } else {
+            evalWeightFunction(weightFunction, newdata = data.frame(piEsts[, c("minP", "maxP")]))
+        }
+    weight = weight/sum(weight, na.rm = TRUE)
+    piMat = cbind(piMat, weight)
+    piDf = data.frame("design" = names(pimRes), piMat)
+    rownames(piDf) = names(pimRes)
+    return(piDf)
+    }
+buildDfMMUni = function(pimRes, gene, hypFrame, pi, weightFunction){
     piListNameInner = if(fixedId <- any(pi == c("edge", "midpoint", "fixedpoint"))) "windowDists" else "pointDists"
-    winId = any(pi == c("edge", "midpoint"))
+    #fixedId: Is the distance to a fixed point?
+    winId = any(pi == c("edge", "midpoint")) #winId: is a window involved?
     piEsts = lapply(seq_along(pimRes), function(n){
         x = pimRes[[n]]
-        vec = (if(pairId) getGp(x[[piListName]], gene)[pi] else x[[piListName]][[gene]][[piListNameInner]][pi])
-        if(idNull <- is.null(vec))
-            vec = rep(NA, if(pairId) 2 else 1)
+        if(idNull <- is.null(vec <- x[["uniPIs"]][[gene]][[piListNameInner]][pi]))
+            vec = NA
         piOut = if(winId) {
             if(idNull) data.frame("pi" = NA, "cell" = "NA") else data.frame("pi" = unlist(vec), "cell" = rep(names(vec[[pi]]), times = vapply(vec[[pi]], FUN.VALUE = integer(1), length)))
         } else if (fixedId){
@@ -35,31 +69,26 @@ buildDfMM = function(pimRes, gene, hypFrame, pi = c("nn", "allDist", "nnPair", "
         } else
             c("pi" = unname(vec))
         if(!fixedId){
-            npVec = hypFrame[n, "table", drop = TRUE][if(pairId) sund(gene) else gene]
-            if(anyNA(npVec))
-                npVec = rep(NA, if(pairId) 2 else 1)
-            else if(pairId)
-                npVec = sort(npVec)
-                names(npVec) = if(pairId) c("minP", "maxP") else "NP"
+            npVec = hypFrame[n, "table", drop = TRUE][gene]
+            names(npVec) = "NP"
+            return(c(piOut, npVec))
+        } else {
+            return(piOut)
         }
-        if(fixedId) {piOut} else c(piOut, npVec)
     })
-    Design = if(fixedId) rep(names(pimRes), times = vapply(piEsts, FUN.VALUE = integer(1), if(winId) NROW else length)) else names(pimRes)
+    Design = if(fixedId) {
+            rep(names(pimRes), times = vapply(piEsts, FUN.VALUE = integer(1), if(winId) NROW else length))
+        } else {
+            names(pimRes)
+        }
     piMat = Reduce(piEsts, f = rbind)
     if(is.null(piMat))
-        stop("Gene or gene pair not found!\n")
+        stop("Gene  not found!\n")
     if(!fixedId){
         weight = if(missing(weightFunction)){
-            if(pairId){
-                switch(pi, "allDistPair" = piMat[, "minP"],
-                       "nnPair" = rowSums(piMat[, c("minP", "maxP")], na.rm = TRUE))
-
-            } else {
-                piMat[, "NP"]/sum(piMat[, "NP"], na.rm = TRUE)
-            }
+                piMat[, "NP"]
         } else {
-            foo = checkAttr(weightFunction, pi)
-            weights = evalWeightFunction(weightFunction, newdata = data.frame(piMat[, -1]))
+            weights = evalWeightFunction(weightFunction, newdata = data.frame(piMat[, "NP"]))
         }
         weight = weight/sum(weight, na.rm = TRUE)
         piMat = cbind(piMat, weight)
@@ -68,5 +97,5 @@ buildDfMM = function(pimRes, gene, hypFrame, pi = c("nn", "allDist", "nnPair", "
     if(!fixedId)
         rownames(piDf) = names(pimRes)
     return(piDf)
-}
+    }
 
