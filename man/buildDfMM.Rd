@@ -20,6 +20,8 @@ buildDfMM(
 \item{pi}{character string indicating the desired pim as outcome in the linear mixed model}
 
 \item{weightFunction}{The weighing function, obtained by the buildWeightFunction() function}
+
+\item{hypFrame}{The hyperframe with the data}
 }
 \value{
 A dataframe

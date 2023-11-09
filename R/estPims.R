@@ -16,22 +16,11 @@
 #' @param tabObs A table of observed gene frequencies
 #'
 #' @return Data frames with estimated quantities per gene and/or gene pair
-#' @export
 #' @importFrom BiocParallel bplapply
 #' @importFrom stats ecdf dist
 #' @importFrom spatstat.random runifpoint
 #' @importFrom utils combn
 #' @import spatstat.geom
-#' @details
-#' The null distribution used to calculate the PIs. Can be either "background",
-#' in which case the observed distributions of all genes is used. Alternatively,
-#' for null = "CSR", Monte-Carlo simulation under complete spatial randomness is performed within the given window.
-#' For the 'edge', 'midpoint' and 'fixedpoint' probabilistic indices, always CSR is used for the null.
-#'
-#' The 'nn' prefix indicates that nearest neighbour distances are being used, whereas 'all' indicates all distances are being used.
-#' The suffix 'Pair' indicates that bivariate probabilistic indices, testing for co- and antilocalization are being used.
-#' 'edge' and 'midpoint' calculate the distance to the edge respectively the midpoint of the windows added using the addCell() function.
-#' 'fixedpoint' calculates the distances to a supplied list of points.
 estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3, nPointsAllWin = 2e2, features = NULL,
                    allowManyGenePairs = FALSE, manyPairs = 1e6, verbose = FALSE,
                    owins = NULL, point){
@@ -88,7 +77,7 @@ estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3, nP
     #Bivariate patterns
     biPIs = if(any(grepl(pis, pattern = "Pair"))){
         featuresBi = features[tabObs[features] > 0]
-        if(!allowManyGenePairs && (numGenePairs <- choose(length(featuresBi), 2)) > 1e6){
+        if(!allowManyGenePairs && (numGenePairs <- choose(length(featuresBi), 2)) > manyPairs){
         warning(immediate. = TRUE, "Calculating probablistic indices for", numGenePairs, "gene pairs may take a long time!\n",
                 "Set allowManyGenePairs to TRUE to suppress this message.")
         } else  if(verbose){
@@ -105,7 +94,7 @@ estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3, nP
                 calcAllDistPIpair(pSub1, pSub2, p, ecdfAll = ecdfAll, null = null, nSims = nPointsAll)}
             c("nnPair" = NNdistPI, "allDistPair" = allDistPI)
         }))) #Make sure it is a matrix even for one pi
-        colnames(out) = apply(genePairsMat, 2, paste, collapse = "&")
+        rownames(out) = apply(genePairsMat, 2, paste, collapse = "&")
         out
     }
     list("uniPIs" = uniPIs, "biPIs" = biPIs)
@@ -122,6 +111,16 @@ estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3, nP
 #' designVar = c("day", "root", "section")))
 #' yangPims = estPims(hypYang, pis = c("nn", "nnPair"))
 #' #Both univariate and bivariate tests, with nearest neighbour distances
+#' @details
+#' The null distribution used to calculate the PIs. Can be either "background",
+#' in which case the observed distributions of all genes is used. Alternatively,
+#' for null = "CSR", Monte-Carlo simulation under complete spatial randomness is performed within the given window.
+#' For the 'edge', 'midpoint' and 'fixedpoint' probabilistic indices, always CSR is used for the null.
+#'
+#' The 'nn' prefix indicates that nearest neighbour distances are being used, whereas 'all' indicates all distances are being used.
+#' The suffix 'Pair' indicates that bivariate probabilistic indices, testing for co- and antilocalization are being used.
+#' 'edge' and 'midpoint' calculate the distance to the edge respectively the midpoint of the windows added using the addCell() function.
+#' 'fixedpoint' calculates the distances to a supplied list of points.
 estPims = function(hypFrame, pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint", "fixedpoint"),
                    null = c("background", "CSR"), features = attr(hypFrame, "features"),...){
     pis = match.arg(pis, several.ok = TRUE)
@@ -130,7 +129,7 @@ estPims = function(hypFrame, pis = c("nn", "allDist", "nnPair", "allDistPair", "
         stop("No window provided for distance to edge or midpoint calculation. Add it using the addCell() function")
     }
     if(any(id <- !(features %in% attr(hypFrame, "features")))){
-        stop("Features ", paste(features[id]), " not found in hyperframe")
+        stop("Features ", paste(features[id], collaspe = "_"), " not found in hyperframe")
     }
    out = with(hypFrame, estPimsSingle(ppp, owins = owins, pis = pis, null = null, tabObs = table,...))
    attr(out, "pis") = pis #Tag the pims calculated
