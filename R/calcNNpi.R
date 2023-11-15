@@ -41,9 +41,10 @@ calcNNPIpair = function(pSub1, pSub2, p, pJoin, null, nSims, distMat){
         })
         mean(piEsts)
     } else if(null == "CSR"){
+        pSim = runifpoint(npp <- npoints(p), win = p$window)
         simDistsNN = lapply(integer(nSims), function(i){
-            pSim = runifpoint(npTot, win = p$window)
-            p1 = pSim[id <- sample(npTot, np1),];p2 = pSim[-id,]
+            id <- sample(npp, npTot)
+            p1 = pSim[id[seq_len(np1)],];p2 = pSim[-id[seq_len(np1)],]
             distMatSub = crossdist(p1, p2)
             c(rowMins(distMatSub), colMins(distMatSub))
         })
