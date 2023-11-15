@@ -13,7 +13,7 @@ Description: Test for univariate and multivariate spatial patterns in
 License: GPL-2
 Encoding: UTF-8
 Imports: spatstat.geom, spatstat.random, SpatialExperiment, methods, BiocParallel, matrixStats, SummarizedExperiment, scam, Rdpack
-Suggests: testthat
+Suggests: testthat,rmarkdown,knitr
 RdMacros: Rdpack
 LazyData: true
 RoxygenNote: 7.2.3

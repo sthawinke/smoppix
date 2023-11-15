@@ -64,6 +64,19 @@ hypYang
 We see the following elements:
 
  - __ppp__: the _spatstat_ point patterns of class _ppp_
- - __design__: The design variable uniquely defining each point pattern. Is a concatenation of the day, root and section variables
+ - __design__: The design variable uniquely defining each point pattern. Is a concatenation of the day, root and section variables.
+ - __day__, __root__ and __section__: the covariates
+ - __tabObs__: tabulation of the frequency of each gene in each point pattern
+ 
+ Zooming in on the first point pattern:
+ 
+```{r}
+hypYang$ppp[[1]]
+```
+
+# Analyses
+
+## Univariate tests
+ 
 
 
