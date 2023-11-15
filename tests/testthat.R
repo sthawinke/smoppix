@@ -35,7 +35,7 @@ wList = lapply(seq_len(nDesignFactors), function(x){
 wList2 = lapply(seq_len(nDesignFactors), function(x){
     list("w1" = w1, "w2" = w2, "w3" = w3, "w4" = w4, "w5" = w5, "wWrong" = wWrong)
 })
-names(wList) = names(wList2) = seq_len(nDesignFactors)
+names(wList) = names(wList2) = rownames(hypFrame)
 hypFrame2 = addCell(hypFrame, wList)
 #Register the parallel backend
 register(SerialParam())

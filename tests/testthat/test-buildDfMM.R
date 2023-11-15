@@ -5,7 +5,7 @@ test_that("Building data frames for mixed modelling proceeds without errors", {
     expect_s3_class(dfBG2b <- buildDfMM(piEstsBG, gene = c("gene1", "gene2"), hypFrame = hypFrame2, pi = "nnPair"), "data.frame")
     expect_identical(dfBG2, dfBG2b)
     expect_s3_class(dfBG3 <- buildDfMM(piEstsBG, hypFrame = hypFrame2, gene = "gene1", pi = "allDist"), "data.frame")
-    expect_s3_class(dfBG4 <- buildDfMM(piEstsBG, hypFrame = hypFrame2, gene = "gene1_gene2", pi = "allDistPair"), "data.frame")
+    expect_s3_class(dfBG4 <- buildDfMM(piEstsBG, hypFrame = hypFrame2, gene = "gene1--gene2", pi = "allDistPair"), "data.frame")
     expect_s3_class(dfBG5 <- buildDfMM(piEstsBG, hypFrame = hypFrame2, gene = "gene1", pi = "midpoint"), "data.frame")
     expect_s3_class(dfBG6 <- buildDfMM(piEstsBG, hypFrame = hypFrame2, gene = "gene10", pi = "fixedpoint"), "data.frame")
     expect_s3_class(dfBG7 <- buildDfMM(piEstsBG, hypFrame = hypFrame2, gene = "gene1", pi = "edge"), "data.frame")

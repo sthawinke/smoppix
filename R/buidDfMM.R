@@ -26,8 +26,8 @@ buildDfMM = function(pimRes, gene, pi = c("nn", "allDist", "nnPair", "allDistPai
     #Establish whether pi and gene match, and call separate functions
     stopifnot((lg <- length(gene)) %in% c(1, 2))
     #Check whether genes are present
-    if(!all(id <- (sund(gene) %in% attr(hypFrame, "features")))){
-        stop("Features", sund(gene)[id], "not found in hyperframe")
+    if(any(id <- !(sund(gene) %in% attr(hypFrame, "features")))){
+        stop("Features\n", sund(gene)[id], "\nnot found in hyperframe")
     }
     pi = match.arg(pi)
     foo = checkAttr(pimRes, pi)
@@ -45,8 +45,9 @@ buildDfMM = function(pimRes, gene, pi = c("nn", "allDist", "nnPair", "allDistPai
         buildDfMMUni(gene = gene, pi = pi, pimRes = pimRes, hypFrame = hypFrame, weightFunction = weightFunction)
     }
     if(missing(designVars))
-        designVars = names(hypFrame)[!names(hypFrame) %in% c("ppp", "design", "tabObs")]
-    data.frame(df, "design" = names(pimRes), as.data.frame(hypFrame[, designVars]))
+        designVars = names(hypFrame)[!names(hypFrame) %in% c("ppp", "design", "tabObs", "owins")]
+        #If missing take everything but the ones that are obviously no design variables
+    data.frame(df, as.data.frame(hypFrame[match(df$design, names(pimRes)), designVars]))
 }
 buildDfMMUni = function(pimRes, gene, hypFrame, pi, weightFunction){
     piListNameInner = if(fixedId <- any(pi == c("edge", "midpoint", "fixedpoint"))) "windowDists" else "pointDists"
@@ -70,12 +71,12 @@ buildDfMMUni = function(pimRes, gene, hypFrame, pi, weightFunction){
             return(piOut)
         }
     })
-    Design = if(fixedId) {
+    design = if(fixedId) {
             rep(names(pimRes), times = vapply(piEsts, FUN.VALUE = integer(1), if(winId) NROW else length))
         } else {
             names(pimRes)
         }
-    piMat = Reduce(piEsts, f = rbind)
+    piMat = data.frame(Reduce(piEsts, f = rbind), "design" = design)
     if(is.null(piMat))
         stop("Gene  not found!\n")
     if(!fixedId){
@@ -95,10 +96,11 @@ buildDfMMBi = function(pimRes, gene, hypFrame, pi, weightFunction){
     piEsts = t(vapply(seq_along(pimRes), FUN.VALUE = double(3), function(n){
         if(idNull <- is.null(vec <- getGp(pimRes[[n]][["biPIs"]], gene)[pi]))
             vec = NA
-        npVec = sort(hypFrame[n, "table", drop = TRUE][sund(gene)])
+        npVec = sort(hypFrame[n, "tabObs", drop = TRUE][sund(gene)])
         names(npVec) = c("minP", "maxP")
         c("pi" = unname(vec), npVec)
     }))
+    rownames(piEsts) = names(pimRes)
     if(all(is.na(piEsts[,"pi"])))
         stop("Gene pair not found!\n")
     weight = if(missing(weightFunction)){
@@ -107,7 +109,6 @@ buildDfMMBi = function(pimRes, gene, hypFrame, pi, weightFunction){
         evalWeightFunction(weightFunction, newdata = data.frame(piEsts[, c("minP", "maxP")]))
     }
     weight = weight/sum(weight, na.rm = TRUE)
-    piMat = cbind(piMat, weight)
-    rownames(piMat) = names(pimRes)
+    piMat = data.frame(piEsts, weight, design = names(pimRes))
     return(piMat)
 }

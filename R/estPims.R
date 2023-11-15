@@ -30,7 +30,10 @@ estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3, nP
         features = intersect(features, names(tabObs))
     }
     if(any(pis == "fixedpoint"))
-        pointPPP = ppp(point[1], point[2])
+        if(missing(point))
+            stop("Provide fixed point to measure distances to when requesting pi = 'fixedPoint'")
+        else
+            pointPPP = ppp(point[1], point[2])
     if(any(pis %in% c("edge", "fixedpoint")) || (any(pis == "allDist") && null =="CSR")){
         if(any(pis %in% c("allDist", "fixedpoint"))){
            pSim = runifpoint(nPointsAll, win = p$window)
@@ -94,8 +97,7 @@ estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3, nP
             allDistPI = if(any(pis == "allDist")){
                 calcAllDistPIpair(pSub1, pSub2, p, ecdfAll = ecdfAll, null = null, nSims = nPointsAll)}
             c("nnPair" = NNdistPI, "allDistPair" = allDistPI)
-        })) #Make sure it is a matrix even for one pi
-        rownames(out) = apply(genePairsMat, 2, paste, collapse = "&")
+        }), dimnames = list(apply(genePairsMat, 2, paste, collapse = "--"), c("nnPair", "allDistPair"))) #Make sure it is a matrix even for one pi
         out
     }
     list("uniPIs" = uniPIs, "biPIs" = biPIs)
@@ -131,7 +133,7 @@ estPims = function(hypFrame, pis = c("nn", "allDist", "nnPair", "allDistPair", "
         stop("No window provided for distance to edge or midpoint calculation. Add it using the addCell() function")
     }
     if(any(id <- !(features %in% attr(hypFrame, "features")))){
-        stop("Features ", paste(features[id], collaspe = "_"), " not found in hyperframe")
+        stop("Features ", features[id], " not found in hyperframe")
     }
    out = bplapply(seq_len(nrow(hypFrame)), function(x){
        with(hypFrame[x,, drop = TRUE], estPimsSingle(ppp, owins = owins, pis = pis, null = null, tabObs = tabObs,...))
