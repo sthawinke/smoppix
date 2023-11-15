@@ -97,7 +97,7 @@ estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3, nP
             allDistPI = if(any(pis == "allDist")){
                 calcAllDistPIpair(pSub1, pSub2, p, ecdfAll = ecdfAll, null = null, nSims = nPointsAll)}
             c("nnPair" = NNdistPI, "allDistPair" = allDistPI)
-        }), dimnames = list(apply(genePairsMat, 2, paste, collapse = "--"), c("nnPair", "allDistPair"))) #Make sure it is a matrix even for one pi
+        }), dimnames = list(apply(genePairsMat, 2, paste, collapse = "--"), grep("Pair", pis, value = TRUE))) #Make sure it is a matrix even for one pi
         out
     }
     list("uniPIs" = uniPIs, "biPIs" = biPIs)

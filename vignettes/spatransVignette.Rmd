@@ -55,7 +55,7 @@ The first step in the analysis is to build a hyperframe as provided in the _spat
 hypYang = buildHyperFrame(Yang, coordVars = c("x", "y"), designVar = c("day", "root", "section"))
 ```
 
-As printed by the code, `r nrow(hypYang` design factors or point patterns were found. We take a closer look at the hyperframe
+As printed by the code, `r nrow(hypYang)` design factors or point patterns were found. We take a closer look at the hyperframe
 
 ```{r}
 hypYang

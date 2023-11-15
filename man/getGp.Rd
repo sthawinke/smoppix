@@ -4,7 +4,7 @@
 \alias{getGp}
 \title{Helper function to get gene pair or order reversed}
 \usage{
-getGp(x, gp, Collapse = "--")
+getGp(x, gp, drop = TRUE, Collapse = "--")
 }
 \arguments{
 \item{x}{The object in which to look}
