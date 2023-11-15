@@ -86,9 +86,9 @@ estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3, nP
         genePairsMat = combn(featuresBi, 2)
         out = matrix(nrow = ncol(genePairsMat), byrow = TRUE, vapply(FUN.VALUE = double(sum(piPair)), seq_len(ncol(genePairsMat)), function(i){
             feat1 = genePairsMat[1, i];feat2 = genePairsMat[2, i]
-            pSub1 = subset(p, marks(p, drop = FALSE)$gene == feat1)
-            pSub2 = subset(p, marks(p, drop = FALSE)$gene == feat2)
-            p = subset(p, !(id <- marks(p, drop = FALSE)$gene %in% genePairsMat[, i]))
+            pSub1 = p[marks(p, drop = FALSE)$gene == feat1, ]
+            pSub2 = p[marks(p, drop = FALSE)$gene == feat2, ]
+            p = p[!(id <- marks(p, drop = FALSE)$gene %in% genePairsMat[, i]), ]
             pJoin = superimpose(pSub1, pSub2)
             NNdistPI = if(any(pis == "nn") ){calcNNPIpair(pSub1, pSub2, p, pJoin = pJoin, null, nSims)}
             allDistPI = if(any(pis == "allDist")){
@@ -133,11 +133,12 @@ estPims = function(hypFrame, pis = c("nn", "allDist", "nnPair", "allDistPair", "
     if(any(id <- !(features %in% attr(hypFrame, "features")))){
         stop("Features ", paste(features[id], collaspe = "_"), " not found in hyperframe")
     }
-   out = bplapply(seq_along(hypFrame), function(x){
-       with(hypFrame[x,], {estPimsSingle(ppp, owins = owins, pis = pis, null = null, tabObs = tabObs,...)})
+   out = bplapply(seq_len(nrow(hypFrame)), function(x){
+       with(hypFrame[x,, drop = TRUE], estPimsSingle(ppp, owins = owins, pis = pis, null = null, tabObs = tabObs,...))
    })
    attr(out, "pis") = pis #Tag the pims calculated
    attr(out, "features") = features #Remember for which features the pims were calculated
+   names(out) = rownames(hypFrame)
    out
 
 }

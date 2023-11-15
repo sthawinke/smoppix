@@ -38,9 +38,9 @@ wList2 = lapply(seq_len(nDesignFactors), function(x){
 names(wList) = names(wList2) = seq_len(nDesignFactors)
 hypFrame2 = addCell(hypFrame, wList)
 #Register the parallel backend
-# register(SerialParam())
-nCores = 2
-register(MulticoreParam(nCores))
+register(SerialParam())
+#nCores = 2
+#register(MulticoreParam(nCores))
 piEstsBG <- estPims(hypFrame2, pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", "fixedpoint", "midpoint"),
                     point = c(0.5, 0.5), null = "background")
 piEstsCSR <- estPims(hypFrame2, pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", "fixedpoint", "midpoint"),

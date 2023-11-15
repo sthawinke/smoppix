@@ -2,7 +2,7 @@
 #'
 #' @param x character string
 #' @param sep The character used to split
-sund = function(x, sep = "&") {
+sund = function(x, sep = "--") {
     strsplit(x, sep)[[1]]
 }
 #' Make design variable by combining different design variables

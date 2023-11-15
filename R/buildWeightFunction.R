@@ -13,6 +13,12 @@
 #' @export
 #' @seealso [buildDfMM]
 #' @examples
+#' #' data(Yang)
+#' hypYang = suppressWarnings(buildHyperFrame(Yang, coordVars = c("x", "y"),
+#' designVar = c("day", "root", "section")))
+#' yangPims = estPims(hypYang, pis = c("nn", "nnPair"))
+#' #First build the weight function
+#' wf <- buildWeightFunction(yangPims, pi = "nn", hypFrame = hypYang, designVars = c("day", "root"))
 buildWeightFunction = function(pimRes, pi = c("nn", "allDist", "nnPair", "allDistPair"), hypFrame, designVars, ...){
     if(any(pi==c("edge", "midpoint", "fixedpoint")))
         stop("Calculating weight matrices for distances to fixed points is unnecessary as they are independent.
@@ -37,7 +43,7 @@ buildWeightFunction = function(pimRes, pi = c("nn", "allDist", "nnPair", "allDis
     ordDesign = order(designVec) #Ensure correct ordering for tapply
     features = attr(hypFrame, "features")
     if(pairId){
-        features = apply(combn(features, 2), 2, paste, collapse = "_")
+        features = apply(combn(features, 2), 2, paste, collapse = "--")
     }
     varEls = lapply(features, function(gene){
         tmp = vapply(piList[ordDesign], FUN.VALUE = double(1), function(x){

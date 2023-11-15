@@ -1,0 +1,41 @@
+---
+title: "Vignette of the spatrans package"
+author: Stijn Hawinkel
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+    number_sections: true
+    keep_md: true
+vignette: >
+  %\VignetteIndexEntry{Vignette of the oosse package}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+# Introduction
+
+This vignette demonstrates the use of the __spatrans__ package for statistical inference on single-molecule spatial transcriptomics datasets with replication.
+
+\setcounter{tocdepth}{5}
+\tableofcontents
+
+# Installation instructions
+
+The package can be installed from Bioconductor as follows:
+
+```{r install, eval = FALSE}
+library(Biocmanager)
+install("spatrans")
+```
+
+Alternatively, the latest version can be downloaded from github as:
+
+
+```{r installAndLoadGitHub, eval = FALSE}
+library(devtools)
+install_github("CenterForStatistics-UGent/spatrans")
+```
+
+```{r load}
+library(spatrans)
+```

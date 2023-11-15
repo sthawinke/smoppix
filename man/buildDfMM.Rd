@@ -9,7 +9,8 @@ buildDfMM(
   gene,
   pi = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint", "fixedpoint"),
   weightFunction,
-  hypFrame
+  hypFrame,
+  designVars
 )
 }
 \arguments{
@@ -22,10 +23,24 @@ buildDfMM(
 \item{weightFunction}{The weighing function, obtained by the buildWeightFunction() function}
 
 \item{hypFrame}{The hyperframe with the data}
+
+\item{designVars}{Optionally, the design variables to be included in the dataframe. Defaults to all variables in the hyperframe.}
 }
 \value{
 A dataframe
 }
 \description{
 Build a data frame for a single gene and measure to prepare for mixed model building
+}
+\examples{
+data(Yang)
+hypYang = suppressWarnings(buildHyperFrame(Yang, coordVars = c("x", "y"),
+designVar = c("day", "root", "section")))
+yangPims = estPims(hypYang, pis = c("nn", "nnPair"))
+#First build the weight function
+wf <- buildWeightFunction(yangPims, pi = "nn", hypFrame = hypYang, designVars = c("day", "root"))
+#Now build the data frame for mixed model analysis
+dfUniNN = buildDfMM(yangPims, gene = "SmAHK4e", pi  = "nn", hypFrame = hypYang)
+dfBiNN = buildDfMM(yangPims, gene = "SmAHK4e--SmAHP6b", pi  = "nnPair", hypFrame = hypYang)
+#Example analysis
 }

@@ -9,8 +9,37 @@
 #' @importFrom spatstat.geom is.owin
 #' @export
 #' @examples
-#'
-#'
+#' n <- 1e3 # number of molecules
+#' ng <- 25 # number of genes
+#' nfov = 3 # Number of fields of view
+#' conditions = 3
+#' # sample xy-coordinates in [0, 1]
+#' x <- runif(n)
+#' y <- runif(n)
+#' # assign each molecule to some gene-cell pair
+#' gs <- paste0("gene", seq(ng))
+#' gene <- sample(gs, n, TRUE)
+#' fov <- sample(nfov, n, TRUE)
+#' condition = sample(conditions, n, TRUE)
+#' # construct data.frame of molecule coordinates
+#' df <- data.frame(gene, x, y, fov, "condition" = condition)
+#' #A list of point patterns
+#' listPPP = tapply(seq(nrow(df)), df$fov, function(i){
+#'     ppp(x = df$x[i], y = df$y[i], marks = df[i, "gene", drop = FALSE])
+#' }, simplify = FALSE)
+#' # Regions of interest (roi): Diamond in the center plus four triangles
+#' w1 <- owin(poly=list(x=c(0,.5,1,.5),y=c(.5,0,.5,1)))
+#' w2 <- owin(poly=list(x=c(0,0,.5),y = c(.5,0,0)))
+#' w3 <- owin(poly=list(x=c(0,0,.5),y=c(1,0.5,1)))
+#' w4 <- owin(poly=list(x=c(1,1,.5),y=c(0.5,1,1)))
+#' w5 <- owin(poly=list(x=c(1,1,.5),y=c(0,0.5,0)))
+#' hypFrame <- buildHyperFrame(df, coordVars = c("x", "y"), designVar = c("condition", "fov"))
+#' nDesignFactors = length(unique(hypFrame$design))
+#' wList = lapply(seq_len(nDesignFactors), function(x){
+#'     list("w1" = w1, "w2" = w2, "w3" = w3, "w4" = w4, "w5" = w5)
+#' })
+#' names(wList) = seq_len(nDesignFactors)
+#' hypFrame2 = addCell(hypFrame, wList)
 addCell = function(hypFrame, owins, checkOverlap = TRUE, warnOut = TRUE){
     stopifnot(nrow(hypFrame) == length(owins), all(unlist(lapply(owins, function(x) sapply(x, is.owin)))),
               all(rownames(hypFrame) %in% names(owins)), is(hypFrame, "hyperframe"))

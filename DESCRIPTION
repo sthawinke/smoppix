@@ -18,3 +18,4 @@ RdMacros: Rdpack
 LazyData: true
 RoxygenNote: 7.2.3
 biocViews: Transcriptomics, Spatial
+Depends: R (>= 3.5.0)

@@ -32,9 +32,9 @@ calcNNPIpair = function(pSub1, pSub2, p, pJoin, null, nSims, distMat){
     obsDistNN = c(rowMins(distMatSub), colMins(distMatSub))
     np1 = npoints(pSub1);np2 = npoints(pSub2); npTot <- (np1 + np2)
     if(null == "background"){
+        tmpDist = crossdist(pJoin, p);npp = npoints(p)
         simDistsNN = vapply(integer(nSims), FUN.VALUE = double(npTot), function(i){
-            tmpDist = crossdist(pJoin, subSampleP(p, npTot))
-            c(rowMins(tmpDist[seq_len(np1),,drop = FALSE]), rowMins(tmpDist[-seq_len(np1),,drop = FALSE]))
+            rowMins(tmpDist[, sample(npp, npTot), drop = FALSE])
         })
         piEsts = vapply(FUN.VALUE = double(1), seq_len(np1), function(i){
             ecdf(simDistsNN[i,])(obsDistNN[i])
