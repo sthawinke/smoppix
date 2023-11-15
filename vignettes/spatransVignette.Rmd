@@ -77,6 +77,14 @@ hypYang$ppp[[1]]
 # Analyses
 
 ## Univariate tests
+
+### Tests for vicinity to cell wall or fixed point: distances to fixed objects
+
+### Tests for univariate aggregation or regularity: interevent distances
+
+## Bivariate tests
+
+### Tests for colocalization or antilocalization: interfeature distances
  
 
 
