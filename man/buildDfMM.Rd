@@ -34,13 +34,13 @@ Build a data frame for a single gene and measure to prepare for mixed model buil
 }
 \examples{
 data(Yang)
-hypYang = suppressWarnings(buildHyperFrame(Yang, coordVars = c("x", "y"),
-designVar = c("day", "root", "section")))
+hypYang = buildHyperFrame(Yang, coordVars = c("x", "y"),
+designVar = c("day", "root", "section"))
 yangPims = estPims(hypYang, pis = c("nn", "nnPair"))
 #First build the weight function
 wf <- buildWeightFunction(yangPims, pi = "nn", hypFrame = hypYang, designVars = c("day", "root"))
 #Now build the data frame for mixed model analysis
-dfUniNN = buildDfMM(yangPims, gene = "SmAHK4e", pi  = "nn", hypFrame = hypYang)
-dfBiNN = buildDfMM(yangPims, gene = "SmAHK4e--SmAHP6b", pi  = "nnPair", hypFrame = hypYang)
+dfUniNN = buildDfMM(yangPims, gene = "SmAHK4e", pi  = "nn", hypFrame = hypYang,  weightFunction = wf)
+dfBiNN = buildDfMM(yangPims, gene = "SmAHK4e--SmAHP6b", pi  = "nnPair", hypFrame = hypYang,  weightFunction = wf)
 #Example analysis
 }

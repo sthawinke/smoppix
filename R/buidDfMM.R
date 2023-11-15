@@ -18,8 +18,8 @@
 #' #First build the weight function
 #' wf <- buildWeightFunction(yangPims, pi = "nn", hypFrame = hypYang, designVars = c("day", "root"))
 #' #Now build the data frame for mixed model analysis
-#' dfUniNN = buildDfMM(yangPims, gene = "SmAHK4e", pi  = "nn", hypFrame = hypYang)
-#' dfBiNN = buildDfMM(yangPims, gene = "SmAHK4e--SmAHP6b", pi  = "nnPair", hypFrame = hypYang)
+#' dfUniNN = buildDfMM(yangPims, gene = "SmAHK4e", pi  = "nn", hypFrame = hypYang,  weightFunction = wf)
+#' dfBiNN = buildDfMM(yangPims, gene = "SmAHK4e--SmAHP6b", pi  = "nnPair", hypFrame = hypYang,  weightFunction = wf)
 #' #Example analysis
 buildDfMM = function(pimRes, gene, pi = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint", "fixedpoint"),
                      weightFunction, hypFrame, designVars){
@@ -33,6 +33,10 @@ buildDfMM = function(pimRes, gene, pi = c("nn", "allDist", "nnPair", "allDistPai
     foo = checkAttr(pimRes, pi)
     if(!missing(weightFunction))
         foo = checkAttr(weightFunction, pi)
+    else
+        message("No weight function supplied, we will use approximative weigths.
+                Consider fitting a weight function with buildWeightFunction()" ,
+                "and supplying it in the 'weightFunction' argument for improved inference.")
     df = if(pairId <- grepl(pattern = "Pair", pi)){
         if(lg == 2){
             gene = paste(gene, collapse = "--")
@@ -96,9 +100,12 @@ buildDfMMUni = function(pimRes, gene, hypFrame, pi, weightFunction){
     }
 buildDfMMBi = function(pimRes, gene, hypFrame, pi, weightFunction){
     piEsts = t(vapply(seq_along(pimRes), FUN.VALUE = double(3), function(n){
-        if(idNull <- is.null(vec <- getGp(pimRes[[n]][["biPIs"]], gene)[pi]))
+        if(idNull <- is.null(vec <- getGp(pimRes[[n]][["biPIs"]], gene, drop = FALSE)[,pi])){
             vec = NA
-        npVec = sort(hypFrame[n, "tabObs", drop = TRUE][sund(gene)])
+            npVec = rep(NA, 2)
+        } else {
+            npVec = sort(hypFrame[n, "tabObs", drop = TRUE][sund(gene)])
+        }
         names(npVec) = c("minP", "maxP")
         c("pi" = unname(vec), npVec)
     }))
