@@ -1,4 +1,4 @@
-#' Check if the required pi's are present in the object
+#' Check if the required pi's are present in the pim result object
 #'
 #' @param pimRes The result of the PI calculation
 #' @param pi A character string indicating the desired PI
@@ -9,6 +9,7 @@ checkAttrPimRes = function(pimRes, pi){
         stop("Required PI not present in pim result. Rerun estPims with correct 'pis' argument")
     } else {invisible()}
 }
+#' Check if the required pi's are present in the weight function
 #' @param wf the weight function object
 checkAttrWf = function(wf, pi){
     if(!(pi %in% attr(wf, "pis"))){

@@ -2,7 +2,7 @@
 % Please edit documentation in R/checkAttr.R
 \name{checkAttrPimRes}
 \alias{checkAttrPimRes}
-\title{Check if the required pi's are present in the object}
+\title{Check if the required pi's are present in the pim result object}
 \usage{
 checkAttrPimRes(pimRes, pi)
 }
@@ -15,5 +15,5 @@ checkAttrPimRes(pimRes, pi)
 Throws an error when the PIs are not found, otherwise returns invisible
 }
 \description{
-Check if the required pi's are present in the object
+Check if the required pi's are present in the pim result object
 }

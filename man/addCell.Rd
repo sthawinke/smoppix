@@ -52,6 +52,6 @@ nDesignFactors = length(unique(hypFrame$design))
 wList = lapply(seq_len(nDesignFactors), function(x){
     list("w1" = w1, "w2" = w2, "w3" = w3, "w4" = w4, "w5" = w5)
 })
-names(wList) = seq_len(nDesignFactors)
+names(wList) = rownames(hypFrame) #Matching names is necessary
 hypFrame2 = addCell(hypFrame, wList)
 }
