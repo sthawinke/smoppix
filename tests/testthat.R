@@ -18,7 +18,7 @@ condition = sample(conditions, n, TRUE)
 df <- data.frame(gene, x, y, fov, "condition" = condition)
 #A list of point patterns
 listPPP = tapply(seq(nrow(df)), df$fov, function(i){
-    ppp(x = df$x[i], y = df$y[i], marks = df[i, "gene", drop = FALSE])
+    ppp(x = df$x[i], y = df$y[i], marks = df[i, c("gene", "condition"), drop = FALSE])
 }, simplify = FALSE)
 # Regions of interest (roi): Diamond in the center plus four triangles
 w1 <- owin(poly=list(x=c(0,.5,1,.5),y=c(.5,0,.5,1)))
@@ -38,9 +38,9 @@ wList2 = lapply(seq_len(nDesignFactors), function(x){
 names(wList) = names(wList2) = rownames(hypFrame)
 hypFrame2 = addCell(hypFrame, wList)
 #Register the parallel backend
-register(SerialParam())
-#nCores = 2
-#register(MulticoreParam(nCores))
+#register(SerialParam())
+nCores = 2
+register(MulticoreParam(nCores))
 piEstsBG <- estPims(hypFrame2, pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", "fixedpoint", "midpoint"),
                     point = c(0.5, 0.5), null = "background")
 piEstsCSR <- estPims(hypFrame2, pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", "fixedpoint", "midpoint"),

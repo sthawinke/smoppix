@@ -22,6 +22,7 @@ the modified hyperframe
 Check in which cell each event lies and add a cell marker, plus include the list of regions
 }
 \examples{
+library(spatstat.random)
 n <- 1e3 # number of molecules
 ng <- 25 # number of genes
 nfov = 3 # Number of fields of view
