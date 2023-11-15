@@ -12,8 +12,8 @@
 #' @importFrom scam predict.scam
 #' @examples
 #' data(Yang)
-#' hypYang = suppressWarnings(buildHyperFrame(Yang, coordVars = c("x", "y"),
-#' designVar = c("day", "root", "section")))
+#' hypYang = buildHyperFrame(Yang, coordVars = c("x", "y"),
+#' designVar = c("day", "root", "section"))
 #' yangPims = estPims(hypYang, pis = c("nn", "nnPair"))
 #' #First build the weight function
 #' wf <- buildWeightFunction(yangPims, pi = "nn", hypFrame = hypYang, designVars = c("day", "root"))

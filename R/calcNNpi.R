@@ -30,11 +30,12 @@ calcNNPI = function(pSub, p, null, nSims){
 calcNNPIpair = function(pSub1, pSub2, p, pJoin, null, nSims, distMat){
     distMatSub = crossdist(pSub1, pSub2)
     obsDistNN = c(rowMins(distMatSub), colMins(distMatSub))
-    np1 = npoints(pSub1);np2 = npoints(pSub2); npTot <- (np1 + np2)
+    np1 = npoints(pSub1);np2 = npoints(pSub2); npTot <- (np1 + np2);npp = npoints(p)
+    Replace = npTot > npp
     if(null == "background"){
-        tmpDist = crossdist(pJoin, p);npp = npoints(p)
+        tmpDist = crossdist(pJoin, p)
         simDistsNN = vapply(integer(nSims), FUN.VALUE = double(npTot), function(i){
-            rowMins(tmpDist[, sample(npp, npTot), drop = FALSE])
+            rowMins(tmpDist[, sample(npp, npTot, replace = Replace), drop = FALSE])
         })
         piEsts = vapply(FUN.VALUE = double(1), seq_len(np1), function(i){
             ecdf(simDistsNN[i,])(obsDistNN[i])
@@ -43,7 +44,7 @@ calcNNPIpair = function(pSub1, pSub2, p, pJoin, null, nSims, distMat){
     } else if(null == "CSR"){
         pSim = runifpoint(npp <- npoints(p), win = p$window)
         simDistsNN = lapply(integer(nSims), function(i){
-            id <- sample(npp, npTot)
+            id <- sample(npp, npTot, replace = Replace)
             p1 = pSim[id[seq_len(np1)],];p2 = pSim[-id[seq_len(np1)],]
             distMatSub = crossdist(p1, p2)
             c(rowMins(distMatSub), colMins(distMatSub))

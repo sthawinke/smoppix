@@ -19,3 +19,6 @@ LazyData: true
 RoxygenNote: 7.2.3
 biocViews: Transcriptomics, Spatial
 Depends: R (>= 3.5.0)
+VignetteBuilder: knitr
+BugReports: https://github.com/sthawinke/spatrans
+
