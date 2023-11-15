@@ -52,6 +52,7 @@ setMethod("buildHyperFrame", "matrix", function(x, design, covariates, ...) {
     })
     #Replace underscore in gene names => Used to build pairs
     hypFrame = spatstat.geom::hyperframe("ppp" = ppps, design = names(ppps))
+    rownames(hypFrame) = hypFrame$design
     desMat = t(simplify2array(strsplit(names(ppps), "_"))); colnames(desMat) = names(design)
     for(i in names(design)){hypFrame[, i] = desMat[, i]}
     hypFrame$tabObs = lapply(hypFrame$ppp, function(x) table(marks(x, drop = FALSE)$gene))
