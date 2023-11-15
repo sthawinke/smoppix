@@ -28,4 +28,5 @@ test_that("Building data frames throws errors where appropriate", {
     expect_error(buildDfMM(piEstsBG, gene = c("gene1", "gene2"), hypFrame = hypFrame2, pi = "nn"))
     expect_error(buildDfMM(piEstsBG, gene = "gene1_gene2", hypFrame = hypFrame2, pi = "nn"))
     expect_error(buildDfMM(piEstsBG, gene = "gene1", hypFrame = hypFrame2, pi = "nnPair"))
+    expect_error(buildDfMM(piEstsBG, gene = c("gene1", "gene2", "gene3"), pi = "nnPair", hypFrame = hypFrame2))
 })

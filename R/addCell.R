@@ -9,6 +9,7 @@
 #' @importFrom spatstat.geom is.owin
 #' @export
 #' @examples
+#' library(spatstat.random)
 #' n <- 1e3 # number of molecules
 #' ng <- 25 # number of genes
 #' nfov = 3 # Number of fields of view

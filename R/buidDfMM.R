@@ -23,19 +23,21 @@
 #' #Example analysis
 buildDfMM = function(pimRes, gene, pi = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint", "fixedpoint"),
                      weightFunction, hypFrame, designVars){
-    #Establish whether pi and gene match, and call separate functions
+    pi = match.arg(pi)
     stopifnot((lg <- length(gene)) %in% c(1, 2))
     #Check whether genes are present
     if(any(id <- !(sund(gene) %in% attr(hypFrame, "features")))){
         stop("Features\n", sund(gene)[id], "\nnot found in hyperframe")
     }
-    pi = match.arg(pi)
-    foo = checkAttr(pimRes, pi)
+    #Establish whether pi and gene match, and call separate functions
+    foo = checkAttrPimRes(pimRes, pi)
     if(!missing(weightFunction))
-        foo = checkAttr(weightFunction, pi)
+        foo = checkAttrWf(weightFunction, pi)
     df = if(pairId <- grepl(pattern = "Pair", pi)){
         if(lg == 2){
             gene = paste(gene, collapse = "--")
+        } else if(!grepl("--", gene)){
+            stop("Provide gene pair as character vector of length 2 or separated by '--'.")
         }
         buildDfMMBi(gene = gene, pi = pi, pimRes = pimRes, hypFrame = hypFrame, weightFunction = weightFunction)
     } else {
@@ -83,7 +85,7 @@ buildDfMMUni = function(pimRes, gene, hypFrame, pi, weightFunction){
         weight = if(missing(weightFunction)){
             piMat[, "NP"]
         } else {
-            evalWeightFunction(weightFunction, newdata = data.frame(piMat[, "NP"]))
+            evalWeightFunction(weightFunction, newdata = piMat[, "NP", drop = FALSE])
         }
         weight = weight/sum(weight, na.rm = TRUE)
         piMat = cbind(piMat, weight)

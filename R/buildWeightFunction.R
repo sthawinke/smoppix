@@ -24,15 +24,15 @@ buildWeightFunction = function(pimRes, pi = c("nn", "allDist", "nnPair", "allDis
         stop("Calculating weight matrices for distances to fixed points is unnecessary as they are independent.
              Simply proceed with fitting the model on the indiviual evaluations of the B-function.")
     if(any(idMissing <- !(designVars %in% colnames(hypFrame)))){
-        stop("Design variables", designVars[idMissing], "not found in hypFrame object")
+        stop("Design variables\n", designVars[idMissing], "\nnot found in hypFrame object")
     }
     if(length(attr(pimRes, "features")))
     pi = match.arg(pi)
-    foo = checkAttr(pimRes, pi)
+    foo = checkAttrPimRes(pimRes, pi)
     piListName = if(pairId <- grepl("Pair", pi)) "biPIs" else "uniPIs"
     piList = lapply(pimRes, function(x){
         if(pairId){
-            x[["biPIs"]][pi, ,drop = FALSE]
+            x[["biPIs"]][,pi ,drop = FALSE]
         } else {
             vapply(x[["uniPIs"]], FUN.VALUE = double(1), function(y){
                 y$pointDists[pi]
@@ -55,7 +55,7 @@ buildWeightFunction = function(pimRes, pi = c("nn", "allDist", "nnPair", "allDis
         if(pairId){
             gene = sund(gene)
         }
-        tabEntries = vapply(hypFrame$table[ordDesign], FUN.VALUE = double(if(pairId) 2 else 1), function(x){
+        tabEntries = vapply(hypFrame$tabObs[ordDesign], FUN.VALUE = double(if(pairId) 2 else 1), function(x){
             if(pairId) {
                 if(all(gene %in% names(x))) sort(x[gene]) else rep(NA, 2)
             } else x[gene]

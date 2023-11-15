@@ -64,7 +64,8 @@ setMethod("buildHyperFrame", "matrix", function(x, design, covariates, ...) {
 #' @rdname buildHyperFrame
 #' @export
 setMethod("buildHyperFrame", "list", function(x,...) {
-    hypFrame = spatstat.geom::hyperframe("ppp" = x, design = names(x))
+    hypFrame = spatstat.geom::hyperframe("ppp" = x, design = names(x),
+                                         "tabObs" = lapply(x, function(y) table(marks(y, drop = FALSE)$gene)))
     return(hypFrame)
 })
 #' @rdname buildHyperFrame
