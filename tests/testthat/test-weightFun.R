@@ -11,12 +11,11 @@ test_that("The built weight function has the desired properties", {
     expect_true(predNew > evalWeightFunction(wf, newdata = data.frame("NP" = 4)))
     #With information sharing across features
     expect_s3_class(dfBG1 <- buildDfMM(piEstsBG, gene = "gene1", pi = "nn", hypFrame = hypFrame2, weightFunction = wf), "data.frame")
-    expect_s3_class(dfBG2 <- buildDfMM(piEstsBG, gene = "gene1_gene2", pi = "nnPair", hypFrame = hypFrame2, weightFunction = wfPair),
+    expect_s3_class(dfBG2 <- buildDfMM(piEstsBG, gene = "gene1--gene2", pi = "nnPair", hypFrame = hypFrame2, weightFunction = wfPair),
                     "data.frame")
 })
 test_that("Weight function application throws errors where appropriate", {
     wf <- buildWeightFunction(piEstsBG, pi = "nn", hypFrame = hypFrame2, designVars = "condition")
-    expect_s3_class(dfBG1 <- buildDfMM(piEstsBG, gene = "gene1", pi = "nn", hypFrame = hypFrame2, weightFunction = wf), "data.frame")
-    expect_s3_class(dfBG2 <- buildDfMM(piEstsBG, gene = "gene1_gene2", pi = "nnPair", hypFrame = hypFrame2, weightFunction = wfPair),
-                    "data.frame")
+    expect_error(dfBG1 <- buildDfMM(piEstsBG, gene = "gene1", pi = "nn", hypFrame = hypFrame2, weightFunction = wf))
+    expect_error(dfBG2 <- buildDfMM(piEstsBG, gene = "gene1--gene2", pi = "nnPair", hypFrame = hypFrame2, weightFunction = wfPair))
 })

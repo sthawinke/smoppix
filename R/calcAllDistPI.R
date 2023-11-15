@@ -38,6 +38,4 @@ calcAllDistPIpair = function(pSub1, pSub2, p, ecdfAll, null, nSims){
         mean(c(piEsts1, piEsts2))
     }
 }
-subSampleP = function(p, nSims){
-    if((NP <- npoints(p)) > nSims) p[sample(NP, nSims),] else p
-}
+
