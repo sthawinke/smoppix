@@ -28,7 +28,7 @@ buildWeightFunction = function(pimRes, pi = c("nn", "allDist", "nnPair", "allDis
     }
     if(length(attr(pimRes, "features")))
     pi = match.arg(pi)
-    foo = checkAttrPimRes(pimRes, pi)
+    foo = checkAttr(pimRes, pi)
     piListName = if(pairId <- grepl("Pair", pi)) "biPIs" else "uniPIs"
     piList = lapply(pimRes, function(x){
         if(pairId){

@@ -30,9 +30,9 @@ buildDfMM = function(pimRes, gene, pi = c("nn", "allDist", "nnPair", "allDistPai
         stop("Features\n", sund(gene)[id], "\nnot found in hyperframe")
     }
     #Establish whether pi and gene match, and call separate functions
-    foo = checkAttrPimRes(pimRes, pi)
+    foo = checkAttr(pimRes, pi)
     if(!missing(weightFunction))
-        foo = checkAttrWf(weightFunction, pi)
+        foo = checkAttr(weightFunction, pi)
     df = if(pairId <- grepl(pattern = "Pair", pi)){
         if(lg == 2){
             gene = paste(gene, collapse = "--")

@@ -1,18 +1,13 @@
-#' Check if the required pi's are present in the pim result object
+#' Check if the required pi's are present in theobject
 #'
-#' @param pimRes The result of the PI calculation
+#' @param x The result of the PI calculation, or a weight function
 #' @param pi A character string indicating the desired PI
 #'
 #' @return Throws an error when the PIs are not found, otherwise returns invisible
-checkAttrPimRes = function(pimRes, pi){
-    if(!(pi %in% attr(pimRes, "pis"))){
-        stop("Required PI not present in pim result. Rerun estPims with correct 'pis' argument")
-    } else {invisible()}
-}
-#' Check if the required pi's are present in the weight function
-#' @param wf the weight function object
-checkAttrWf = function(wf, pi){
-    if(!(pi %in% attr(wf, "pis"))){
-        stop("Required PI not present in weight function. Rerun buildWeightFunction with correct 'pis' argument")
+checkAttr = function(x, pi){
+    if(!(pi %in% attr(x, "pis"))){
+        stop("Required PI not present in object. Rerun ",
+             switch(class(x), "list" = "estPims", "scam" = "buildWeightFunction"),
+             " with correct 'pis' argument")
     } else {invisible()}
 }
