@@ -19,7 +19,8 @@
 #' wf <- buildWeightFunction(yangPims, pi = "nn", hypFrame = hypYang, designVars = c("day", "root"))
 #' #Now build the data frame for mixed model analysis
 #' dfUniNN = buildDfMM(yangPims, gene = "SmAHK4e", pi  = "nn", hypFrame = hypYang,  weightFunction = wf)
-#' dfBiNN = buildDfMM(yangPims, gene = "SmAHK4e--SmAHP6b", pi  = "nnPair", hypFrame = hypYang,  weightFunction = wf)
+#' dfBiNN = buildDfMM(yangPims, gene = "SmAHK4e--SmAHP6b", pi  = "nnPair",
+#' hypFrame = hypYang,  weightFunction = wf)
 #' #Example analysis
 buildDfMM = function(pimRes, gene, pi = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint", "fixedpoint"),
                      weightFunction, hypFrame, designVars){

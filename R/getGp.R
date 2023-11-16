@@ -3,6 +3,7 @@
 #' @param x The object in which to look
 #' @param gp A character string describing the gene pair
 #' @param Collapse The character separating the gene pair
+#' @param drop A boolean, should matrix attributes be dropped in [] subsetting
 #'
 #' @return The element sought
 getGp = function(x, gp, drop = TRUE, Collapse = "--"){

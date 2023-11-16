@@ -11,6 +11,8 @@ getGp(x, gp, drop = TRUE, Collapse = "--")
 
 \item{gp}{A character string describing the gene pair}
 
+\item{drop}{A boolean, should matrix attributes be dropped in [] subsetting}
+
 \item{Collapse}{The character separating the gene pair}
 }
 \value{
