@@ -7,7 +7,7 @@
 checkAttr = function(x, pi){
     if(!(pi %in% attr(x, "pis"))){
         stop("Required PI not present in object. Rerun ",
-             switch(class(x), "list" = "estPims", "scam" = "buildWeightFunction"),
+             switch(class(x)[1], "list" = "estPims", "scam" = "buildWeightFunction"),
              " with correct 'pis' argument")
     } else {invisible()}
 }
