@@ -86,5 +86,10 @@ hypYang$ppp[[1]]
 
 ### Tests for colocalization or antilocalization: interfeature distances
  
+# Session info
+
+```{r}
+sessionInfo()
+```
 
 

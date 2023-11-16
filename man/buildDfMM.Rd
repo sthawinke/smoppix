@@ -51,7 +51,8 @@ hypFrame = hypYang,  weightFunction = wfPair)
 #Example analysis with linear mixed model
 library(lmerTest)
 #Use sum coding for day to maintain interpretability of the intercept
-mixedMod = lmer(pi - 0.5~ day + (1|root), weight = weight, data = dfBiNN, contrasts = list("day" = "contr.sum"))
+mixedMod = lmer(pi - 0.5~ day + (1|root), weight = weight, data = dfBiNN,
+contrasts = list("day" = "contr.sum"))
 summary(mixedMod)
 #Intercept is not significantly different from 0.5
 }
