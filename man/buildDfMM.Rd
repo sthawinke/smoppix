@@ -38,10 +38,20 @@ hypYang = buildHyperFrame(Yang, coordVars = c("x", "y"),
 designVar = c("day", "root", "section"))
 yangPims = estPims(hypYang, pis = c("nn", "nnPair"))
 #First build the weight function
-wf <- buildWeightFunction(yangPims, pi = "nn", hypFrame = hypYang, designVars = c("day", "root"))
+wf <- buildWeightFunction(yangPims, pi = "nn", hypFrame = hypYang,
+designVars = c("day", "root"))
 #Now build the data frame for mixed model analysis
-dfUniNN = buildDfMM(yangPims, gene = "SmAHK4e", pi  = "nn", hypFrame = hypYang,  weightFunction = wf)
-dfBiNN = buildDfMM(yangPims, gene = "SmAHK4e--SmAHP6b", pi  = "nnPair",
+dfUniNN = buildDfMM(yangPims, gene = "SmAHK4e", pi  = "nn",
 hypFrame = hypYang,  weightFunction = wf)
-#Example analysis
+#A bivariate weight function for the pairs
+wfPair = buildWeightFunction(yangPims, pi = "nnPair", hypFrame = hypYang,
+designVars = c("day", "root"))
+dfBiNN = buildDfMM(yangPims, gene = "SmAHK4e--SmAHP6b", pi  = "nnPair",
+hypFrame = hypYang,  weightFunction = wfPair)
+#Example analysis with linear mixed model
+library(lmerTest)
+#Use sum coding for day to maintain interpretability of the intercept
+mixedMod = lmer(pi - 0.5~ day + (1|root), weight = weight, data = dfBiNN, contrasts = list("day" = "contr.sum"))
+summary(mixedMod)
+#Intercept is not significantly different from 0.5
 }
