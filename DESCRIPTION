@@ -12,13 +12,11 @@ Description: Test for univariate and multivariate spatial patterns in
     biological specimens. Tests for aggregation, colocalozation and vicinity to cell edge are provided.
 License: GPL-2
 Encoding: UTF-8
-Imports: spatstat.geom, spatstat.random, SpatialExperiment, methods, BiocParallel, matrixStats, SummarizedExperiment, scam
-Suggests: testthat,rmarkdown,knitr
+Imports: spatstat.geom, spatstat.random, SpatialExperiment, methods, BiocParallel, matrixStats, SummarizedExperiment, scam, Rdpack, stats, utils
+Suggests: testthat,rmarkdown,knitr,lmerTest
 RdMacros: Rdpack
-LazyData: true
 RoxygenNote: 7.2.3
 biocViews: Transcriptomics, Spatial
-Depends: R (>= 3.5.0)
+Depends: R (>= 4.3.0)
 VignetteBuilder: knitr
 BugReports: https://github.com/sthawinke/spatrans
-
