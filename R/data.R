@@ -13,5 +13,4 @@
 #' @source \url{https://doi.org/10.1016/j.cub.2023.08.030}
 #' @references
 #' \insertAllCited{}
-#' @importFrom Rdpack reprompt
 "Yang"

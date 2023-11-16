@@ -21,6 +21,7 @@
 #' @importFrom utils combn
 #' @importFrom matrixStats colMins rowMins
 #' @import spatstat.geom
+#' @importFrom Rdpack reprompt
 estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3, nPointsAllWin = 2e2, features = NULL,
                    allowManyGenePairs = FALSE, manyPairs = 1e6, verbose = FALSE,
                    owins = NULL, point){
