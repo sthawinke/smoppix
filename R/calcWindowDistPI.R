@@ -8,9 +8,11 @@
 #' @importFrom matrixStats rowMins
 #' @return The estimated probabilistic index
 #' @importFrom spatstat.geom nncross centroid.owin edges
-#' @details Analysis of the distance to the border was introduced by \insertCite{Joyner2013} in the form of the B-function.
+#' @details Analysis of the distance to the border was introduced by \insertCite{Joyner2013}{spatrans} in the form of the B-function.
 #' The independent evaluations of the B-functions per cell are here returned as realizations of the probabilistic index.
 #' @seealso [addCell]
+#' @references
+#' \insertAllCited{}
 calcWindowDistPI = function(pSub, owins, ecdfAll, towhat){
     splitPPP = split.ppp(pSub, f = "cell")
     obsDistEdge = lapply(names(splitPPP), function(x){
