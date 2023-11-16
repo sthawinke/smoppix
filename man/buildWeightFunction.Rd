@@ -33,9 +33,9 @@ Build a weight function based on the data
 The scam functions fits a decreasing spline of the variance as a function of the number of observations
 }
 \examples{
-#' data(Yang)
-hypYang = suppressWarnings(buildHyperFrame(Yang, coordVars = c("x", "y"),
-designVar = c("day", "root", "section")))
+data(Yang)
+hypYang = buildHyperFrame(Yang, coordVars = c("x", "y"),
+designVar = c("day", "root", "section"))
 yangPims = estPims(hypYang, pis = c("nn", "nnPair"))
 #First build the weight function
 wf <- buildWeightFunction(yangPims, pi = "nn", hypFrame = hypYang, designVars = c("day", "root"))

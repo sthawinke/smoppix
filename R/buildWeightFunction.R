@@ -13,9 +13,9 @@
 #' @export
 #' @seealso [buildDfMM]
 #' @examples
-#' #' data(Yang)
-#' hypYang = suppressWarnings(buildHyperFrame(Yang, coordVars = c("x", "y"),
-#' designVar = c("day", "root", "section")))
+#' data(Yang)
+#' hypYang = buildHyperFrame(Yang, coordVars = c("x", "y"),
+#' designVar = c("day", "root", "section"))
 #' yangPims = estPims(hypYang, pis = c("nn", "nnPair"))
 #' #First build the weight function
 #' wf <- buildWeightFunction(yangPims, pi = "nn", hypFrame = hypYang, designVars = c("day", "root"))
@@ -76,13 +76,4 @@ buildWeightFunction = function(pimRes, pi = c("nn", "allDist", "nnPair", "allDis
     attr(scamMod, "pis") = pi
     return(scamMod)
 }
-#' Evaluate the weight function and return (unnormalized) weights
-#'
-#' @param wf The weight function
-#' @param newdata Optional, a data frame with new data
-#' @return A vector of predictions
-#' @export
-#' @importFrom scam predict.scam
-evalWeightFunction = function(wf, newdata){
-    1/exp(predict.scam(wf, newdata = newdata))
-}
+
