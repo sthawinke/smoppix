@@ -16,7 +16,7 @@ A data matrix
 \url{https://doi.org/10.1016/j.cub.2023.08.030}
 }
 \usage{
-Yang
+data(Yang)
 }
 \description{
 Single-molecule spatial transcriptomics smFISH data of Selaginella moellendorffii roots of a
