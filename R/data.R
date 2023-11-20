@@ -8,7 +8,7 @@
 #' \describe{
 #'   \item{x,y}{Molecule coordinates}
 #'   \item{gene}{Character vector with gene identities}
-#'   \item{root,section,day}{Design variables}
+#'  \item{root,section,day}{Design variables}
 #' }
 #' @source \url{https://doi.org/10.1016/j.cub.2023.08.030}
 #' @references

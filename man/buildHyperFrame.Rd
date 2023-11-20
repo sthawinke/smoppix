@@ -50,6 +50,6 @@ Built the hyperframe containing all separate point patterns that will
 }
 \examples{
 data(Yang)
-hypYang = suppressWarnings(buildHyperFrame(Yang, coordVars = c("x", "y"),
-designVar = c("day", "root", "section")))
+hypYang = buildHyperFrame(Yang, coordVars = c("x", "y"),
+designVar = c("day", "root", "section"))
 }

@@ -9,7 +9,7 @@ A data matrix
 \describe{
   \item{x,y}{Molecule coordinates}
   \item{gene}{Character vector with gene identities}
-  \item{root,section,day}{Design variables}
+ \item{root,section,day}{Design variables}
 }
 }
 \source{
