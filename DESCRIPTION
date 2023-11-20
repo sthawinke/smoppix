@@ -9,10 +9,10 @@ Authors@R:
 Description: Test for univariate and multivariate spatial patterns in 
     spatial omics data with single-molecule resolution. The tests implemented 
     allow for analysis of nested designs and are automatically calibrated to different
-    biological specimens. Tests for aggregation, colocalozation and vicinity to cell edge are provided.
+    biological specimens. Tests for aggregation, colocalization and vicinity to cell edge are provided.
 License: GPL-2
 Encoding: UTF-8
-Imports: spatstat.geom, spatstat.random, SpatialExperiment, methods, BiocParallel, matrixStats, SummarizedExperiment, scam, Rdpack, stats, utils
+Imports: spatstat.geom, spatstat.random, SpatialExperiment, methods, BiocParallel, matrixStats, SummarizedExperiment, scam, Rdpack, stats, utils, Rfast, extraDistr
 Suggests: testthat,rmarkdown,knitr,lmerTest
 RdMacros: Rdpack
 RoxygenNote: 7.2.3

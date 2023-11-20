@@ -9,7 +9,7 @@
 #' @export
 #'
 #' @examples
-plotWf = function(wf, se = FALSE, ...){
+plotWf = function(wf, ...){
     if(grepl("Pair", attr(wf, "pi"))){
         tmp = exp(wf$model[, c("log(maxP)", "log(minP)")])
         colnames(tmp) = c("maxP", "minP")
@@ -20,8 +20,8 @@ plotWf = function(wf, se = FALSE, ...){
             xlab("Log10 number of events for least expressed gene") +
             ylab("Log10 number of events for most expressed gene")
     } else {
-        tmp = data.frame("NP" = exp(wf$model[, c("log(NP)", "log(minP)")]))
+        tmp = data.frame("NP" = exp(wf$model[, "log(NP)"]))
         df = cbind("weight" = 1/exp(predict.scam(wf, newdata = tmp)), tmp)
-        plot(weight ~ NP, data = df, xlab = "Log number of observations", ylab = "Weight", se = se)
+        plot(weight ~ NP, data = df, type = "l", xlab = "Number of observations", ylab = "Weight")
     }
 }
