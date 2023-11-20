@@ -26,10 +26,15 @@ plotExplore = function(hypFrame, features = attr(hypFrame, "features"), ppps){
     par(mfrow = if((LL <- length(ppps)) <= 3) c(2,2) else c(3,3))
     baa = lapply(ppps, function(i){
         id = marks(hypFrame$ppp[[i]], drop = FALSE)$gene %in% features
-        if(any(id))
-            plot(coords(hypFrame$ppp[[i]][id,]), main = ppps[i], pch = ".", asp = 1,
-                 col = Cols[marks(hypFrame$ppp[[i]], drop = FALSE)$gene[id]])
+        if(any(id)){
+            colVec = Cols[marks(hypFrame$ppp[[i]], drop = FALSE)$gene[id]]
+            cordMat = coords(hypFrame$ppp[[i]][id,])
+            ordVec = order(colVec != "grey") #Plot grey background first and coloured dots on top
+            plot(cordMat[ordVec,], main = ppps[i], pch = ".", asp = 1,
+                 col = colVec[ordVec])
+        }
     })
     plot(0,0, type = "n", xlab = "", ylab = "", xaxt = "n", yaxt = "n")
-    legend("center", legend = names(Cols), pch = 20, col = Cols)
+    idCols = which(Cols!="grey")
+    legend("center", legend = names(Cols)[idCols], pch = 20, col = Cols[idCols])
 }

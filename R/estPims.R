@@ -64,8 +64,8 @@ estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3, nP
     if(verbose)
         message("Calculating univariate probabilistic indices...")
     uniPIs = lapply(nams <- names(tabObs[features])[!idOne], function(feat){
-        pSub = subset(p, marks(p, drop = FALSE)$gene == feat)
-        p = subset(p, marks(p, drop = FALSE)$gene != feat) #Avoid zero distances by removing observations of gene
+        pSub = p[id <- marks(p, drop = FALSE)$gene == feat, ]
+        p = p[!id, ] #Avoid zero distances by removing observations of gene
         NNdistPI = if(any(pis == "nn") ){calcNNPI(pSub, p, null, nSims)}
         allDistPI = if(any(pis == "allDist")){
             calcAllDistPI(pSub, p, ecdfAll = ecdfAll, null = null, nSims = nPointsAll)}
@@ -90,15 +90,15 @@ estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3, nP
         genePairsMat = combn(featuresBi, 2)
         out = matrix(nrow = ncol(genePairsMat), byrow = TRUE, vapply(FUN.VALUE = double(sum(piPair)), seq_len(ncol(genePairsMat)), function(i){
             feat1 = genePairsMat[1, i];feat2 = genePairsMat[2, i]
-            pSub1 = p[marks(p, drop = FALSE)$gene == feat1, ]
-            pSub2 = p[marks(p, drop = FALSE)$gene == feat2, ]
-            p = p[!(id <- marks(p, drop = FALSE)$gene %in% genePairsMat[, i]), ]
-            pJoin = superimpose(pSub1, pSub2)
+            pSub1 = p[id1 <- which(marks(p, drop = FALSE)$gene == feat1), ]
+            pSub2 = p[id2 <- which(marks(p, drop = FALSE)$gene == feat2), ]
+            pJoin = p[c(id1, id2), ];p = p[-c(id1, id2), ]
             NNdistPI = if(any(pis == "nnPair") ){calcNNPIpair(pSub1, pSub2, p, pJoin = pJoin, null, nSims)}
             allDistPI = if(any(pis == "allDistPair")){
                 calcAllDistPIpair(pSub1, pSub2, p, ecdfAll = ecdfAll, null = null, nSims = nPointsAll)}
             c("nnPair" = NNdistPI, "allDistPair" = allDistPI)
-        }), dimnames = list(apply(genePairsMat, 2, paste, collapse = "--"), grep("Pair", pis, value = TRUE))) #Make sure it is a matrix even for one pi
+        }), dimnames = list(apply(genePairsMat, 2, paste, collapse = "--"), grep("Pair", pis, value = TRUE)))
+        #Ensure it is a matrix even for one pi
         out
     }
     list("uniPIs" = uniPIs, "biPIs" = biPIs)

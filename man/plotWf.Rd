@@ -2,17 +2,17 @@
 % Please edit documentation in R/plotWf.R
 \name{plotWf}
 \alias{plotWf}
-\title{Title}
+\title{Plot the weighting function: The observation weigth as a function of the number of observations}
 \usage{
-plotWf(wf, se = FALSE, ...)
+plotWf(wf, ...)
 }
 \arguments{
 \item{wf}{The fitted scam object}
 
-\item{se}{A boolean, should standard errors be plotted?}
-
 \item{...}{Passed onto the plot.scam function for 1D splines}
+
+\item{se}{A boolean, should standard errors be plotted?}
 }
 \description{
-Title
+Plot the weighting function: The observation weigth as a function of the number of observations
 }

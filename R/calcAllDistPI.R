@@ -15,7 +15,7 @@ calcAllDistPI = function(pSub, p, ecdfAll, null, nSims){
         simDists = crossdist(pSub, subSampleP(p, nSims))
             # #Keep observed points fixed
         piEsts = vapply(seq_len(npoints(pSub)), FUN.VALUE = double(1), function(i){
-            ecdf(simDists[i,])(obsDist[i])
+            mean(simDists[i,] < obsDist[i])
         })
         mean(piEsts)
     }

@@ -6,7 +6,9 @@
 #' @importFrom matrixStats rowMins colMins
 #' @importFrom spatstat.geom nndist crossdist npoints area
 #' @importFrom spatstat.random rpoispp
-#' @importFrom stats ecdf
+#' @importFrom stats ecdf rnbinom
+#' @importFrom Rfast rowSort
+#' @importFrom extraDistr rnhyper
 #' @return The estimated probabilistic index
 calcNNPI = function(pSub, p, null, nSims){
     obsDistNN = nndist(pSub)
@@ -16,7 +18,7 @@ calcNNPI = function(pSub, p, null, nSims){
             # #Keep observed points fixed
         })
         piEsts = vapply(seq_len(npoints(pSub)), FUN.VALUE = double(1), function(i){
-            ecdf(simDistsNN[i,])(obsDistNN[i])
+            mean(simDistsNN[i,] < obsDistNN[i])
         })
         mean(piEsts)
     } else if(null == "CSR"){
@@ -34,13 +36,17 @@ calcNNPIpair = function(pSub1, pSub2, p, pJoin, null, nSims, distMat){
     Replace = npTot > npp
     if(null == "background"){
         tmpDist = crossdist(pJoin, p)
-        simDistsNN = vapply(integer(nSims), FUN.VALUE = double(npTot), function(i){
-            rowMins(tmpDist[, sample(npp, npTot, replace = Replace), drop = FALSE])
-        })
-        piEsts = vapply(FUN.VALUE = double(1), seq_len(np1), function(i){
-            ecdf(simDistsNN[i,])(obsDistNN[i])
-        })
-        mean(piEsts)
+        #This breaks the dependence, but we are averaging anyway.
+        #The dependence between distances merely inflates the variability of the PI, it does not affect its null distribution
+        sam = if(Replace) {
+            rnbinom(nSims, size = 1, prob = 1 - (1-1/npTot)^npp)+1
+        } else {
+            rnhyper(nSims, m = npTot, n = npp-npTot, r = 1)}
+        simDistsNN = rowSort(tmpDist)[, sam, drop = FALSE]
+        # simDistsNN = vapply(integer(nSims), FUN.VALUE = double(npTot), function(i){
+        #     rowMins(tmpDist[, sample(npp, npTot, replace = Replace), drop = FALSE])
+        # })
+        mean(simDistsNN < obsDistNN)
     } else if(null == "CSR"){
         pSim = runifpoint(npp <- npoints(p), win = p$window)
         simDistsNN = lapply(integer(nSims), function(i){
