@@ -39,12 +39,13 @@ install_github("CenterForStatistics-UGent/spatrans")
 library(spatrans)
 ```
 
-# Example dataset
+# Yang data: lycophyte roots
 
 As example dataset we use the data by \textcite{Yang2023} on _Selaginella moellendorffii_. Only a subset of the data, consisting of sections 1-3 of roots 1-3 is included for computational reasons. The data is loaded as follows.
 
 ```{r}
 data(Yang)
+head(Yang)
 ```
 
 It is a dataframe containing molecule locations (x- and y-variables), gene identity and covariates: day, root and section. At each day, 6 roots were measured, with varying numbers of sections for each root. The analysis will need to account for this nested design.
@@ -74,17 +75,53 @@ We see the following elements:
 hypYang$ppp[[1]]
 ```
 
+As a final confirmation of successfully reading in the data, we can make an exploratory plot:
+
+```{r}
+plotExplore(hypYang)
+```
+
 # Analyses
+
+## Multithreading
+
+The _spatrans_ package can be computationally intensive, especially for gene pairs. For this reason we provide multithreading through the _BiocParallel_ package. All the user needs to do is prepare the parallel backend as follows:
+
+```{r}
+library(BiocParallel)
+nCores = 2 #The number of CPUs
+register(MulticoreParam(nCores))
+```
 
 ## Univariate tests
 
-### Tests for vicinity to cell wall or fixed point: distances to fixed objects
-
 ### Tests for univariate aggregation or regularity: interevent distances
+
+The first round of tests concerns the aggregation or regularity of individual genes. We choose to work with nearest neighbour distances here. The background of all other genes serves as null distribution, i.e. we look for genes aggregated _with respect to_ all other genes
+
+```{r}
+nnObj = estPims(hypYang, pis = "nn", null = "background")
+```
+
+A data-driven weighing function is now fitted to the estimates of all genes to share information on variances across features. This reauires information on the design too.
+
+```{r}
+wfNN = buildWeightFunction(nnObj, pi = "nn", hypFrame = hypYang, designVars = c("day", "root"))
+```
+
+
 
 ## Bivariate tests
 
 ### Tests for colocalization or antilocalization: interfeature distances
+
+```{r}
+nnPairObj = estPims(hypYang, pis = "nnPair", null = "background")
+```
+
+# Eng2019: Mouse brain cells
+
+### Tests for vicinity to cell wall or fixed point: distances to fixed objects
  
 # Session info
 
