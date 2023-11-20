@@ -9,8 +9,8 @@
 #' @param covariates A vector of covariates
 #' @examples
 #' data(Yang)
-#' hypYang = suppressWarnings(buildHyperFrame(Yang, coordVars = c("x", "y"),
-#' designVar = c("day", "root", "section")))
+#' hypYang = buildHyperFrame(Yang, coordVars = c("x", "y"),
+#' designVar = c("day", "root", "section"))
 setGeneric("buildHyperFrame", function(x, ...) standardGeneric("buildHyperFrame"))
 #'
 #' @rdname buildHyperFrame
