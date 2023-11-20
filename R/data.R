@@ -2,7 +2,7 @@
 #'
 #' Single-molecule spatial transcriptomics smFISH data of Selaginella moellendorffii roots of a
 #' replicated experiment by \insertCite{Yang2023}{spatrans}. Molecule locations, gene identity and design
-#' variables are included. Only a subset of the data, consisting of sections 1-3 of roots 1-3 is included for computational reasons.
+#' variables are included. Only a subset of the data, consisting of roots 1-3 and sections 1-5 is included for computational and memory reasons.
 #'
 #' @format A data matrix
 #' \describe{

@@ -109,7 +109,13 @@ A data-driven weighing function is now fitted to the estimates of all genes to s
 wfNN = buildWeightFunction(nnObj, pi = "nn", hypFrame = hypYang, designVars = c("day", "root"))
 ```
 
+The fitted trend can be plotted:
 
+```{r}
+plotWf(wfNN)
+```
+
+As expected the weight increases with the number of observations.
 
 ## Bivariate tests
 
@@ -118,6 +124,7 @@ wfNN = buildWeightFunction(nnObj, pi = "nn", hypFrame = hypYang, designVars = c(
 ```{r}
 nnPairObj = estPims(hypYang, pis = "nnPair", null = "background")
 wfNNpair = buildWeightFunction(nnPairObj, pi = "nnPair", hypFrame = hypYang, designVars = c("day", "root"))
+plotWf(wfNNpair)
 ```
 
 # Eng2019: Mouse brain cells
