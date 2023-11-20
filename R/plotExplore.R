@@ -13,7 +13,7 @@
 #' hypYang = buildHyperFrame(Yang, coordVars = c("x", "y"),
 #' designVar = c("day", "root", "section"))
 #' plotExplore(hypYang)
-plotExplore = function(hypFrame, features = attr(hypFrame, "features")[seq_len(8)], ppps){
+plotExplore = function(hypFrame, features = attr(hypFrame, "features"), ppps){
     stopifnot(is.hyperframe(hypFrame), is.character(features))
     npp = nrow(hypFrame)
     if(missing(ppps)){
@@ -27,7 +27,7 @@ plotExplore = function(hypFrame, features = attr(hypFrame, "features")[seq_len(8
     baa = lapply(ppps, function(i){
         id = marks(hypFrame$ppp[[i]], drop = FALSE)$gene %in% features
         if(any(id))
-            plot(coords(hypFrame$ppp[[i]][id,]), main = ppps[i], pch = ".",
+            plot(coords(hypFrame$ppp[[i]][id,]), main = ppps[i], pch = ".", asp = 1,
                  col = Cols[marks(hypFrame$ppp[[i]], drop = FALSE)$gene[id]])
     })
     plot(0,0, type = "n", xlab = "", ylab = "", xaxt = "n", yaxt = "n")
