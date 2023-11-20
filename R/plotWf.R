@@ -10,8 +10,10 @@
 #' @examples
 plotWf = function(wf, se = FALSE, ...){
     if(grepl(attr(wf, "Pair"))){
-        ggplot(dfSufMolt2, aes(x = log10(minP), y = log10(maxP), col = 1/Variance)) +
-            geom_point(size = 1) + facet_grid(cols = vars(pi)) +
+        df = cbind("variance" = c(predict.scam(wf)), exp(wf$model[, c("log(maxP)", "log(minP)")]))
+        colnames(df) = c("maxP", "minP")
+        ggplot(df, aes(x = log10(minP), y = log10(maxP), col = variance)) +
+            geom_point(size = 1) +
             scale_colour_gradient(low = "yellow", high = "blue", name = "Weight") +
             xlab("Log10 number of events for least expressed gene") +
             ylab("Log10 number of events for most expressed gene")

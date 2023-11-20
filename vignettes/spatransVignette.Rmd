@@ -117,6 +117,7 @@ wfNN = buildWeightFunction(nnObj, pi = "nn", hypFrame = hypYang, designVars = c(
 
 ```{r}
 nnPairObj = estPims(hypYang, pis = "nnPair", null = "background")
+wfNNpair = buildWeightFunction(nnPairObj, pi = "nnPair", hypFrame = hypYang, designVars = c("day", "root"))
 ```
 
 # Eng2019: Mouse brain cells
