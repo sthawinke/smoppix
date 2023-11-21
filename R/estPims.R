@@ -21,8 +21,8 @@
 #' @importFrom utils combn
 #' @import spatstat.geom
 #' @importFrom Rdpack reprompt
-#' @importFrom Rfast rowSort
-#' @importFrom extraDistr rnhyper
+#' @importFrom Rfast rowRanks
+#' @importFrom extraDistr pnhyper
 estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3, nPointsAllWin = 2e2, features = NULL,
                    allowManyGenePairs = FALSE, manyPairs = 1e6, verbose = FALSE,
                    owins = NULL, point){
@@ -90,29 +90,34 @@ estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3, nP
         }
         genePairsMat = combn(featuresBi, 2)
         if(any(pis == "nnPair")){# A custom algorithm to balance cpu and memory requirements
-            ecdfsNN = lapply(featuresBi, function(feat1){
-                pSub1 = p[id1 <- which(marks(p, drop = FALSE)$gene == feat1), ]
-                pSub = p[-id1, ];npTot = npoints(pSub)
-                distMat = crossdist(pSub1, pSub)
-                distMatSort = rowSort(distMat)
-                unNums = unique(tabObs[names(tabObs)!= feat1]); names(unNums) = unNums
-                #Plus np1-1 for univariate
-                lapply(unNums, function(num){
-                    apply(distMatSort[,,drop = FALSE], 1, ecdfFast, cumDens = pnhyper(nSims, m = num, n = npTot-num, r = 1))
-                    #Use pnhyper!
-                    # A sampling trick: the negative hypergeometric distribution or the number of failures
-                    #till the first success without replacement: the distribution of the minimum
-                })
-            }); names(ecdfsNN) = featuresBi
+            # ecdfsNN = lapply(featuresBi, function(feat1){
+            #     pSub1 = p[id1 <- which(marks(p, drop = FALSE)$gene == feat1), ]
+            #     pSub = p[-id1, ];npTot = npoints(pSub)
+            #     distMat = crossdist(pSub1, pSub)
+            #     distMatSort = rowSort(distMat)
+            #     unNums = unique(tabObs[names(tabObs)!= feat1]); names(unNums) = unNums
+            #     #Plus np1-1 for univariate
+            #     lapply(unNums, function(num){
+            #         apply(distMatSort, 1, ecdfFast, num = num)
+            #     })
+            # }); names(ecdfsNN) = featuresBi
+
         }
         out = matrix(nrow = ncol(genePairsMat), byrow = TRUE, vapply(FUN.VALUE = double(sum(piPair)), seq_len(ncol(genePairsMat)), function(i){
             feat1 = genePairsMat[1, i];feat2 = genePairsMat[2, i]
             pSub1 = p[id1 <- which(marks(p, drop = FALSE)$gene == feat1), ]
             pSub2 = p[id2 <- which(marks(p, drop = FALSE)$gene == feat2), ]
-            pJoin = p[c(id1, id2), ];p = p[-c(id1, id2), ]
+            pJoin = p[c(id1, id2), ]
+            p = p[c(id1, id2, if((NP <- npoints(p)) > nPointsAll) sample(NP, nPointsAll) else seq_len(NP)[-c(id1, id2)]), ]
+            #Reorder and subset if needed
             NNdistPI = if(any(pis == "nnPair")){
-                calcNNPIpair(pSub1, pSub2, p, pJoin = pJoin, null, nSims,
-                             ecdfsNN = ecdfsNN, feat1 = feat1, feat2 = feat2, tabObs = tabObs)
+                rowOrders = rowRanks(crossdist(pJoin, p))+1 #rowRanks uses 0 as first rank
+                npp = npoints(p)
+                # calcNNPIpair(pSub1, pSub2, p, pJoin = pJoin, null, nSims,
+                #              ecdfsNN = ecdfsNN, feat1 = feat1, feat2 = feat2, tabObs = tabObs)
+                seq1 = seq_along(id1);seq2 =seq_along(id2)
+                mean(na.rm = TRUE, c(pnhyper(rowOrders[seq1, seq2], n = npp-length(id2), m = length(id2), r = 1),
+                     pnhyper(rowOrders[seq2,seq1], n = npp-length(id1), m = length(id1), r = 1)))
                 }
             allDistPI = if(any(pis == "allDistPair")){
                 calcAllDistPIpair(pSub1, pSub2, p, ecdfAll = ecdfAll, null = null, nSims = nPointsAll)}

@@ -4,16 +4,20 @@
 \alias{ecdfFast}
 \title{A fast version that makes an ecdf based on an ordered vector and the cumulative probability function}
 \usage{
-ecdfFast(x, cumDens)
+ecdfFast(x, num)
 }
 \arguments{
 \item{x}{The ordered vector}
 
-\item{cumDens}{Corresponding cumulative density}
+\item{nuhe}{number of observations drawn from which the minuum is taken}
 }
 \value{
 The ecdf function
 }
 \description{
 A fast version that makes an ecdf based on an ordered vector and the cumulative probability function
+}
+\details{
+A sampling trick: the negative hypergeometric distribution or the number of failures
+ till the first success without replacement: the distribution of the minimum
 }
