@@ -64,10 +64,11 @@ estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3, nP
     }
     if(verbose)
         message("Calculating univariate probabilistic indices...")
-    uniPIs = lapply(nams <- names(tabObs[features])[!idOne], function(feat){
+    uniPIs = bplapply(nams <- names(tabObs[features])[!idOne], function(feat){
         pSub = p[id <- marks(p, drop = FALSE)$gene == feat, ]
         p = p[!id, ] #Avoid zero distances by removing observations of gene
         NNdistPI = if(any(pis == "nn") ){calcNNPI(pSub, p, null, nSims)}
+        #Also here room for improvement
         allDistPI = if(any(pis == "allDist")){
             calcAllDistPI(pSub, p, ecdfAll = ecdfAll, null = null, nSims = nPointsAll)}
         edgeDistPI = if(any(pis == "edge")){
@@ -95,7 +96,7 @@ estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3, nP
             rowSortMat = rowSort(crossdist(p, pSub))[, -1] #Eliminate self distances
             npp = npoints(pSub)
         }
-        out = matrix(nrow = ncol(genePairsMat), byrow = TRUE, vapply(FUN.VALUE = double(sum(piPair)), seq_len(ncol(genePairsMat)), function(i){
+        out = matrix(nrow = ncol(genePairsMat), byrow = TRUE, simplify2array(bplapply(seq_len(ncol(genePairsMat)), function(i){
             feat1 = genePairsMat[1, i];feat2 = genePairsMat[2, i]
             pSub1 = p[id1 <- which(marks(p, drop = FALSE)$gene == feat1), ]
             pSub2 = p[id2 <- which(marks(p, drop = FALSE)$gene == feat2), ]
@@ -107,17 +108,16 @@ estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3, nP
                 obsDistNN = c(rowMins(cd, value = TRUE), colMins(cd, value = TRUE))
                 obsDistRank = rowMins(obsDistNN > rowSortMat[c(id1, id2),]) #The ranks: first FALSE
                 seq1 = seq_along(id1);seq2 = seq_along(id2) + length(id1)
-                b = mean(na.rm = TRUE, tmp <- c(pnhyper(obsDistRank[seq1], n = npp-length(id2), m = length(id2), r = 1),
+                mean(na.rm = TRUE, c(pnhyper(obsDistRank[seq1], n = npp-length(id2), m = length(id2), r = 1),
                      pnhyper(obsDistRank[seq2], n = npp-length(id1), m = length(id1), r = 1)))
-                if(anyNA(tmp)){
-                    a = 1
-                } else b
                 #Using the negative hypergeometric precludes Monte-Carlo
                 }
             allDistPI = if(any(pis == "allDistPair")){
-                calcAllDistPIpair(pSub1, pSub2, p, ecdfAll = ecdfAll, null = null, nSims = nPointsAll)}
+                calcAllDistPIpair(NP1 = npoints(pSub1), NP2 = npoints(pSub2), ecdfAll = ecdfAll, null = null,
+                                  backDist = rowSortMat, crossDist = cd)
+                }
             c("nnPair" = NNdistPI, "allDistPair" = allDistPI)
-        }), dimnames = list(apply(genePairsMat, 2, paste, collapse = "--"), grep("Pair", pis, value = TRUE)))
+        })), dimnames = list(apply(genePairsMat, 2, paste, collapse = "--"), grep("Pair", pis, value = TRUE)))
         #Ensure it is a matrix even for one pi
         out
     }
@@ -155,7 +155,7 @@ estPims = function(hypFrame, pis = c("nn", "allDist", "nnPair", "allDistPair", "
     if(any(id <- !(features %in% attr(hypFrame, "features")))){
         stop("Features ", features[id], " not found in hyperframe")
     }
-   out = bplapply(seq_len(nrow(hypFrame)), function(x){
+   out = lapply(seq_len(nrow(hypFrame)), function(x){
        with(hypFrame[x,, drop = TRUE], estPimsSingle(ppp, owins = owins, pis = pis, null = null, tabObs = tabObs,...))
    })
    attr(out, "pis") = pis #Tag the pims calculated

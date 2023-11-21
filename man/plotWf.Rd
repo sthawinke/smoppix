@@ -13,6 +13,9 @@ plotWf(wf, ...)
 
 \item{se}{A boolean, should standard errors be plotted?}
 }
+\value{
+For univariate PI, returns a line plot; for bivariate PI a ggplot object
+}
 \description{
 Plot the weighting function: The observation weigth as a function of the number of observations
 }

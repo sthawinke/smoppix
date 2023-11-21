@@ -4,7 +4,7 @@
 #' @param features A small number of features to be fitted. Defaults to the first 5
 #' @param ppps The rownames or indices of the point patterns to be plotted. Defaults to the first 9.
 #'
-#' @return
+#' @return Plots a facet of point patterns to output
 #' @importFrom spatstat.geom is.hyperframe
 #' @export
 #'
@@ -23,7 +23,7 @@ plotExplore = function(hypFrame, features = attr(hypFrame, "features"), ppps){
     names(Cols) = features
     old.par = par(no.readonly = TRUE)
     on.exit(par(old.par))
-    par(mfrow = if((LL <- length(ppps)) <= 3) c(2,2) else c(3,3))
+    par(mfrow = if((LL <- length(ppps)) <= 3) c(2,2) else c(3,3), mar = c(3,3,3,3))
     baa = lapply(ppps, function(i){
         id = marks(hypFrame$ppp[[i]], drop = FALSE)$gene %in% features
         if(any(id)){

@@ -20,22 +20,14 @@ calcAllDistPI = function(pSub, p, ecdfAll, null, nSims){
         mean(piEsts)
     }
 }
-calcAllDistPIpair = function(pSub1, pSub2, p, ecdfAll, null, nSims){
-    obsDist = crossdist(pSub1, pSub2)
+calcAllDistPIpair = function(NP1, NP2, ecdfAll, null, crossDist, backDist){
     if(null == "CSR"){
-        mean(ecdfAll(obsDist))
+        mean(ecdfAll(crossDist))
     } else if(null == "background"){
-        simDists1 = crossdist(pSub1, subSampleP(p, nSims))
-        simDists2 = crossdist(pSub2, subSampleP(p, nSims))
-        NP1 = npoints(pSub1);NP2 = npoints(pSub2)
         # #Keep observed points fixed
-        piEsts1 = vapply(seq_len(NP1), FUN.VALUE = double(npoints(pSub2)), function(i){
-            ecdf(simDists1[i,])(obsDist[i, ])
-        })
-        piEsts2 = vapply(seq_len(NP2), FUN.VALUE = double(npoints(pSub1)), function(i){
-            ecdf(simDists2[i,])(obsDist[,i])
-        })
-        mean(c(piEsts1, piEsts2))
+        piEsts1 = sum(backDist[seq_len(NP1), ] < crossDist)
+        piEsts2 = sum(backDist[-seq_len(NP1), ] < t(crossDist))
+        (piEsts1+ piEsts2)/(NP1 +NP2)
     }
 }
 

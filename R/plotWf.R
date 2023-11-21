@@ -4,12 +4,13 @@
 #' @param se A boolean, should standard errors be plotted?
 #' @param ... Passed onto the plot.scam function for 1D splines
 #'
-#' @return
+#' @return For univariate PI, returns a line plot; for bivariate PI a ggplot object
 #' @import ggplot2
 #' @export
 #'
 #' @examples
 plotWf = function(wf, ...){
+    stopifnot(is(wf, "scam"))
     if(grepl("Pair", attr(wf, "pi"))){
         tmp = exp(wf$model[, c("log(maxP)", "log(minP)")])
         colnames(tmp) = c("maxP", "minP")
@@ -22,6 +23,6 @@ plotWf = function(wf, ...){
     } else {
         tmp = data.frame("NP" = exp(wf$model[, "log(NP)"]))
         df = cbind("weight" = 1/exp(predict.scam(wf, newdata = tmp)), tmp)
-        plot(weight ~ NP, data = df, type = "l", xlab = "Number of observations", ylab = "Weight")
+        plot(weight ~ NP, data = df[order(df$NP),], type = "l", xlab = "Number of observations", ylab = "Weight")
     }
 }
