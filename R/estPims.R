@@ -19,9 +19,10 @@
 #' @importFrom stats ecdf dist
 #' @importFrom spatstat.random runifpoint
 #' @importFrom utils combn
-#' @importFrom matrixStats colMins rowMins
 #' @import spatstat.geom
 #' @importFrom Rdpack reprompt
+#' @importFrom Rfast rowSort
+#' @importFrom extraDistr rnhyper
 estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3, nPointsAllWin = 2e2, features = NULL,
                    allowManyGenePairs = FALSE, manyPairs = 1e6, verbose = FALSE,
                    owins = NULL, point){
@@ -88,12 +89,31 @@ estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3, nP
             message("Calculating bivariate probabilistic indices...")
         }
         genePairsMat = combn(featuresBi, 2)
+        if(any(pis == "nnPair")){# A custom algorithm to balance cpu and memory requirements
+            ecdfsNN = lapply(featuresBi, function(feat1){
+                pSub1 = p[id1 <- which(marks(p, drop = FALSE)$gene == feat1), ]
+                pSub = p[-id1, ];npTot = npoints(pSub)
+                distMat = crossdist(pSub1, pSub)
+                distMatSort = rowSort(distMat)
+                unNums = unique(tabObs[names(tabObs)!= feat1]); names(unNums) = unNums
+                #Plus np1-1 for univariate
+                lapply(unNums, function(num){
+                    apply(distMatSort[,,drop = FALSE], 1, ecdfFast, cumDens = pnhyper(nSims, m = num, n = npTot-num, r = 1))
+                    #Use pnhyper!
+                    # A sampling trick: the negative hypergeometric distribution or the number of failures
+                    #till the first success without replacement: the distribution of the minimum
+                })
+            }); names(ecdfsNN) = featuresBi
+        }
         out = matrix(nrow = ncol(genePairsMat), byrow = TRUE, vapply(FUN.VALUE = double(sum(piPair)), seq_len(ncol(genePairsMat)), function(i){
             feat1 = genePairsMat[1, i];feat2 = genePairsMat[2, i]
             pSub1 = p[id1 <- which(marks(p, drop = FALSE)$gene == feat1), ]
             pSub2 = p[id2 <- which(marks(p, drop = FALSE)$gene == feat2), ]
             pJoin = p[c(id1, id2), ];p = p[-c(id1, id2), ]
-            NNdistPI = if(any(pis == "nnPair") ){calcNNPIpair(pSub1, pSub2, p, pJoin = pJoin, null, nSims)}
+            NNdistPI = if(any(pis == "nnPair")){
+                calcNNPIpair(pSub1, pSub2, p, pJoin = pJoin, null, nSims,
+                             ecdfsNN = ecdfsNN, feat1 = feat1, feat2 = feat2, tabObs = tabObs)
+                }
             allDistPI = if(any(pis == "allDistPair")){
                 calcAllDistPIpair(pSub1, pSub2, p, ecdfAll = ecdfAll, null = null, nSims = nPointsAll)}
             c("nnPair" = NNdistPI, "allDistPair" = allDistPI)
@@ -112,8 +132,8 @@ estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3, nP
 #' @importFrom BiocParallel bplapply
 #' @examples
 #' data(Yang)
-#' hypYang = suppressWarnings(buildHyperFrame(Yang, coordVars = c("x", "y"),
-#' designVar = c("day", "root", "section")))
+#' hypYang = buildHyperFrame(Yang, coordVars = c("x", "y"),
+#' designVar = c("day", "root", "section"))
 #' yangPims = estPims(hypYang, pis = c("nn", "nnPair"))
 #' #Both univariate and bivariate tests, with nearest neighbour distances
 #' @details

@@ -5,7 +5,6 @@
 #' @param owins the list of windows describing the cells
 #' @param towhat a character vector, either "edge" or "midpoint", indicating with respect to what the distance should be calculated
 #'
-#' @importFrom matrixStats rowMins
 #' @return The estimated probabilistic index
 #' @importFrom spatstat.geom nncross centroid.owin edges
 #' @details Analysis of the distance to the border was introduced by \insertCite{Joyner2013}{spatrans} in the form of the B-function.
