@@ -13,6 +13,9 @@ plotExplore(hypFrame, features = attr(hypFrame, "features"), ppps)
 
 \item{ppps}{The rownames or indices of the point patterns to be plotted. Defaults to the first 9.}
 }
+\value{
+Plots a facet of point patterns to output
+}
 \description{
 Plot the hyperframe for exploratory purposes
 }
