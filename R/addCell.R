@@ -5,7 +5,7 @@
 #' @param checkOverlap a boolean, should windows be checked for overlap
 #' @param warnOut a boolean, should warning be issued when points are not contained in window
 #' @return the modified hyperframe
-#' @importFrom matrixStats rowAnys
+#' @importFrom Rfast rowAny
 #' @importFrom spatstat.geom is.owin
 #' @export
 #' @examples
@@ -56,7 +56,7 @@ addCell = function(hypFrame, owins, checkOverlap = TRUE, warnOut = TRUE){
         idWindow = vapply(owins[[nn]], FUN.VALUE = logical(NP <- npoints(ppp)), function(rr){
                 inside.owin(ppp, w = rr)
         })
-        idIn = rowAnys(idWindow)
+        # idIn = rowAny(idWindow)
         if(all(!idIn)){
             stop("All points lie outside all windows for point pattern ", nn, " check your input!")
         }

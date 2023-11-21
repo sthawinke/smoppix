@@ -41,8 +41,8 @@ The suffix 'Pair' indicates that bivariate probabilistic indices, testing for co
 }
 \examples{
 data(Yang)
-hypYang = suppressWarnings(buildHyperFrame(Yang, coordVars = c("x", "y"),
-designVar = c("day", "root", "section")))
+hypYang = buildHyperFrame(Yang, coordVars = c("x", "y"),
+designVar = c("day", "root", "section"))
 yangPims = estPims(hypYang, pis = c("nn", "nnPair"))
 #Both univariate and bivariate tests, with nearest neighbour distances
 }
