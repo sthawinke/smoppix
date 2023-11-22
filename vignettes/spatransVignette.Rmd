@@ -125,15 +125,15 @@ This dataframe can then be used for mixed modelling, either in R or in an other 
 
 ```{r}
 library(lmerTest)
-lmeMod = lmer(pi ~ day + (1|root), data = df, na.action = na.omit, offset = Offset, 
-                                 weights = weights, contrasts = list("day" = "contr.sum"))
+lmeMod = lmer(pi - 0.5 ~ day + (1|root), data = dfUniNN, na.action = na.omit, 
+                                 weights = weight, contrasts = list("day" = "contr.sum"))
 ```
 
 Alternatively, a wrapper function is available that fits such LMMs for every gene:
 
 ```{r}
-allModsNN = fitLMMs(nnObj, pi  = "nn", hypFrame = hypYang, weightFunction = wfNN, designVars = c("day", "root"))
-
+allModsNN = fitLMMs(nnObj, pi  = "nn", hypFrame = hypYang, weightFunction = wfNN, 
+                    fixedVars = "day", randomVars = "root")
 ```
 
 

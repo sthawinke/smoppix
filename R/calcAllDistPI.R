@@ -7,25 +7,29 @@
 #' @return The probabilistic index for all distances
 #' @inheritParams estPimsSingle
 #' @importFrom stats dist
-calcAllDistPI = function(pSub, p, ecdfAll, null, rowSortMat){
+calcAllDistPI = function(pSub, p, ecdfAll, null, ecdfs){
     obsDist = as.matrix(dist(coords(pSub)))
     if(null == "CSR"){
         mean(ecdfAll(obsDist))
     } else if(null == "background"){
-        piEsts = vapply(seq_len(nrow(rowSortMat)), FUN.VALUE = double(1), function(i){
-            mean(ecdfPreSort(rowSortMat[i, ])(obsDist[i, -i]))
+        piEsts = vapply(seq_along(ecdfs), FUN.VALUE = double(1), function(i){
+            mean(ecdfs[[i]](obsDist[i, -i]))
         })
         mean(piEsts)
     }
 }
-calcAllDistPIpair = function(NP1, NP2, ecdfAll, null, crossDist, rowSortMat){
+calcAllDistPIpair = function(id1, id2, ecdfAll, null, crossDist, ecdfs){
     if(null == "CSR"){
         mean(ecdfAll(crossDist))
     } else if(null == "background"){
         # #Keep observed points fixed
-        piEsts1 = sum(rowSortMat[seq_len(NP1), ] < crossDist)
-        piEsts2 = sum(rowSortMat[-seq_len(NP1), ] < t(crossDist))
-        (piEsts1+ piEsts2)/(NP1 +NP2)
+        piEsts1 = vapply(seq_along(id1), FUN.VALUE = double(1), function(i){
+            ecdfs[[i]](crossDist[i, ])
+        })
+        piEsts2 = vapply(seq_along(id2), FUN.VALUE = double(1), function(i){
+            ecdfs[[i + length(id1)]](crossDist[,i])
+        })
+        mean(c(piEsts1, piEsts2))
     }
 }
 
