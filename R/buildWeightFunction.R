@@ -19,7 +19,8 @@
 #' yangPims = estPims(hypYang, pis = c("nn", "nnPair"))
 #' #First Build the weight function
 #' wf <- buildWeightFunction(yangPims, pi = "nn", hypFrame = hypYang, designVars = c("day", "root"))
-buildWeightFunction = function(pimRes, pi = c("nn", "allDist", "nnPair", "allDistPair"), hypFrame, designVars, ...){
+buildWeightFunction = function(pimRes, pi = c("nn", "allDist", "nnPair", "allDistPair"),
+                               hypFrame, designVars, maxObs = 1e6, ...){
     if(any(pi==c("edge", "midpoint", "fixedpoint")))
         stop("Calculating weight matrices for distances to fixed points is unnecessary as they are independent.
              Simply proceed with fitting the model on the indiviual evaluations of the B-function.")
@@ -67,6 +68,9 @@ buildWeightFunction = function(pimRes, pi = c("nn", "allDist", "nnPair", "allDis
     varElMat = matrix(unlist(varEls), ncol = if(pairId) 3 else 2, byrow = TRUE,
                       dimnames = list(NULL, c("quadDeps", if(pairId) c("minP", "maxP") else "NP"))) #Faster than cbind
     varElMat = varElMat[!is.na(varElMat[,"quadDeps"]) & varElMat[,"quadDeps"] != 0,]
+    if(nrow(varElMat) > maxObs){
+        varElMat = varElMat[sample(nrow(varElMat), maxObs),]
+    }
     scamForm = formula(paste("log(quadDeps) ~", if(pairId) {
         "s(log(maxP), bs = 'mpd') + s(log(minP), bs = 'mpd')"
     } else {

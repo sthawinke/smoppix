@@ -61,7 +61,7 @@ estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3, nP
             #Preapre some background distances
             pSub = subSampleP(p, max(c(nPointsAll, tabObs+1e2)))
             #Subsample for memory reasons
-            nSub = npoints(pSub)
+            nSub = npoints(pSub)-1
             ecdfs = apply(rowSort(crossdist(p, pSub))[, -1], 1, ecdfPreSort) #Eliminate self distances
     }
     #Univariate patterns
@@ -104,7 +104,8 @@ estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3, nP
             cd = crossdist(pSub1, pSub2)
             #Reorder and subset if needed
             NNdistPI = if(any(pis == "nnPair")){
-                calcNNPIpair(cd = cd, id1 = id1, id2 = id2, null = null, ecdfs = ecdfs, p = p, nSims = nSims)
+                calcNNPIpair(cd = cd, id1 = id1, id2 = id2, null = null,
+                             ecdfs = ecdfs[c(id1, id2)], p = p, nSims = nSims, n = nSub)
                 }
             allDistPI = if(any(pis == "allDistPair")){
                 calcAllDistPIpair(id1 = id1, id2 = id2, ecdfAll = ecdfAll, null = null,
