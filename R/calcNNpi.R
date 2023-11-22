@@ -8,14 +8,16 @@
 #' @importFrom stats ecdf
 #' @importFrom Rfast rowMins colMins
 #' @return The estimated probabilistic index
-calcNNPI = function(pSub, p, null, nSims){
+calcNNPI = function(pSub, p, null, nSims, rowSortMat, id){
     obsDistNN = nndist(pSub)
     if(null == "background"){
-        simDistsNN = vapply(integer(nSims), FUN.VALUE = double(npoints(pSub)), function(i){
-            nncrossFast(pSub, subSampleP(p, npoints(pSub)-1))
-            # #Keep observed points fixed
-        })
-        mean(simDistsNN < obsDistNN)
+        # simDistsNN = vapply(integer(nSims), FUN.VALUE = double(npoints(pSub)), function(i){
+        #     nncrossFast(pSub, subSampleP(p, npoints(pSub)-1))
+        #     # #Keep observed points fixed
+        # })
+        # mean(simDistsNN < obsDistNN)
+        obsDistRank = rowMins(obsDistNN >= rowSortMat[id,]) #The ranks: first FALSE. Total number until first
+        mean(pnhyper(obsDistRank, n = nrow(rowSortMat)-length(id)+1, m = length(id)-1, r = 1))#Exclude event itself
     } else if(null == "CSR"){
         lambda = npoints(pSub)/area(p$window)
         simDistsNN = lapply(integer(nSims), function(i){
@@ -24,30 +26,19 @@ calcNNPI = function(pSub, p, null, nSims){
         mean(ecdf(unlist(simDistsNN))(obsDistNN))
     }
 }
-calcNNPIpair = function(pSub1, pSub2, p, pJoin, null, nSims, ecdfsNN, feat1, feat2, tabObs){
-    distMatSub = crossdist(pSub1, pSub2)
-    obsDistNN1 = rowMins(distMatSub, value = TRUE)
-    obsDistNN2 = colMins(distMatSub, value = TRUE)
-    # np1 = npoints(pSub1);np2 = npoints(pSub2); npTot <- (np1 + np2);npp = npoints(p)
-    # Replace = npTot > npp
+calcNNPIpair = function(cd, id1, id2, null, p, rowSortMat){
+    npp = npoints(p)
     if(null == "background"){
-        # tmpDist = crossdist(pJoin, p)
-        # #This breaks the dependence, but we are averaging anyway.
-        # #The dependence between distances merely inflates the variability of the PI, it does not affect its null distribution
-        # sam = if(Replace) {
-        #     rnbinom(nSims, size = 1, prob = 1 - (1-1/npTot)^npp)+1
-        # } else {
-        #     rnhyper(nSims, m = npTot, n = npp-npTot, r = 1)}
-        # simDistsNN = rowSort(tmpDist)[, sam, drop = FALSE]
-        # # simDistsNN = vapply(integer(nSims), FUN.VALUE = double(npTot), function(i){
-        # #     rowMins(tmpDist[, sample(npp, npTot, replace = Replace), drop = FALSE])
-        # # })
-        mean(c(mapply(ecdfsNN[[feat1]][[as.character(tabObs[feat2])]], obsDistNN1, FUN = function(e, x) e(x)),
-               mapply(ecdfsNN[[feat2]][[as.character(tabObs[feat1])]], obsDistNN2, FUN = function(e, x) e(x))))
+        obsDistNN = c(rowMins(cd, value = TRUE), colMins(cd, value = TRUE))
+        obsDistRank = rowMins(obsDistNN >= rowSortMat[c(id1, id2),]) #The ranks: first FALSE
+        seq1 = seq_along(id1);seq2 = seq_along(id2) + length(id1)
+        mean(na.rm = TRUE, c(pnhyper(obsDistRank[seq1], n = npp-length(id2), m = length(id2), r = 1),
+                             pnhyper(obsDistRank[seq2], n = npp-length(id1), m = length(id1), r = 1)))
+        #Using the negative hypergeometric precludes Monte-Carlo
     } else if(null == "CSR"){
-        pSim = runifpoint(npp <- npoints(p), win = p$window)
+        pSim = runifpoint(npp, win = p$window)
         simDistsNN = lapply(integer(nSims), function(i){
-            id <- sample(npp, npTot, replace = Replace)
+            id <- sample(npp, length(id1)+length(id2), replace = Replace)
             p1 = pSim[id[seq_len(np1)],];p2 = pSim[-id[seq_len(np1)],]
             distMatSub = crossdist(p1, p2)
             c(rowMins(distMatSub, value = TRUE), colMins(distMatSub, value = TRUE))

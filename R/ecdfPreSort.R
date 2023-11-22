@@ -1,0 +1,15 @@
+#' A fast version that makes an ecdf based on an presorted vector
+#'
+#' @param x The ordered vector
+#' @return The ecdf function
+ecdfPreSort = function (x)
+{
+    n <- length(x)
+    vals <- unique(x)
+    rval <- approxfun(vals, cumsum(tabulate(match(x, vals)))/n,
+                      method = "constant", yleft = 0, yright = 1, f = 0, ties = "ordered")
+    class(rval) <- c("ecdf", "stepfun", class(rval))
+    assign("nobs", n, envir = environment(rval))
+    attr(rval, "call") <- sys.call()
+    rval
+}

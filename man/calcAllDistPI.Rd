@@ -4,10 +4,10 @@
 \alias{calcAllDistPI}
 \title{Estimate the probabilistic index for the collection of all distances}
 \usage{
-calcAllDistPI(pSub, p, ecdfAll, null, nSims)
+calcAllDistPI(pSub, p, ecdfAll, null, nSims, id, rowSortMat)
 }
 \arguments{
-\item{pSub}{The subset point pattern wiht only one feature}
+\item{pSub}{The subset point pattern with only one feature}
 
 \item{p}{The point pattern}
 
