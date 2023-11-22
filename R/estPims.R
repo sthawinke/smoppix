@@ -74,10 +74,10 @@ estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3, nP
     uniPIs = lapply(nams <- names(tabObs[features])[!idOne], function(feat){
         pSub = p[id <-which(marks(p, drop = FALSE)$gene == feat), ]
         p = p[-id, ] #Avoid zero distances by removing observations of gene
-        NNdistPI = if(any(pis == "nn") ){calcNNPI(pSub, p, null, nSims, rowSortMat, id)}
+        NNdistPI = if(any(pis == "nn") ){calcNNPI(pSub, p, null, nSims, rowSortMat[id,])}
         #Also here room for improvement
         allDistPI = if(any(pis == "allDist")){
-            calcAllDistPI(pSub, p, ecdfAll = ecdfAll, null = null, nSims = nPointsAll, rowSortMat = rowSortMat, id = id)}
+            calcAllDistPI(pSub, p, ecdfAll = ecdfAll, null = null, nSims = nPointsAll, rowSortMat = rowSortMat[id,])}
         edgeDistPI = if(any(pis == "edge")){
             calcWindowDistPI(pSub, owins, ecdfAll = ecdfsEdge, towhat = "edge")}
         midPointDistPI = if(any(pis == "midpoint")){
@@ -108,7 +108,7 @@ estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3, nP
                 }
             allDistPI = if(any(pis == "allDistPair")){
                 calcAllDistPIpair(NP1 = npoints(pSub1), NP2 = npoints(pSub2), ecdfAll = ecdfAll, null = null,
-                                  backDist = rowSortMat, crossDist = cd)
+                                  rowSortMat = rowSortMat, crossDist = cd)
                 }
             c("nnPair" = NNdistPI, "allDistPair" = allDistPI)
         }), dimnames = list(apply(genePairsMat, 2, paste, collapse = "--"), grep("Pair", pis, value = TRUE)))

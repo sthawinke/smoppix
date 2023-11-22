@@ -28,3 +28,13 @@ A fitted linear mixed model of class 'lmerTest'
 \description{
 Title
 }
+\examples{
+#' data(Yang)
+hypYang = buildHyperFrame(Yang, coordVars = c("x", "y"),
+designVar = c("day", "root", "section"))
+yangPims = estPims(hypYang, pis = "nn")
+#First build the weight function
+wf <- buildWeightFunction(yangPims, pi = "nn", hypFrame = hypYang,
+designVars = c("day", "root"))
+fittedModels = fitLMMs(yangPims, pi = "nn", weightFunction = wf, fiexedVars = "time", randomVars = "root")
+}

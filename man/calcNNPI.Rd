@@ -4,16 +4,18 @@
 \alias{calcNNPI}
 \title{Estimate the PI for the nearest neighbour distances}
 \usage{
-calcNNPI(pSub, p, null, nSims, rowSortMat, id)
+calcNNPI(pSub, p, null, nSims, rowSortMat)
 }
 \arguments{
-\item{pSub}{The subset point pattern containing only a single gene}
+\item{pSub}{The subset point pattern with only one feature}
 
 \item{p}{The point pattern}
 
 \item{null}{A character vector, indicating how the null distribution is defined. See details.}
 
 \item{nSims}{The number of Monte-Carlo simulations used to determine the null distribution if null = "CSR}
+
+\item{rowSortMat}{A subset of distances, sorted along the rows}
 }
 \value{
 The estimated probabilistic index

@@ -4,7 +4,7 @@
 \alias{calcAllDistPI}
 \title{Estimate the probabilistic index for the collection of all distances}
 \usage{
-calcAllDistPI(pSub, p, ecdfAll, null, nSims, id, rowSortMat)
+calcAllDistPI(pSub, p, ecdfAll, null, rowSortMat)
 }
 \arguments{
 \item{pSub}{The subset point pattern with only one feature}
@@ -15,7 +15,7 @@ calcAllDistPI(pSub, p, ecdfAll, null, nSims, id, rowSortMat)
 
 \item{null}{A character vector, indicating how the null distribution is defined. See details.}
 
-\item{nSims}{The number of Monte-Carlo simulations used to determine the null distribution if null = "CSR}
+\item{rowSortMat}{A subset of distances, sorted along the rows}
 }
 \value{
 The probabilistic index for all distances
