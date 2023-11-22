@@ -2,7 +2,6 @@
 #'
 #' @param pSub The subset point pattern with only one feature
 #' @param ecdfAll The empirical cumulative distribution function of all distances under the null
-#' @param rowSortMat A subset of distances, sorted along the rows
 #'
 #' @return The probabilistic index for all distances
 #' @inheritParams estPimsSingle
@@ -10,7 +9,7 @@
 calcAllDistPI = function(pSub, p, ecdfAll, null, ecdfs){
     obsDist = as.matrix(dist(coords(pSub)))
     if(null == "CSR"){
-        mean(ecdfAll(obsDist))
+        mean(ecdfAll(obsDist)) #Need to condition on point too?
     } else if(null == "background"){
         piEsts = vapply(seq_along(ecdfs), FUN.VALUE = double(1), function(i){
             mean(ecdfs[[i]](obsDist[i, -i]))
@@ -23,10 +22,10 @@ calcAllDistPIpair = function(id1, id2, ecdfAll, null, crossDist, ecdfs){
         mean(ecdfAll(crossDist))
     } else if(null == "background"){
         # #Keep observed points fixed
-        piEsts1 = vapply(seq_along(id1), FUN.VALUE = double(1), function(i){
+        piEsts1 = vapply(seq_along(id1), FUN.VALUE = double(length(id2)), function(i){
             ecdfs[[i]](crossDist[i, ])
         })
-        piEsts2 = vapply(seq_along(id2), FUN.VALUE = double(1), function(i){
+        piEsts2 = vapply(seq_along(id2), FUN.VALUE = double(length(id1)), function(i){
             ecdfs[[i + length(id1)]](crossDist[,i])
         })
         mean(c(piEsts1, piEsts2))

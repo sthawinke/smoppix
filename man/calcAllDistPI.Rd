@@ -14,8 +14,6 @@ calcAllDistPI(pSub, p, ecdfAll, null, ecdfs)
 \item{ecdfAll}{The empirical cumulative distribution function of all distances under the null}
 
 \item{null}{A character vector, indicating how the null distribution is defined. See details.}
-
-\item{rowSortMat}{A subset of distances, sorted along the rows}
 }
 \value{
 The probabilistic index for all distances

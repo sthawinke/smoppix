@@ -136,6 +136,7 @@ allModsNN = fitLMMs(nnObj, pi  = "nn", hypFrame = hypYang, weightFunction = wfNN
                     fixedVars = "day", randomVars = "root")
 ```
 
+Various errors may occur while fitting, e.g. insufficient non-missing observations. The function finishes silently but returns the error messages in the output. 
 
 ## Bivariate tests
 
@@ -148,6 +149,12 @@ nnPairObj = estPims(hypYang, pis = "nnPair", null = "background",
 wfNNpair = buildWeightFunction(nnPairObj, pi = "nnPair", hypFrame = hypYang, designVars = c("day", "root"))
 plotWf(wfNNpair)
 ```
+
+```{r}
+dfBiNN = buildDfMM(nnObj, gene = "SmVMD2--SMPINR", pi  = "nnPair", hypFrame = hypYang, 
+                   weightFunction = wfNNpair, designVars = c("day", "root"))
+```
+
 
 # Eng2019: Mouse brain cells
 

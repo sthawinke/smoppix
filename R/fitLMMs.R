@@ -8,10 +8,10 @@
 #' @importFrom stats formula
 #'
 #' @examples
-#' #' data(Yang)
+#' data(Yang)
 #' hypYang = buildHyperFrame(Yang, coordVars = c("x", "y"),
 #' designVar = c("day", "root", "section"))
-#' yangPims = estPims(hypYang, pis = "nn", features = attr(hypYang, "features)[seq_len(20)])
+#' yangPims = estPims(hypYang, pis = "nn", features = attr(hypYang, "features")[seq_len(20)])
 #' #First build the weight function
 #' wf <- buildWeightFunction(yangPims, pi = "nn", hypFrame = hypYang,
 #' designVars = c("day", "root"))
@@ -19,14 +19,16 @@
 #' fixedVars = "time", randomVars = "root")
 fitLMMs = function(pimRes, pi = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint", "fixedpoint"),
                    weightFunction, hypFrame, fixedVars, randomVars){
+    pi = match.arg(pi)
     designVars = c(fixedVars, randomVars)
     stopifnot(all(designVars %in% names(hypFrame)))
     Formula = formula(paste("pi - 0.5 ~", paste(fixedVars, sep = "+"), "+", paste("(1|", randomVars, ")", collapse = "+")))
-    contrasts = lapply(fixedVars, function(x) "contr.sum");names(contrasts) = contrasts
-    models = lapply(attr(pimRes, "features"), function(gene){
+    contrasts = lapply(fixedVars, function(x) "contr.sum");names(contrasts) = fixedVars
+    Features = if(grepl("Pair", pi)) makePairs(attr(pimRes, "features")) else attr(pimRes, "features")
+    models = lapply(Features, function(gene){
         df = buildDfMM(nnObj, gene = gene, pi  = pi, hypFrame = hypFrame,
                        weightFunction = weightFunction, designVars = designVars)
-        lmer(Formula, data = df, na.action = na.omit,
-             weights = weight, contrasts = contrasts)
+        try(lmer(Formula, data = df, na.action = na.omit, weights = weight,
+                 contrasts = contrasts), silent = TRUE)
     })
 }

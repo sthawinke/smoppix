@@ -56,7 +56,7 @@ addCell = function(hypFrame, owins, checkOverlap = TRUE, warnOut = TRUE){
         idWindow = vapply(owins[[nn]], FUN.VALUE = logical(NP <- npoints(ppp)), function(rr){
                 inside.owin(ppp, w = rr)
         })
-        # idIn = rowAny(idWindow)
+        idIn = rowAny(idWindow)
         if(all(!idIn)){
             stop("All points lie outside all windows for point pattern ", nn, " check your input!")
         }
