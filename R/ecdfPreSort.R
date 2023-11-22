@@ -5,8 +5,7 @@
 ecdfPreSort = function (x)
 {
     n <- length(x)
-    vals <- unique(x)
-    rval <- approxfun(vals, cumsum(tabulate(match(x, vals)))/n,
+    rval <- approxfun(x, seq_along(x)/n,
                       method = "constant", yleft = 0, yright = 1, f = 0, ties = "ordered")
     class(rval) <- c("ecdf", "stepfun", class(rval))
     assign("nobs", n, envir = environment(rval))

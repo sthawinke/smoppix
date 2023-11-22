@@ -8,12 +8,14 @@
 #' @importFrom stats ecdf
 #' @importFrom Rfast rowMins colMins
 #' @return The estimated probabilistic index
-calcNNPI = function(pSub, p, null, nSims, rowSortMat){
+calcNNPI = function(pSub, p, null, nSims, ecdfs){
     obsDistNN = nndist(pSub)
     if(null == "background"){
         NP = npoints(pSub)
-        obsDistRank = rowMins(obsDistNN >= rowSortMat) #The ranks: first FALSE. Total number until first
-        mean(pnhyper(obsDistRank, n = nrow(rowSortMat)-NP+1, m = NP-1, r = 1))#Exclude event itself
+        obsDistRank = vapply(seq_along(obsDistNN), FUN.VALUE = double(1), function(i){
+                round(ecdfs[[i]](obsDistNN[i])*environment(ecdfs[[i]])$nobs)
+            }) + 1
+        mean(pnhyper(obsDistRank, n = nrow(rowSortMat)- NP + 1, m = NP - 1, r = 1))#Exclude event itself
     } else if(null == "CSR"){
         lambda = npoints(pSub)/area(p$window)
         simDistsNN = lapply(integer(nSims), function(i){
@@ -22,14 +24,17 @@ calcNNPI = function(pSub, p, null, nSims, rowSortMat){
         mean(ecdf(unlist(simDistsNN))(obsDistNN))
     }
 }
-calcNNPIpair = function(cd, id1, id2, null, p, rowSortMat){
+calcNNPIpair = function(cd, id1, id2, null, p, ecdfs){
     npp = npoints(p)
     if(null == "background"){
         obsDistNN = c(rowMins(cd, value = TRUE), colMins(cd, value = TRUE))
-        obsDistRank = rowMins(obsDistNN >= rowSortMat[c(id1, id2),]) #The ranks: first FALSE
-        seq1 = seq_along(id1);seq2 = seq_along(id2) + length(id1)
-        mean(na.rm = TRUE, c(pnhyper(obsDistRank[seq1], n = npp-length(id2), m = length(id2), r = 1),
-                             pnhyper(obsDistRank[seq2], n = npp-length(id1), m = length(id1), r = 1)))
+        obsDistRank = vapply(c(id1, id2), FUN.VALUE = double(1), function(i){
+            round(ecdfs[[i]](obsDistNN[i])*environment(ecdfs[[i]])$nobs)
+        }) + 1
+        seq1 = seq_along(id1)
+        PP = ncol(obsDistRank)
+        mean(c(pnhyper(obsDistRank[seq1], n = PP-length(id2), m = length(id2), r = 1),
+                             pnhyper(obsDistRank[-seq1], n = PP-length(id1), m = length(id1), r = 1)))
         #Using the negative hypergeometric precludes Monte-Carlo
     } else if(null == "CSR"){
         pSim = runifpoint(npp, win = p$window)

@@ -4,7 +4,7 @@
 \alias{calcAllDistPI}
 \title{Estimate the probabilistic index for the collection of all distances}
 \usage{
-calcAllDistPI(pSub, p, ecdfAll, null, rowSortMat)
+calcAllDistPI(pSub, p, ecdfAll, null, ecdfs)
 }
 \arguments{
 \item{pSub}{The subset point pattern with only one feature}
