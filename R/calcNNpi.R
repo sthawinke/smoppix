@@ -1,28 +1,24 @@
 #' Estimate the PI for the nearest neighbour distances
 #'
-#' @param pSub The subset point pattern containing only a single gene
 #' @inheritParams estPimsSingle
+#' @inheritParams calcAllDistPI
 #'
 #' @importFrom spatstat.geom nndist crossdist npoints area
 #' @importFrom spatstat.random rpoispp
 #' @importFrom stats ecdf
 #' @importFrom Rfast rowMins colMins
 #' @return The estimated probabilistic index
-calcNNPI = function(pSub, p, null, nSims, rowSortMat, id){
+calcNNPI = function(pSub, p, null, nSims, rowSortMat){
     obsDistNN = nndist(pSub)
     if(null == "background"){
-        # simDistsNN = vapply(integer(nSims), FUN.VALUE = double(npoints(pSub)), function(i){
-        #     nncrossFast(pSub, subSampleP(p, npoints(pSub)-1))
-        #     # #Keep observed points fixed
-        # })
-        # mean(simDistsNN < obsDistNN)
-        obsDistRank = rowMins(obsDistNN >= rowSortMat[id,]) #The ranks: first FALSE. Total number until first
-        mean(pnhyper(obsDistRank, n = nrow(rowSortMat)-length(id)+1, m = length(id)-1, r = 1))#Exclude event itself
+        NP = npoints(pSub)
+        obsDistRank = rowMins(obsDistNN >= rowSortMat) #The ranks: first FALSE. Total number until first
+        mean(pnhyper(obsDistRank, n = nrow(rowSortMat)-NP+1, m = NP-1, r = 1))#Exclude event itself
     } else if(null == "CSR"){
         lambda = npoints(pSub)/area(p$window)
         simDistsNN = lapply(integer(nSims), function(i){
             nndist(rpoispp(lambda, win = pSub$window))
-        })
+        }) #Density dependent so still sims needed
         mean(ecdf(unlist(simDistsNN))(obsDistNN))
     }
 }

@@ -17,7 +17,7 @@
 #' hypYang = buildHyperFrame(Yang, coordVars = c("x", "y"),
 #' designVar = c("day", "root", "section"))
 #' yangPims = estPims(hypYang, pis = c("nn", "nnPair"))
-#' #First build the weight function
+#' #First Build the weight function
 #' wf <- buildWeightFunction(yangPims, pi = "nn", hypFrame = hypYang, designVars = c("day", "root"))
 buildWeightFunction = function(pimRes, pi = c("nn", "allDist", "nnPair", "allDistPair"), hypFrame, designVars, ...){
     if(any(pi==c("edge", "midpoint", "fixedpoint")))

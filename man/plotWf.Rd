@@ -19,3 +19,14 @@ For univariate PI, returns a line plot; for bivariate PI a ggplot object
 \description{
 Plot the weighting function: The observation weigth as a function of the number of observations
 }
+\examples{
+data(Yang)
+hypYang = buildHyperFrame(Yang, coordVars = c("x", "y"),
+designVar = c("day", "root", "section"))
+yangPims = estPims(hypYang, pis = c("nn", "nnPair"))
+#First Build the weight function
+wf <- buildWeightFunction(yangPims, pi = "nn", hypFrame = hypYang, designVars = c("day", "root"))
+plot(wf)
+wfPair <- buildWeightFunction(yangPims, pi = "nnPair", hypFrame = hypYang, designVars = c("day", "root"))
+plot(wfPair)
+}

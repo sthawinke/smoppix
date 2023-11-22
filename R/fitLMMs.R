@@ -6,6 +6,14 @@
 #' @export
 #'
 #' @examples
+#' #' data(Yang)
+#' hypYang = buildHyperFrame(Yang, coordVars = c("x", "y"),
+#' designVar = c("day", "root", "section"))
+#' yangPims = estPims(hypYang, pis = "nn")
+#' #First build the weight function
+#' wf <- buildWeightFunction(yangPims, pi = "nn", hypFrame = hypYang,
+#' designVars = c("day", "root"))
+#' fittedModels = fitLMMs(yangPims, pi = "nn", weightFunction = wf, fiexedVars = "time", randomVars = "root")
 fitLMMs = function(pimRes, pi = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint", "fixedpoint"),
                    weightFunction, hypFrame, fixedVars, randomVars){
     designVars = c(fixedVars, randomVars)
