@@ -4,7 +4,7 @@
 \alias{calcNNPI}
 \title{Estimate the PI for the nearest neighbour distances}
 \usage{
-calcNNPI(pSub, p, null, nSims)
+calcNNPI(pSub, p, null, nSims, rowSortMat, id)
 }
 \arguments{
 \item{pSub}{The subset point pattern containing only a single gene}
