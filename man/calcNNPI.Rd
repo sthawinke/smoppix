@@ -4,7 +4,7 @@
 \alias{calcNNPI}
 \title{Estimate the PI for the nearest neighbour distances}
 \usage{
-calcNNPI(pSub, p, null, nSims, ecdfs)
+calcNNPI(pSub, p, null, nSims, ecdfs, n)
 }
 \arguments{
 \item{pSub}{The subset point pattern with only one feature}
@@ -14,6 +14,8 @@ calcNNPI(pSub, p, null, nSims, ecdfs)
 \item{null}{A character vector, indicating how the null distribution is defined. See details.}
 
 \item{nSims}{The number of Monte-Carlo simulations used to determine the null distribution if null = "CSR}
+
+\item{n}{the number of subsampled distances}
 }
 \value{
 The estimated probabilistic index

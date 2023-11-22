@@ -36,7 +36,8 @@
 buildDfMM = function(pimRes, gene, pi = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint", "fixedpoint"),
                      weightFunction, hypFrame, designVars){
     pi = match.arg(pi)
-    stopifnot((lg <- length(gene)) %in% c(1, 2), is(weightFunction, "scam"), is.hyperframe(hypFrame), is.character(designVars))
+    stopifnot((lg <- length(gene)) %in% c(1, 2), missing(weightFunction) || is(weightFunction, "scam"),
+              is.hyperframe(hypFrame), missing(designVars) || is.character(designVars))
     #Check whether genes are present
     if(any(id <- !(sund(gene) %in% attr(hypFrame, "features")))){
         stop("Features\n", sund(gene)[id], "\nnot found in hyperframe")

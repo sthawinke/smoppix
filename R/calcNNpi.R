@@ -2,20 +2,21 @@
 #'
 #' @inheritParams estPimsSingle
 #' @inheritParams calcAllDistPI
+#' @param n the number of subsampled distances
 #'
 #' @importFrom spatstat.geom nndist crossdist npoints area
 #' @importFrom spatstat.random rpoispp
 #' @importFrom stats ecdf
 #' @importFrom Rfast rowMins colMins
 #' @return The estimated probabilistic index
-calcNNPI = function(pSub, p, null, nSims, ecdfs){
+calcNNPI = function(pSub, p, null, nSims, ecdfs, n){
     obsDistNN = nndist(pSub)
     if(null == "background"){
         NP = npoints(pSub)
         obsDistRank = vapply(seq_along(obsDistNN), FUN.VALUE = double(1), function(i){
                 round(ecdfs[[i]](obsDistNN[i])*environment(ecdfs[[i]])$nobs)
             }) + 1
-        mean(pnhyper(obsDistRank, n = nrow(rowSortMat)- NP + 1, m = NP - 1, r = 1))#Exclude event itself
+        mean(pnhyper(obsDistRank, n = n- NP + 1, m = NP - 1, r = 1))#Exclude event itself
     } else if(null == "CSR"){
         lambda = npoints(pSub)/area(p$window)
         simDistsNN = lapply(integer(nSims), function(i){
@@ -24,10 +25,10 @@ calcNNPI = function(pSub, p, null, nSims, ecdfs){
         mean(ecdf(unlist(simDistsNN))(obsDistNN))
     }
 }
-calcNNPIpair = function(cd, id1, id2, null, p, ecdfs){
+calcNNPIpair = function(cd, id1, id2, null, p, ecdfs, nSims){
     npp = npoints(p)
+    obsDistNN = c(rowMins(cd, value = TRUE), colMins(cd, value = TRUE))
     if(null == "background"){
-        obsDistNN = c(rowMins(cd, value = TRUE), colMins(cd, value = TRUE))
         obsDistRank = vapply(c(id1, id2), FUN.VALUE = double(1), function(i){
             round(ecdfs[[i]](obsDistNN[i])*environment(ecdfs[[i]])$nobs)
         }) + 1
@@ -38,13 +39,14 @@ calcNNPIpair = function(cd, id1, id2, null, p, ecdfs){
         #Using the negative hypergeometric precludes Monte-Carlo
     } else if(null == "CSR"){
         pSim = runifpoint(npp, win = p$window)
-        simDistsNN = lapply(integer(nSims), function(i){
-            id <- sample(npp, length(id1)+length(id2), replace = Replace)
-            p1 = pSim[id[seq_len(np1)],];p2 = pSim[-id[seq_len(np1)],]
+        np1 = length(id1);np2 = length(id2)
+        simDistsNN = vapply(FUN.VALUE = obsDistNN, integer(nSims), function(i){
+            id <- sample(npp, np1+np2)
+            p1 = pSim[id[seq_len(np1)],];p2 = pSim[id[seq_len(np2)],]
             distMatSub = crossdist(p1, p2)
             c(rowMins(distMatSub, value = TRUE), colMins(distMatSub, value = TRUE))
         })
-        mean(ecdf(unlist(simDistsNN))(obsDistNN))
+        mean(simDistsNN < obsDistNN)
     }
 }
 #' Fast version of nncross

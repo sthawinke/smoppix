@@ -16,6 +16,7 @@ test_that("Building data frames for mixed modelling proceeds without errors", {
     expect_s3_class(dfCSR5 <- buildDfMM(piEstsCSR, hypFrame = hypFrame2, gene = "gene20", pi = "nn"), "data.frame")
     expect_s3_class(dfCSR6 <- buildDfMM(piEstsCSR, hypFrame = hypFrame2, gene = "gene2--gene20", pi = "nnPair"), "data.frame")
     expect_s3_class(dfCSR7 <- buildDfMM(piEstsCSR, hypFrame = hypFrame2, gene = "gene2--gene23", pi = "allDistPair"), "data.frame")
+    expect_true(all(dfCSR7$pi > 0 & dfCSR7$pi < 1) && all(dfBG3$pi > 0 & dfBG3$pi < 1))
 })
 piEstsCSR2 <- estPims(hypFrame2, pis = c("nn"), features = c("gene1", "gene2"),
                      point = c(0.5, 0.5), null = "CSR")
