@@ -25,17 +25,16 @@ calcNNPI = function(pSub, p, null, nSims, ecdfs, n){
         mean(ecdf(unlist(simDistsNN))(obsDistNN))
     }
 }
-calcNNPIpair = function(cd, id1, id2, null, p, ecdfs, nSims){
+calcNNPIpair = function(cd, id1, id2, null, p, ecdfs, nSims, n){
     npp = npoints(p)
     obsDistNN = c(rowMins(cd, value = TRUE), colMins(cd, value = TRUE))
     if(null == "background"){
-        obsDistRank = vapply(c(id1, id2), FUN.VALUE = double(1), function(i){
+        obsDistRank = vapply(seq_along(obsDistNN), FUN.VALUE = double(1), function(i){
             round(ecdfs[[i]](obsDistNN[i])*environment(ecdfs[[i]])$nobs)
         }) + 1
         seq1 = seq_along(id1)
-        PP = ncol(obsDistRank)
-        mean(c(pnhyper(obsDistRank[seq1], n = PP-length(id2), m = length(id2), r = 1),
-                             pnhyper(obsDistRank[-seq1], n = PP-length(id1), m = length(id1), r = 1)))
+        mean(c(pnhyper(obsDistRank[seq1], n = n-length(id2), m = length(id2), r = 1),
+               pnhyper(obsDistRank[-seq1], n = n-length(id1), m = length(id1), r = 1)))
         #Using the negative hypergeometric precludes Monte-Carlo
     } else if(null == "CSR"){
         pSim = runifpoint(npp, win = p$window)

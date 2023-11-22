@@ -131,7 +131,7 @@ lmeMod = lmer(pi - 0.5 ~ day + (1|root), data = dfUniNN, na.action = na.omit,
 
 Alternatively, a wrapper function is available that fits such LMMs for every gene:
 
-```{r}
+```{r, include = FALSE}
 allModsNN = fitLMMs(nnObj, pi  = "nn", hypFrame = hypYang, weightFunction = wfNN, 
                     fixedVars = "day", randomVars = "root")
 ```
@@ -154,7 +154,6 @@ plotWf(wfNNpair)
 dfBiNN = buildDfMM(nnObj, gene = "SmVMD2--SMPINR", pi  = "nnPair", hypFrame = hypYang, 
                    weightFunction = wfNNpair, designVars = c("day", "root"))
 ```
-
 
 # Eng2019: Mouse brain cells
 

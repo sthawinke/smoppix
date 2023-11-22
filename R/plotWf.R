@@ -32,6 +32,8 @@ plotWf = function(wf, ...){
     } else {
         tmp = data.frame("NP" = exp(wf$model[, "log(NP)"]))
         df = cbind("weight" = 1/exp(predict.scam(wf, newdata = tmp)), tmp)
-        plot(weight ~ NP, data = df[order(df$NP),], type = "l", xlab = "Number of observations", ylab = "Weight")
+        plot(weight ~ NP, data = df[order(df$NP),], type = "l",
+             xlab = "Number of observations", ylab = "Weight",
+             main = paste("Weighing function for probabilistic indices of type", pi))
     }
 }
