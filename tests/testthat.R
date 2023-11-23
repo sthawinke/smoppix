@@ -45,4 +45,11 @@ piEstsBG <- estPims(hypFrame2, pis = c("nn", "allDist", "nnPair", "allDistPair",
                     point = c(0.5, 0.5), null = "background")
 piEstsCSR <- estPims(hypFrame2, pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", "fixedpoint", "midpoint"),
                      point = c(0.5, 0.5), null = "CSR", features = c("gene2", "gene20"))
+wf <- buildWeightFunction(piEstsBG, pi = "nn", hypFrame = hypFrame2, designVars = "condition")
+wfCSR <- buildWeightFunction(piEstsCSR, pi = "nn", hypFrame = hypFrame2, designVars = "condition")
+wfCSRall <- buildWeightFunction(piEstsCSR, pi = "allDist", hypFrame = hypFrame2, designVars = "condition")
+wfPair <- buildWeightFunction(piEstsBG, pi = "nnPair", hypFrame = hypFrame2, designVars = "condition")
+wfAll <- buildWeightFunction(piEstsBG, pi = "allDist", hypFrame = hypFrame2, designVars = "condition")
+wfCSRPair <- buildWeightFunction(piEstsCSR, pi = "nnPair", hypFrame = hypFrame2, designVars = "condition")
+wfCSRAllPair <- buildWeightFunction(piEstsCSR, pi = "allDistPair", hypFrame = hypFrame2, designVars = "condition")
 test_check("spatrans")

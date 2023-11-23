@@ -1,9 +1,9 @@
 context("Constructing the weight function")
 test_that("The built weight function has the desired properties", {
-    expect_s3_class(wf <- buildWeightFunction(piEstsBG, pi = "nn", hypFrame = hypFrame2, designVars = "condition"), "scam")
-    expect_s3_class(wfCSR <- buildWeightFunction(piEstsCSR, pi = "nn", hypFrame = hypFrame2, designVars = "condition"), "scam")
-    expect_s3_class(wfPair <- buildWeightFunction(piEstsBG, pi = "nnPair", hypFrame = hypFrame2, designVars = "condition"), "scam")
-    expect_s3_class(wfAll <- buildWeightFunction(piEstsBG, pi = "allDist", hypFrame = hypFrame2, designVars = "condition"), "scam")
+    expect_s3_class(wf, "scam")
+    expect_s3_class(wfCSR, "scam")
+    expect_s3_class(wfPair, "scam")
+    expect_s3_class(wfAll, "scam")
     expect_s3_class(wfPairAll <- buildWeightFunction(piEstsBG, pi = "allDistPair", hypFrame = hypFrame2, designVars = "condition"), "scam")
     expect_type(pred <- evalWeightFunction(wf), "double")
     expect_true(all(pred>0))

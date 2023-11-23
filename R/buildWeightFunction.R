@@ -5,6 +5,9 @@
 #' @param hypFrame The hyperframe with all the data
 #' @param designVars A character vector containing all design factors (both fixed and random), that are also present as variables in hypFrame
 #' @param ... Additional arguments passed on to the scam::scam function
+#' @param maxObs,maxFeatures The maximum number of observations respectively features for fitting the weight function. See details
+#' @details For computational and memory reasons, for large datasets the trend fitting
+#' is restricted to a subset of the data through the maxObs and maxFeatures parameters.
 #'
 #' @return A fitted scam object, which can be used to
 #' @details The scam functions fits a decreasing spline of the variance as a function of the number of observations
@@ -20,14 +23,13 @@
 #' #First Build the weight function
 #' wf <- buildWeightFunction(yangPims, pi = "nn", hypFrame = hypYang, designVars = c("day", "root"))
 buildWeightFunction = function(pimRes, pi = c("nn", "allDist", "nnPair", "allDistPair"),
-                               hypFrame, designVars, maxObs = 1e6, ...){
+                               hypFrame, designVars, maxObs = 1e6, maxFeatures = 1e3,...){
     if(any(pi==c("edge", "midpoint", "fixedpoint")))
         stop("Calculating weight matrices for distances to fixed points is unnecessary as they are independent.
              Simply proceed with fitting the model on the indiviual evaluations of the B-function.")
     if(any(idMissing <- !(designVars %in% colnames(hypFrame)))){
         stop("Design variables\n", designVars[idMissing], "\nnot found in hypFrame object")
     }
-    if(length(attr(pimRes, "features")))
     pi = match.arg(pi)
     foo = checkAttr(pimRes, pi)
     piListName = if(pairId <- grepl("Pair", pi)) "biPIs" else "uniPIs"
@@ -42,7 +44,7 @@ buildWeightFunction = function(pimRes, pi = c("nn", "allDist", "nnPair", "allDis
     })
     designVec = apply(as.data.frame(hypFrame[, designVars, drop = FALSE]), 1, paste, collapse = "_")
     ordDesign = order(designVec) #Ensure correct ordering for tapply
-    features = attr(hypFrame, "features")
+    features = attr(pimRes, "features")
     if(pairId){
         features = apply(combn(features, 2), 2, paste, collapse = "--")
     }

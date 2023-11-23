@@ -36,8 +36,7 @@
 buildDfMM = function(pimRes, gene, pi = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint", "fixedpoint"),
                      weightFunction, hypFrame, designVars){
     pi = match.arg(pi)
-    stopifnot((lg <- length(gene)) %in% c(1, 2), missing(weightFunction) || is(weightFunction, "scam"),
-              is.hyperframe(hypFrame), missing(designVars) || is.character(designVars))
+    stopifnot((lg <- length(gene)) %in% c(1, 2), is(weightFunction, "scam"), is.hyperframe(hypFrame), is.character(designVars))
     #Check whether genes are present
     if(any(id <- !(sund(gene) %in% attr(hypFrame, "features")))){
         stop("Features\n", sund(gene)[id], "\nnot found in hyperframe")
@@ -46,9 +45,9 @@ buildDfMM = function(pimRes, gene, pi = c("nn", "allDist", "nnPair", "allDistPai
     foo = checkAttr(pimRes, pi)
     if(!missing(weightFunction))
         foo = checkAttr(weightFunction, pi)
-    else
-        message("No weight function supplied, we will use approximative weigths.
-                Consider fitting a weight function with buildWeightFunction()" ,
+    else if(!(pi %in% c("edge", "midpoint", "fixedpoint")))
+        message("No weight function supplied, we will use approximative weigths.\n",
+                "Consider fitting a weight function with buildWeightFunction() " ,
                 "and supplying it in the 'weightFunction' argument for improved inference.")
     df = if(pairId <- grepl(pattern = "Pair", pi)){
         if(lg == 2){

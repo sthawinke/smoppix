@@ -9,6 +9,8 @@ buildWeightFunction(
   pi = c("nn", "allDist", "nnPair", "allDistPair"),
   hypFrame,
   designVars,
+  maxObs = 1e+06,
+  maxFeatures = 1000,
   ...
 )
 }
@@ -21,6 +23,8 @@ buildWeightFunction(
 
 \item{designVars}{A character vector containing all design factors (both fixed and random), that are also present as variables in hypFrame}
 
+\item{maxObs, maxFeatures}{The maximum number of observations respectively features for fitting the weight function. See details}
+
 \item{...}{Additional arguments passed on to the scam::scam function}
 }
 \value{
@@ -30,6 +34,9 @@ A fitted scam object, which can be used to
 Build a weight function based on the data
 }
 \details{
+For computational and memory reasons, for large datasets the trend fitting
+is restricted to a subset of the data through the maxObs and maxFeatures parameters.
+
 The scam functions fits a decreasing spline of the variance as a function of the number of observations
 }
 \examples{
