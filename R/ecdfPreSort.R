@@ -2,6 +2,7 @@
 #'
 #' @param x The ordered vector
 #' @return The ecdf function
+#' @importFrom stats approxfun
 ecdfPreSort = function (x)
 {
     n <- length(x)

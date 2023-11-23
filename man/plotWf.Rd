@@ -10,8 +10,6 @@ plotWf(wf, ...)
 \item{wf}{The fitted scam object}
 
 \item{...}{Passed onto the plot.scam function for 1D splines}
-
-\item{se}{A boolean, should standard errors be plotted?}
 }
 \value{
 For univariate PI, returns a line plot; for bivariate PI a ggplot object
@@ -27,6 +25,7 @@ yangPims = estPims(hypYang, pis = c("nn", "nnPair"))
 #First Build the weight function
 wf <- buildWeightFunction(yangPims, pi = "nn", hypFrame = hypYang, designVars = c("day", "root"))
 plot(wf)
-wfPair <- buildWeightFunction(yangPims, pi = "nnPair", hypFrame = hypYang, designVars = c("day", "root"))
+wfPair <- buildWeightFunction(yangPims, pi = "nnPair", hypFrame = hypYang,
+ designVars = c("day", "root"))
 plot(wfPair)
 }

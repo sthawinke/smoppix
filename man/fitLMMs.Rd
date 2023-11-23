@@ -2,7 +2,7 @@
 % Please edit documentation in R/fitLMMs.R
 \name{fitLMMs}
 \alias{fitLMMs}
-\title{Fti linear mixed nodels for all features of a pimRes object}
+\title{Fit linear mixed nodels for all features of a pimRes object}
 \usage{
 fitLMMs(
   pimRes,
@@ -21,12 +21,14 @@ fitLMMs(
 \item{weightFunction}{The weighing function, obtained by the buildWeightFunction() function}
 
 \item{hypFrame}{The hyperframe with the data}
+
+\item{fixedVars, randomVars}{Names of fixed and random variables}
 }
 \value{
 A fitted linear mixed model of class 'lmerTest'
 }
 \description{
-Fti linear mixed nodels for all features of a pimRes object
+Fit linear mixed nodels for all features of a pimRes object
 }
 \examples{
 data(Yang)
@@ -37,5 +39,5 @@ yangPims = estPims(hypYang, pis = "nn", features = attr(hypYang, "features")[seq
 wf <- buildWeightFunction(yangPims, pi = "nn", hypFrame = hypYang,
 designVars = c("day", "root"))
 fittedModels = fitLMMs(yangPims, pi = "nn", weightFunction = wf,
-fixedVars = "time", randomVars = "root")
+fixedVars = "time", randomVars = "root",  hypFrame = hypYang)
 }

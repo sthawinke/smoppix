@@ -1,7 +1,6 @@
 #' Plot the weighting function: The observation weigth as a function of the number of observations
 #'
 #' @param wf The fitted scam object
-#' @param se A boolean, should standard errors be plotted?
 #' @param ... Passed onto the plot.scam function for 1D splines
 #'
 #' @return For univariate PI, returns a line plot; for bivariate PI a ggplot object
@@ -16,7 +15,8 @@
 #' #First Build the weight function
 #' wf <- buildWeightFunction(yangPims, pi = "nn", hypFrame = hypYang, designVars = c("day", "root"))
 #' plot(wf)
-#' wfPair <- buildWeightFunction(yangPims, pi = "nnPair", hypFrame = hypYang, designVars = c("day", "root"))
+#' wfPair <- buildWeightFunction(yangPims, pi = "nnPair", hypFrame = hypYang,
+#'  designVars = c("day", "root"))
 #' plot(wfPair)
 plotWf = function(wf, ...){
     stopifnot(is(wf, "scam"))
