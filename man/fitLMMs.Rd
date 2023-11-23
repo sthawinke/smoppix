@@ -34,10 +34,11 @@ Fit linear mixed nodels for all features of a pimRes object
 data(Yang)
 hypYang = buildHyperFrame(Yang, coordVars = c("x", "y"),
 designVar = c("day", "root", "section"))
+#Fit a subset of features to limit computation time
 yangPims = estPims(hypYang, pis = "nn", features = attr(hypYang, "features")[seq_len(20)])
 #First build the weight function
 wf <- buildWeightFunction(yangPims, pi = "nn", hypFrame = hypYang,
 designVars = c("day", "root"))
 fittedModels = fitLMMs(yangPims, pi = "nn", weightFunction = wf,
-fixedVars = "time", randomVars = "root",  hypFrame = hypYang)
+fixedVars = "day", randomVars = "root",  hypFrame = hypYang)
 }

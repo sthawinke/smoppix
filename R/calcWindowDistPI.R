@@ -9,7 +9,7 @@
 #' @importFrom spatstat.geom nncross centroid.owin edges
 #' @details Analysis of the distance to the border was introduced by \insertCite{Joyner2013}{spatrans} in the form of the B-function.
 #' The independent evaluations of the B-functions per cell are here returned as realizations of the probabilistic index.
-#' @seealso [addCell]
+#' @seealso \link{addCell}
 #' @references
 #' \insertAllCited{}
 calcWindowDistPI = function(pSub, owins, ecdfAll, towhat){

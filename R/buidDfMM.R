@@ -14,7 +14,9 @@
 #' data(Yang)
 #' hypYang = buildHyperFrame(Yang, coordVars = c("x", "y"),
 #' designVar = c("day", "root", "section"))
-#' yangPims = estPims(hypYang, pis = c("nn", "nnPair"))
+#' #Fit a subset of features to limit computation time
+#' yangPims = estPims(hypYang, pis = c("nn", "nnPair"),
+#' features = attr(hypYang, "features")[1:20])
 #' #First build the weight function
 #' wf <- buildWeightFunction(yangPims, pi = "nn", hypFrame = hypYang,
 #' designVars = c("day", "root"))
