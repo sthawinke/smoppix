@@ -1,6 +1,7 @@
-#' Fti linear mixed nodels for all features of a pimRes object
+#' Fit linear mixed nodels for all features of a pimRes object
 #'
 #' @inheritParams buildDfMM
+#' @param fixedVars,randomVars Names of fixed and random variables
 #'
 #' @return A fitted linear mixed model of class 'lmerTest'
 #' @export
@@ -16,7 +17,7 @@
 #' wf <- buildWeightFunction(yangPims, pi = "nn", hypFrame = hypYang,
 #' designVars = c("day", "root"))
 #' fittedModels = fitLMMs(yangPims, pi = "nn", weightFunction = wf,
-#' fixedVars = "time", randomVars = "root")
+#' fixedVars = "time", randomVars = "root",  hypFrame = hypYang)
 fitLMMs = function(pimRes, pi = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint", "fixedpoint"),
                    weightFunction, hypFrame, fixedVars, randomVars){
     pi = match.arg(pi)

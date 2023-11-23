@@ -44,7 +44,7 @@ register(MulticoreParam(nCores))
 piEstsBG <- estPims(hypFrame2, pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", "fixedpoint", "midpoint"),
                     point = c(0.5, 0.5), null = "background")
 piEstsCSR <- estPims(hypFrame2, pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", "fixedpoint", "midpoint"),
-                     point = c(0.5, 0.5), null = "CSR", features = c("gene2", "gene20"))
+                     point = c(0.5, 0.5), null = "CSR")
 wf <- buildWeightFunction(piEstsBG, pi = "nn", hypFrame = hypFrame2, designVars = "condition")
 wfCSR <- buildWeightFunction(piEstsCSR, pi = "nn", hypFrame = hypFrame2, designVars = "condition")
 wfCSRall <- buildWeightFunction(piEstsCSR, pi = "allDist", hypFrame = hypFrame2, designVars = "condition")

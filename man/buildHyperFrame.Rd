@@ -14,8 +14,8 @@ buildHyperFrame(x, ...)
 \S4method{buildHyperFrame}{data.frame}(
   x,
   coordVars,
-  designVar,
-  coVars = setdiff(names(x), c(designVar, coordVars)),
+  designVars,
+  coVars = setdiff(names(x), c(designVars, coordVars)),
   ...
 )
 
@@ -23,7 +23,7 @@ buildHyperFrame(x, ...)
 
 \S4method{buildHyperFrame}{list}(x, ...)
 
-\S4method{buildHyperFrame}{SpatialExperiment}(x, designVar, coVars, ...)
+\S4method{buildHyperFrame}{SpatialExperiment}(x, designVars, coVars, ...)
 }
 \arguments{
 \item{x}{the input object, see methods("buildHyperFrame")}
@@ -32,7 +32,7 @@ buildHyperFrame(x, ...)
 
 \item{coordVars}{Names of coordinates}
 
-\item{designVar}{A single character vector, name of the design variable}
+\item{designVars}{A character vector, together uniquely defining the point pattern (image)}
 
 \item{coVars}{Names of covariates such as gene or cell for each single point}
 
@@ -51,5 +51,5 @@ Built the hyperframe containing all separate point patterns that will
 \examples{
 data(Yang)
 hypYang = buildHyperFrame(Yang, coordVars = c("x", "y"),
-designVar = c("day", "root", "section"))
+designVars = c("day", "root", "section"))
 }

@@ -6,6 +6,8 @@
 #'
 #' @return Plots a facet of point patterns to output
 #' @importFrom spatstat.geom is.hyperframe
+#' @importFrom grDevices palette
+#' @importFrom graphics par legend
 #' @export
 #'
 #' @examples

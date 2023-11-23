@@ -42,7 +42,7 @@
 #' names(wList) = rownames(hypFrame) #Matching names is necessary
 #' hypFrame2 = addCell(hypFrame, wList)
 addCell = function(hypFrame, owins, checkOverlap = TRUE, warnOut = TRUE){
-    stopifnot(nrow(hypFrame) == length(owins), all(unlist(lapply(owins, function(x) sapply(x, is.owin)))),
+    stopifnot(nrow(hypFrame) == length(owins), all(unlist(lapply(owins, function(x) vapply(x, FUN.VALUE = FALSE, is.owin)))),
               all(rownames(hypFrame) %in% names(owins)), is(hypFrame, "hyperframe"))
     Feat = attr(hypFrame, "features")
     for(nn in rownames(hypFrame)){

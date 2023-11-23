@@ -173,7 +173,6 @@ summary(lmeModNN)
 
 We find a significant positive intercept `r summary(lmeModNN)$coef["(Intercept)", "Estimate"]+0.5`, indicating strong antilocalization.
 
-
 # Eng2019: Mouse brain cells
 
 ### Tests for vicinity to cell wall or fixed point: distances to fixed objects

@@ -15,6 +15,8 @@ calcNNPI(pSub, p, null, nSims, ecdfs, n)
 
 \item{nSims}{The number of Monte-Carlo simulations used to determine the null distribution if null = "CSR}
 
+\item{ecdfs}{A list of empirical distribution functions, one for each event}
+
 \item{n}{the number of subsampled distances}
 }
 \value{
