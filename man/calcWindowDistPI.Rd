@@ -29,5 +29,5 @@ The independent evaluations of the B-functions per cell are here returned as rea
 \insertAllCited{}
 }
 \seealso{
-[addCell]
+\link{addCell}
 }

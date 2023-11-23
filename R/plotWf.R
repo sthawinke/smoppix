@@ -14,10 +14,10 @@
 #' yangPims = estPims(hypYang, pis = c("nn", "nnPair"))
 #' #First Build the weight function
 #' wf <- buildWeightFunction(yangPims, pi = "nn", hypFrame = hypYang, designVars = c("day", "root"))
-#' plot(wf)
+#' plotWf(wf)
 #' wfPair <- buildWeightFunction(yangPims, pi = "nnPair", hypFrame = hypYang,
 #'  designVars = c("day", "root"))
-#' plot(wfPair)
+#' plotWf(wfPair)
 plotWf = function(wf, ...){
     stopifnot(is(wf, "scam"))
     if(grepl("Pair", attr(wf, "pi"))){
