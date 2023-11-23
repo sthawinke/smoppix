@@ -24,8 +24,15 @@ designVar = c("day", "root", "section"))
 yangPims = estPims(hypYang, pis = c("nn", "nnPair"))
 #First Build the weight function
 wf <- buildWeightFunction(yangPims, pi = "nn", hypFrame = hypYang, designVars = c("day", "root"))
+<<<<<<< HEAD
 plotWf(wf)
 wfPair <- buildWeightFunction(yangPims, pi = "nnPair", hypFrame = hypYang,
  designVars = c("day", "root"))
 plotWf(wfPair)
+=======
+plot(wf)
+wfPair <- buildWeightFunction(yangPims, pi = "nnPair", hypFrame = hypYang,
+ designVars = c("day", "root"))
+plot(wfPair)
+>>>>>>> d7c4c1a65b17ad79d787cd9e685d8223bc0f74ab
 }
