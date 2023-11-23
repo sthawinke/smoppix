@@ -23,7 +23,7 @@
 #' @importFrom Rdpack reprompt
 #' @importFrom Rfast rowSort rowMins
 #' @importFrom extraDistr pnhyper
-estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 3e3, nPointsAllWin = 2e2, features = NULL,
+estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3, nPointsAllWin = 2e2, features = NULL,
                    allowManyGenePairs = FALSE, manyPairs = 1e6, verbose = FALSE,
                    owins = NULL, point){
     if(is.null(features)){
