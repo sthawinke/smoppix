@@ -20,12 +20,12 @@
 #' hypYang = buildHyperFrame(Yang, coordVars = c("x", "y"),
 #' designVar = c("day", "root", "section"))
 #' #Fit a subset of features to limit computation time
-#' yangPims = estPims(hypYang, pis = c("nn", "nnPair"), features = attr(hypYang, "features")[1:20])
+#' yangPims = estPims(hypYang, pis = c("nn", "nnPair"), features = attr(hypYang, "features")[1:12])
 #' #First Build the weight function
 #' wf <- buildWeightFunction(yangPims, pi = "nn", hypFrame = hypYang,
 #' designVars = c("day", "root"))
 buildWeightFunction = function(pimRes, pi = c("nn", "allDist", "nnPair", "allDistPair"),
-                               hypFrame, designVars, maxObs = 1e6, maxFeatures = 1e3,...){
+                               hypFrame, designVars, maxObs = 1e5, maxFeatures = 5e2,...){
     if(any(pi==c("edge", "midpoint", "fixedpoint")))
         stop("Calculating weight matrices for distances to fixed points is unnecessary as they are independent.
              Simply proceed with fitting the model on the indiviual evaluations of the B-function.")
