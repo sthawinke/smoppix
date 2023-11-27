@@ -5,24 +5,17 @@
 \title{Build a data frame for a single gene and measure to prepare for mixed model building}
 \usage{
 buildDfMM(
-  pimRes,
+  resList,
   gene,
-  pi = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint", "fixedpoint"),
-  weightFunction,
-  hypFrame,
-  designVars
+  pi = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint", "fixedpoint")
 )
 }
 \arguments{
-\item{pimRes}{The result of a call to estPims()}
-
 \item{gene}{A character string indicating the desired gene or gene pair}
 
 \item{pi}{character string indicating the desired pim as outcome in the linear mixed model}
 
-\item{weightFunction}{The weighing function, obtained by the buildWeightFunction() function}
-
-\item{hypFrame}{The hyperframe with the data}
+\item{pimRes}{The result of a call to estPims()}
 
 \item{designVars}{Optionally, the design variables to be included in the dataframe. Defaults to all variables in the hyperframe.}
 }
@@ -38,7 +31,7 @@ hypYang = buildHyperFrame(Yang, coordVars = c("x", "y"),
 designVar = c("day", "root", "section"))
 #Fit a subset of features to limit computation time
 yangPims = estPims(hypYang, pis = c("nn", "nnPair"),
-features = attr(hypYang, "features")[1:20])
+features = attr(hypYang, "features")[1:12])
 #First build the weight function
 wf <- buildWeightFunction(yangPims, pi = "nn", hypFrame = hypYang,
 designVars = c("day", "root"))
@@ -53,7 +46,7 @@ hypFrame = hypYang,  weightFunction = wfPair, designVars = c("root", "day"))
 #Example analysis with linear mixed model
 library(lmerTest)
 #Use sum coding for day to maintain interpretability of the intercept
-mixedMod = lmer(pi - 0.5~ day + (1|root), weight = weight, data = dfBiNN,
+mixedMod = lmer(pi - 0.5 ~ day + (1|root), weight = weight, data = dfBiNN,
 contrasts = list("day" = "contr.sum"))
 summary(mixedMod)
 #Evidence for anticorrelation

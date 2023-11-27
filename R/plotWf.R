@@ -1,6 +1,7 @@
 #' Plot the weighting function: The observation weigth as a function of the number of observations
 #'
 #' @param wf The fitted scam object
+#' @param pi
 #' @param ... Passed onto the plot.scam function for 1D splines
 #'
 #' @return For univariate PI, returns a line plot; for bivariate PI a ggplot object
@@ -18,9 +19,13 @@
 #' wfPair <- buildWeightFunction(yangPims, pi = "nnPair", hypFrame = hypYang,
 #'  designVars = c("day", "root"))
 #' plotWf(wfPair)
-plotWf = function(wf, ...){
-    stopifnot(is(wf, "scam"))
-    if(grepl("Pair", attr(wf, "pi"))){
+plotWf = function(resList, pi = c("nn", "nnPair", "allDist", "allDistPair"), ...){
+    if(is.null(resList$Wfs)){
+        stop("Weight functions not yet estimated! Add them using the addWeightFunction() function.")
+    }
+    pi = match.arg(pi)
+    wf = resList$Wfs[[pi]]
+    if(grepl("Pair", pi)){
         tmp = exp(wf$model[, c("log(maxP)", "log(minP)")])
         colnames(tmp) = c("maxP", "minP")
         df = cbind("variance" = exp(predict.scam(wf, newdata = tmp)), tmp)

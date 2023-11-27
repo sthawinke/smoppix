@@ -4,12 +4,12 @@
 \alias{plotWf}
 \title{Plot the weighting function: The observation weigth as a function of the number of observations}
 \usage{
-plotWf(wf, ...)
+plotWf(resList, pi = c("nn", "nnPair", "allDist", "allDistPair"), ...)
 }
 \arguments{
-\item{wf}{The fitted scam object}
-
 \item{...}{Passed onto the plot.scam function for 1D splines}
+
+\item{wf}{The fitted scam object}
 }
 \value{
 For univariate PI, returns a line plot; for bivariate PI a ggplot object
@@ -21,18 +21,11 @@ Plot the weighting function: The observation weigth as a function of the number 
 data(Yang)
 hypYang = buildHyperFrame(Yang, coordVars = c("x", "y"),
 designVar = c("day", "root", "section"))
-yangPims = estPims(hypYang, pis = c("nn", "nnPair"))
+yangPims = estPims(hypYang, pis = c("nn", "nnPair"), features = attr(hypYang, "features")[1:12])
 #First Build the weight function
 wf <- buildWeightFunction(yangPims, pi = "nn", hypFrame = hypYang, designVars = c("day", "root"))
-<<<<<<< HEAD
 plotWf(wf)
 wfPair <- buildWeightFunction(yangPims, pi = "nnPair", hypFrame = hypYang,
  designVars = c("day", "root"))
 plotWf(wfPair)
-=======
-plot(wf)
-wfPair <- buildWeightFunction(yangPims, pi = "nnPair", hypFrame = hypYang,
- designVars = c("day", "root"))
-plot(wfPair)
->>>>>>> d7c4c1a65b17ad79d787cd9e685d8223bc0f74ab
 }

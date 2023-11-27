@@ -18,10 +18,6 @@ fitLMMs(
 
 \item{pi}{character string indicating the desired pim as outcome in the linear mixed model}
 
-\item{weightFunction}{The weighing function, obtained by the buildWeightFunction() function}
-
-\item{hypFrame}{The hyperframe with the data}
-
 \item{fixedVars, randomVars}{Names of fixed and random variables}
 }
 \value{
@@ -40,9 +36,5 @@ yangPims = estPims(hypYang, pis = "nn", features = attr(hypYang, "features")[seq
 wf <- buildWeightFunction(yangPims, pi = "nn", hypFrame = hypYang,
 designVars = c("day", "root"))
 fittedModels = fitLMMs(yangPims, pi = "nn", weightFunction = wf,
-<<<<<<< HEAD
 fixedVars = "day", randomVars = "root",  hypFrame = hypYang)
-=======
-fixedVars = "time", randomVars = "root",  hypFrame = hypYang)
->>>>>>> d7c4c1a65b17ad79d787cd9e685d8223bc0f74ab
 }

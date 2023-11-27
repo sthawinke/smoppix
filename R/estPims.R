@@ -151,12 +151,10 @@ estPims = function(hypFrame, pis = c("nn", "allDist", "nnPair", "allDistPair", "
     if(any(id <- !(features %in% attr(hypFrame, "features")))){
         stop("Features ", features[id], " not found in hyperframe")
     }
-   out = bplapply(seq_len(nrow(hypFrame)), function(x){
+    hypFrame$pimRes = bplapply(seq_len(nrow(hypFrame)), function(x){
        with(hypFrame[x,, drop = TRUE], estPimsSingle(ppp, owins = owins, pis = pis, null = null, tabObs = tabObs,...))
    })
-   attr(out, "pis") = pis #Tag the pims calculated
-   attr(out, "features") = features #Remember for which features the pims were calculated
-   names(out) = rownames(hypFrame)
-   out
-
+   attr(hypFrame, "pis") = pis #Tag the pims calculated
+   attr(hypFrame, "featuresEst") = features #Remember for which features the pims were calculated
+   hypFrame
 }
