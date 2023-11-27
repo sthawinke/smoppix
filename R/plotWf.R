@@ -1,7 +1,7 @@
 #' Plot the weighting function: The observation weigth as a function of the number of observations
 #'
 #' @param wf The fitted scam object
-#' @param pi
+#' @param pi The PI for which to plot the weighting function
 #' @param ... Passed onto the plot.scam function for 1D splines
 #'
 #' @return For univariate PI, returns a line plot; for bivariate PI a ggplot object
