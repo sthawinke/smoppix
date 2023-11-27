@@ -128,7 +128,7 @@ estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3, nP
 #' @examples
 #' data(Yang)
 #' hypYang = buildHyperFrame(Yang, coordVars = c("x", "y"),
-#' designVar = c("day", "root", "section"))
+#' imageVars = c("day", "root", "section"))
 #' #Fit a subset of features to limit computation time
 #' yangPims = estPims(hypYang, pis = c("nn", "nnPair"))
 #' #Both univariate and bivariate tests, with nearest neighbour distances

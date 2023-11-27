@@ -11,6 +11,7 @@
 #' @details The scam functions fits a decreasing spline of the variance as a function of the number of observations
 #' @importFrom scam scam
 #' @importFrom stats formula
+#' @importFrom BiocParallel bplapply
 #' @export
 #' @seealso \link{buildDfMM}
 #' @examples
@@ -20,14 +21,13 @@
 #' #Fit a subset of features to limit computation time
 #' yangPims = estPims(hypYang, pis = c("nn", "nnPair"), features = attr(hypYang, "features")[1:12])
 #' #First Build the weight function
-#' wf <- adddWeightFunction(yangPims, pi = "nn", hypFrame = hypYang,
-#' designVars = c("day", "root"))
+#' yangObj <- addWeightFunction(yangPims, pi = "nn", designVars = c("day", "root"))
 addWeightFunction = function(hypFrame, pis = attr(hypFrame, "pis"), designVars,
                                maxObs = 1e5, maxFeatures = 5e2,...){
     if(missing(designVars))
         designVars = names(hypFrame)[!names(hypFrame) %in% c("ppp", "design", "tabObs", "owins")]
         #If missing take everything but the ones that are obviously no design variables
-    if(any(pis %in% c("edge", "midpoint", "fixedpoint")))
+    if(all(pis %in% c("edge", "midpoint", "fixedpoint")))
         stop("Calculating weight matrices for distances to fixed points is unnecessary as they are independent.
              Simply proceed with fitting the model on the indiviual evaluations of the B-function.")
     pis = match.arg(pis, choices = c("nn", "nnPair", "allDist", "allDistPair"), several.ok = TRUE)
@@ -37,7 +37,7 @@ addWeightFunction = function(hypFrame, pis = attr(hypFrame, "pis"), designVars,
     if(is.null(hypFrame$pimRes)){
         stop("No pims found in the hyperframe. First estimate them using the estPims() function.")
     }
-    Wfs = lapply(pis, function(pi) {
+    Wfs = bplapply(pis, function(pi) {
         piListName = if(pairId <- grepl("Pair", pi)) "biPIs" else "uniPIs"
         piList = lapply(hypFrame$pimRes, function(x){
             if(pairId){
