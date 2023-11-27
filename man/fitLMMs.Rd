@@ -5,17 +5,13 @@
 \title{Fit linear mixed nodels for all features of a pimRes object}
 \usage{
 fitLMMs(
-  pimRes,
+  resList,
   pi = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint", "fixedpoint"),
-  weightFunction,
-  hypFrame,
   fixedVars,
   randomVars
 )
 }
 \arguments{
-\item{pimRes}{The result of a call to estPims()}
-
 \item{pi}{character string indicating the desired pim as outcome in the linear mixed model}
 
 \item{fixedVars, randomVars}{Names of fixed and random variables}

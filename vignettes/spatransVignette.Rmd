@@ -151,8 +151,7 @@ plotWf(nnObj, pi = "nnPair")
 The least expressed gene or minority gene has the strongest influence on the weight. The dataframe is built in a similar way as before:
 
 ```{r}
-dfBiNN = buildDfMM(nnPairObj, gene = "SmVND2--SmPINR", pi  = "nnPair", hypFrame = hypYang, 
-                   weightFunction = wfNNpair, designVars = c("day", "root"))
+dfBiNN = buildDfMM(nnObj, gene = "SmVND2--SmPINR", pi  = "nnPair")
 ```
 
 Finally for the mixed model:

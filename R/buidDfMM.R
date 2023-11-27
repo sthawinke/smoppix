@@ -103,7 +103,7 @@ buildDfMMUni = function(resList, gene, pi){
     return(piMat)
     }
 buildDfMMBi = function(resList, gene, pi){
-    piEsts = t(vapply(seq_along(resList), FUN.VALUE = double(3), function(n){
+    piEsts = t(vapply(seq_along(resList$hypFrame$pimRes), FUN.VALUE = double(3), function(n){
         if(idNull <- is.null(vec <- getGp(resList$hypFrame$pimRes[[n]][["biPIs"]], gene, drop = FALSE)[,pi])){
             vec = NA
             npVec = rep(NA, 2)
@@ -113,7 +113,7 @@ buildDfMMBi = function(resList, gene, pi){
         names(npVec) = c("minP", "maxP")
         c("pi" = unname(vec), npVec)
     }))
-    rownames(piEsts) = names(resList$hypFrame$pimRes)
+    rownames(piEsts) = rownames(resList$hypFrame)
     if(all(is.na(piEsts[,"pi"])))
         stop("Gene pair not found!\n")
     weight = evalWeightFunction(resList$Wfs[[pi]], newdata = data.frame(piEsts[, c("minP", "maxP")]))
