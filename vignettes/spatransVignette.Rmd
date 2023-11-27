@@ -97,13 +97,13 @@ register(MulticoreParam(nCores))
 
 ### Tests for univariate aggregation or regularity: interevent distances
 
-The first round of tests concerns the aggregation or regularity of individual genes. We choose to work with nearest neighbour distances here. The background of all other genes serves as null distribution, i.e. we look for genes aggregated _with respect to_ all other genes
+The first round of tests concerns the aggregation or regularity of individual genes. We choose to work with nearest neighbour distances here (pi = 'nn'). The background of all other genes serves as null distribution, i.e. we look for genes aggregated _with respect to_ all other genes. As this is computationally most efficient, we also fit the PI for the bivariate analysis in this step ('nnPair', see below).
 
 ```{r}
-nnObj = estPims(hypYang, pis = "nn", null = "background")
+nnObj = estPims(hypYang, pis = c("nn", "nnPair"), null = "background")
 ```
 
-A data-driven weighing function is now fitted to the estimates of all genes to share information on variances across features. This requires information on the design too.
+A data-driven weighing function is now fitted to the estimates of all genes to share information on variances across features. This requires information on the design too: all variables that will be included in the final modelling should be provided to 'designVars'. This includes the lowest level of the design variable, 'section' in this case. The variance is estimated over the different sections of the same day and root.
 
 ```{r}
 nnObj = addWeightFunction(nnObj, designVars = c("day", "root"))
@@ -132,8 +132,7 @@ lmeMod = lmer(pi - 0.5 ~ day + (1|root), data = dfUniNN, na.action = na.omit,
 Alternatively, a wrapper function is available that fits such LMMs for every gene:
 
 ```{r, include = FALSE}
-allModsNN = fitLMMs(nnObj, pi  = "nn", hypFrame = hypYang, weightFunction = wfNN, 
-                    fixedVars = "day", randomVars = "root")
+allModsNN = fitLMMs(nnObj, pi  = "nn", fixedVars = "day", randomVars = "root")
 ```
 
 Various errors may occur while fitting, e.g. insufficient non-missing observations. The function finishes silently but returns the error messages in the output. 
@@ -142,18 +141,11 @@ Various errors may occur while fitting, e.g. insufficient non-missing observatio
 
 ### Tests for colocalization or antilocalization: interfeature distances
 
-Tests for colocalization are done by adding the suffix 'Pair' to the PI. All combinations of features provided are fitted.
+Tests for colocalization are done by adding the suffix 'Pair' to the PI. All combinations of features provided are fitted. 
+Again we plot the weighting function, which is now a bivariate spline as a function of the minority and majority gene:
 
 ```{r}
-nnPairObj = estPims(hypYang, pis = "nnPair", null = "background")
-#Limit to 20 features for computational reasons
-```
-
-Again we fit and plot the weighting function, which is now a bivariate spline as a function of the minority and majority gene:
-
-```{r}
-wfNNpair = buildWeightFunction(nnPairObj, pi = "nnPair", hypFrame = hypYang, designVars = c("day", "root"))
-plotWf(wfNNpair)
+plotWf(nnObj, pi = "nnPair")
 ```
 
 The least expressed gene or minority gene has the strongest influence on the weight. The dataframe is built in a similar way as before:

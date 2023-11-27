@@ -59,7 +59,9 @@ buildDfMM = function(resList, gene, pi = c("nn", "allDist", "nnPair", "allDistPa
         }
         buildDfMMUni(gene = gene, pi = pi, resList = resList)
     }
-    data.frame(df, as.data.frame(resList$hypFrame[match(df$design, rownames(resList$hypFrame)), resList$designVars]))
+    out = data.frame(df, as.data.frame(resList$hypFrame[match(df$design, rownames(resList$hypFrame)), resList$designVars]))
+    attr(out, "pi") = pi
+    out
 }
 buildDfMMUni = function(resList, gene, pi){
     piListNameInner = if(fixedId <- any(pi == c("edge", "midpoint", "fixedpoint"))) "windowDists" else "pointDists"

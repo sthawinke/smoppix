@@ -20,11 +20,10 @@
 #'  designVars = c("day", "root"))
 #' plotWf(wfPair)
 plotWf = function(resList, pi = c("nn", "nnPair", "allDist", "allDistPair"), ...){
-    if(is.null(resList$Wfs)){
-        stop("Weight functions not yet estimated! Add them using the addWeightFunction() function.")
-    }
     pi = match.arg(pi)
-    wf = resList$Wfs[[pi]]
+    if(is.null(wf <- resList$Wfs[[pi]])){
+        stop("This type of pi (", pi, ") is not available in the object)")
+    }
     if(grepl("Pair", pi)){
         tmp = exp(wf$model[, c("log(maxP)", "log(minP)")])
         colnames(tmp) = c("maxP", "minP")

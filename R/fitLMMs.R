@@ -19,17 +19,16 @@
 #' designVars = c("day", "root"))
 #' fittedModels = fitLMMs(yangPims, pi = "nn", weightFunction = wf,
 #' fixedVars = "day", randomVars = "root",  hypFrame = hypYang)
-fitLMMs = function(pimRes, pi = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint", "fixedpoint"),
-                   weightFunction, hypFrame, fixedVars, randomVars){
+fitLMMs = function(resList, pi = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint", "fixedpoint"),
+                   fixedVars, randomVars){
     pi = match.arg(pi)
     designVars = c(fixedVars, randomVars)
-    stopifnot(all(designVars %in% names(hypFrame)))
+    stopifnot(all(designVars %in% resList$designVars))
     Formula = formula(paste("pi - 0.5 ~", paste(fixedVars, sep = "+"), "+", paste("(1|", randomVars, ")", collapse = "+")))
     contrasts = lapply(fixedVars, function(x) "contr.sum");names(contrasts) = fixedVars
-    Features = if(grepl("Pair", pi)) makePairs(attr(pimRes, "features")) else attr(pimRes, "features")
+    Features = if(grepl("Pair", pi)) makePairs(attr(resList$hypFrame, "featuresEst")) else attr(resList$hypFrame, "featuresEst")
     models = lapply(Features, function(gene){
-        df = buildDfMM(pimRes, gene = gene, pi  = pi, hypFrame = hypFrame,
-                       weightFunction = weightFunction, designVars = designVars)
+        df = buildDfMM(resList, gene = gene, pi  = pi)
         try(lmer(Formula, data = df, na.action = na.omit, weights = weight,
                  contrasts = contrasts), silent = TRUE)
     })
