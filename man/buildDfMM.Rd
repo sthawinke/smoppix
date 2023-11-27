@@ -28,21 +28,16 @@ Build a data frame for a single gene and measure to prepare for mixed model buil
 \examples{
 data(Yang)
 hypYang = buildHyperFrame(Yang, coordVars = c("x", "y"),
-designVar = c("day", "root", "section"))
+imageVars = c("day", "root", "section"))
 #Fit a subset of features to limit computation time
 yangPims = estPims(hypYang, pis = c("nn", "nnPair"),
-features = attr(hypYang, "features")[1:12])
+features = c(attr(hypYang, "features")[1:12], "SmVND2", "SmPINR"))
 #First build the weight function
-wf <- buildWeightFunction(yangPims, pi = "nn", hypFrame = hypYang,
-designVars = c("day", "root"))
+yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))
 #Now build the data frame for mixed model analysis
-dfUniNN = buildDfMM(yangPims, gene = "SmAHK4e", pi  = "nn",
-hypFrame = hypYang,  weightFunction = wf)
+dfUniNN = buildDfMM(yangObj, gene = "SmAHK4e", pi  = "nn")
 #A bivariate weight function for the pairs
-wfPair = buildWeightFunction(yangPims, pi = "nnPair", hypFrame = hypYang,
-designVars = c("day", "root"))
-dfBiNN = buildDfMM(yangPims, gene = "SmVND2--SmPINR", pi  = "nnPair",
-hypFrame = hypYang,  weightFunction = wfPair, designVars = c("root", "day"))
+dfBiNN = buildDfMM(yangObj, gene = "SmVND2--SmPINR", pi  = "nnPair")
 #Example analysis with linear mixed model
 library(lmerTest)
 #Use sum coding for day to maintain interpretability of the intercept

@@ -8,7 +8,8 @@ fitLMMs(
   resList,
   pi = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint", "fixedpoint"),
   fixedVars,
-  randomVars
+  randomVars,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -25,12 +26,10 @@ Fit linear mixed nodels for all features of a pimRes object
 \examples{
 data(Yang)
 hypYang = buildHyperFrame(Yang, coordVars = c("x", "y"),
-designVar = c("day", "root", "section"))
+imageVars = c("day", "root", "section"))
 #Fit a subset of features to limit computation time
 yangPims = estPims(hypYang, pis = "nn", features = attr(hypYang, "features")[seq_len(20)])
 #First build the weight function
-wf <- buildWeightFunction(yangPims, pi = "nn", hypFrame = hypYang,
-designVars = c("day", "root"))
-fittedModels = fitLMMs(yangPims, pi = "nn", weightFunction = wf,
-fixedVars = "day", randomVars = "root",  hypFrame = hypYang)
+yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))
+fittedModels = fitLMMs(yangObj, fixedVars = "day", randomVars = "root")
 }

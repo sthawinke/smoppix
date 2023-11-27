@@ -42,7 +42,7 @@ The suffix 'Pair' indicates that bivariate probabilistic indices, testing for co
 \examples{
 data(Yang)
 hypYang = buildHyperFrame(Yang, coordVars = c("x", "y"),
-designVar = c("day", "root", "section"))
+imageVars = c("day", "root", "section"))
 #Fit a subset of features to limit computation time
 yangPims = estPims(hypYang, pis = c("nn", "nnPair"))
 #Both univariate and bivariate tests, with nearest neighbour distances
