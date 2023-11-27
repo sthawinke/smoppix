@@ -7,6 +7,7 @@
 addWeightFunction(
   hypFrame,
   pis = attr(hypFrame, "pis"),
+  designVars,
   maxObs = 1e+05,
   maxFeatures = 500,
   ...
@@ -15,15 +16,11 @@ addWeightFunction(
 \arguments{
 \item{hypFrame}{The hyperframe with all the data}
 
+\item{designVars}{A character vector containing all design factors (both fixed and random), that are also present as variables in hypFrame}
+
 \item{maxObs, maxFeatures}{The maximum number of observations respectively features for fitting the weight function. See details}
 
 \item{...}{Additional arguments passed on to the scam::scam function}
-
-\item{pimRes}{The object containing all}
-
-\item{pi}{A character string, the PI required}
-
-\item{designVars}{A character vector containing all design factors (both fixed and random), that are also present as variables in hypFrame}
 }
 \value{
 A fitted scam object, which can be used to
