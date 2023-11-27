@@ -53,7 +53,7 @@ It is a dataframe containing molecule locations (x- and y-variables), gene ident
 The first step in the analysis is to build a hyperframe as provided in the _spatstat_ package, which consists of all different point patterns and their covariates
 
 ```{r}
-hypYang = buildHyperFrame(Yang, coordVars = c("x", "y"), designVar = c("day", "root", "section"))
+hypYang = buildHyperFrame(Yang, coordVars = c("x", "y"), imageVars = c("day", "root", "section"))
 ```
 
 As printed by the code, `r nrow(hypYang)` design factors or point patterns were found. We take a closer look at the hyperframe

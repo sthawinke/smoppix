@@ -41,8 +41,7 @@ designVar = c("day", "root", "section"))
 #Fit a subset of features to limit computation time
 yangPims = estPims(hypYang, pis = c("nn", "nnPair"), features = attr(hypYang, "features")[1:12])
 #First Build the weight function
-wf <- adddWeightFunction(yangPims, pi = "nn", hypFrame = hypYang,
-designVars = c("day", "root"))
+yangObj <- addWeightFunction(yangPims, pi = "nn", designVars = c("day", "root"))
 }
 \seealso{
 \link{buildDfMM}
