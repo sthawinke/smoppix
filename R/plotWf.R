@@ -14,11 +14,9 @@
 #' designVar = c("day", "root", "section"))
 #' yangPims = estPims(hypYang, pis = c("nn", "nnPair"), features = attr(hypYang, "features")[1:12])
 #' #First Build the weight function
-#' wf <- buildWeightFunction(yangPims, pi = "nn", hypFrame = hypYang, designVars = c("day", "root"))
-#' plotWf(wf)
-#' wfPair <- buildWeightFunction(yangPims, pi = "nnPair", hypFrame = hypYang,
-#'  designVars = c("day", "root"))
-#' plotWf(wfPair)
+#' yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))
+#' plotWf(yangObj, "nn")
+#' plotWf(yangObj, "nnPair")
 plotWf = function(resList, pi = c("nn", "nnPair", "allDist", "allDistPair"), ...){
     pi = match.arg(pi)
     if(is.null(wf <- resList$Wfs[[pi]])){

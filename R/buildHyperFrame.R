@@ -10,18 +10,18 @@
 #' @examples
 #' data(Yang)
 #' hypYang = buildHyperFrame(Yang, coordVars = c("x", "y"),
-#' designVars = c("day", "root", "section"))
+#' imageVars = c("day", "root", "section"))
 setGeneric("buildHyperFrame", function(x, ...) standardGeneric("buildHyperFrame"))
 #'
 #' @rdname buildHyperFrame
 #' @export
 #' @param coordVars Names of coordinates
-#' @param designVars A character vector, together uniquely defining the point pattern (image)
+#' @param imageVars A character vector, together uniquely defining the point pattern (image)
 #' @param coVars Names of covariates such as gene or cell for each single point
 
 setMethod("buildHyperFrame", "data.frame",
-        function(x, coordVars, designVars, coVars = setdiff(names(x), c(designVars, coordVars)),...) {
-        buildHyperFrame(as.matrix(x[, coordVars]), design = x[,designVars],
+        function(x, coordVars, imageVars, coVars = setdiff(names(x), c(imageVars, coordVars)),...) {
+        buildHyperFrame(as.matrix(x[, coordVars]), design = x[,imageVars],
                         covariates = x[, coVars, drop = FALSE], ...)
 })
 #' @param matrix The input matrix
@@ -73,8 +73,8 @@ setMethod("buildHyperFrame", "list", function(x,...) {
 #' @export
 #' @importFrom SpatialExperiment SpatialExperiment spatialCoords
 #' @importFrom SummarizedExperiment colData
-setMethod("buildHyperFrame", "SpatialExperiment", function(x, designVars, coVars, ...) {
-    buildHyperFrame(spatialCoords(x), design = colData(x)[, designVars],
+setMethod("buildHyperFrame", "SpatialExperiment", function(x, imageVars, coVars, ...) {
+    buildHyperFrame(spatialCoords(x), design = colData(x)[, imageVars],
                     covariates = cbind("gene" = rownames(colData(x)), as.data.frame(colData(x))[, coVars, drop = FALSE]))
 })
 

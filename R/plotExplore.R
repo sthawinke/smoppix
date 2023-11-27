@@ -13,7 +13,7 @@
 #' @examples
 #' data(Yang)
 #' hypYang = buildHyperFrame(Yang, coordVars = c("x", "y"),
-#' designVar = c("day", "root", "section"))
+#' imageVars = c("day", "root", "section"))
 #' plotExplore(hypYang)
 plotExplore = function(hypFrame, features = attr(hypFrame, "features"), ppps){
     stopifnot(is.hyperframe(hypFrame), is.character(features))
