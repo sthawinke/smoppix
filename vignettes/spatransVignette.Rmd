@@ -59,7 +59,7 @@ hypYang = buildHyperFrame(Yang, coordVars = c("x", "y"), designVar = c("day", "r
 As printed by the code, `r nrow(hypYang)` design factors or point patterns were found. We take a closer look at the hyperframe
 
 ```{r}
-hypYang
+head(hypYang)
 ```
 
 We see the following elements:
@@ -106,19 +106,19 @@ nnObj = estPims(hypYang, pis = "nn", null = "background")
 A data-driven weighing function is now fitted to the estimates of all genes to share information on variances across features. This requires information on the design too.
 
 ```{r}
-wfNN = buildWeightFunction(nnObj, pi = "nn", hypFrame = hypYang, designVars = c("day", "root"))
+nnObj = addWeightFunction(nnObj, designVars = c("day", "root"))
 ```
 
 The fitted trend can be plotted:
 
 ```{r}
-plotWf(wfNN)
+plotWf(nnObj, pi = "nn")
 ```
 
 As expected the weight increases with the number of observations; quickly at first but latter plateauing. Using this relation between number of observations and variance, a linear mixed model can be fitted per feature. A built-in function prepares the dataframe for a specified gene (here _SmAHK4e_):
 
 ```{r}
-dfUniNN = buildDfMM(nnObj, gene = "SmAHK4e", pi  = "nn", hypFrame = hypYang, weightFunction = wfNN, designVars = c("day", "root"))
+dfUniNN = buildDfMM(nnObj, gene = "SmAHK4e", pi  = "nn")
 ```
 
 This dataframe can then be used for mixed modelling, either in R or in an other software package. We present an example analysis below using the _lmerTest_ package, which enhances the _lmer_ package by providing p-values. We fit the following linear mixed model (LMM). The day variable enters the model as a fixed effect, the root as a random effect. We use sum coding for the day variable, meaning that two dummies are created, one for "day0" and one for "day3", so without a reference level. Instead the corresponding parameters are constrained to sum to zero, i.e. to be each other's opposite in this case. This maintains the interpretability of the intercept as the baseline pi, from which the different days can depart, and allows meaningful inference on the intercept.
