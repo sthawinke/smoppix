@@ -26,12 +26,11 @@ addWeightFunction = function(hypFrame, pis = attr(hypFrame, "pis"), designVars,
                                maxObs = 1e5, maxFeatures = 5e2,...){
     if(missing(designVars))
         designVars = names(hypFrame)[!names(hypFrame) %in% c("ppp", "design", "tabObs", "owins")]
-        #If missing take everything but the ones that are obviously no design variablesis.character(designVars))
-    if(any(pis==c("edge", "midpoint", "fixedpoint")))
+        #If missing take everything but the ones that are obviously no design variables
+    if(any(pis %in% c("edge", "midpoint", "fixedpoint")))
         stop("Calculating weight matrices for distances to fixed points is unnecessary as they are independent.
              Simply proceed with fitting the model on the indiviual evaluations of the B-function.")
     pis = match.arg(pis, choices = c("nn", "nnPair", "allDist", "allDistPair"), several.ok = TRUE)
-    foo = checkAttr(hypFrame, pis)
     if(any(idMissing <- !(designVars %in% colnames(hypFrame)))){
         stop("Design variables\n", designVars[idMissing], "\nnot found in hypFrame object")
     }
