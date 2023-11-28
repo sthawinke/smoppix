@@ -9,13 +9,21 @@ fitLMMs(
   pi = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint", "fixedpoint"),
   fixedVars,
   randomVars,
-  verbose = TRUE
+  verbose = TRUE,
+  resultsOnly = TRUE
 )
 }
 \arguments{
+\item{resList}{The result of a call to estPims()}
+
 \item{pi}{character string indicating the desired pim as outcome in the linear mixed model}
 
 \item{fixedVars, randomVars}{Names of fixed and random variables}
+
+\item{verbose}{A booleann, should the formula be printed?}
+
+\item{resultsOnly}{a boolean: should only the results be returned?
+If false, also the linear mixed models are returned}
 }
 \value{
 A fitted linear mixed model of class 'lmerTest'

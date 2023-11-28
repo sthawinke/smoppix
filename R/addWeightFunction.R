@@ -4,6 +4,7 @@
 #' @param designVars A character vector containing all design factors (both fixed and random), that are also present as variables in hypFrame
 #' @param ... Additional arguments passed on to the scam::scam function
 #' @param maxObs,maxFeatures The maximum number of observations respectively features for fitting the weight function. See details
+#' @param pis The PIs for which weight functions are constructed
 #' @details For computational and memory reasons, for large datasets the trend fitting
 #' is restricted to a subset of the data through the maxObs and maxFeatures parameters.
 #'
@@ -25,7 +26,7 @@
 addWeightFunction = function(hypFrame, pis = attr(hypFrame, "pis"), designVars,
                                maxObs = 1e5, maxFeatures = 5e2,...){
     if(missing(designVars))
-        designVars = names(hypFrame)[!names(hypFrame) %in% c("ppp", "design", "tabObs", "owins")]
+        designVars = names(hypFrame)[!names(hypFrame) %in% c("ppp", "image", "tabObs", "owins")]
         #If missing take everything but the ones that are obviously no design variables
     if(all(pis %in% c("edge", "midpoint", "fixedpoint")))
         stop("Calculating weight matrices for distances to fixed points is unnecessary as they are independent.

@@ -16,6 +16,8 @@ addWeightFunction(
 \arguments{
 \item{hypFrame}{The hyperframe with all the data}
 
+\item{pis}{The PIs for which weight functions are constructed}
+
 \item{designVars}{A character vector containing all design factors (both fixed and random), that are also present as variables in hypFrame}
 
 \item{maxObs, maxFeatures}{The maximum number of observations respectively features for fitting the weight function. See details}

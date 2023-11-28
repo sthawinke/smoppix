@@ -11,13 +11,11 @@ buildDfMM(
 )
 }
 \arguments{
+\item{resList}{The result of a call to estPims()}
+
 \item{gene}{A character string indicating the desired gene or gene pair}
 
 \item{pi}{character string indicating the desired pim as outcome in the linear mixed model}
-
-\item{pimRes}{The result of a call to estPims()}
-
-\item{designVars}{Optionally, the design variables to be included in the dataframe. Defaults to all variables in the hyperframe.}
 }
 \value{
 A dataframe

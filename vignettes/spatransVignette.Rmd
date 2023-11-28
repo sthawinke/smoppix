@@ -135,7 +135,12 @@ Alternatively, a wrapper function is available that fits such LMMs for every gen
 allModsNN = fitLMMs(nnObj, pi  = "nn", fixedVars = "day", randomVars = "root")
 ```
 
-Various errors may occur while fitting, e.g. insufficient non-missing observations. The function finishes silently but returns the error messages in the output. 
+Various errors may occur while fitting, e.g. insufficient non-missing observations. The function finishes silently but returns the error messages in the output. The results can now be viewed as follows
+
+```{r}
+resYang = extractResults()
+```
+
 
 ## Bivariate tests
 

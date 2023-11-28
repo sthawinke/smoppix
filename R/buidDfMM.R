@@ -1,9 +1,8 @@
 #' Build a data frame for a single gene and measure to prepare for mixed model building
 #'
-#' @param pimRes The result of a call to estPims()
+#' @param resList The result of a call to estPims()
 #' @param gene A character string indicating the desired gene or gene pair
 #' @param pi character string indicating the desired pim as outcome in the linear mixed model
-#' @param designVars Optionally, the design variables to be included in the dataframe. Defaults to all variables in the hyperframe.
 #'
 #' @return A dataframe
 #' @export
