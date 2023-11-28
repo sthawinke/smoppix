@@ -7,9 +7,11 @@
 plotWf(resList, pi = c("nn", "nnPair", "allDist", "allDistPair"), ...)
 }
 \arguments{
-\item{...}{Passed onto the plot.scam function for 1D splines}
+\item{resList}{The result of a call to estPims()}
 
-\item{wf}{The fitted scam object}
+\item{pi}{The PI for which to plot the weighting function}
+
+\item{...}{Passed onto the plot.scam function for 1D splines}
 }
 \value{
 For univariate PI, returns a line plot; for bivariate PI a ggplot object

@@ -19,7 +19,7 @@ buildHyperFrame(x, ...)
   ...
 )
 
-\S4method{buildHyperFrame}{matrix}(x, design, covariates, ...)
+\S4method{buildHyperFrame}{matrix}(x, image, covariates, ...)
 
 \S4method{buildHyperFrame}{list}(x, ...)
 
@@ -36,7 +36,7 @@ buildHyperFrame(x, ...)
 
 \item{coVars}{Names of covariates such as gene or cell for each single point}
 
-\item{design}{A single design variable distinguishing the different point patterns}
+\item{image}{A single design variable distinguishing the different point patterns}
 
 \item{covariates}{A vector of covariates}
 

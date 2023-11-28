@@ -48,7 +48,7 @@ w3 <- owin(poly=list(x=c(0,0,.5),y=c(1,0.5,1)))
 w4 <- owin(poly=list(x=c(1,1,.5),y=c(0.5,1,1)))
 w5 <- owin(poly=list(x=c(1,1,.5),y=c(0,0.5,0)))
 hypFrame <- buildHyperFrame(df, coordVars = c("x", "y"), designVar = c("condition", "fov"))
-nDesignFactors = length(unique(hypFrame$design))
+nDesignFactors = length(unique(hypFrame$image))
 wList = lapply(seq_len(nDesignFactors), function(x){
     list("w1" = w1, "w2" = w2, "w3" = w3, "w4" = w4, "w5" = w5)
 })
