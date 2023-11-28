@@ -4,7 +4,7 @@
 \alias{extractResults}
 \title{Extract results from a list of fitted LMMs}
 \usage{
-extractResults(models, fixedVars, method = "BH")
+extractResults(models, fixedVars = NULL, method = "BH")
 }
 \arguments{
 \item{models}{The models}
