@@ -10,7 +10,8 @@ fitLMMs(
   fixedVars,
   randomVars,
   verbose = TRUE,
-  resultsOnly = TRUE
+  resultsOnly = TRUE,
+  Formula = NULL
 )
 }
 \arguments{
@@ -20,10 +21,13 @@ fitLMMs(
 
 \item{fixedVars, randomVars}{Names of fixed and random variables}
 
-\item{verbose}{A booleann, should the formula be printed?}
+\item{verbose}{A boolean, should the formula be printed?}
 
 \item{resultsOnly}{a boolean: should only the results be returned?
 If false, also the linear mixed models are returned}
+
+\item{Formula}{A formula; if not supplied it will be constructed
+from the fixed and random variables}
 }
 \value{
 A fitted linear mixed model of class 'lmerTest'

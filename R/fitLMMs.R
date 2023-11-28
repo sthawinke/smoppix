@@ -29,22 +29,28 @@ fitLMMs = function(resList, pi = c("nn", "allDist", "nnPair", "allDistPair", "ed
     stopifnot(all(designVars %in% resList$designVars))
     if(is.null(Formula))
         Formula = formula(formChar <- paste("pi - 0.5 ~", paste(fixedVars, sep = "+"), "+",
-                                            paste("(1|", randomVars, ")", collapse = "+")))
+                                            paste0("(1|", randomVars, ")", collapse = "+")))
     if(verbose)
         cat("Fitted formula:\n", formChar)
+    Control = lmerControl(## convergence checking options
+                          check.conv.grad     = .makeCC("ignore", tol = 2e-3, relTol = NULL),
+                          check.conv.singular = .makeCC(action = "ignore", tol = formals(isSingular)$tol),
+                          check.conv.hess     = .makeCC(action = "ignore", tol = 1e-6))
     contrasts = lapply(fixedVars, function(x) "contr.sum");names(contrasts) = fixedVars
     Features = if(grepl("Pair", pi)) makePairs(attr(resList$hypFrame, "featuresEst")) else attr(resList$hypFrame, "featuresEst")
     models = lapply(Features, function(gene){
         df = buildDfMM(resList, gene = gene, pi  = pi)
+        if(sum(!is.na(df$pi))<3)
+            return(NULL)
         try(lmer(Formula, data = df, na.action = na.omit, weights = weight,
-                 contrasts = contrasts), silent = TRUE)
+                 contrasts = contrasts, control = Control), silent = TRUE)
     })
     results = extractResults(models, fixedVars)
     #Effect size, standard error, p-value and adjusted p-value per mixed effect
     if(resultsOnly){
-        return(results)
+        return(list("results" = results, "resList" = resList))
     } else{
-        return(list("results" = results, "models" = models))
+        return(list("results" = results, "models" = models, "resList" = resList))
     }
 }
 

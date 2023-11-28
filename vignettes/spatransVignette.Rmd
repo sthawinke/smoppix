@@ -132,15 +132,15 @@ lmeMod = lmer(pi - 0.5 ~ day + (1|root), data = dfUniNN, na.action = na.omit,
 Alternatively, a wrapper function is available that fits such LMMs for every gene:
 
 ```{r, include = FALSE}
-allModsNN = fitLMMs(nnObj, pi  = "nn", fixedVars = "day", randomVars = "root")
+allModsNN = fitLMMs(nnObj, fixedVars = "day", randomVars = "root")
 ```
 
 Various errors may occur while fitting, e.g. insufficient non-missing observations. The function finishes silently but returns the error messages in the output. The results can now be viewed as follows
 
 ```{r}
-resYang = extractResults()
+head(getResults(allModsNN, "Intercept"))
+head(getResults(allModsNN, "day"))
 ```
-
 
 ## Bivariate tests
 
