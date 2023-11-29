@@ -43,30 +43,39 @@ estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3, nP
         if(any(pis == "allDist"))
             ecdfAll = ecdf(dist(coords(pSim)))
         if(any(pis == "edge"))
-            ecdfsEdge = lapply(owins, function(rr) ecdf(nncross(runifpoint(nPointsAllWin, win = rr), edges(rr), what = "dist")))
+            ecdfsEdge = lapply(owins, function(rr) {
+                ecdf(nncross(runifpoint(nPointsAllWin, win = rr),
+                             edges(rr), what = "dist"))})
         if(any(pis == "midpoint"))
-            ecdfMidPoint = lapply(owins, function(rr) ecdf(crossdist(runifpoint(nPointsAllWin, win = rr), centroid.owin(rr, as.ppp = TRUE))))
+            ecdfMidPoint = lapply(owins, function(rr) {
+                ecdf(crossdist(runifpoint(nPointsAllWin, win = rr),
+                               centroid.owin(rr, as.ppp = TRUE)))})
         if(any(pis == "fixedpoint"))
             ecdfFixedPoint = ecdf(nncross(pSim, pointPPP, what = "dist"))
-    } else if(any(pis %in% c("edge", "fixedpoint", "midpoint")) && null =="background"){
+    } else if(any(pis %in% c("edge", "fixedpoint", "midpoint")) &&
+              null =="background"){
         pSubAll = subSampleP(p, nPointsAll)
         if(any(pis == "edge"))
-            ecdfsEdge = lapply(owins, function(rr) ecdf(nncross(pSubAll, edges(rr), what = "dist")))
+            ecdfsEdge = lapply(owins, function(rr) {
+                ecdf(nncross(pSubAll, edges(rr), what = "dist"))})
         if(any(pis == "midpoint"))
-            ecdfMidPoint = lapply(owins, function(rr) ecdf(crossdist(pSubAll, centroid.owin(rr, as.ppp = TRUE))))
+            ecdfMidPoint = lapply(owins, function(rr) {
+                ecdf(crossdist(pSubAll, centroid.owin(rr, as.ppp = TRUE)))})
         if(any(pis == "fixedpoint"))
             ecdfFixedPoint = ecdf(nncross(pSubAll, pointPPP, what = "dist"))
     }
-    if(null == "background" && any(pis %in% c("nn", "nnPair", "allDist", "allDistPair"))){
+    if(null == "background" &&
+       any(pis %in% c("nn", "nnPair", "allDist", "allDistPair"))){
             #Preapre some background distances
             pSub = subSampleP(p, max(c(nPointsAll, tabObs+1e2)))
             #Subsample for memory reasons
             nSub = npoints(pSub)-1
-            ecdfs = apply(rowSort(crossdist(p, pSub))[, -1], 1, ecdfPreSort) #Eliminate self distances
+            ecdfs = apply(rowSort(crossdist(p, pSub))[, -1], 1, ecdfPreSort)
+            #Eliminate self distances
     }
     #Univariate patterns
     if(any(idOne <- (tabObs[features]==1)) && verbose){
-        message("Features\n", paste(sep = ", ", names(tabObs[features])[idOne]),
+        message("Features\n", paste(collapse = ", ", names(tabObs[features])[idOne]),
                 "\nhave only one observation, so no intervent distances were calculated for them\n")
     }
     if(verbose)
@@ -90,14 +99,18 @@ estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3, nP
     #Bivariate patterns
     biPIs = if(any(piPair <- grepl(pis, pattern = "Pair"))){
         featuresBi = features[tabObs[features] > 0]
-        if(!allowManyGenePairs && (numGenePairs <- choose(length(featuresBi), 2)) > manyPairs){
-        warning(immediate. = TRUE, "Calculating probablistic indices for", numGenePairs, "gene pairs may take a long time!\n",
-                "Set allowManyGenePairs to TRUE to suppress this message.")
+        if(!allowManyGenePairs &&
+           (numGenePairs <- choose(length(featuresBi), 2)) > manyPairs){
+        warning(immediate. = TRUE, "Calculating probablistic indices for",
+                numGenePairs, "gene pairs may take a long time!\n",
+                "Set allowManyGenePairs to TRUE to suppress this announcement")
         } else  if(verbose){
             message("Calculating bivariate probabilistic indices...")
         }
         genePairsMat = combn(featuresBi, 2)
-        out = matrix(nrow = ncol(genePairsMat), byrow = TRUE, vapply(seq_len(ncol(genePairsMat)), FUN.VALUE = double(sum(piPair)), function(i){
+        out = matrix(nrow = ncol(genePairsMat), byrow = TRUE,
+            vapply(seq_len(ncol(genePairsMat)), FUN.VALUE = double(sum(piPair)),
+                   function(i){
             feat1 = genePairsMat[1, i];feat2 = genePairsMat[2, i]
             pSub1 = p[id1 <- which(marks(p, drop = FALSE)$gene == feat1), ]
             pSub2 = p[id2 <- which(marks(p, drop = FALSE)$gene == feat2), ]
@@ -105,14 +118,17 @@ estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3, nP
             #Reorder and subset if needed
             NNdistPI = if(any(pis == "nnPair")){
                 calcNNPIpair(cd = cd, id1 = id1, id2 = id2, null = null,
-                             ecdfs = ecdfs[c(id1, id2)], p = p, nSims = nSims, n = nSub)
+                             ecdfs = ecdfs[c(id1, id2)], p = p,
+                             nSims = nSims, n = nSub)
                 }
             allDistPI = if(any(pis == "allDistPair")){
-                calcAllDistPIpair(id1 = id1, id2 = id2, ecdfAll = ecdfAll, null = null,
-                                  ecdfs = ecdfs[c(id1, id2)], crossDist = cd)
+                calcAllDistPIpair(id1 = id1, id2 = id2, ecdfAll = ecdfAll,
+                                  null = null, ecdfs = ecdfs[c(id1, id2)],
+                                  crossDist = cd)
                 }
             c("nnPair" = NNdistPI, "allDistPair" = allDistPI)
-        }), dimnames = list(apply(genePairsMat, 2, paste, collapse = "--"), grep("Pair", pis, value = TRUE)))
+        }), dimnames = list(apply(genePairsMat, 2, paste, collapse = "--"),
+                            grep("Pair", pis, value = TRUE)))
         #Ensure it is a matrix even for one pi
         out
     }
@@ -135,26 +151,33 @@ estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3, nP
 #' @details
 #' The null distribution used to calculate the PIs. Can be either "background",
 #' in which case the observed distributions of all genes is used. Alternatively,
-#' for null = "CSR", Monte-Carlo simulation under complete spatial randomness is performed within the given window.
+#' for null = "CSR", Monte-Carlo simulation under complete spatial randomness
+#'  is performed within the given window.
 #'
-#' The 'nn' prefix indicates that nearest neighbour distances are being used, whereas 'all' indicates all distances are being used.
-#' The suffix 'Pair' indicates that bivariate probabilistic indices, testing for co- and antilocalization are being used.
-#' 'edge' and 'midpoint' calculate the distance to the edge respectively the midpoint of the windows added using the addCell() function.
+#' The 'nn' prefix indicates that nearest neighbour distances are being used,
+#' whereas 'all' indicates all distances are being used.
+#' The suffix 'Pair' indicates that bivariate probabilistic indices,
+#' testing for co- and antilocalization are being used.
+#' 'edge' and 'midpoint' calculate the distance to the edge respectively
+#'  the midpoint of the windows added using the addCell() function.
 #' 'fixedpoint' calculates the distances to a supplied list of points.
 estPims = function(hypFrame, pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint", "fixedpoint"),
                    null = c("background", "CSR"), features = attr(hypFrame, "features"),...){
     pis = match.arg(pis, several.ok = TRUE)
     null = match.arg(null)
     if(any(pis %in% c("edge", "midpoint")) && is.null(hypFrame$owins)){
-        stop("No window provided for distance to edge or midpoint calculation. Add it using the addCell() function")
+        stop("No window provided for distance to edge or midpoint calculation.",
+             "Add it using the addCell() function")
     }
     if(any(id <- !(features %in% attr(hypFrame, "features")))){
         stop("Features ", features[id], " not found in hyperframe")
     }
     hypFrame$pimRes = bplapply(seq_len(nrow(hypFrame)), function(x){
-       with(hypFrame[x,, drop = TRUE], estPimsSingle(ppp, owins = owins, pis = pis, null = null, tabObs = tabObs,...))
+       with(hypFrame[x,, drop = TRUE], estPimsSingle(ppp, owins = owins,
+            pis = pis, null = null, tabObs = tabObs,...))
    })
    attr(hypFrame, "pis") = pis #Tag the pims calculated
-   attr(hypFrame, "featuresEst") = features #Remember for which features the pims were calculated
+   attr(hypFrame, "featuresEst") = features
+   #Remember for which features the pims were calculated
    hypFrame
 }

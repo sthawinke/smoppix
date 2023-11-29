@@ -32,7 +32,7 @@ buildHyperFrame(x, ...)
 
 \item{coordVars}{Names of coordinates}
 
-\item{imageVars}{A character vector, together uniquely defining the point pattern (image)}
+\item{imageVars}{A character vector of variables whose unique combinations define the separate point patterns (images)}
 
 \item{coVars}{Names of covariates such as gene or cell for each single point}
 

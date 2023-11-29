@@ -32,11 +32,15 @@ Estimate pims on a hyperframe
 \details{
 The null distribution used to calculate the PIs. Can be either "background",
 in which case the observed distributions of all genes is used. Alternatively,
-for null = "CSR", Monte-Carlo simulation under complete spatial randomness is performed within the given window.
+for null = "CSR", Monte-Carlo simulation under complete spatial randomness
+ is performed within the given window.
 
-The 'nn' prefix indicates that nearest neighbour distances are being used, whereas 'all' indicates all distances are being used.
-The suffix 'Pair' indicates that bivariate probabilistic indices, testing for co- and antilocalization are being used.
-'edge' and 'midpoint' calculate the distance to the edge respectively the midpoint of the windows added using the addCell() function.
+The 'nn' prefix indicates that nearest neighbour distances are being used,
+whereas 'all' indicates all distances are being used.
+The suffix 'Pair' indicates that bivariate probabilistic indices,
+testing for co- and antilocalization are being used.
+'edge' and 'midpoint' calculate the distance to the edge respectively
+ the midpoint of the windows added using the addCell() function.
 'fixedpoint' calculates the distances to a supplied list of points.
 }
 \examples{

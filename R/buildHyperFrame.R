@@ -16,7 +16,7 @@ setGeneric("buildHyperFrame", function(x, ...) standardGeneric("buildHyperFrame"
 #' @rdname buildHyperFrame
 #' @export
 #' @param coordVars Names of coordinates
-#' @param imageVars A character vector, together uniquely defining the point pattern (image)
+#' @param imageVars A character vector of variables whose unique combinations define the separate point patterns (images)
 #' @param coVars Names of covariates such as gene or cell for each single point
 
 setMethod("buildHyperFrame", "data.frame",
