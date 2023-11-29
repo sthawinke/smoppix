@@ -4,6 +4,7 @@
 #' @param fixedVars The fixed effects for which the effect is to be reported
 #' @param method passed onto p.adjust
 #' @importFrom stats p.adjust
+#' @import lmerTest
 #' @return A list of matrices, all containing estimate, standard error, p-value and ajdusted p-value
 #' @seealso \link{fitLMMs}
 extractResults = function(models, fixedVars = NULL, method = "BH"){
@@ -32,18 +33,4 @@ extractResults = function(models, fixedVars = NULL, method = "BH"){
     names(fixedOut) = fixedVars
     list("Intercept" = intMat, "fixedEffects" = fixedOut)
 }
-#' Extract results for a certain parameter
-#'
-#' @param obj The result object
-#' @param parameter The desired parameter
-#'
-#' @return The matrix with result, with p-values in ascending order
-#' @export
-#'
-#' @examples
-getResults = function(obj, parameter){
-    if(parameter == "Intercept")
-        obj$results[[parameter]]
-    else
-        obj$results$fixedEffects[[parameter]]
-}
+

@@ -10,7 +10,7 @@
 #'
 #' @return A fitted linear mixed model of class 'lmerTest'
 #' @export
-#' @importFrom lmerTest lmer
+#' @import lmerTest
 #' @importFrom stats formula na.omit
 #'
 #' @examples
