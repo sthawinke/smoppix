@@ -10,8 +10,9 @@
 #'
 #' @return A fitted linear mixed model of class 'lmerTest'
 #' @export
-#' @import lmerTest
-#' @importFrom stats formula na.omit
+#' @importFrom lmerTest lmer
+#' @importFrom stats formula na.omit anova
+#' @importFrom lme4 lmerControl .makeCC isSingular
 #'
 #' @examples
 #' data(Yang)
@@ -31,7 +32,7 @@ fitLMMs = function(resList, pi = c("nn", "allDist", "nnPair", "allDistPair", "ed
         Formula = formula(formChar <- paste("pi - 0.5 ~", paste(fixedVars, sep = "+"), "+",
                                             paste0("(1|", randomVars, ")", collapse = "+")))
     if(verbose)
-        cat("Fitted formula:\n", formChar)
+        message("Fitted formula:\n", formChar)
     Control = lmerControl(## convergence checking options
                           check.conv.grad     = .makeCC("ignore", tol = 2e-3, relTol = NULL),
                           check.conv.singular = .makeCC(action = "ignore", tol = formals(isSingular)$tol),
@@ -42,7 +43,7 @@ fitLMMs = function(resList, pi = c("nn", "allDist", "nnPair", "allDistPair", "ed
         df = buildDfMM(resList, gene = gene, pi  = pi)
         if(sum(!is.na(df$pi))<3)
             return(NULL)
-        try(lmer(Formula, data = df, na.action = na.omit, weights = weight,
+        try(lmerTest::lmer(Formula, data = df, na.action = na.omit, weights = weight,
                  contrasts = contrasts, control = Control), silent = TRUE)
     })
     results = extractResults(models, fixedVars)
