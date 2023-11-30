@@ -7,18 +7,15 @@
 #' @return The probabilistic index for all distances
 #' @inheritParams estPimsSingle
 #' @importFrom stats dist
-calcAllDistPI = function(pSub, p, ecdfAll, null, ecdfs){
+calcAllDistPI = function(pSub, p, ecdfs){
     obsDist = as.matrix(dist(coords(pSub)))
     piEsts = vapply(seq_along(ecdfs), FUN.VALUE = double(1), function(i){
         mean(ecdfs[[i]](obsDist[i, -i]))
     })
     mean(piEsts)
 }
-calcAllDistPIpair = function(id1, id2, ecdfAll, null, crossDist, ecdfs){
-    if(null == "CSR"){
-        mean(ecdfAll(crossDist))
-    } else if(null == "background"){
-        # #Keep observed points fixed
+calcAllDistPIpair = function(id1, id2, crossDist, ecdfs){
+        #Keep observed points fixed
         piEsts1 = vapply(seq_along(id1), FUN.VALUE = double(length(id2)), function(i){
             ecdfs[[i]](crossDist[i, ])
         })
@@ -26,6 +23,5 @@ calcAllDistPIpair = function(id1, id2, ecdfAll, null, crossDist, ecdfs){
             ecdfs[[i + length(id1)]](crossDist[,i])
         })
         mean(c(piEsts1, piEsts2))
-    }
-}
+        }
 

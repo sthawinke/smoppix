@@ -60,9 +60,9 @@ estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3, nP
             ecdfsEdgeAndMidpoint = lapply(names(owins), function(nam) {
                 pSub = subSampleP(p[marks(p, drop = FALSE)$cell == nam,],
                                   nPointsAllWin)
-                edge = if(any(pis== "edge"))
+                edge = if(any(pis == "edge"))
                     ecdf(nncross(pSub, edges(owins[[nam]]), what = "dist"))
-                midpoint = if(any(pis== "midpoint"))
+                midpoint = if(any(pis == "midpoint"))
                     ecdf(crossdist(pSub, centroid.owin(owins[[nam]], as.ppp = TRUE)))
                 list("edge" = edge, "midpoint" = midpoint)
                 });names(ecdfsEdgeAndMidpoint) = names(owins)
