@@ -9,14 +9,10 @@
 #' @importFrom stats dist
 calcAllDistPI = function(pSub, p, ecdfAll, null, ecdfs){
     obsDist = as.matrix(dist(coords(pSub)))
-    if(null == "CSR"){
-        mean(ecdfAll(obsDist)) #Need to condition on point too?
-    } else if(null == "background"){
-        piEsts = vapply(seq_along(ecdfs), FUN.VALUE = double(1), function(i){
-            mean(ecdfs[[i]](obsDist[i, -i]))
-        })
-        mean(piEsts)
-    }
+    piEsts = vapply(seq_along(ecdfs), FUN.VALUE = double(1), function(i){
+        mean(ecdfs[[i]](obsDist[i, -i]))
+    })
+    mean(piEsts)
 }
 calcAllDistPIpair = function(id1, id2, ecdfAll, null, crossDist, ecdfs){
     if(null == "CSR"){

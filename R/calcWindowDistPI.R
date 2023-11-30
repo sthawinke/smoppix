@@ -18,7 +18,7 @@ calcWindowDistPI = function(pSub, owins, ecdfAll, towhat){
         Dist = switch(towhat,
             "edge" = crossdist(splitPPP[[x]], centroid.owin(owins[[x]], as.ppp = TRUE)),
             "midpoint" = nncross(splitPPP[[x]], edges(owins[[x]]), what = "dist"))
-        ecdfAll[[x]](Dist) #Do not average here, independent observations
+        ecdfAll[[x]][[towhat]](Dist) #Do not average here, independent observations
     })
     names(obsDistEdge) = names(splitPPP)
     obsDistEdge
