@@ -90,8 +90,10 @@ The _spatrans_ package can be computationally intensive, especially for gene pai
 ```{r}
 library(BiocParallel)
 nCores = 2 #The number of CPUs
-register(MulticoreParam(nCores))
+register(MulticoreParam(nCores, progressbar = TRUE))
 ```
+
+The progress bar helps one keep track of the calculations
 
 ## Univariate tests
 
@@ -125,7 +127,7 @@ This dataframe can then be used for mixed modelling, either in R or in an other 
 
 ```{r}
 library(lmerTest)
-lmeMod = lmer(pi - 0.5 ~ day + (1|root), data = dfUniNN, na.action = na.omit, 
+lmeMod = lmerTest::lmer(pi - 0.5 ~ day + (1|root), data = dfUniNN, na.action = na.omit, 
                                  weights = weight, contrasts = list("day" = "contr.sum"))
 ```
 
@@ -162,7 +164,7 @@ dfBiNN = buildDfMM(nnObj, gene = "SmVND2--SmPINR", pi  = "nnPair")
 Finally for the mixed model:
 
 ```{r}
-lmeModNN = lmer(pi - 0.5 ~ day + (1|root), data = dfBiNN, na.action = na.omit, 
+lmeModNN = lmerTest::lmer(pi - 0.5 ~ day + (1|root), data = dfBiNN, na.action = na.omit, 
                                  weights = weight, contrasts = list("day" = "contr.sum"))
 summary(lmeModNN)
 ```
