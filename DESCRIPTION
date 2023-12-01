@@ -16,7 +16,7 @@ Imports: spatstat.geom, spatstat.random, SpatialExperiment, methods, BiocParalle
 Suggests: testthat,rmarkdown,knitr
 RdMacros: Rdpack
 RoxygenNote: 7.2.3
-biocViews: Transcriptomics, Spatial
+biocViews: Transcriptomics, Spatial, SingleCell
 Depends: R (>= 4.3.0)
 VignetteBuilder: knitr
 BugReports: https://github.com/sthawinke/spatrans

@@ -1,9 +1,11 @@
-#' Check in which cell each event lies and add a cell marker, plus include the list of regions
+#' Check in which cell each event lies and add a cell marker,
+#' plus include the list of regions
 #'
 #' @param hypFrame The hyperframe
 #' @param owins the list of list of owins per hyperframe
 #' @param checkOverlap a boolean, should windows be checked for overlap
-#' @param warnOut a boolean, should warning be issued when points are not contained in window
+#' @param warnOut a boolean, should warning be issued when points are not
+#' contained in window
 #' @return the modified hyperframe
 #' @importFrom Rfast rowAny
 #' @importFrom spatstat.geom is.owin
@@ -34,7 +36,8 @@
 #' w3 <- owin(poly=list(x=c(0,0,.5),y=c(1,0.5,1)))
 #' w4 <- owin(poly=list(x=c(1,1,.5),y=c(0.5,1,1)))
 #' w5 <- owin(poly=list(x=c(1,1,.5),y=c(0,0.5,0)))
-#' hypFrame <- buildHyperFrame(df, coordVars = c("x", "y"), imageVars = c("condition", "fov"))
+#' hypFrame <- buildHyperFrame(df, coordVars = c("x", "y"),
+#' imageVars = c("condition", "fov"))
 #' nDesignFactors = length(unique(hypFrame$image))
 #' wList = lapply(seq_len(nDesignFactors), function(x){
 #'     list("w1" = w1, "w2" = w2, "w3" = w3, "w4" = w4, "w5" = w5)
@@ -42,8 +45,11 @@
 #' names(wList) = rownames(hypFrame) #Matching names is necessary
 #' hypFrame2 = addCell(hypFrame, wList)
 addCell = function(hypFrame, owins, checkOverlap = TRUE, warnOut = TRUE){
-    stopifnot(nrow(hypFrame) == length(owins), all(unlist(lapply(owins, function(x) vapply(x, FUN.VALUE = FALSE, is.owin)))),
-              all(rownames(hypFrame) %in% names(owins)), is(hypFrame, "hyperframe"))
+    stopifnot(nrow(hypFrame) == length(owins),
+    all(unlist(lapply(owins,
+                      function(x) {vapply(x, FUN.VALUE = FALSE, is.owin)}))),
+              all(rownames(hypFrame) %in% names(owins)),
+    is(hypFrame, "hyperframe"))
     Feat = attr(hypFrame, "features")
     for(nn in rownames(hypFrame)){
         ppp = hypFrame[[nn, "ppp"]]
@@ -53,23 +59,27 @@ addCell = function(hypFrame, owins, checkOverlap = TRUE, warnOut = TRUE){
         if(checkOverlap){
             foo = findOverlap(owins[[nn]])
         }
-        idWindow = vapply(owins[[nn]], FUN.VALUE = logical(NP <- npoints(ppp)), function(rr){
+        idWindow = vapply(owins[[nn]], FUN.VALUE = logical(NP <- npoints(ppp)),
+                          function(rr){
                 inside.owin(ppp, w = rr)
         })
         idIn = rowAny(idWindow)
         if(all(!idIn)){
-            stop("All points lie outside all windows for point pattern ", nn, " check your input!")
+            stop("All points lie outside all windows for point pattern ", nn,
+                 " check your input!")
         }
         if(warnOut && (LL <- sum(!idIn))){
-            warning(LL, " points lie outside all windows for point pattern ", nn,
+            warning(LL," points lie outside all windows for point pattern ", nn,
                     " and were not assigned to a cell.\n")
         }
         cellOut = rep("NA", NP)
         cellOut[idIn] = rownames(which(t(idWindow[idIn, ]), arr.ind = TRUE))
-        hypFrame[[nn, "ppp"]] = setmarks(hypFrame[[nn, "ppp"]], cbind(marks(hypFrame[[nn, "ppp"]], drop = FALSE), cell = cellOut))
+        hypFrame[[nn, "ppp"]] = setmarks(hypFrame[[nn, "ppp"]],
+            cbind(marks(hypFrame[[nn, "ppp"]], drop = FALSE), cell = cellOut))
     }
     hypFrame$owins = owins
-    attr(hypFrame, "features") = Feat #Retain features attribute, which gets lost when setting the marks somehow
+    attr(hypFrame, "features") = Feat #Retain features attribute,
+    #which gets lost when setting the marks somehow
     return(hypFrame)
 }
 

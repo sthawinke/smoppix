@@ -97,16 +97,14 @@ estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3,
     }
     piPair <- grepl(pis, pattern = "Pair")
     uniPIs = if(any(!piPair)){
-        if(verbose)
-            message("Calculating univariate probabilistic indices...")
-        calcUniPIs(p, pis, ecdfsEdgeAndMidpoint, owins, tabObs, null,
+        calcUniPIs(p, pis, verbose, ecdfsEdgeAndMidpoint, owins, tabObs, null,
                    nSims, ecdfs, nSub, ecdfAll, idOne, features, ecdfFixedPoint,
                    pointPPP)
     }
     #Bivariate patterns
     biPIs = if(any(piPair)){
         calcBiPIs(features = features[tabObs[features] > 0],p, pis, null, nSims,
-                  ecdfs, nSub, ecdfAll, manyPairs, verbose)
+                  ecdfs, nSub, ecdfAll, manyPairs, verbose, allowManyGenePairs)
     }
     list("uniPIs" = uniPIs, "biPIs" = biPIs)
 }
@@ -137,6 +135,7 @@ estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3,
 #' 'edge' and 'midpoint' calculate the distance to the edge respectively
 #'  the midpoint of the windows added using the addCell() function.
 #' 'fixedpoint' calculates the distances to a supplied list of points.
+#' The suffix "Cell" indicates distances are being calculated within cells only.
 estPims = function(hypFrame, pis = c("nn", "allDist", "nnPair", "allDistPair",
                     "edge", "midpoint", "fixedpoint", "nnCell", "allDistCell"),
                    null = c("background", "CSR"),

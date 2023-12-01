@@ -6,11 +6,16 @@
 #' @param ecdfs Ecdfs per point
 #' @param idOne Index of features with only one observation, to be excluded
 #' @param nSub The number of events in the subsampled pattern
+#' @param verbose A boolean, should verbose output be printed
+#' @param ecdfFixedPoint The ecdf of the fixed point
+#' @param pointPPP the point pattern containing the fixed point
 #'
 #' @return PIs for every feature
 #' @importFrom spatstat.geom marks
-calcUniPIs = function(p, pis, ecdfsEdgeAndMidpoint, owins, tabObs, null, nSims,
+calcUniPIs = function(p, pis, verbose, ecdfsEdgeAndMidpoint, owins, tabObs, null, nSims,
                       ecdfs, nSub, ecdfAll, idOne, features, ecdfFixedPoint, pointPPP){
+    if(verbose)
+        message("Calculating univariate probabilistic indices...")
     uniPIs = lapply(nams <- names(tabObs[features])[!idOne], function(feat){
         pSub = p[id <-which(marks(p, drop = FALSE)$gene == feat), ]
         p = p[-id, ] #Avoid zero distances by removing observations of gene
