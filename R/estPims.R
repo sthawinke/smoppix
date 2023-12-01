@@ -21,9 +21,10 @@
 #' @importFrom utils combn
 #' @import spatstat.geom
 #' @importFrom Rdpack reprompt
-#' @importFrom Rfast rowSort rowMins
+#' @importFrom Rfast rowSort rowMins rowAny
 #' @importFrom extraDistr pnhyper
-estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3, nPointsAllWin = 5e2, features = NULL,
+estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3,
+                         nPointsAllWin = 5e2, features = NULL,
                    allowManyGenePairs = FALSE, manyPairs = 1e6, verbose = FALSE,
                    owins = NULL, point){
     if(is.null(features)){
@@ -33,10 +34,12 @@ estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3, nP
     }
     if(any(pis == "fixedpoint"))
         if(missing(point))
-            stop("Provide fixed point to measure distances to when requesting pi = 'fixedPoint'")
+            stop("Provide fixed point to measure distances to when requesting",
+                 "pi = 'fixedPoint'")
         else
             pointPPP = ppp(point[1], point[2])
-    if(any(pis %in% c("edge", "fixedpoint")) || (any(pis == "allDist") && null =="CSR")){
+    if(any(pis %in% c("edge", "fixedpoint")) || (any(pis == "allDist") &&
+                                                 null =="CSR")){
         if(any(pis %in% c("allDist", "fixedpoint"))){
            pSim = runifpoint(nPointsAll, win = p$window)
         }
@@ -63,12 +66,14 @@ estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3, nP
                 edge = if(any(pis == "edge"))
                     ecdf(nncross(pSub, edges(owins[[nam]]), what = "dist"))
                 midpoint = if(any(pis == "midpoint"))
-                    ecdf(crossdist(pSub, centroid.owin(owins[[nam]], as.ppp = TRUE)))
+                    ecdf(crossdist(pSub,
+                                   centroid.owin(owins[[nam]], as.ppp = TRUE)))
                 list("edge" = edge, "midpoint" = midpoint)
                 });names(ecdfsEdgeAndMidpoint) = names(owins)
         }
         if(any(pis == "fixedpoint"))
-            ecdfFixedPoint = ecdf(nncross(subSampleP(p, nPointsAll), pointPPP, what = "dist"))
+            ecdfFixedPoint = ecdf(nncross(subSampleP(p, nPointsAll),
+                                          pointPPP, what = "dist"))
     }
     if(any(pis %in% c("nn", "nnPair", "allDist", "allDistPair"))){
             #Prepare some null distances, either with CSR or background
@@ -77,11 +82,9 @@ estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3, nP
                           "background" = subSampleP(p, subSamSize),
                           "CSR" = runifpoint(subSamSize, win = p$window))
             #Subsample for memory reasons
-            nSub = npoints(pSub)-(null == "background")
-            rs = rowSort(crossdist(p, pSub))
-            if(null == "background")
-                rs = rs[, -1]  #Eliminate self distances for background
-            ecdfs = apply(rs, 1, ecdfPreSort)
+            cd = getCrossDist(p, pSub, null)
+            ecdfs = apply(rowSort(cd), 1, ecdfPreSort)
+            nSub = ncol(cd)
     }
     #Univariate patterns
     if(any(idOne <- (tabObs[features]==1)) && verbose){
@@ -93,18 +96,24 @@ estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3, nP
     uniPIs = lapply(nams <- names(tabObs[features])[!idOne], function(feat){
         pSub = p[id <-which(marks(p, drop = FALSE)$gene == feat), ]
         p = p[-id, ] #Avoid zero distances by removing observations of gene
-        NNdistPI = if(any(pis == "nn") ){calcNNPI(pSub, p, null, nSims, ecdfs = ecdfs[id], n = nSub)}
+        NNdistPI = if(any(pis == "nn")){
+            calcNNPI(pSub, p, null, nSims, ecdfs = ecdfs[id], n = nSub)}
         #Also here room for improvement
         allDistPI = if(any(pis == "allDist")){
-            calcAllDistPI(pSub, p, ecdfAll = ecdfAll, null = null, ecdfs = ecdfs[id])}
+            calcAllDistPI(pSub, p, ecdfAll = ecdfAll, null = null,
+                          ecdfs = ecdfs[id])}
         edgeDistPI = if(any(pis == "edge")){
-            calcWindowDistPI(pSub, owins, ecdfAll = ecdfsEdgeAndMidpoint, towhat = "edge")}
+            calcWindowDistPI(pSub, owins, ecdfAll = ecdfsEdgeAndMidpoint,
+                             towhat = "edge")}
         midPointDistPI = if(any(pis == "midpoint")){
-            calcWindowDistPI(pSub, owins, ecdfAll = ecdfsEdgeAndMidpoint, towhat = "midpoint")}
+            calcWindowDistPI(pSub, owins, ecdfAll = ecdfsEdgeAndMidpoint,
+                             towhat = "midpoint")}
         fixedPointDistPI = if(any(pis == "fixedpoint")){
             calcFixedPointDistPI(pSub, pointPPP, ecdfAll = ecdfFixedPoint)}
         list("pointDists" = c("nn" = NNdistPI, "allDist" = allDistPI),
-             "windowDists" = list("edge" = edgeDistPI, "midpoint" = midPointDistPI, "fixedpoint" = fixedPointDistPI))
+             "windowDists" = list("edge" = edgeDistPI,
+                                  "midpoint" = midPointDistPI,
+                                  "fixedpoint" = fixedPointDistPI))
     }); names(uniPIs) = nams
     #Bivariate patterns
     biPIs = if(any(piPair <- grepl(pis, pattern = "Pair"))){
@@ -171,8 +180,10 @@ estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3, nP
 #' 'edge' and 'midpoint' calculate the distance to the edge respectively
 #'  the midpoint of the windows added using the addCell() function.
 #' 'fixedpoint' calculates the distances to a supplied list of points.
-estPims = function(hypFrame, pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint", "fixedpoint"),
-                   null = c("background", "CSR"), features = attr(hypFrame, "features"),...){
+estPims = function(hypFrame, pis = c("nn", "allDist", "nnPair", "allDistPair",
+                                     "edge", "midpoint", "fixedpoint"),
+                   null = c("background", "CSR"),
+                   features = attr(hypFrame, "features"),...){
     pis = match.arg(pis, several.ok = TRUE)
     null = match.arg(null)
     if(any(pis %in% c("edge", "midpoint")) && is.null(hypFrame$owins)){
