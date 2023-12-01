@@ -7,6 +7,7 @@
 calcUniPIs(
   p,
   pis,
+  verbose,
   ecdfsEdgeAndMidpoint,
   owins,
   tabObs,
@@ -25,6 +26,8 @@ calcUniPIs(
 \item{p}{The point pattern}
 
 \item{pis}{the Probabilitstic indices to be estimated}
+
+\item{verbose}{A boolean, should verbose output be printed}
 
 \item{ecdfsEdgeAndMidpoint}{ecdfs within the cells}
 
@@ -45,6 +48,10 @@ calcUniPIs(
 \item{idOne}{Index of features with only one observation, to be excluded}
 
 \item{features}{A character vector, for which features should the probablilistic indices be calculated?}
+
+\item{ecdfFixedPoint}{The ecdf of the fixed point}
+
+\item{pointPPP}{the point pattern containing the fixed point}
 }
 \value{
 PIs for every feature

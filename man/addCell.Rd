@@ -2,7 +2,8 @@
 % Please edit documentation in R/addCell.R
 \name{addCell}
 \alias{addCell}
-\title{Check in which cell each event lies and add a cell marker, plus include the list of regions}
+\title{Check in which cell each event lies and add a cell marker,
+plus include the list of regions}
 \usage{
 addCell(hypFrame, owins, checkOverlap = TRUE, warnOut = TRUE)
 }
@@ -13,13 +14,15 @@ addCell(hypFrame, owins, checkOverlap = TRUE, warnOut = TRUE)
 
 \item{checkOverlap}{a boolean, should windows be checked for overlap}
 
-\item{warnOut}{a boolean, should warning be issued when points are not contained in window}
+\item{warnOut}{a boolean, should warning be issued when points are not
+contained in window}
 }
 \value{
 the modified hyperframe
 }
 \description{
-Check in which cell each event lies and add a cell marker, plus include the list of regions
+Check in which cell each event lies and add a cell marker,
+plus include the list of regions
 }
 \examples{
 library(spatstat.random)
@@ -47,7 +50,8 @@ w2 <- owin(poly=list(x=c(0,0,.5),y = c(.5,0,0)))
 w3 <- owin(poly=list(x=c(0,0,.5),y=c(1,0.5,1)))
 w4 <- owin(poly=list(x=c(1,1,.5),y=c(0.5,1,1)))
 w5 <- owin(poly=list(x=c(1,1,.5),y=c(0,0.5,0)))
-hypFrame <- buildHyperFrame(df, coordVars = c("x", "y"), imageVars = c("condition", "fov"))
+hypFrame <- buildHyperFrame(df, coordVars = c("x", "y"),
+imageVars = c("condition", "fov"))
 nDesignFactors = length(unique(hypFrame$image))
 wList = lapply(seq_len(nDesignFactors), function(x){
     list("w1" = w1, "w2" = w2, "w3" = w3, "w4" = w4, "w5" = w5)

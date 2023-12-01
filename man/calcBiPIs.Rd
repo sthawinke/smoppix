@@ -15,8 +15,7 @@ calcBiPIs(
   features,
   manyPairs,
   verbose,
-  allowManyGenePairs,
-  piPair
+  allowManyGenePairs
 )
 }
 \arguments{
@@ -35,6 +34,12 @@ calcBiPIs(
 \item{ecdfAll}{Overall ecdf}
 
 \item{features}{A character vector, for which features should the probablilistic indices be calculated?}
+
+\item{manyPairs}{Number of gene pairs to be considered "many"}
+
+\item{verbose}{A boolean, should verbose output be printed}
+
+\item{allowManyGenePairs}{A boolean, set to true to override warning on computation time}
 }
 \value{
 A matrix of bivariate PIs

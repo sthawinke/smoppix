@@ -2,7 +2,8 @@
 % Please edit documentation in R/buidDfMM.R
 \name{buildDfMM}
 \alias{buildDfMM}
-\title{Build a data frame for a single gene and measure to prepare for mixed model building}
+\title{Build a data frame for a single gene and measure to prepare
+for mixed model building}
 \usage{
 buildDfMM(
   resList,
@@ -15,13 +16,15 @@ buildDfMM(
 
 \item{gene}{A character string indicating the desired gene or gene pair}
 
-\item{pi}{character string indicating the desired pim as outcome in the linear mixed model}
+\item{pi}{character string indicating the desired pim as outcome
+in the linear mixed model}
 }
 \value{
 A dataframe
 }
 \description{
-Build a data frame for a single gene and measure to prepare for mixed model building
+Build a data frame for a single gene and measure to prepare
+for mixed model building
 }
 \examples{
 data(Yang)
