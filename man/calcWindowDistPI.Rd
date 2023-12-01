@@ -13,7 +13,8 @@ calcWindowDistPI(pSub, owins, ecdfAll, towhat)
 
 \item{ecdfAll}{the cumulative distribution function under the null}
 
-\item{towhat}{a character vector, either "edge" or "midpoint", indicating with respect to what the distance should be calculated}
+\item{towhat}{a character vector, either "edge", "midpoint", "nnCell" or "allDistCell",
+indicating with respect to what the distance should be calculated}
 }
 \value{
 The estimated probabilistic index
@@ -29,5 +30,5 @@ The independent evaluations of the B-functions per cell are here returned as rea
 \insertAllCited{}
 }
 \seealso{
-\link{addCell}
+\link{addCell}, \link{estPims}
 }
