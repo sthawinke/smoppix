@@ -38,21 +38,25 @@ estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3,
                  "pi = 'fixedPoint'")
         else
             pointPPP = ppp(point[1], point[2])
-    if(any(pis %in% c("edge", "fixedpoint")) || (any(pis == "allDist") &&
-                                                 null =="CSR")){
+    if(any(pis %in% c("edge", "fixedpoint", "allDist")) && null =="CSR"){
         if(any(pis %in% c("allDist", "fixedpoint"))){
            pSim = runifpoint(nPointsAll, win = p$window)
         }
         if(any(pis == "allDist"))
             ecdfAll = ecdf(dist(coords(pSim)))
-        if(any(pis %in% c("edge", "midpoint"))){
+        if(any(pis %in% c("edge", "midpoint", "nnCell", "allDistCell"))){
             ecdfsEdgeAndMidpoint = lapply(owins, function(rr) {
                 pSub = runifpoint(nPointsAllWin, win = rr)
-                edge = if(any(pis== "edge"))
+                edge = if(any(pis == "edge"))
                     ecdf(nncross(pSub, edges(rr), what = "dist"))
-                midpoint = if(any(pis== "midpoint"))
+                midpoint = if(any(pis == "midpoint"))
                     ecdf(crossdist(pSub, centroid.owin(rr, as.ppp = TRUE)))
-                list("edge" = edge, "midpoint" = midpoint)
+                nnCell = if(any(pis == "nnCell"))
+                    ecdf(nndist(pSub))
+                allDistCell = if(any(pis == "allDistCell"))
+                    ecdf(dist(coords(pSub)))
+                list("edge" = edge, "midpoint" = midpoint, "nnCell" = nnCell,
+                     "allDistCell" = allDistCell)
             });names(ecdfsEdgeAndMidpoint) = names(owins)
         }
         if(any(pis == "fixedpoint"))
@@ -108,11 +112,17 @@ estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3,
         midPointDistPI = if(any(pis == "midpoint")){
             calcWindowDistPI(pSub, owins, ecdfAll = ecdfsEdgeAndMidpoint,
                              towhat = "midpoint")}
+        nnCellPI = if(any(pis == "nnCell")){
+            calcWindowDistPI(pSub, owins, ecdfAll = ecdfsEdgeAndMidpoint,
+                             towhat = "nn")}
+        allDistCellPI = if(any(pis == "allDistCell")){
+            calcWindowDistPI(pSub, owins, ecdfAll = ecdfsEdgeAndMidpoint,
+                             towhat = "allDist")}
         fixedPointDistPI = if(any(pis == "fixedpoint")){
             calcFixedPointDistPI(pSub, pointPPP, ecdfAll = ecdfFixedPoint)}
         list("pointDists" = c("nn" = NNdistPI, "allDist" = allDistPI),
-             "windowDists" = list("edge" = edgeDistPI,
-                                  "midpoint" = midPointDistPI,
+             "windowDists" = list("edge" = edgeDistPI, "nnCell" = nnCellPI,
+                    "allDistCell" = allDistCellPI, "midpoint" = midPointDistPI,
                                   "fixedpoint" = fixedPointDistPI))
     }); names(uniPIs) = nams
     #Bivariate patterns
@@ -181,12 +191,12 @@ estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3,
 #'  the midpoint of the windows added using the addCell() function.
 #' 'fixedpoint' calculates the distances to a supplied list of points.
 estPims = function(hypFrame, pis = c("nn", "allDist", "nnPair", "allDistPair",
-                                     "edge", "midpoint", "fixedpoint"),
+                    "edge", "midpoint", "fixedpoint", "nnCell", "allDistCell"),
                    null = c("background", "CSR"),
                    features = attr(hypFrame, "features"),...){
     pis = match.arg(pis, several.ok = TRUE)
     null = match.arg(null)
-    if(any(pis %in% c("edge", "midpoint")) && is.null(hypFrame$owins)){
+    if(any(pis %in% c("edge", "midpoint", "nnCell", "allDistCell")) && is.null(hypFrame$owins)){
         stop("No window provided for distance to edge or midpoint calculation.",
              "Add it using the addCell() function")
     }

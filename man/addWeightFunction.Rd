@@ -42,8 +42,8 @@ hypYang = buildHyperFrame(Yang, coordVars = c("x", "y"),
 imageVars = c("day", "root", "section"))
 #Fit a subset of features to limit computation time
 yangPims = estPims(hypYang, pis = c("nn", "nnPair"), features = attr(hypYang, "features")[1:12])
-#First Build the weight function
-yangObj <- addWeightFunction(yangPims, pi = "nn", designVars = c("day", "root"))
+#Build the weight function for all PIs present
+yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))
 }
 \seealso{
 \link{buildDfMM}
