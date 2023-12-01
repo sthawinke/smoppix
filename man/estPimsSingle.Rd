@@ -11,7 +11,7 @@ estPimsSingle(
   tabObs,
   nSims = 50,
   nPointsAll = 2000,
-  nPointsAllWin = 200,
+  nPointsAllWin = 500,
   features = NULL,
   allowManyGenePairs = FALSE,
   manyPairs = 1e+06,
