@@ -1,5 +1,12 @@
+#' Calculate bivaraiet PIs
+#'
+#' @param manyPairs Number of gene pairs to be considered "many"
+#' @param allowManyGenePairs A boolean, set to true to override warning on computation time
+#' @inheritParams calcUniPIs
+#'
+#' @return A matrix of bivariate PIs
 calcBiPIs = function(p, pis, null, nSims, ecdfs, nSub, ecdfAll, features,
-                     manyPairs, verbose){
+                     manyPairs, verbose, allowManyGenePairs){
     if(!allowManyGenePairs &&
        (numGenePairs <- choose(length(features), 2)) > manyPairs){
         warning(immediate. = TRUE, "Calculating probablistic indices for",
@@ -10,7 +17,7 @@ calcBiPIs = function(p, pis, null, nSims, ecdfs, nSub, ecdfAll, features,
     }
     genePairsMat = combn(features, 2)
     out = matrix(nrow = ncol(genePairsMat), byrow = TRUE,
-                 vapply(seq_len(ncol(genePairsMat)), FUN.VALUE = double(sum(piPair)),
+                 vapply(seq_len(ncol(genePairsMat)), FUN.VALUE = double(length(grep(pis, pattern = "Pair"))),
                         function(i){
                             feat1 = genePairsMat[1, i];feat2 = genePairsMat[2, i]
                             pSub1 = p[id1 <- which(marks(p, drop = FALSE)$gene == feat1), ]

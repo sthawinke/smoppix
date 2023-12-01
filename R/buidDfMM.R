@@ -1,8 +1,10 @@
-#' Build a data frame for a single gene and measure to prepare for mixed model building
+#' Build a data frame for a single gene and measure to prepare
+#' for mixed model building
 #'
 #' @param resList The result of a call to estPims()
 #' @param gene A character string indicating the desired gene or gene pair
-#' @param pi character string indicating the desired pim as outcome in the linear mixed model
+#' @param pi character string indicating the desired pim as outcome
+#'  in the linear mixed model
 #'
 #' @return A dataframe
 #' @export
@@ -27,7 +29,9 @@
 #' contrasts = list("day" = "contr.sum"))
 #' summary(mixedMod)
 #'#Evidence for anticorrelation
-buildDfMM = function(resList, gene, pi = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint", "fixedpoint")){
+buildDfMM = function(resList, gene,
+                     pi = c("nn", "allDist", "nnPair", "allDistPair", "edge",
+                            "midpoint", "fixedpoint")){
     pi = match.arg(pi)
     stopifnot((lg <- length(gene)) %in% c(1, 2))
     #Check whether genes are present
@@ -66,7 +70,11 @@ buildDfMMUni = function(resList, gene, pi){
         if(idNull <- is.null(vec <- x[["uniPIs"]][[gene]][[piListNameInner]][pi]))
             vec = NA
         piOut = if(winId) {
-            if(idNull) data.frame("pi" = NA, "cell" = "NA") else data.frame("pi" = unlist(vec), "cell" = rep(names(vec[[pi]]), times = vapply(vec[[pi]], FUN.VALUE = integer(1), length)))
+            if(idNull) {
+                data.frame("pi" = NA, "cell" = "NA")
+                }else {
+                    data.frame("pi" = unlist(vec), "cell" = rep(names(vec[[pi]]),
+                    times = vapply(vec[[pi]], FUN.VALUE = integer(1), length)))}
         } else if (fixedId){
             cbind("pi" = if(idNull) vec else vec[[pi]])
         } else
@@ -80,7 +88,9 @@ buildDfMMUni = function(resList, gene, pi){
         }
     })
     design = if(fixedId) {
-            rep(rownames(resList$hypFrame), times = vapply(piEsts, FUN.VALUE = integer(1), if(winId) NROW else length))
+            rep(rownames(resList$hypFrame),
+                times = vapply(piEsts, FUN.VALUE = integer(1),
+                               if(winId) NROW else length))
         } else {
             rownames(resList$hypFrame)
         }
@@ -88,7 +98,8 @@ buildDfMMUni = function(resList, gene, pi){
     if(is.null(piMat))
         stop("Gene  not found!\n")
     if(!fixedId){
-        weight = evalWeightFunction(resList$Wfs[[pi]], newdata = piMat[, "NP", drop = FALSE])
+        weight = evalWeightFunction(resList$Wfs[[pi]],
+                                    newdata = piMat[, "NP", drop = FALSE])
         weight = weight/sum(weight, na.rm = TRUE)
         piMat = cbind(piMat, weight)
     }
@@ -97,7 +108,8 @@ buildDfMMUni = function(resList, gene, pi){
     return(piMat)
     }
 buildDfMMBi = function(resList, gene, pi){
-    piEsts = t(vapply(seq_along(resList$hypFrame$pimRes), FUN.VALUE = double(3), function(n){
+    piEsts = t(vapply(seq_along(resList$hypFrame$pimRes),
+                      FUN.VALUE = double(3), function(n){
         if(idNull <- is.null(vec <- getGp(resList$hypFrame$pimRes[[n]][["biPIs"]], gene, drop = FALSE)[,pi])){
             vec = NA
             npVec = rep(NA, 2)
@@ -110,7 +122,8 @@ buildDfMMBi = function(resList, gene, pi){
     rownames(piEsts) = rownames(resList$hypFrame)
     if(all(is.na(piEsts[,"pi"])))
         stop("Gene pair not found!\n")
-    weight = evalWeightFunction(resList$Wfs[[pi]], newdata = data.frame(piEsts[, c("minP", "maxP")]))
+    weight = evalWeightFunction(resList$Wfs[[pi]],
+                                newdata = data.frame(piEsts[, c("minP", "maxP")]))
     weight = weight/sum(weight, na.rm = TRUE)
     piMat = data.frame(piEsts, weight, design = rownames(piEsts))
     return(piMat)
