@@ -1,15 +1,17 @@
-#' Title
+#' Calculate univariate PIs for all features
 #'
 #' @inheritParams estPimsSingle
 #' @param ecdfsEdgeAndMidpoint ecdfs within the cells
 #' @param ecdfAll Overall ecdf
 #' @param ecdfs Ecdfs per point
+#' @param idOne Index of features with only one observation, to be excluded
+#' @param nSub The number of events in the subsampled pattern
 #'
 #' @return PIs for every feature
 #' @importFrom spatstat.geom marks
 calcUniPIs = function(p, pis, ecdfsEdgeAndMidpoint, owins, tabObs, null, nSims,
-                      ecdfs, nSub, ecdfAll, idOne){
-    lapply(nams <- names(tabObs[features])[!idOne], function(feat){
+                      ecdfs, nSub, ecdfAll, idOne, features, ecdfFixedPoint, pointPPP){
+    uniPIs = lapply(nams <- names(tabObs[features])[!idOne], function(feat){
         pSub = p[id <-which(marks(p, drop = FALSE)$gene == feat), ]
         p = p[-id, ] #Avoid zero distances by removing observations of gene
         NNdistPI = if(any(pis == "nn")){

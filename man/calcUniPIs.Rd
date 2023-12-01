@@ -2,7 +2,7 @@
 % Please edit documentation in R/calcUniPIs.R
 \name{calcUniPIs}
 \alias{calcUniPIs}
-\title{Title}
+\title{Calculate univariate PIs for all features}
 \usage{
 calcUniPIs(
   p,
@@ -15,7 +15,10 @@ calcUniPIs(
   ecdfs,
   nSub,
   ecdfAll,
-  idOne
+  idOne,
+  features,
+  ecdfFixedPoint,
+  pointPPP
 )
 }
 \arguments{
@@ -35,11 +38,17 @@ calcUniPIs(
 
 \item{ecdfs}{Ecdfs per point}
 
+\item{nSub}{The number of events in the subsampled pattern}
+
 \item{ecdfAll}{Overall ecdf}
+
+\item{idOne}{Index of features with only one observation, to be excluded}
+
+\item{features}{A character vector, for which features should the probablilistic indices be calculated?}
 }
 \value{
 PIs for every feature
 }
 \description{
-Title
+Calculate univariate PIs for all features
 }
