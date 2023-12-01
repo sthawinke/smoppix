@@ -7,7 +7,7 @@
 dropDiagonal(x)
 }
 \arguments{
-\item{x}{}
+\item{x}{The matrix from which to remove the diagonal}
 }
 \value{
 A matrix with the same number of rows as x and one column less

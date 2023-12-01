@@ -2,7 +2,7 @@
 #' @details The diagonal elements are removed, and the elements right from the
 #' diagonal are shifted left to form a new matrix with one column less
 #'
-#' @param x
+#' @param x The matrix from which to remove the diagonal
 #'
 #' @return A matrix with the same number of rows as x and one column less
 dropDiagonal = function(x){

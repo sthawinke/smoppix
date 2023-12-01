@@ -6,7 +6,8 @@
 \usage{
 estPims(
   hypFrame,
-  pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint", "fixedpoint"),
+  pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint", "fixedpoint",
+    "nnCell", "allDistCell"),
   null = c("background", "CSR"),
   features = attr(hypFrame, "features"),
   ...
