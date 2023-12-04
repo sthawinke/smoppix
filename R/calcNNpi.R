@@ -6,18 +6,18 @@
 #'
 #' @importFrom spatstat.geom nndist crossdist npoints area
 #' @importFrom spatstat.random rpoispp
-#' @importFrom stats ecdf
+#' @importFrom stats ecdf qpois dpois
 #' @importFrom Rfast rowMins colMins
 #' @return The estimated probabilistic index
-calcNNPI = function(pSub, p, null, nSims, ecdfs, n){
+calcNNPI = function(pSub, p, null, nSims, ecdfs, n, ecdfAll){
     obsDistNN = nndist(pSub)
     if(null == "background"){
         NP = npoints(pSub)
         obsDistRank = vapply(seq_along(obsDistNN), FUN.VALUE = double(1), function(i){
-                round(ecdfs[[i]](obsDistNN[i])*environment(ecdfs[[i]])$nobs)
+                ceiling(ecdfs[[i]](obsDistNN[i])*environment(ecdfs[[i]])$nobs)
             #Approximate rank: quantile in overall distribution times
-            #number of observations
-            }) +1 #+1 to avoid zero ranks
+            #number of observations. Ceiling to avoid zero ranks.
+            })
         mean(pnhyper(obsDistRank, n = n - (NP - 1), m = NP - 1, r = 1))
         #Exclude event itself, so NP - 1
         #m = N-1: White balls, number of other events of the same gene
@@ -30,6 +30,15 @@ calcNNPI = function(pSub, p, null, nSims, ecdfs, n){
             nndist(rpoispp(lambda, win = pSub$window))
         }) #Density dependent so still sims needed
         mean(ecdf(unlist(simDistsNN))(obsDistNN))
+        #Weigh by Poisson distribution
+        approxRanks = ceiling(ecdfAll(obsDistNN)*(nAll <- environment(ecdfAll)$nobs))
+        #nAll already excludes self distances
+        poisQ = qpois(lambda = NP <- npoints(pSub), p = c(1e-4, 1-1e-4))
+        corFac = (1- sum(dpois(0:1, lambda = NP)))
+        sum(vapply(seq.int(max(poisQ[1], 2), poisQ[2]), FUN.VALUE = double(1), function(xx){
+            mean(pnhyper(approxRanks, r = 1, m = xx - 1, n = nAll))*
+                dpois(xx, lambda = NP)/corFac
+        }))
     }
 }
 calcNNPIpair = function(cd, id1, id2, null, p, ecdfs, nSims, n){
@@ -37,8 +46,9 @@ calcNNPIpair = function(cd, id1, id2, null, p, ecdfs, nSims, n){
     obsDistNN = c(rowMins(cd, value = TRUE), colMins(cd, value = TRUE))
     if(null == "background"){
         obsDistRank = vapply(seq_along(obsDistNN), FUN.VALUE = double(1), function(i){
-            round(ecdfs[[i]](obsDistNN[i])*environment(ecdfs[[i]])$nobs)
-        }) +1 #+1 to avoid zero ranks
+            ceiling(ecdfs[[i]](obsDistNN[i])*environment(ecdfs[[i]])$nobs)
+            #Ceiling to avoid zero ranks
+        })
         seq1 = seq_along(id1)
         mean(c(pnhyper(obsDistRank[seq1], n = n-length(id2), m = length(id2), r = 1),
                pnhyper(obsDistRank[-seq1], n = n-length(id1), m = length(id1), r = 1)))
