@@ -20,7 +20,8 @@ calcUniPIs = function(p, pis, verbose, ecdfsEdgeAndMidpoint, owins, tabObs, null
         pSub = p[id <-which(marks(p, drop = FALSE)$gene == feat), ]
         p = p[-id, ] #Avoid zero distances by removing observations of gene
         NNdistPI = if(any(pis == "nn")){
-            calcNNPI(pSub, p, null, nSims, ecdfs = ecdfs[id], n = nSub)}
+            calcNNPI(pSub, p, null, nSims, ecdfs = ecdfs[id], n = nSub,
+                     ecdfAll = ecdfAll)}
         #Also here room for improvement
         allDistPI = if(any(pis == "allDist")){
             calcAllDistPI(pSub, p, ecdfAll = ecdfAll, null = null,
