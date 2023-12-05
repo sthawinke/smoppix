@@ -9,7 +9,7 @@
 #' @param allowManyGenePairs A boolean, set to true to suppress warning messages for large numbers of gene pairs
 #' @param manyPairs An integer, what are considered many gene pairs
 #' @param verbose Should verbose output be printed?
-#' @param owins The list of windows corresponding to cells
+#' @param owins,centroids The list of windows corresponding to cells, and their centroids
 #' @param point The point to which the distances are to be calculated
 #' @param features A character vector, for which features should the probabilistic indices be calculated?
 #' @param tabObs A table of observed gene frequencies
@@ -25,7 +25,7 @@
 estPimsSingle = function(p, pis, null, tabObs, nPointsAll = 5e2,
                          nPointsAllWin = 5e2, features = NULL,
                    allowManyGenePairs = FALSE, manyPairs = 1e6, verbose = FALSE,
-                   owins = NULL, point){
+                   owins = NULL, centroids = NULL, point){
     if(is.null(features)){
         features = names(tabObs)
     } else {
@@ -46,12 +46,12 @@ estPimsSingle = function(p, pis, null, tabObs, nPointsAll = 5e2,
             if(any(pis %in% c("allDist", "allDistPair", "nn", "nnPair")))
                 ecdfAll = ecdf(dist(coords(pSim)))
             if(any(pis %in% c("edge", "midpoint", "nnCell", "allDistCell", "nnPairCell", "allDistPairCell"))){
-                ecdfsEdgeAndMidpoint = lapply(owins, function(rr) {
-                    pSub = runifpoint(nPointsAllWin, win = rr)
+                ecdfsEdgeAndMidpoint = lapply(names(owins), function(nam) {
+                    pSub = runifpoint(nPointsAllWin, win = owins[[nam]])
                     edge = if(any(pis == "edge"))
-                        ecdf(nncross(pSub, edges(rr), what = "dist"))
+                        ecdf(nncross(pSub, edges(owins[[nam]]), what = "dist"))
                     midpoint = if(any(pis == "midpoint"))
-                        ecdf(crossdist(pSub, centroid.owin(rr, as.ppp = TRUE)))
+                        ecdf(crossdist(pSub, centroids[[nam]]))
                     allDistCell = if(any(pis %in% c("nnCell", "allDistCell", "nnPairCell", "allDistPairCell")))
                         ecdf(dist(coords(pSub)))
                     list("edge" = edge, "midpoint" = midpoint, "allDistCell" = allDistCell)
@@ -69,7 +69,7 @@ estPimsSingle = function(p, pis, null, tabObs, nPointsAll = 5e2,
                     edge = if(any(pis == "edge"))
                         ecdf(nncross(pSub, edges(owins[[nam]]), what = "dist"))
                     midpoint = if(any(pis == "midpoint"))
-                        ecdf(crossdist(pSub, centroid.owin(owins[[nam]], as.ppp = TRUE)))
+                        ecdf(crossdist(pSub, centroids[[nam]]))
                     allDistCell = if(any(pis %in% c("nnCell", "allDistCell", "nnPairCell", "allDistPairCell")))
                         ecdf(dist(coords(pSub)))
                     list("edge" = edge, "midpoint" = midpoint, "allDistCell" = allDistCell)
@@ -148,15 +148,9 @@ estPims = function(hypFrame, pis = c("nn", "allDist", "nnPair", "allDistPair",
     if(any(id <- !(features %in% attr(hypFrame, "features")))){
         stop("Features ", features[id], " not found in hyperframe")
     }
-    if(any(pis %in% c("egde", "midpoint"))){
-        hypFrame$centroids = lapply(hypFrame$owins, function(x) {
-            lapply(x, function(y) centroid.owin(y, as.ppp = TRUE))
-            })
-        #Add centroids for all windows
-    }
     hypFrame$pimRes = bplapply(seq_len(nrow(hypFrame)), function(x){
        with(hypFrame[x,, drop = TRUE], estPimsSingle(ppp, owins = owins,
-            pis = pis, null = null, tabObs = tabObs,...))
+            pis = pis, null = null, tabObs = tabObs, centroids = centroids,...))
    })
    attr(hypFrame, "pis") = pis #Tag the pims calculated
    attr(hypFrame, "featuresEst") = features

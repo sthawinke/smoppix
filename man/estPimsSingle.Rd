@@ -9,13 +9,14 @@ estPimsSingle(
   pis,
   null,
   tabObs,
-  nPointsAll = 2000,
+  nPointsAll = 500,
   nPointsAllWin = 500,
   features = NULL,
   allowManyGenePairs = FALSE,
   manyPairs = 1e+06,
   verbose = FALSE,
   owins = NULL,
+  centroids = NULL,
   point
 )
 }
@@ -41,7 +42,7 @@ and distance to point}
 
 \item{verbose}{Should verbose output be printed?}
 
-\item{owins}{The list of windows corresponding to cells}
+\item{owins, centroids}{The list of windows corresponding to cells, and their centroids}
 
 \item{point}{The point to which the distances are to be calculated}
 }

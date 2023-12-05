@@ -18,7 +18,8 @@ calcUniPIs(
   idOne,
   features,
   ecdfFixedPoint,
-  pointPPP
+  pointPPP,
+  centroids
 )
 }
 \arguments{
@@ -30,7 +31,7 @@ calcUniPIs(
 
 \item{ecdfsEdgeAndMidpoint}{ecdfs within the cells}
 
-\item{owins}{The list of windows corresponding to cells}
+\item{owins, centroids}{The list of windows corresponding to cells, and their centroids}
 
 \item{tabObs}{A table of observed gene frequencies}
 
