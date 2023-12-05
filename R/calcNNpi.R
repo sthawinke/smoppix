@@ -13,25 +13,27 @@ calcNNPI = function(pSub, p, null, nSims, ecdfs, n, ecdfAll){
     obsDistNN = nndist(pSub)
     if(null == "background"){
         NP = npoints(pSub)
-        obsDistRank = vapply(seq_along(obsDistNN), FUN.VALUE = double(1), function(i){
-                ceiling(ecdfs[[i]](obsDistNN[i])*environment(ecdfs[[i]])$nobs)
+        approxRanks = vapply(seq_along(obsDistNN), FUN.VALUE = double(1), function(i){
+                round(ecdfs[[i]](obsDistNN[i])*environment(ecdfs[[i]])$nobs)
             #Approximate rank: quantile in overall distribution times
-            #number of observations. Ceiling to avoid zero ranks.
+            #number of observations.
             })
-        mean(pnhyper(obsDistRank, n = n - (NP - 1), m = NP - 1, r = 1))
+        approxRanks[approxRanks==0] = 1
+        mean(pnhyper(approxRanks, n = n - (NP - 1), m = NP - 1, r = 1))
         #Exclude event itself, so NP - 1
         #m = N-1: White balls, number of other events of the same gene
         #n = n - (NP-1): black balls, number of events of other genes in background
         #r=1: Nearest neighbour so first occurrence
     } else if(null == "CSR"){
         #Weigh by Poisson and negative hypergeometric distribution to bypass Monte-Carlo simulations
-        lambda = npoints(pSub)/area(p$window)
-        simDistsNN = lapply(integer(nSims), function(i){
-            nndist(rpoispp(lambda, win = pSub$window))
-        }) #Density dependent so still sims needed
-        mean(ecdf(unlist(simDistsNN))(obsDistNN))
+        # lambda = npoints(pSub)/area(p$window)
+        # simDistsNN = lapply(integer(nSims), function(i){
+        #     nndist(rpoispp(lambda, win = pSub$window))
+        # }) #Density dependent so still sims needed
+        # mean(ecdf(unlist(simDistsNN))(obsDistNN))
         #Weigh by Poisson distribution
-        approxRanks = ceiling(ecdfAll(obsDistNN)*(nAll <- environment(ecdfAll)$nobs))
+        approxRanks = round(ecdfAll(obsDistNN)*(nAll <- environment(ecdfAll)$nobs))
+        approxRanks[approxRanks==0] = 1
         #nAll already excludes self distances
         poisQ = qpois(lambda = NP <- npoints(pSub), p = c(1e-4, 1-1e-4))
         corFac = (1- sum(dpois(0:1, lambda = NP)))
@@ -46,9 +48,9 @@ calcNNPIpair = function(cd, id1, id2, null, p, ecdfs, nSims, n){
     obsDistNN = c(rowMins(cd, value = TRUE), colMins(cd, value = TRUE))
     if(null == "background"){
         obsDistRank = vapply(seq_along(obsDistNN), FUN.VALUE = double(1), function(i){
-            ceiling(ecdfs[[i]](obsDistNN[i])*environment(ecdfs[[i]])$nobs)
-            #Ceiling to avoid zero ranks
+            round(ecdfs[[i]](obsDistNN[i])*environment(ecdfs[[i]])$nobs)
         })
+        obsDistRank[obsDistRank==0] = 1
         seq1 = seq_along(id1)
         mean(c(pnhyper(obsDistRank[seq1], n = n-length(id2), m = length(id2), r = 1),
                pnhyper(obsDistRank[-seq1], n = n-length(id1), m = length(id1), r = 1)))
