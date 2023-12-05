@@ -8,7 +8,6 @@ calcBiPIs(
   p,
   pis,
   null,
-  nSims,
   ecdfs,
   nSub,
   ecdfAll,
@@ -21,11 +20,9 @@ calcBiPIs(
 \arguments{
 \item{p}{The point pattern}
 
-\item{pis}{the Probabilitstic indices to be estimated}
+\item{pis}{The probabilistic indices to be estimated}
 
 \item{null}{A character vector, indicating how the null distribution is defined. See details.}
-
-\item{nSims}{The number of Monte-Carlo simulations used to determine the null distribution if null = "CSR}
 
 \item{ecdfs}{Ecdfs per point}
 
@@ -33,7 +30,7 @@ calcBiPIs(
 
 \item{ecdfAll}{Overall ecdf}
 
-\item{features}{A character vector, for which features should the probablilistic indices be calculated?}
+\item{features}{A character vector, for which features should the probabilistic indices be calculated?}
 
 \item{manyPairs}{Number of gene pairs to be considered "many"}
 

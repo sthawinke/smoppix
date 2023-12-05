@@ -39,24 +39,17 @@ calcNNPIpair = function(cd, id1, id2, null, p, ecdfs, n, ecdfAll){
          vapply(seq_along(obsDistNN), FUN.VALUE = double(1), function(i){
             round(ecdfs[[i]](obsDistNN[i])*environment(ecdfs[[i]])$nobs)
         })
-    } else {round(ecdfAll(obsDistsNN)*environment(ecdfAll)$nobs)}
-        obsDistRank[obsDistRank==0] = 1
-        seq1 = seq_along(id1)
+    } else {round(ecdfAll(obsDistNN)*environment(ecdfAll)$nobs)}
+    obsDistRank[obsDistRank==0] = 1
+    seq1 = seq_along(id1)
     pis = if(null=="background"){
         mean(c(pnhyper(obsDistRank[seq1], n = n-length(id2), m = length(id2), r = 1),
                pnhyper(obsDistRank[-seq1], n = n-length(id1), m = length(id1), r = 1)))
         #Using the negative hypergeometric precludes Monte-Carlo
     } else if(null == "CSR"){
         np1 = length(id1);np2 = length(id2)
-        # simDistsNN = vapply(FUN.VALUE = obsDistNN, integer(nSims), function(i){
-        #     id <- sample(npp, np1+np2)
-        #     p1 = pSim[id[seq_len(np1)],];p2 = pSim[id[seq_len(np2)],]
-        #     distMatSub = crossdist(p1, p2)
-        #     c(rowMins(distMatSub, value = TRUE), colMins(distMatSub, value = TRUE))
-        # })
-        # mean(simDistsNN < obsDistNN)
-        pi1 = getPoissonPi(np1, nAll, obsDistRank[seq_len(np1)])
-        pi2 = getPoissonPi(np2, nAll, obsDistRank[-seq_len(np1)])
+        pi1 = getPoissonPi(np1, nAll, obsDistRank[seq1])
+        pi2 = getPoissonPi(np2, nAll, obsDistRank[-seq1])
         (pi1*np1+pi2*np2)/(np1+np2)
     }
     return(pis)
