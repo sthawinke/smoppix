@@ -9,7 +9,6 @@ estPimsSingle(
   pis,
   null,
   tabObs,
-  nSims = 50,
   nPointsAll = 2000,
   nPointsAllWin = 500,
   features = NULL,
@@ -23,20 +22,18 @@ estPimsSingle(
 \arguments{
 \item{p}{The point pattern}
 
-\item{pis}{the Probabilitstic indices to be estimated}
+\item{pis}{The probabilistic indices to be estimated}
 
 \item{null}{A character vector, indicating how the null distribution is defined. See details.}
 
 \item{tabObs}{A table of observed gene frequencies}
-
-\item{nSims}{The number of Monte-Carlo simulations used to determine the null distribution if null = "CSR}
 
 \item{nPointsAll}{How many points to subsample or simulate to calculate overall interpoint distance
 and distance to point}
 
 \item{nPointsAllWin}{How many points to subsample or simulate to calculate distance to cell edge or midpoint distribution}
 
-\item{features}{A character vector, for which features should the probablilistic indices be calculated?}
+\item{features}{A character vector, for which features should the probabilistic indices be calculated?}
 
 \item{allowManyGenePairs}{A boolean, set to true to suppress warning messages for large numbers of gene pairs}
 

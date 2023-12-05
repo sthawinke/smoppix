@@ -1,9 +1,8 @@
 #' A wrapper function for the different probabilistic indices (PIs)
 #'
 #' @param p The point pattern
-#' @param pis the Probabilitstic indices to be estimated
+#' @param pis The probabilistic indices to be estimated
 #' @param null A character vector, indicating how the null distribution is defined. See details.
-#' @param nSims The number of Monte-Carlo simulations used to determine the null distribution if null = "CSR
 #' @param nPointsAll How many points to subsample or simulate to calculate overall interpoint distance
 #' and distance to point
 #' @param nPointsAllWin How many points to subsample or simulate to calculate distance to cell edge or midpoint distribution
@@ -12,7 +11,7 @@
 #' @param verbose Should verbose output be printed?
 #' @param owins The list of windows corresponding to cells
 #' @param point The point to which the distances are to be calculated
-#' @param features A character vector, for which features should the probablilistic indices be calculated?
+#' @param features A character vector, for which features should the probabilistic indices be calculated?
 #' @param tabObs A table of observed gene frequencies
 #'
 #' @return Data frames with estimated quantities per gene and/or gene pair
@@ -23,7 +22,7 @@
 #' @importFrom Rdpack reprompt
 #' @importFrom Rfast rowSort rowMins rowAny
 #' @importFrom extraDistr pnhyper
-estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3,
+estPimsSingle = function(p, pis, null, tabObs, nPointsAll = 2e3,
                          nPointsAllWin = 5e2, features = NULL,
                    allowManyGenePairs = FALSE, manyPairs = 1e6, verbose = FALSE,
                    owins = NULL, point){
@@ -38,57 +37,56 @@ estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3,
                  "pi = 'fixedPoint'")
         else
             pointPPP = ppp(point[1], point[2])
-    if(any(pis %in% c("edge", "fixedpoint", "allDist")) && null =="CSR"){
-        if(any(pis %in% c("allDist", "allDistPair", "nn", "nnPair", "fixedpoint"))){
-           pSim = runifpoint(nPointsAll, win = p$window)
-        }
-        if(any(pis %in% c("allDist", "allDistPair", "nn", "nnPair")))
-            ecdfAll = ecdf(dist(coords(pSim)))
-        if(any(pis %in% c("edge", "midpoint", "nnCell", "allDistCell"))){
-            ecdfsEdgeAndMidpoint = lapply(owins, function(rr) {
-                pSub = runifpoint(nPointsAllWin, win = rr)
-                edge = if(any(pis == "edge"))
-                    ecdf(nncross(pSub, edges(rr), what = "dist"))
-                midpoint = if(any(pis == "midpoint"))
-                    ecdf(crossdist(pSub, centroid.owin(rr, as.ppp = TRUE)))
-                nnCell = if(any(pis == "nnCell"))
-                    ecdf(nndist(pSub))
-                allDistCell = if(any(pis == "allDistCell"))
-                    ecdf(dist(coords(pSub)))
-                list("edge" = edge, "midpoint" = midpoint, "nnCell" = nnCell,
-                     "allDistCell" = allDistCell)
-            });names(ecdfsEdgeAndMidpoint) = names(owins)
-        }
-        if(any(pis == "fixedpoint"))
-            ecdfFixedPoint = ecdf(nncross(pSim, pointPPP, what = "dist"))
-    } else if(any(pis %in% c("edge", "fixedpoint", "midpoint")) &&
-              null =="background"){
-        if(any(pis %in% c("edge", "midpoint"))){
-            ecdfsEdgeAndMidpoint = lapply(names(owins), function(nam) {
-                pSub = subSampleP(p[marks(p, drop = FALSE)$cell == nam,],
-                                  nPointsAllWin)
-                edge = if(any(pis == "edge"))
-                    ecdf(nncross(pSub, edges(owins[[nam]]), what = "dist"))
-                midpoint = if(any(pis == "midpoint"))
-                    ecdf(crossdist(pSub,
-                                   centroid.owin(owins[[nam]], as.ppp = TRUE)))
-                list("edge" = edge, "midpoint" = midpoint)
+    if(null == "CSR"){
+        if(any(pis %in% c("edge", "fixedpoint", "allDist"))){
+            if(any(pis %in% c("allDist", "allDistPair", "nn", "nnPair", "fixedpoint"))){
+               pSim = runifpoint(nPointsAll, win = p$window)
+            }
+            if(any(pis %in% c("allDist", "allDistPair", "nn", "nnPair")))
+                ecdfAll = ecdf(dist(coords(pSim)))
+            if(any(pis %in% c("edge", "midpoint", "nnCell", "allDistCell", "nnPairCell", "allDistPairCell"))){
+                ecdfsEdgeAndMidpoint = lapply(owins, function(rr) {
+                    pSub = runifpoint(nPointsAllWin, win = rr)
+                    edge = if(any(pis == "edge"))
+                        ecdf(nncross(pSub, edges(rr), what = "dist"))
+                    midpoint = if(any(pis == "midpoint"))
+                        ecdf(crossdist(pSub, centroid.owin(rr, as.ppp = TRUE)))
+                    allDistCell = if(any(pis %in% c("nnCell", "allDistCell", "nnPairCell", "allDistPairCell")))
+                        ecdf(dist(coords(pSub)))
+                    list("edge" = edge, "midpoint" = midpoint, "allDistCell" = allDistCell)
                 });names(ecdfsEdgeAndMidpoint) = names(owins)
+            }
+            if(any(pis == "fixedpoint"))
+                ecdfFixedPoint = ecdf(nncross(pSim, pointPPP, what = "dist"))
         }
+    } else if(null == "background"){
+        if(any(pis %in% c("edge", "fixedpoint", "midpoint"))){
+            if(any(pis %in% c("edge", "midpoint"))){
+                ecdfsEdgeAndMidpoint = lapply(names(owins), function(nam) {
+                    pSub = subSampleP(p[marks(p, drop = FALSE)$cell == nam,],
+                                      nPointsAllWin)
+                    edge = if(any(pis == "edge"))
+                        ecdf(nncross(pSub, edges(owins[[nam]]), what = "dist"))
+                    midpoint = if(any(pis == "midpoint"))
+                        ecdf(crossdist(pSub, centroid.owin(owins[[nam]], as.ppp = TRUE)))
+                    allDistCell = if(any(pis %in% c("nnCell", "allDistCell", "nnPairCell", "allDistPairCell")))
+                        ecdf(dist(coords(pSub)))
+                    list("edge" = edge, "midpoint" = midpoint, "allDistCell" = allDistCell)
+                });names(ecdfsEdgeAndMidpoint) = names(owins)
+            }
         if(any(pis == "fixedpoint"))
-            ecdfFixedPoint = ecdf(nncross(subSampleP(p, nPointsAll),
-                                          pointPPP, what = "dist"))
-    }
-    if(any(pis %in% c("nn", "nnPair", "allDist", "allDistPair"))){
-            #Prepare some null distances, either with CSR or background
-            subSamSize = max(c(nPointsAll, tabObs+1e2))
-            pSub = switch(null,
-                          "background" = subSampleP(p, subSamSize),
-                          "CSR" = runifpoint(subSamSize, win = p$window))
-            #Subsample for memory reasons
-            cd = getCrossDist(p, pSub, null)
-            ecdfs = apply(rowSort(cd), 1, ecdfPreSort)#FOr background, condition on point locations
-            nSub = ncol(cd)
+                ecdfFixedPoint = ecdf(nncross(subSampleP(p, nPointsAll),
+                                              pointPPP, what = "dist"))
+        if(any(pis %in% c("nn", "nnPair", "allDist", "allDistPair"))){
+                #Prepare some null distances, either with CSR or background
+                subSamSize = max(c(nPointsAll, tabObs+1e2))
+                pSub = subSampleP(p, subSamSize)
+                #Subsample for memory reasons
+                cd = getCrossDist(p, pSub, null)
+                ecdfs = apply(rowSort(cd), 1, ecdfPreSort)#FOr background, condition on point locations
+                nSub = ncol(cd)
+            }
+        }
     }
     #Univariate patterns
     if(any(idOne <- (tabObs[features]==1)) && verbose){
@@ -98,12 +96,12 @@ estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3,
     piPair <- grepl(pis, pattern = "Pair")
     uniPIs = if(any(!piPair)){
         calcUniPIs(p, pis, verbose, ecdfsEdgeAndMidpoint, owins, tabObs, null,
-                   nSims, ecdfs, nSub, ecdfAll, idOne, features, ecdfFixedPoint,
+                ecdfs, nSub, ecdfAll, idOne, features, ecdfFixedPoint,
                    pointPPP)
     }
     #Bivariate patterns
     biPIs = if(any(piPair)){
-        calcBiPIs(features = features[tabObs[features] > 0],p, pis, null, nSims,
+        calcBiPIs(features = features[tabObs[features] > 0],p, pis, null,
                   ecdfs, nSub, ecdfAll, manyPairs, verbose, allowManyGenePairs)
     }
     list("uniPIs" = uniPIs, "biPIs" = biPIs)

@@ -4,7 +4,7 @@
 \alias{calcWindowDistPI}
 \title{Estimate the PI for the distance to a fixed region of interest}
 \usage{
-calcWindowDistPI(pSub, owins, ecdfAll, towhat)
+calcWindowDistPI(pSub, owins, ecdfAll, pi)
 }
 \arguments{
 \item{pSub}{The subset point pattern containing only a single gene}
@@ -13,8 +13,7 @@ calcWindowDistPI(pSub, owins, ecdfAll, towhat)
 
 \item{ecdfAll}{the cumulative distribution function under the null}
 
-\item{towhat}{a character vector, either "edge", "midpoint", "nnCell" or "allDistCell",
-indicating with respect to what the distance should be calculated}
+\item{pi}{a character string, the type of PI desired}
 }
 \value{
 The estimated probabilistic index

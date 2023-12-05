@@ -12,7 +12,6 @@ calcUniPIs(
   owins,
   tabObs,
   null,
-  nSims,
   ecdfs,
   nSub,
   ecdfAll,
@@ -25,7 +24,7 @@ calcUniPIs(
 \arguments{
 \item{p}{The point pattern}
 
-\item{pis}{the Probabilitstic indices to be estimated}
+\item{pis}{The probabilistic indices to be estimated}
 
 \item{verbose}{A boolean, should verbose output be printed}
 
@@ -37,8 +36,6 @@ calcUniPIs(
 
 \item{null}{A character vector, indicating how the null distribution is defined. See details.}
 
-\item{nSims}{The number of Monte-Carlo simulations used to determine the null distribution if null = "CSR}
-
 \item{ecdfs}{Ecdfs per point}
 
 \item{nSub}{The number of events in the subsampled pattern}
@@ -47,7 +44,7 @@ calcUniPIs(
 
 \item{idOne}{Index of features with only one observation, to be excluded}
 
-\item{features}{A character vector, for which features should the probablilistic indices be calculated?}
+\item{features}{A character vector, for which features should the probabilistic indices be calculated?}
 
 \item{ecdfFixedPoint}{The ecdf of the fixed point}
 
