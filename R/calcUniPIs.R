@@ -12,9 +12,9 @@
 #'
 #' @return PIs for every feature
 #' @importFrom spatstat.geom marks
-calcUniPIs = function(p, pis, verbose, ecdfsEdgeAndMidpoint, owins, tabObs, null,
-                      ecdfs, nSub, ecdfAll, idOne, features, ecdfFixedPoint,
-                      pointPPP, centroids){
+calcUniPIs = function(p, pis, verbose, ecdfsEdgeAndMidpoint, owins, tabObs,
+                      null, ecdfs, nSub, ecdfAll, idOne, features,
+                      ecdfFixedPoint, pointPPP, centroids){
     if(verbose)
         message("Calculating univariate probabilistic indices...")
     uniPIs = lapply(nams <- names(tabObs[features])[!idOne], function(feat){
@@ -31,8 +31,8 @@ calcUniPIs = function(p, pis, verbose, ecdfsEdgeAndMidpoint, owins, tabObs, null
             calcWindowDistPI(pSub, owins, ecdfAll = ecdfsEdgeAndMidpoint,
                              pi = "edge")}
         midPointDistPI = if(any(pis == "midpoint")){
-            calcWindowDistPI(pSub, owins, centroids, ecdfAll = ecdfsEdgeAndMidpoint,
-                             pi = "midpoint")}
+            calcWindowDistPI(pSub, owins, centroids,
+                             ecdfAll = ecdfsEdgeAndMidpoint, pi = "midpoint")}
         nnCellPI = if(any(pis == "nnCell")){
             calcWindowDistPI(pSub, owins, ecdfAll = ecdfsEdgeAndMidpoint,
                               pi = "nnCell")}
@@ -43,7 +43,7 @@ calcUniPIs = function(p, pis, verbose, ecdfsEdgeAndMidpoint, owins, tabObs, null
             calcFixedPointDistPI(pSub, pointPPP, ecdfAll = ecdfFixedPoint)}
         list("pointDists" = c("nn" = NNdistPI, "allDist" = allDistPI),
              "windowDists" = list("edge" = edgeDistPI, "nnCell" = nnCellPI,
-                                  "allDistCell" = allDistCellPI, "midpoint" = midPointDistPI,
+                    "allDistCell" = allDistCellPI, "midpoint" = midPointDistPI,
                                   "fixedpoint" = fixedPointDistPI))
     }); names(uniPIs) = nams
     return(uniPIs)

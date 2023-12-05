@@ -11,6 +11,7 @@ test_that("Building data frames for mixed modelling proceeds without errors", {
     expect_silent(dfBG5 <- buildDfMM(objBG, gene = "gene1", pi = "midpoint"))
     expect_silent(dfBG6 <- buildDfMM(objBG, gene = "gene10", pi = "fixedpoint"))
     expect_silent(dfBG7 <- buildDfMM(objBG, gene = "gene1", pi = "edge"))
+    expect_s3_class(dfBG8 <- buildDfMM(objBG, gene = "gene1", pi = "nnCell"), "data.frame")
     expect_silent(dfCSR1 <- buildDfMM(objCSR, gene = "gene23", pi = "edge"))
     expect_silent(dfCSR2 <- buildDfMM(objCSR, gene = "gene2", pi = "fixedpoint"))
     expect_silent(dfCSR3 <- buildDfMM(objCSR, gene = "gene2", pi = "midpoint"))

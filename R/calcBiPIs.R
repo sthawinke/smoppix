@@ -16,33 +16,31 @@ calcBiPIs = function(p, pis, null, ecdfs, nSub, ecdfAll, features,
         message("Calculating bivariate probabilistic indices...")
     }
     genePairsMat = combn(features, 2)
-    out = matrix(nrow = ncol(genePairsMat), byrow = TRUE,
-                 vapply(seq_len(ncol(genePairsMat)), FUN.VALUE = double(length(grep(pis, pattern = "Pair"))),
-                        function(i){
-                            feat1 = genePairsMat[1, i];feat2 = genePairsMat[2, i]
-                            pSub1 = p[id1 <- which(marks(p, drop = FALSE)$gene == feat1), ]
-                            pSub2 = p[id2 <- which(marks(p, drop = FALSE)$gene == feat2), ]
-                            cd = crossdist(pSub1, pSub2)
-                            #Reorder and subset if needed
-                            NNdistPI = if(any(pis == "nnPair")){
-                                calcNNPIpair(cd = cd, id1 = id1, id2 = id2, null = null,
-                                             ecdfs = ecdfs[c(id1, id2)], p = p,
-                                             ecdfAll = ecdfAll, n = nSub)
-                            }
-                            allDistPI = if(any(pis == "allDistPair")){
-                                calcAllDistPIpair(id1 = id1, id2 = id2, ecdfAll = ecdfAll,
-                                                  null = null, ecdfs = ecdfs[c(id1, id2)],
-                                                  crossDist = cd)
-                            }
-                            nnCellPI = if(any(pis == "nnPairCell")){
-                                calcWindowPairPI(pSub1, pSub2, ecdfAll = ecdfsEdgeAndMidpoint,
-                                                 pi = "nnPairCell")}
-                            allDistCellPI = if(any(pis == "allDistPairCell")){
-                                calcWindowPairPI(pSub1, pSub2, cd = cd, ecdfAll = ecdfsEdgeAndMidpoint,
-                                                 pi = "allDistPairCell")}
-                            c("nnPair" = NNdistPI, "allDistPair" = allDistPI)
-                        }), dimnames = list(apply(genePairsMat, 2, paste, collapse = "--"),
-                                            grep("Pair", pis, value = TRUE)))
-    #Ensure it is a matrix even for one pi
-    out
+    #matrix(nrow = ncol(genePairsMat), byrow = TRUE, FUN.VALUE = double(length(grep(pis, pattern = "Pair"))),
+    #, dimnames = list(apply(genePairsMat, 2, paste, collapse = "--"), grep("Pair", pis, value = TRUE)))
+    lapply(seq_len(ncol(genePairsMat)), function(i){
+            feat1 = genePairsMat[1, i];feat2 = genePairsMat[2, i]
+            pSub1 = p[id1 <- which(marks(p, drop = FALSE)$gene == feat1), ]
+            pSub2 = p[id2 <- which(marks(p, drop = FALSE)$gene == feat2), ]
+            cd = crossdist(pSub1, pSub2)
+            #Reorder and subset if needed
+            NNdistPI = if(any(pis == "nnPair")){
+                calcNNPIpair(cd = cd, id1 = id1, id2 = id2, null = null,
+                             ecdfs = ecdfs[c(id1, id2)], p = p,
+                             ecdfAll = ecdfAll, n = nSub)
+            }
+            allDistPI = if(any(pis == "allDistPair")){
+                calcAllDistPIpair(id1 = id1, id2 = id2, ecdfAll = ecdfAll,
+                                  null = null, ecdfs = ecdfs[c(id1, id2)],
+                                  crossDist = cd)
+            }
+            nnCellPI = if(any(pis == "nnPairCell")){
+                calcWindowPairPI(pSub1, pSub2, ecdfAll = ecdfsEdgeAndMidpoint,
+                                 pi = "nnPairCell")}
+            allDistCellPI = if(any(pis == "allDistPairCell")){
+                calcWindowPairPI(pSub1, pSub2, cd = cd, ecdfAll = ecdfsEdgeAndMidpoint,
+                                 pi = "allDistPairCell")}
+            list("pointDists" = c("nnPair" = NNdistPI, "allDistPair" = allDistPI),
+                 "windowDists" = list("allDistCell" = allDistCellPI, "nnCell" = nnCellPI))
+    })
 }

@@ -87,7 +87,8 @@ estPimsSingle = function(p, pis, null, tabObs, nPointsAll = 5e2,
                 pSub = subSampleP(p, subSamSize)
                 #Subsample for memory reasons
                 cd = getCrossDist(p, pSub, null)
-                ecdfs = apply(rowSort(cd), 1, ecdfPreSort)#FOr background, condition on point locations
+                ecdfs = apply(rowSort(cd), 1, ecdfPreSort)
+                #For background, condition on point locations
                 nSub = ncol(cd)
         }
     }

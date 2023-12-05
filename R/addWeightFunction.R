@@ -32,7 +32,7 @@ addWeightFunction = function(hypFrame, pis = attr(hypFrame, "pis"), designVars,
                                maxObs = 1e5, maxFeatures = 5e2,...){
     if(missing(designVars))
         designVars = names(hypFrame)[!names(hypFrame) %in%
-                                         c("ppp", "image", "tabObs", "owins")]
+                             c("ppp", "image", "tabObs", "owins", "centroids")]
         #If missing take everything but the ones that are obviously
         #no design variables
     if(all(pis %in% c("edge", "midpoint", "fixedpoint")))
@@ -50,15 +50,11 @@ addWeightFunction = function(hypFrame, pis = attr(hypFrame, "pis"), designVars,
     }
     Wfs = bplapply(pis, function(pi) {
         piListName = if(pairId <- grepl("Pair", pi)) "biPIs" else "uniPIs"
-        cellId = grepl("Cell", pi)
+        subListName = if(cellId <- grepl("Cell", pi)) "windowDists" else "pointDists"
         piList = lapply(hypFrame$pimRes, function(x){
-            if(pairId){
-                x[["biPIs"]][,pi ,drop = FALSE]
-            } else {
-                vapply(x[["uniPIs"]], FUN.VALUE = double(1), function(y){
-                    y$pointDists[pi]
-                })
-            }
+            vapply(x[[piListName]], FUN.VALUE = double(1), function(y){
+                y[[subListName]][[pi]]
+            })
         })
         designVec = apply(as.data.frame(hypFrame[, designVars, drop = FALSE]),
                           1, paste, collapse = "_")
@@ -74,17 +70,22 @@ addWeightFunction = function(hypFrame, pis = attr(hypFrame, "pis"), designVars,
             tmp = vapply(piList[ordDesign], FUN.VALUE = double(1), function(x){
                 if(is.null(baa <- getGp(x,gene))) NA else baa
             })
-            quadDeps = unlist(tapply(tmp, designVec, function(x){
-                if(sum(!is.na(x)) >= 2) {
-                    (x-mean(x, na.rm = TRUE))^2
-                    } else {rep_len(NA, length(x))}
-            })) #The quadratic departures from the conditional mean
-            tabEntries = vapply(hypFrame$tabObs[ordDesign],
-                        FUN.VALUE = double(if(pairId) 2 else 1), function(x){
-                if(pairId) {
-                    if(all(gene %in% names(x))) sort(x[gene]) else rep(NA, 2)
-                } else x[gene]
-            })
+            if(cellID){
+                #If cellId, there is no tapply, cells are the lowest level anyway
+
+            } else {
+                quadDeps = unlist(tapply(tmp, designVec, function(x){
+                    if(sum(!is.na(x)) >= 2) {
+                        (x-mean(x, na.rm = TRUE))^2
+                        } else {rep_len(NA, length(x))}
+                })) #The quadratic departures from the conditional mean
+                tabEntries = vapply(hypFrame$tabObs[ordDesign],
+                            FUN.VALUE = double(if(pairId) 2 else 1), function(x){
+                    if(pairId) {
+                        if(all(gene %in% names(x))) sort(x[gene]) else rep(NA, 2)
+                    } else x[gene]
+                })
+            }
             out = rbind("quadDeps" = quadDeps, tabEntries)
             rownames(out)[-1] = if(pairId) c("minP", "maxP") else "NP"
             out
