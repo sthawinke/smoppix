@@ -6,10 +6,11 @@
 #'
 #' @importFrom spatstat.geom nndist crossdist npoints area
 #' @importFrom spatstat.random rpoispp
-#' @importFrom stats ecdf qpois dpois
+#' @importFrom stats ecdf
 #' @importFrom Rfast rowMins colMins
+#' @importFrom extraDistr pnhyper
 #' @return The estimated probabilistic index
-calcNNPI = function(pSub, p, null, nSims, ecdfs, n, ecdfAll){
+calcNNPI = function(pSub, p, null, ecdfs, n, ecdfAll){
     obsDistNN = nndist(pSub)
     if(null == "background"){
         NP = npoints(pSub)
@@ -26,37 +27,26 @@ calcNNPI = function(pSub, p, null, nSims, ecdfs, n, ecdfAll){
         #r=1: Nearest neighbour so first occurrence
     } else if(null == "CSR"){
         #Weigh by Poisson and negative hypergeometric distribution to bypass Monte-Carlo simulations
-        # lambda = npoints(pSub)/area(p$window)
-        # simDistsNN = lapply(integer(nSims), function(i){
-        #     nndist(rpoispp(lambda, win = pSub$window))
-        # }) #Density dependent so still sims needed
-        # mean(ecdf(unlist(simDistsNN))(obsDistNN))
-        #Weigh by Poisson distribution
         approxRanks = round(ecdfAll(obsDistNN)*(nAll <- environment(ecdfAll)$nobs))
         approxRanks[approxRanks==0] = 1
-        #nAll already excludes self distances
-        poisQ = qpois(lambda = NP <- npoints(pSub), p = c(1e-4, 1-1e-4))
-        corFac = (1- sum(dpois(0:1, lambda = NP)))
-        sum(vapply(seq.int(max(poisQ[1], 2), poisQ[2]), FUN.VALUE = double(1), function(xx){
-            mean(pnhyper(approxRanks, r = 1, m = xx - 1, n = nAll))*
-                dpois(xx, lambda = NP)/corFac
-        }))
+        getPoissonPi(NP = npoints(pSub), nAll, approxRanks)
     }
 }
-calcNNPIpair = function(cd, id1, id2, null, p, ecdfs, nSims, n){
+calcNNPIpair = function(cd, id1, id2, null, p, ecdfs, n, ecdfAll){
     npp = npoints(p)
     obsDistNN = c(rowMins(cd, value = TRUE), colMins(cd, value = TRUE))
-    if(null == "background"){
-        obsDistRank = vapply(seq_along(obsDistNN), FUN.VALUE = double(1), function(i){
+    obsDistRank = if(null == "background"){
+         vapply(seq_along(obsDistNN), FUN.VALUE = double(1), function(i){
             round(ecdfs[[i]](obsDistNN[i])*environment(ecdfs[[i]])$nobs)
         })
+    } else {round(ecdfAll(obsDistsNN)*environment(ecdfAll)$nobs)}
         obsDistRank[obsDistRank==0] = 1
         seq1 = seq_along(id1)
+    pis = if(null=="background"){
         mean(c(pnhyper(obsDistRank[seq1], n = n-length(id2), m = length(id2), r = 1),
                pnhyper(obsDistRank[-seq1], n = n-length(id1), m = length(id1), r = 1)))
         #Using the negative hypergeometric precludes Monte-Carlo
     } else if(null == "CSR"){
-        pSim = runifpoint(npp, win = p$window)
         np1 = length(id1);np2 = length(id2)
         simDistsNN = vapply(FUN.VALUE = obsDistNN, integer(nSims), function(i){
             id <- sample(npp, np1+np2)
@@ -65,7 +55,11 @@ calcNNPIpair = function(cd, id1, id2, null, p, ecdfs, nSims, n){
             c(rowMins(distMatSub, value = TRUE), colMins(distMatSub, value = TRUE))
         })
         mean(simDistsNN < obsDistNN)
+        pi1 = getPoissonPi(np1, nAll, obsDistRank[seq_len(np1)])
+        pi2 = getPoissonPi(np2, nAll, obsDistRank[-seq_len(np1)])
+        (pi1*np1+pi2*np2)/(np1+np2)
     }
+    return(pis)
 }
 #' Fast version of nncross
 #'
