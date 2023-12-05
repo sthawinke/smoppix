@@ -2,11 +2,10 @@
 #'
 #' @param pSub The subset point pattern containing only a single gene
 #' @param ecdfAll the cumulative distribution function under the null
-#' @param owins the list of windows describing the cells
-#' @param pi a character string, the type of PI desired
+#' @inheritParams estPimsSingle
 #'
 #' @return The estimated probabilistic index
-#' @importFrom spatstat.geom nncross centroid.owin edges nndist
+#' @importFrom spatstat.geom nncross edges nndist
 #' @importFrom stats dist
 #' @importFrom Rfast rowMins colMins
 #' @details Analysis of the distance to the border was introduced by \insertCite{Joyner2013}{spatrans} in the form of the B-function.
@@ -14,12 +13,12 @@
 #' @seealso \link{addCell}, \link{estPims}
 #' @references
 #' \insertAllCited{}
-calcWindowDistPI = function(pSub, owins, ecdfAll, pi){
+calcWindowDistPI = function(pSub, owins, centroids, ecdfAll, pi){
     splitPPP = split.ppp(pSub, f = "cell")
     obsDistEdge = lapply(names(splitPPP), function(x){
         Dist = switch(pi,
-            "edge" = crossdist(splitPPP[[x]], centroid.owin(owins[[x]], as.ppp = TRUE)),
-            "midpoint" = nncross(splitPPP[[x]], edges(owins[[x]]), what = "dist"),
+            "midpoint" = crossdist(splitPPP[[x]], centroids[[x]]),
+            "edge" = nncross(splitPPP[[x]], edges(owins[[x]]), what = "dist"),
             "nnCell" = nndist(splitPPP[[x]]),
             "allDistCell" = dist(coords(splitPPP[[x]])))
         if(pi %in% c("edge", "midpoint")){

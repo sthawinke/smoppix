@@ -78,6 +78,10 @@ addCell = function(hypFrame, owins, checkOverlap = TRUE, warnOut = TRUE){
             cbind(marks(hypFrame[[nn, "ppp"]], drop = FALSE), cell = cellOut))
     }
     hypFrame$owins = owins
+    hypFrame$centroids = lapply(hypFrame$owins, function(x) {
+            lapply(x, function(y) centroid.owin(y, as.ppp = TRUE))
+        })
+    #Add centroids for all windows
     attr(hypFrame, "features") = Feat #Retain features attribute,
     #which gets lost when setting the marks somehow
     return(hypFrame)

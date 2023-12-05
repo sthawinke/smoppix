@@ -13,7 +13,8 @@
 #' @return PIs for every feature
 #' @importFrom spatstat.geom marks
 calcUniPIs = function(p, pis, verbose, ecdfsEdgeAndMidpoint, owins, tabObs, null,
-                      ecdfs, nSub, ecdfAll, idOne, features, ecdfFixedPoint, pointPPP){
+                      ecdfs, nSub, ecdfAll, idOne, features, ecdfFixedPoint,
+                      pointPPP, centroids){
     if(verbose)
         message("Calculating univariate probabilistic indices...")
     uniPIs = lapply(nams <- names(tabObs[features])[!idOne], function(feat){
@@ -30,7 +31,7 @@ calcUniPIs = function(p, pis, verbose, ecdfsEdgeAndMidpoint, owins, tabObs, null
             calcWindowDistPI(pSub, owins, ecdfAll = ecdfsEdgeAndMidpoint,
                              pi = "edge")}
         midPointDistPI = if(any(pis == "midpoint")){
-            calcWindowDistPI(pSub, owins, ecdfAll = ecdfsEdgeAndMidpoint,
+            calcWindowDistPI(pSub, owins, centroids, ecdfAll = ecdfsEdgeAndMidpoint,
                              pi = "midpoint")}
         nnCellPI = if(any(pis == "nnCell")){
             calcWindowDistPI(pSub, owins, ecdfAll = ecdfsEdgeAndMidpoint,
