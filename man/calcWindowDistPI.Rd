@@ -12,6 +12,8 @@ calcWindowDistPI(pSub, owins, centroids, ecdfAll, pi)
 \item{owins, centroids}{The list of windows corresponding to cells, and their centroids}
 
 \item{ecdfAll}{the cumulative distribution function under the null}
+
+\item{pi}{The type of PI to calculate}
 }
 \value{
 The estimated probabilistic index

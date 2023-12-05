@@ -31,7 +31,8 @@
 #'#Evidence for anticorrelation
 buildDfMM = function(resList, gene,
                      pi = c("nn", "allDist", "nnPair", "allDistPair", "edge",
-                            "midpoint", "fixedpoint")){
+                            "midpoint", "fixedpoint", "nnCell", "allDistCell",
+                            "nnPairCell", "allDistPairCell")){
     pi = match.arg(pi)
     stopifnot((lg <- length(gene)) %in% c(1, 2))
     #Check whether genes are present
@@ -40,10 +41,10 @@ buildDfMM = function(resList, gene,
     }
     #Establish whether pi and gene match, and call separate functions
     foo = checkAttr(resList$hypFrame, pi)
-    if(!(pi %in% c("edge", "midpoint", "fixedpoint")) && is.null(resList$Wfs[[pi]]))
-        message("No weight function supplied, we will use approximative weigths.\n",
-                "Consider fitting a weight function with addWeightFunction() " ,
-                "and supplying it in the 'weightFunction' argument for improved inference.")
+    # if(!(pi %in% c("edge", "midpoint", "fixedpoint")) && is.null(resList$Wfs[[pi]]))
+    #     message("No weight function supplied, we will use approximative weigths.\n",
+    #             "Consider fitting a weight function with addWeightFunction() " ,
+    #             "and supplying it in the 'weightFunction' argument for improved inference.")
     df = if(pairId <- grepl(pattern = "Pair", pi)){
         if(lg == 2){
             gene = paste(gene, collapse = "--")
@@ -57,7 +58,8 @@ buildDfMM = function(resList, gene,
         }
         buildDfMMUni(gene = gene, pi = pi, resList = resList)
     }
-    out = data.frame(df, as.data.frame(resList$hypFrame[match(df$design, rownames(resList$hypFrame)), resList$designVars]))
+    out = data.frame(df, as.data.frame(resList$hypFrame[match(df$design,
+                            rownames(resList$hypFrame)), resList$designVars]))
     attr(out, "pi") = pi
     out
 }

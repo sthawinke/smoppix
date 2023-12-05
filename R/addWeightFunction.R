@@ -50,6 +50,7 @@ addWeightFunction = function(hypFrame, pis = attr(hypFrame, "pis"), designVars,
     }
     Wfs = bplapply(pis, function(pi) {
         piListName = if(pairId <- grepl("Pair", pi)) "biPIs" else "uniPIs"
+        cellId = grepl("Cell", pi)
         piList = lapply(hypFrame$pimRes, function(x){
             if(pairId){
                 x[["biPIs"]][,pi ,drop = FALSE]
@@ -67,17 +68,17 @@ addWeightFunction = function(hypFrame, pis = attr(hypFrame, "pis"), designVars,
             features = apply(combn(features, 2), 2, paste, collapse = "--")
         }
         varEls = lapply(features, function(gene){
+            if(pairId){
+                gene = sund(gene)
+            }
             tmp = vapply(piList[ordDesign], FUN.VALUE = double(1), function(x){
                 if(is.null(baa <- getGp(x,gene))) NA else baa
             })
             quadDeps = unlist(tapply(tmp, designVec, function(x){
                 if(sum(!is.na(x)) >= 2) {
                     (x-mean(x, na.rm = TRUE))^2
-                    }else {rep_len(NA, length(x))}
+                    } else {rep_len(NA, length(x))}
             })) #The quadratic departures from the conditional mean
-            if(pairId){
-                gene = sund(gene)
-            }
             tabEntries = vapply(hypFrame$tabObs[ordDesign],
                         FUN.VALUE = double(if(pairId) 2 else 1), function(x){
                 if(pairId) {

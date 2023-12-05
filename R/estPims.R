@@ -38,28 +38,30 @@ estPimsSingle = function(p, pis, null, tabObs, nPointsAll = 5e2,
         else
             pointPPP = ppp(point[1], point[2])
     if(null == "CSR"){
-        if(any(pis %in% c("edge", "fixedpoint", "allDist"))){
-            if(any(pis %in% c("allDist", "allDistPair", "nn", "nnPair", "fixedpoint"))){
-               pSim = runifpoint(nPointsAll, win = p$window)
-               nSub = npoints(pSim)
-            }
-            if(any(pis %in% c("allDist", "allDistPair", "nn", "nnPair")))
-                ecdfAll = ecdf(dist(coords(pSim)))
-            if(any(pis %in% c("edge", "midpoint", "nnCell", "allDistCell", "nnPairCell", "allDistPairCell"))){
-                ecdfsEdgeAndMidpoint = lapply(names(owins), function(nam) {
-                    pSub = runifpoint(nPointsAllWin, win = owins[[nam]])
-                    edge = if(any(pis == "edge"))
-                        ecdf(nncross(pSub, edges(owins[[nam]]), what = "dist"))
-                    midpoint = if(any(pis == "midpoint"))
-                        ecdf(crossdist(pSub, centroids[[nam]]))
-                    allDistCell = if(any(pis %in% c("nnCell", "allDistCell", "nnPairCell", "allDistPairCell")))
-                        ecdf(dist(coords(pSub)))
-                    list("edge" = edge, "midpoint" = midpoint, "allDistCell" = allDistCell)
-                });names(ecdfsEdgeAndMidpoint) = names(owins)
-            }
-            if(any(pis == "fixedpoint"))
-                ecdfFixedPoint = ecdf(nncross(pSim, pointPPP, what = "dist"))
+        if(any(pis %in% c("allDist", "allDistPair", "nn", "nnPair",
+                          "fixedpoint"))){
+           pSim = runifpoint(nPointsAll, win = p$window)
+           nSub = npoints(pSim)
         }
+        if(any(pis %in% c("allDist", "allDistPair", "nn", "nnPair")))
+            ecdfAll = ecdf(dist(coords(pSim)))
+        if(any(pis %in% c("edge", "midpoint", "nnCell", "allDistCell",
+                          "nnPairCell", "allDistPairCell"))){
+            ecdfsEdgeAndMidpoint = lapply(names(owins), function(nam) {
+                pSub = runifpoint(nPointsAllWin, win = owins[[nam]])
+                edge = if(any(pis == "edge"))
+                    ecdf(nncross(pSub, edges(owins[[nam]]), what = "dist"))
+                midpoint = if(any(pis == "midpoint"))
+                    ecdf(crossdist(pSub, centroids[[nam]]))
+                allDistCell = if(any(pis %in% c("nnCell", "allDistCell",
+                                            "nnPairCell", "allDistPairCell")))
+                    ecdf(dist(coords(pSub)))
+                list("edge" = edge, "midpoint" = midpoint,
+                     "allDistCell" = allDistCell)
+            });names(ecdfsEdgeAndMidpoint) = names(owins)
+        }
+        if(any(pis == "fixedpoint"))
+            ecdfFixedPoint = ecdf(nncross(pSim, pointPPP, what = "dist"))
     } else if(null == "background"){
         if(any(pis %in% c("edge", "fixedpoint", "midpoint"))){
             if(any(pis %in% c("edge", "midpoint"))){
@@ -75,9 +77,10 @@ estPimsSingle = function(p, pis, null, tabObs, nPointsAll = 5e2,
                     list("edge" = edge, "midpoint" = midpoint, "allDistCell" = allDistCell)
                 });names(ecdfsEdgeAndMidpoint) = names(owins)
             }
-        if(any(pis == "fixedpoint"))
-                ecdfFixedPoint = ecdf(nncross(subSampleP(p, nPointsAll),
-                                              pointPPP, what = "dist"))
+            if(any(pis == "fixedpoint"))
+                    ecdfFixedPoint = ecdf(nncross(subSampleP(p, nPointsAll),
+                                                  pointPPP, what = "dist"))
+        }
         if(any(pis %in% c("nn", "nnPair", "allDist", "allDistPair"))){
                 #Prepare some null distances, either with CSR or background
                 subSamSize = max(c(nPointsAll, tabObs+1e2))
@@ -86,7 +89,6 @@ estPimsSingle = function(p, pis, null, tabObs, nPointsAll = 5e2,
                 cd = getCrossDist(p, pSub, null)
                 ecdfs = apply(rowSort(cd), 1, ecdfPreSort)#FOr background, condition on point locations
                 nSub = ncol(cd)
-            }
         }
     }
     #Univariate patterns
@@ -98,12 +100,13 @@ estPimsSingle = function(p, pis, null, tabObs, nPointsAll = 5e2,
     uniPIs = if(any(!piPair)){
         calcUniPIs(p, pis, verbose, ecdfsEdgeAndMidpoint, owins, tabObs, null,
                 ecdfs, nSub, ecdfAll, idOne, features, ecdfFixedPoint,
-                   pointPPP)
+                   pointPPP, centroids = centroids)
     }
     #Bivariate patterns
     biPIs = if(any(piPair)){
-        calcBiPIs(features = features[tabObs[features] > 0],p, pis, null,
-                  ecdfs, nSub, ecdfAll, manyPairs, verbose, allowManyGenePairs)
+        calcBiPIs(features = features[tabObs[features] > 0], p, pis, null,
+                  ecdfs, nSub, ecdfAll, manyPairs, verbose, allowManyGenePairs,
+                  ecdfsEdgeAndMidpoint)
     }
     list("uniPIs" = uniPIs, "biPIs" = biPIs)
 }
@@ -136,7 +139,8 @@ estPimsSingle = function(p, pis, null, tabObs, nPointsAll = 5e2,
 #' 'fixedpoint' calculates the distances to a supplied list of points.
 #' The suffix "Cell" indicates distances are being calculated within cells only.
 estPims = function(hypFrame, pis = c("nn", "allDist", "nnPair", "allDistPair",
-                    "edge", "midpoint", "fixedpoint", "nnCell", "allDistCell"),
+                    "edge", "midpoint", "fixedpoint", "nnCell", "allDistCell",
+                    "nnPairCell", "allDistPairCell"),
                    null = c("background", "CSR"),
                    features = attr(hypFrame, "features"),...){
     pis = match.arg(pis, several.ok = TRUE)

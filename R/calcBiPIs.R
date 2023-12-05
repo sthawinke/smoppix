@@ -6,7 +6,7 @@
 #'
 #' @return A matrix of bivariate PIs
 calcBiPIs = function(p, pis, null, ecdfs, nSub, ecdfAll, features,
-                     manyPairs, verbose, allowManyGenePairs){
+                     manyPairs, verbose, allowManyGenePairs, ecdfsEdgeAndMidpoint){
     if(!allowManyGenePairs &&
        (numGenePairs <- choose(length(features), 2)) > manyPairs){
         warning(immediate. = TRUE, "Calculating probablistic indices for",

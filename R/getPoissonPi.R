@@ -5,6 +5,7 @@
 #' @param nAll The number of events in the calculation of the PI under the null
 #' @param approxRanks The approximate ranks in the null distribution
 #' @param pair A boolean, is a gene pair involved
+#' @param quants The quantile of the Poisson distribution calculated by
 #'
 #' @return The PI
 #' @importFrom stats qpois dpois
