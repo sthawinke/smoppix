@@ -3,6 +3,7 @@
 #' @param pSub The subset point pattern containing only a single gene
 #' @param ecdfAll the cumulative distribution function under the null
 #' @inheritParams estPimsSingle
+#' @param pi The type of PI to calculate
 #'
 #' @return The estimated probabilistic index
 #' @importFrom spatstat.geom nncross edges nndist
@@ -43,7 +44,8 @@ calcWindowDistPI = function(pSub, owins, centroids, ecdfAll, pi){
 calcWindowPairPI = function(pSub1, pSub2, cd, ecdfAll, pi){
     splitPPP1 = split.ppp(pSub1, f = "cell")
     splitPPP2 = split.ppp(pSub2, f = "cell")
-    out = lapply(nam <- intersect(names(splitPPP1), names(splitPPP2)), function(x){
+    out = vapply(nam <- intersect(names(splitPPP1), names(splitPPP2)),
+                 FUN.VALUE = double(1), function(x){
         cd = crossdist(splitPPP1[[x]], splitPPP2[[x]])
         if(pi == "allDistPairCell"){
             mean(ecdfAll[[x]]$allDistCell(cd))
@@ -51,7 +53,8 @@ calcWindowPairPI = function(pSub1, pSub2, cd, ecdfAll, pi){
             nnDist = c(rowMins(cd, value = TRUE), colMins(cd, value = TRUE))
             approxRanks = getApproxRanks(ecdfAll[[x]]$allDistCell, nnDist)
             nAll = getN(ecdfAll[[x]]$allDistCell)
-            seq1 = seq_len(nrow(cd))
+            np1 = npoints(splitPPP1[[x]]); np2 = npoints(splitPPP2[[x]])
+            seq1 = seq_len(np1)
             pi1 = pnhyper(approxRanks, r = 1, m = np1, n = nAll - np1)
             #getPoissonPi(np1, nAll, approxRanks[seq1], pair = TRUE)
             pi2 = pnhyper(approxRanks, r = 1, m = np2, n = nAll - np2)

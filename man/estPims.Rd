@@ -7,7 +7,7 @@
 estPims(
   hypFrame,
   pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint", "fixedpoint",
-    "nnCell", "allDistCell"),
+    "nnCell", "allDistCell", "nnPairCell", "allDistPairCell"),
   null = c("background", "CSR"),
   features = attr(hypFrame, "features"),
   ...

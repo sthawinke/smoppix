@@ -15,6 +15,8 @@ getPoissonPi(NP, nAll, approxRanks, pair = FALSE, quants = c(0.01, 1 - 0.01))
 \item{approxRanks}{The approximate ranks in the null distribution}
 
 \item{pair}{A boolean, is a gene pair involved}
+
+\item{quants}{The quantile of the Poisson distribution calculated by}
 }
 \value{
 The PI
