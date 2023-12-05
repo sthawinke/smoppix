@@ -18,7 +18,8 @@ condition = sample(conditions, n, TRUE)
 df <- data.frame(gene, x, y, fov, "condition" = condition)
 #A list of point patterns
 listPPP = tapply(seq(nrow(df)), df$fov, function(i){
-    ppp(x = df$x[i], y = df$y[i], marks = df[i, c("gene", "condition"), drop = FALSE])
+    ppp(x = df$x[i], y = df$y[i],
+        marks = df[i, c("gene", "condition"), drop = FALSE])
 }, simplify = FALSE)
 # Regions of interest (roi): Diamond in the center plus four triangles
 w1 <- owin(poly=list(x=c(0,.5,1,.5),y=c(.5,0,.5,1)))
@@ -27,13 +28,15 @@ w3 <- owin(poly=list(x=c(0,0,.5),y=c(1,0.5,1)))
 w4 <- owin(poly=list(x=c(1,1,.5),y=c(0.5,1,1)))
 w5 <- owin(poly=list(x=c(1,1,.5),y=c(0,0.5,0)))
 wWrong <- owin(poly=list(x=c(0,1,1,0),y=c(.75,.5,.75,1)))
-hypFrame <- buildHyperFrame(df, coordVars = c("x", "y"), imageVars = c("condition", "fov"))
+hypFrame <- buildHyperFrame(df, coordVars = c("x", "y"),
+                            imageVars = c("condition", "fov"))
 nDesignFactors = length(unique(hypFrame$image))
 wList = lapply(seq_len(nDesignFactors), function(x){
     list("w1" = w1, "w2" = w2, "w3" = w3, "w4" = w4, "w5" = w5)
 })
 wList2 = lapply(seq_len(nDesignFactors), function(x){
-    list("w1" = w1, "w2" = w2, "w3" = w3, "w4" = w4, "w5" = w5, "wWrong" = wWrong)
+    list("w1" = w1, "w2" = w2, "w3" = w3, "w4" = w4, "w5" = w5,
+         "wWrong" = wWrong)
 })
 names(wList) = names(wList2) = rownames(hypFrame)
 hypFrame2 = addCell(hypFrame, wList)
@@ -41,7 +44,8 @@ hypFrame2 = addCell(hypFrame, wList)
 #register(SerialParam())
 nCores = 2
 register(MulticoreParam(nCores))
-pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", "fixedpoint", "midpoint", "nnCell", "allDistCell", "nnPairCell", "allDistPairCell")
+pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", "fixedpoint",
+        "midpoint", "nnCell", "allDistCell", "nnPairCell", "allDistPairCell")
 piEstsBG <- estPims(hypFrame2, pis = pis, point = c(0.5, 0.5),
                     null = "background")
 piEstsCSR <- estPims(hypFrame2, pis = pis, point = c(0.5, 0.5), null = "CSR")
