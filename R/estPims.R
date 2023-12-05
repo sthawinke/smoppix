@@ -39,10 +39,10 @@ estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3,
         else
             pointPPP = ppp(point[1], point[2])
     if(any(pis %in% c("edge", "fixedpoint", "allDist")) && null =="CSR"){
-        if(any(pis %in% c("allDist", "fixedpoint"))){
+        if(any(pis %in% c("allDist", "allDistPair", "nn", "nnPair", "fixedpoint"))){
            pSim = runifpoint(nPointsAll, win = p$window)
         }
-        if(any(pis == "allDist"))
+        if(any(pis %in% c("allDist", "allDistPair", "nn", "nnPair")))
             ecdfAll = ecdf(dist(coords(pSim)))
         if(any(pis %in% c("edge", "midpoint", "nnCell", "allDistCell"))){
             ecdfsEdgeAndMidpoint = lapply(owins, function(rr) {
@@ -87,7 +87,7 @@ estPimsSingle = function(p, pis, null, tabObs, nSims = 5e1, nPointsAll = 2e3,
                           "CSR" = runifpoint(subSamSize, win = p$window))
             #Subsample for memory reasons
             cd = getCrossDist(p, pSub, null)
-            ecdfs = apply(rowSort(cd), 1, ecdfPreSort)
+            ecdfs = apply(rowSort(cd), 1, ecdfPreSort)#FOr background, condition on point locations
             nSub = ncol(cd)
     }
     #Univariate patterns
