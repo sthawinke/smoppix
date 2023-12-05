@@ -15,12 +15,12 @@ calcNNPI = function(pSub, p, null, ecdfs, n, ecdfAll){
     NP = npoints(pSub)
     if(null == "background"){
         approxRanks = vapply(seq_along(obsDistNN), FUN.VALUE = double(1), function(i){
-                round(ecdfs[[i]](obsDistNN[i])*environment(ecdfs[[i]])$nobs)
+                round(ecdfs[[i]](obsDistNN[i])*getN(ecdfs[[i]]))
             #Approximate rank: quantile in overall distribution times
             #number of observations.
             })
         approxRanks[approxRanks==0] = 1
-        #mean(pnhyper(approxRanks, n = n - (NP - 1), m = NP - 1, r = 1))
+        mean(pnhyper(approxRanks, n = n - (NP - 1), m = NP - 1, r = 1))
         #Exclude event itself, so NP - 1
         #m = N-1: White balls, number of other events of the same gene
         #n = n - (NP-1): black balls, number of events of other genes in background
@@ -29,17 +29,18 @@ calcNNPI = function(pSub, p, null, ecdfs, n, ecdfAll){
         #Weigh by Poisson and negative hypergeometric distribution to bypass Monte-Carlo simulations
         approxRanks = getApproxRanks(ecdfAll, obsDistNN)
         #getPoissonPi(NP = npoints(pSub), nAll, approxRanks)
+        mean(pnhyper(approxRanks, n = getN(ecdfAll) - (NP - 1), m = NP - 1, r = 1))
     }
-    mean(pnhyper(approxRanks, n = n - (NP - 1), m = NP - 1, r = 1))
+
 }
 calcNNPIpair = function(cd, id1, id2, null, p, ecdfs, n, ecdfAll){
     npp = npoints(p)
     obsDistNN = c(rowMins(cd, value = TRUE), colMins(cd, value = TRUE))
     obsDistRank = if(null == "background"){
          vapply(seq_along(obsDistNN), FUN.VALUE = double(1), function(i){
-            round(ecdfs[[i]](obsDistNN[i])*environment(ecdfs[[i]])$nobs)
+            round(ecdfs[[i]](obsDistNN[i])*getN(ecdfs[[i]]))
         })
-    } else {round(ecdfAll(obsDistNN)*(nAll <- environment(ecdfAll)$nobs))}
+    } else {round(ecdfAll(obsDistNN)*(n <- getN(ecdfAll)))}
     obsDistRank[obsDistRank==0] = 1
     seq1 = seq_along(id1)
     pis = mean(c(pnhyper(obsDistRank[seq1], n = n-length(id2), m = length(id2), r = 1),
@@ -64,3 +65,4 @@ calcNNPIpair = function(cd, id1, id2, null, p, ecdfs, n, ecdfAll){
 nncrossFast = function(p1, p2){
     rowMins(crossdist(p1,p2), value = TRUE)
 }
+

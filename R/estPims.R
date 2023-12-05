@@ -22,7 +22,7 @@
 #' @importFrom Rdpack reprompt
 #' @importFrom Rfast rowSort rowMins rowAny
 #' @importFrom extraDistr pnhyper
-estPimsSingle = function(p, pis, null, tabObs, nPointsAll = 2e3,
+estPimsSingle = function(p, pis, null, tabObs, nPointsAll = 5e2,
                          nPointsAllWin = 5e2, features = NULL,
                    allowManyGenePairs = FALSE, manyPairs = 1e6, verbose = FALSE,
                    owins = NULL, point){
@@ -41,6 +41,7 @@ estPimsSingle = function(p, pis, null, tabObs, nPointsAll = 2e3,
         if(any(pis %in% c("edge", "fixedpoint", "allDist"))){
             if(any(pis %in% c("allDist", "allDistPair", "nn", "nnPair", "fixedpoint"))){
                pSim = runifpoint(nPointsAll, win = p$window)
+               nSub = npoints(pSim)
             }
             if(any(pis %in% c("allDist", "allDistPair", "nn", "nnPair")))
                 ecdfAll = ecdf(dist(coords(pSim)))

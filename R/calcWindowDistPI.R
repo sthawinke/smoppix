@@ -33,7 +33,7 @@ calcWindowDistPI = function(pSub, owins, ecdfAll, pi){
                 return(NA)
             else
                 mean(pnhyper(approxRanks, r = 1, m = NP - 1,
-                    n = environment(ecdfAll[[x]]$allDistCell)$nobs - NP + 1))
+                    n = getN(ecdfAll[[x]]$allDistCell) - NP + 1))
             #getPoissonPi(npoints(splitPPP[[x]]),
             #            nAll = environment(ecdfAll[[x]]$allDistCell)$nobs, approxRanks)
         }
@@ -51,7 +51,7 @@ calcWindowPairPI = function(pSub1, pSub2, cd, ecdfAll, pi){
         } else if(pi == "nnPairCell"){
             nnDist = c(rowMins(cd, value = TRUE), colMins(cd, value = TRUE))
             approxRanks = getApproxRanks(ecdfAll[[x]]$allDistCell, nnDist)
-            nAll = environment(ecdfAll[[x]]$allDistCell)$nobs
+            nAll = getN(ecdfAll[[x]]$allDistCell)
             seq1 = seq_len(nrow(cd))
             pi1 = pnhyper(approxRanks, r = 1, m = np1, n = nAll - np1)
             #getPoissonPi(np1, nAll, approxRanks[seq1], pair = TRUE)
