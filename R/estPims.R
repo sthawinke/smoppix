@@ -147,6 +147,12 @@ estPims = function(hypFrame, pis = c("nn", "allDist", "nnPair", "allDistPair",
     if(any(id <- !(features %in% attr(hypFrame, "features")))){
         stop("Features ", features[id], " not found in hyperframe")
     }
+    if(any(pis %in% c("egde", "midpoint"))){
+        hypFrame$centroids = lapply(hypFrame$owins, function(x) {
+            lapply(x, function(y) centroid.owin(y, as.ppp = TRUE))
+            })
+        #Add centroids for all windows
+    }
     hypFrame$pimRes = bplapply(seq_len(nrow(hypFrame)), function(x){
        with(hypFrame[x,, drop = TRUE], estPimsSingle(ppp, owins = owins,
             pis = pis, null = null, tabObs = tabObs,...))

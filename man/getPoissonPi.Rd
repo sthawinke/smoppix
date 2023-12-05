@@ -5,7 +5,7 @@
 \title{Calculate the PI under the CSR null hypothesis,
 weighing by Poisson variability}
 \usage{
-getPoissonPi(NP, nAll, approxRanks)
+getPoissonPi(NP, nAll, approxRanks, pair = FALSE, quants = c(0.01, 1 - 0.01))
 }
 \arguments{
 \item{NP}{The number of events}
@@ -13,6 +13,8 @@ getPoissonPi(NP, nAll, approxRanks)
 \item{nAll}{The number of events in the calculation of the PI under the null}
 
 \item{approxRanks}{The approximate ranks in the null distribution}
+
+\item{pair}{A boolean, is a gene pair involved}
 }
 \value{
 The PI

@@ -28,8 +28,14 @@ calcWindowDistPI = function(pSub, owins, ecdfAll, pi){
             mean(ecdfAll[[x]]$allDistCell(Dist))
         } else if(pi == "nnCell"){
             approxRanks = getApproxRanks(ecdfAll[[x]]$allDistCell, Dist)
-            getPoissonPi(npoints(splitPPP[[x]]),
-                         nAll = environment(ecdfAll[[x]]$allDistCell)$nobs, approxRanks)
+            NP = npoints(splitPPP[[x]])
+            if(NP== 1)
+                return(NA)
+            else
+                mean(pnhyper(approxRanks, r = 1, m = NP - 1,
+                    n = environment(ecdfAll[[x]]$allDistCell)$nobs - NP + 1))
+            #getPoissonPi(npoints(splitPPP[[x]]),
+            #            nAll = environment(ecdfAll[[x]]$allDistCell)$nobs, approxRanks)
         }
     })
     names(obsDistEdge) = names(splitPPP)
@@ -38,20 +44,24 @@ calcWindowDistPI = function(pSub, owins, ecdfAll, pi){
 calcWindowPairPI = function(pSub1, pSub2, cd, ecdfAll, pi){
     splitPPP1 = split.ppp(pSub1, f = "cell")
     splitPPP2 = split.ppp(pSub2, f = "cell")
-    lapply(intersect(names(splitPPP1), names(splitPPP2)), function(x){
+    out = lapply(nam <- intersect(names(splitPPP1), names(splitPPP2)), function(x){
         cd = crossdist(splitPPP1[[x]], splitPPP2[[x]])
         if(pi == "allDistPairCell"){
             mean(ecdfAll[[x]]$allDistCell(cd))
         } else if(pi == "nnPairCell"){
-            nnDist = c(rowMins(cd), colMins(cd))
+            nnDist = c(rowMins(cd, value = TRUE), colMins(cd, value = TRUE))
             approxRanks = getApproxRanks(ecdfAll[[x]]$allDistCell, nnDist)
             nAll = environment(ecdfAll[[x]]$allDistCell)$nobs
             seq1 = seq_len(nrow(cd))
-            pi1 = getPoissonPi(np1, nAll, approxRanks[seq1])
-            pi2 = getPoissonPi(np2, nAll, approxRanks[-seq1])
-            (pi1*np1+pi2*np2)/(np1+np2)
+            pi1 = pnhyper(approxRanks, r = 1, m = np1, n = nAll - np1)
+            #getPoissonPi(np1, nAll, approxRanks[seq1], pair = TRUE)
+            pi2 = pnhyper(approxRanks, r = 1, m = np2, n = nAll - np2)
+            #getPoissonPi(np2, nAll, approxRanks[-seq1], pair = TRUE)
+            mean(c(pi1, pi2))
         }
     })
+    names(out) = nam
+    return(out)
 }
 #' Approximate the ranks given and ecdf
 #'
