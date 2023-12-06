@@ -4,14 +4,12 @@
 \alias{plotWf}
 \title{Plot the weighting function: The observation weigth as a function of the number of observations}
 \usage{
-plotWf(resList, pi = c("nn", "nnPair", "allDist", "allDistPair"), ...)
+plotWf(resList, pi = attr(resList$hypFrame, "pis")[1])
 }
 \arguments{
 \item{resList}{The result of a call to estPims()}
 
 \item{pi}{The PI for which to plot the weighting function}
-
-\item{...}{Passed onto the plot.scam function for 1D splines}
 }
 \value{
 For univariate PI, returns a line plot; for bivariate PI a ggplot object

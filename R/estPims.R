@@ -22,7 +22,7 @@
 #' @importFrom Rfast rowSort rowMins rowAny
 #' @importFrom extraDistr pnhyper
 estPimsSingle = function(p, pis, null, tabObs, nPointsAll = 5e2,
-                         nPointsAllWin = 5e2, features = NULL,
+                         nPointsAllWin = 2e2, features = NULL,
                    allowManyGenePairs = FALSE, manyPairs = 1e6, verbose = FALSE,
                    owins = NULL, centroids = NULL){
     if(is.null(features)){

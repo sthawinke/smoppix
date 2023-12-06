@@ -25,23 +25,24 @@ calcWindowDistPI = function(pSub, owins, centroids, ecdfAll, pi, null, ecdfs){
         if(pi %in% c("edge", "midpoint")){
             ecdfAll[[x]][[pi]](Dist) #Do not average here, independent observations
         } else {
-            NP = npoints(splitPPP[[x]])
-            if(NP == 1)
+            if((NP <- npoints(splitPPP[[x]])) == 1)
                 return(NA)
             if(pi == "allDistCell"){
                 switch(null,
-                       "CSR" = mean(ecdfAll[[x]]$allDistCell(Dist)),
-                       "background" = {
-                           Dist = as.matrix(Dist)
-                           mean(vapply(seq_along(Dist), FUN.VALUE = double(ncol(Dist)-1),
-                                       function(i){ecdfs[[i]](Dist[i, -i])}))
-                           }
+                   "CSR" = mean(ecdfAll[[x]]$allDistCell(Dist)),
+                   "background" = {
+                       Dist = as.matrix(Dist)
+                       mean(vapply(seq_len(ncol(Dist)), FUN.VALUE = double(ncol(Dist)-1),
+                                   function(i){
+                                       ecdfs[[x]]$allDistCell[[i]](Dist[i, -i])
+                                       }))
+                       }
                        )
             } else if(pi == "nnCell"){
             approxRanks = switch(null,
                 "CSR" = getApproxRanks(ecdfAll[[x]]$allDistCell, Dist),
                 "background" = vapply(seq_along(Dist), FUN.VALUE = double(1),
-                        function(i){getApproxRanks(ecdfs[[i]], Dist[i])})
+                        function(i){getApproxRanks(ecdfs[[x]]$allDistCell[[i]], Dist[i])})
             )
             mean(vapply(seq_along(approxRanks), FUN.VALUE = double(1), function(ar){
                 pnhyper(approxRanks[ar], r = 1, m = NP - 1,
@@ -54,22 +55,24 @@ calcWindowDistPI = function(pSub, owins, centroids, ecdfAll, pi, null, ecdfs){
     names(obsDistEdge) = names(splitPPP)
     obsDistEdge
 }
-calcWindowPairPI = function(pSub1, pSub2, cd, ecdfAll, pi, null, ecdfs){
+calcWindowPairPI = function(pSub1, pSub2, feat1, feat2, cd, ecdfAll, pi, null, ecdfs){
     splitPPP1 = split.ppp(pSub1, f = "cell")
     splitPPP2 = split.ppp(pSub2, f = "cell")
     out = vapply(nam <- intersect(names(splitPPP1), names(splitPPP2)),
                  FUN.VALUE = double(1), function(x){
         cd = crossdist(splitPPP1[[x]], splitPPP2[[x]])
+        id1 = marks(splitPPP1[[x]], drop = FALSE)$gene == feat1
+        id2 = marks(splitPPP2[[x]], drop = FALSE)$gene == feat2
         if(pi == "allDistPairCell"){
             switch(null,
                    "CSR" =  mean(ecdfAll[[x]]$allDistCell(cd)),
                    "background" = {
                        pi1 = vapply(seq_len(NP1 <- npoints(splitPPP1[[x]])),
-                                    FUN.VALUE = double(nrow(cd)),
-                                   function(i){ecdfs[[i]](cd[i, ])})
-                       pi2 = vapply(seq_len(npoints(pSub2)),
                                     FUN.VALUE = double(ncol(cd)),
-                                    function(i){ecdfs[[i + NP1]](cd[,i ])})
+                                   function(i){ecdfs[[x]]$allDistCell[[id1[i]]](cd[i, ])})
+                       pi2 = vapply(seq_len(npoints(splitPPP2[[x]])),
+                                    FUN.VALUE = double(nrow(cd)),
+                                    function(i){ecdfs[[x]]$allDistCell[[id2[i]]](cd[,i])})
                        mean(c(pi1, pi2))
                    }
             )
@@ -84,15 +87,15 @@ calcWindowPairPI = function(pSub1, pSub2, cd, ecdfAll, pi, null, ecdfs){
                 pi2 = pnhyper(approxRanks[-seq1], r = 1, m = np2, n = n - np2)
             } else if(null == "background"){
                 approxRanks = vapply(seq_along(nnDist), FUN.VALUE = double(1), function(i){
-                    round(ecdfs[[i]](nnDist[i])*getN(ecdfs[[i]]))
+                    getApproxRanks(ecdfs[[x]]$allDistCell[[i]], nnDist[i])
                 })
                 pi1 = vapply(seq_along(approxRanks)[seq1], FUN.VALUE = double(1), function(ar){
                     pnhyper(approxRanks[ar], r = 1, m = np1 - 1,
-                            n = getN(ecdfs[[ar]]) - np1 + 1)
+                            n = getN(ecdfs[[x]]$allDistCell[[ar]]) - np1 + 1)
                 })
                 pi2 = vapply(seq_along(approxRanks)[-seq1], FUN.VALUE = double(1), function(ar){
                     pnhyper(approxRanks[ar], r = 1, m = np2 - 1,
-                            n = getN(ecdfs[[ar]]) - np2 + 1)
+                            n = getN(ecdfs[[x]]$allDistCell[[ar]]) - np2 + 1)
                 })
             }
             mean(c(pi1, pi2))

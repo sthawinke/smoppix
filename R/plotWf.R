@@ -2,7 +2,6 @@
 #'
 #' @inheritParams buildDfMM
 #' @param pi The PI for which to plot the weighting function
-#' @param ... Passed onto the plot.scam function for 1D splines
 #'
 #' @return For univariate PI, returns a line plot; for bivariate PI a ggplot object
 #' @import ggplot2
@@ -17,8 +16,10 @@
 #' yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))
 #' plotWf(yangObj, "nn")
 #' plotWf(yangObj, "nnPair")
-plotWf = function(resList, pi = c("nn", "nnPair", "allDist", "allDistPair"), ...){
-    pi = match.arg(pi)
+plotWf = function(resList, pi = attr(resList$hypFrame, "pis")[1]){
+    pi = match.arg(pi, choices = c("nn", "nnPair", "allDist", "allDistPair",
+                                   "nnCell", "allDistCell",
+                                   "nnPairCell", "allDistPairCell"))
     if(is.null(wf <- resList$Wfs[[pi]])){
         stop("This type of pi (", pi, ") is not available in the object)")
     }
