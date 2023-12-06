@@ -8,6 +8,7 @@ addWeightFunction(
   hypFrame,
   pis = attr(hypFrame, "pis"),
   designVars,
+  lowestLevelVar,
   maxObs = 1e+05,
   maxFeatures = 500,
   ...
@@ -18,7 +19,12 @@ addWeightFunction(
 
 \item{pis}{The PIs for which weight functions are constructed}
 
-\item{designVars}{A character vector containing all design factors (both fixed and random), that are also present as variables in hypFrame}
+\item{designVars}{A character vector containing all design factors
+(both fixed and random), that are also present as variables in hypFrame}
+
+\item{lowestLevelVar}{The design variable at the lowest level of nesting,
+often separating technical replicates. The conditional variance is calculated
+within the groups of PIs defined by this variable}
 
 \item{maxObs, maxFeatures}{The maximum number of observations respectively
 features for fitting the weight function. See details}
@@ -36,6 +42,10 @@ For computational and memory reasons,
  for large datasets the trend fitting
 is restricted to a subset of the data through the maxObs and maxFeatures
 parameters.
+Provide either 'designVars' or 'lowestLevelVar'. In the latter case, the
+design variables are set to all imageVars in the hypFrame object except
+lowestLevelVar. When the PI is calculated on the cell level,
+this the lowest nesting level so inputs will be ignored for these PIs
 
 The scam functions fits a decreasing spline of the variance as a
  function of the number of observations
@@ -49,6 +59,8 @@ yangPims = estPims(hypYang, pis = c("nn", "nnPair"),
 features = attr(hypYang, "features")[1:12])
 #Build the weight function for all PIs present
 yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))
+#Alternative formulation with 'lowestLevelVar'
+yangObj2 <- addWeightFunction(yangPims, lowestLevelVar = "section")
 }
 \seealso{
 \link{buildDfMM}

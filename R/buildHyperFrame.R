@@ -21,7 +21,7 @@ setGeneric("buildHyperFrame", function(x, ...) standardGeneric("buildHyperFrame"
 
 setMethod("buildHyperFrame", "data.frame",
         function(x, coordVars, imageVars, coVars = setdiff(names(x), c(imageVars, coordVars)),...) {
-        buildHyperFrame(as.matrix(x[, coordVars]), image = x[,imageVars],
+        buildHyperFrame(as.matrix(x[, coordVars]), image = x[,imageVars,drop = FALSE],
                         covariates = x[, coVars, drop = FALSE], ...)
 })
 #' @param matrix The input matrix
@@ -38,7 +38,7 @@ setMethod("buildHyperFrame", "matrix", function(x, image, covariates, ...) {
     }
     designVec = if(NCOL(image)!=1){
         apply(image, 1, paste, collapse = "_")
-    } else image
+    } else image[,1]
 
     if(!any("gene" == colnames(covariates))){
         stop("Gene identity must be supplied in covariate matrix")
@@ -58,6 +58,7 @@ setMethod("buildHyperFrame", "matrix", function(x, image, covariates, ...) {
     for(i in names(image)){hypFrame[, i] = desMat[, i]}
     hypFrame$tabObs = lapply(hypFrame$ppp, function(x) table(marks(x, drop = FALSE)$gene))
     attr(hypFrame, "features") = unique(unlist(lapply(hypFrame$tabObs, names)))
+    attr(hypFrame, "imageVars") = colnames(image)
     return(hypFrame)
 })
 #' @param list A list of point patterns of class "ppp"
@@ -74,7 +75,7 @@ setMethod("buildHyperFrame", "list", function(x,...) {
 #' @importFrom SpatialExperiment SpatialExperiment spatialCoords
 #' @importFrom SummarizedExperiment colData
 setMethod("buildHyperFrame", "SpatialExperiment", function(x, imageVars, coVars, ...) {
-    buildHyperFrame(spatialCoords(x), image = colData(x)[, imageVars],
+    buildHyperFrame(spatialCoords(x), image = colData(x)[, imageVars, drop = FALSE],
                     covariates = cbind("gene" = rownames(colData(x)), as.data.frame(colData(x))[, coVars, drop = FALSE]))
 })
 

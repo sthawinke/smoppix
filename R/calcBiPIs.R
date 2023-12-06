@@ -6,7 +6,7 @@
 #'
 #' @return A matrix of bivariate PIs
 calcBiPIs = function(p, pis, null, ecdfs, nSub, ecdfAll, features,
-                manyPairs, verbose, allowManyGenePairs, ecdfsEdgeAndMidpoint){
+                manyPairs, verbose, allowManyGenePairs, ecdfsCell){
     if(!allowManyGenePairs &&
        (numGenePairs <- choose(length(features), 2)) > manyPairs){
         warning(immediate. = TRUE, "Calculating probablistic indices for",
@@ -18,7 +18,7 @@ calcBiPIs = function(p, pis, null, ecdfs, nSub, ecdfAll, features,
     genePairsMat = combn(features, 2)
     #matrix(nrow = ncol(genePairsMat), byrow = TRUE, FUN.VALUE = double(length(grep(pis, pattern = "Pair"))),
     #, dimnames = list(apply(genePairsMat, 2, paste, collapse = "--"), grep("Pair", pis, value = TRUE)))
-    lapply(seq_len(ncol(genePairsMat)), function(i){
+    tmp = lapply(seq_len(ncol(genePairsMat)), function(i){
             feat1 = genePairsMat[1, i];feat2 = genePairsMat[2, i]
             pSub1 = p[id1 <- which(marks(p, drop = FALSE)$gene == feat1), ]
             pSub2 = p[id2 <- which(marks(p, drop = FALSE)$gene == feat2), ]
@@ -35,14 +35,17 @@ calcBiPIs = function(p, pis, null, ecdfs, nSub, ecdfAll, features,
                                   crossDist = cd)
             }
             nnCellPI = if(any(pis == "nnPairCell")){
-                calcWindowPairPI(pSub1, pSub2, ecdfAll = ecdfsEdgeAndMidpoint,
-                                 pi = "nnPairCell",  null = null,
-                                 ecdfs = ecdfs[c(id1, id2)], cd = cd)}
+                calcWindowPairPI(pSub1, pSub2, ecdfAll = ecdfsCell,
+                                 ecdfs = ecdfs, pi = "nnPairCell", null = null,
+                                 feat1 = feat1, feat2 = feat2,
+                                 cd = cd)}
             allDistCellPI = if(any(pis == "allDistPairCell")){
                 calcWindowPairPI(pSub1, pSub2, cd = cd, null = null,
-                        ecdfAll = ecdfsEdgeAndMidpoint, pi = "allDistPairCell",
-                        ecdfs = ecdfs[c(id1, id2)])}
+                        ecdfAll = ecdfsCell, pi = "allDistPairCell",
+                        ecdfs = ecdfs)}
             list("pointDists" = c("nnPair" = NNdistPI, "allDistPair" = allDistPI),
                  "windowDists" = list("allDistCell" = allDistCellPI, "nnCell" = nnCellPI))
     })
+    names(tmp) = apply(genePairsMat, 2, paste, collapse = "--")
+    return(tmp)
 }
