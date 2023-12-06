@@ -38,8 +38,6 @@ calcBiPIs(
 \item{verbose}{A boolean, should verbose output be printed}
 
 \item{allowManyGenePairs}{A boolean, set to true to override warning on computation time}
-
-\item{ecdfsEdgeAndMidpoint}{ecdfs within the cells}
 }
 \value{
 A matrix of bivariate PIs

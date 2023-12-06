@@ -1,7 +1,7 @@
 #' Calculate univariate PIs for all features
 #'
 #' @inheritParams estPimsSingle
-#' @param ecdfsEdgeAndMidpoint ecdfs within the cells
+#' @param ecdfsCell ecdfs within the cells
 #' @param ecdfAll Overall ecdf
 #' @param ecdfs Ecdfs per point
 #' @param idOne Index of features with only one observation, to be excluded
@@ -12,9 +12,9 @@
 #'
 #' @return PIs for every feature
 #' @importFrom spatstat.geom marks
-calcUniPIs = function(p, pis, verbose, ecdfsEdgeAndMidpoint, owins, tabObs,
+calcUniPIs = function(p, pis, verbose, ecdfsCell, owins, tabObs,
                       null, ecdfs, nSub, ecdfAll, idOne, features,
-                      pointPPP, centroids){
+                      pointPPP, centroids, nCell){
     if(verbose)
         message("Calculating univariate probabilistic indices...")
     uniPIs = lapply(nams <- names(tabObs[features])[!idOne], function(feat){
@@ -28,17 +28,17 @@ calcUniPIs = function(p, pis, verbose, ecdfsEdgeAndMidpoint, owins, tabObs,
             calcAllDistPI(pSub, p, ecdfAll = ecdfAll, null = null,
                           ecdfs = ecdfs[id])}
         edgeDistPI = if(any(pis == "edge")){
-            calcWindowDistPI(pSub, owins, ecdfAll = ecdfsEdgeAndMidpoint,
+            calcWindowDistPI(pSub, owins, ecdfAll = ecdfsCell,
                              pi = "edge")}
         midPointDistPI = if(any(pis == "midpoint")){
             calcWindowDistPI(pSub, owins, centroids,
-                             ecdfAll = ecdfsEdgeAndMidpoint, pi = "midpoint")}
+                             ecdfAll = ecdfsCell, pi = "midpoint")}
         nnCellPI = if(any(pis == "nnCell")){
-            calcWindowDistPI(pSub, owins, ecdfAll = ecdfsEdgeAndMidpoint,
-                              pi = "nnCell")}
+            calcWindowDistPI(pSub, owins, ecdfAll = ecdfsCell,
+                              pi = "nnCell", null = null, ecdfs = ecdfs)}
         allDistCellPI = if(any(pis == "allDistCell")){
-            calcWindowDistPI(pSub, owins, ecdfAll = ecdfsEdgeAndMidpoint,
-                            pi = "allDistCell")}
+            calcWindowDistPI(pSub, owins, ecdfAll = ecdfsCell,
+                            pi = "allDistCell", null = null, ecdfs = ecdfs)}
         list("pointDists" = c("nn" = NNdistPI, "allDist" = allDistPI),
              "windowDists" = list("edge" = edgeDistPI, "nnCell" = nnCellPI,
                     "allDistCell" = allDistCellPI, "midpoint" = midPointDistPI))

@@ -39,7 +39,7 @@ estPimsSingle = function(p, pis, null, tabObs, nPointsAll = 5e2,
             ecdfAll = ecdf(dist(coords(pSim)))
         if(any(pis %in% c("edge", "midpoint", "nnCell", "allDistCell",
                           "nnPairCell", "allDistPairCell"))){
-            ecdfsEdgeAndMidpoint = lapply(names(owins), function(nam) {
+            ecdfsCell = lapply(names(owins), function(nam) {
                 pSub = runifpoint(nPointsAllWin, win = owins[[nam]])
                 edge = if(any(pis == "edge"))
                     ecdf(nncross(pSub, edges(owins[[nam]]), what = "dist"))
@@ -50,23 +50,25 @@ estPimsSingle = function(p, pis, null, tabObs, nPointsAll = 5e2,
                     ecdf(dist(coords(pSub)))
                 list("edge" = edge, "midpoint" = midpoint,
                      "allDistCell" = allDistCell)
-            });names(ecdfsEdgeAndMidpoint) = names(owins)
+            });names(ecdfsCell) = names(owins)
         }
     } else if(null == "background"){
         if(any(pis %in% c("edge", "midpoint"))){
-            if(any(pis %in% c("edge", "midpoint"))){
-                ecdfsEdgeAndMidpoint = lapply(names(owins), function(nam) {
-                    pSub = subSampleP(p[marks(p, drop = FALSE)$cell == nam,],
-                                      nPointsAllWin)
-                    edge = if(any(pis == "edge"))
-                        ecdf(nncross(pSub, edges(owins[[nam]]), what = "dist"))
-                    midpoint = if(any(pis == "midpoint"))
-                        ecdf(crossdist(pSub, centroids[[nam]]))
-                    allDistCell = if(any(pis %in% c("nnCell", "allDistCell", "nnPairCell", "allDistPairCell")))
-                        ecdf(dist(coords(pSub)))
-                    list("edge" = edge, "midpoint" = midpoint, "allDistCell" = allDistCell)
-                });names(ecdfsEdgeAndMidpoint) = names(owins)
-            }
+            ecdfsCell = lapply(names(owins), function(nam) {
+                pSub = subSampleP(pCell < - p[marks(p, drop = FALSE)$cell == nam,],
+                                  nPointsAllWin)
+                edge = if(any(pis == "edge"))
+                    ecdf(nncross(pSub, edges(owins[[nam]]), what = "dist"))
+                midpoint = if(any(pis == "midpoint"))
+                    ecdf(crossdist(pSub, centroids[[nam]]))
+                allDistCell = if(any(pis %in% c("nnCell", "allDistCell",
+                                        "nnPairCell", "allDistPairCell"))){
+                    apply(rowSort(getCrossDist(pCell, pSub, null)), 1,
+                          ecdfPreSort)
+                }
+                list("edge" = edge, "midpoint" = midpoint,
+                     "allDistCell" = allDistCell)
+            });names(ecdfsCell) = names(owins)
         }
         if(any(pis %in% c("nn", "nnPair", "allDist", "allDistPair"))){
                 #Prepare some null distances, either with CSR or background
@@ -86,7 +88,7 @@ estPimsSingle = function(p, pis, null, tabObs, nPointsAll = 5e2,
     }
     piPair <- grepl(pis, pattern = "Pair")
     uniPIs = if(any(!piPair)){
-        calcUniPIs(p, pis, verbose, ecdfsEdgeAndMidpoint, owins, tabObs, null,
+        calcUniPIs(p, pis, verbose, ecdfsCell, owins, tabObs, null,
                 ecdfs, nSub, ecdfAll, idOne, features, pointPPP,
                 centroids = centroids)
     }
@@ -94,7 +96,7 @@ estPimsSingle = function(p, pis, null, tabObs, nPointsAll = 5e2,
     biPIs = if(any(piPair)){
         calcBiPIs(features = features[tabObs[features] > 0], p, pis, null,
                   ecdfs, nSub, ecdfAll, manyPairs, verbose, allowManyGenePairs,
-                  ecdfsEdgeAndMidpoint)
+                  ecdfsCell)
     }
     list("uniPIs" = uniPIs, "biPIs" = biPIs)
 }
