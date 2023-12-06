@@ -6,7 +6,7 @@
 #'
 #' @return A matrix of bivariate PIs
 calcBiPIs = function(p, pis, null, ecdfs, nSub, ecdfAll, features,
-                     manyPairs, verbose, allowManyGenePairs, ecdfsEdgeAndMidpoint){
+                manyPairs, verbose, allowManyGenePairs, ecdfsEdgeAndMidpoint){
     if(!allowManyGenePairs &&
        (numGenePairs <- choose(length(features), 2)) > manyPairs){
         warning(immediate. = TRUE, "Calculating probablistic indices for",
@@ -36,10 +36,12 @@ calcBiPIs = function(p, pis, null, ecdfs, nSub, ecdfAll, features,
             }
             nnCellPI = if(any(pis == "nnPairCell")){
                 calcWindowPairPI(pSub1, pSub2, ecdfAll = ecdfsEdgeAndMidpoint,
-                                 pi = "nnPairCell")}
+                                 pi = "nnPairCell",  null = null,
+                                 ecdfs = ecdfs[c(id1, id2)], cd = cd)}
             allDistCellPI = if(any(pis == "allDistPairCell")){
-                calcWindowPairPI(pSub1, pSub2, cd = cd, ecdfAll = ecdfsEdgeAndMidpoint,
-                                 pi = "allDistPairCell")}
+                calcWindowPairPI(pSub1, pSub2, cd = cd, null = null,
+                        ecdfAll = ecdfsEdgeAndMidpoint, pi = "allDistPairCell",
+                        ecdfs = ecdfs[c(id1, id2)])}
             list("pointDists" = c("nnPair" = NNdistPI, "allDistPair" = allDistPI),
                  "windowDists" = list("allDistCell" = allDistCellPI, "nnCell" = nnCellPI))
     })

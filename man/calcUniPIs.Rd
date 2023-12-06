@@ -8,7 +8,7 @@ calcUniPIs(
   p,
   pis,
   verbose,
-  ecdfsEdgeAndMidpoint,
+  ecdfsCell,
   owins,
   tabObs,
   null,
@@ -18,7 +18,8 @@ calcUniPIs(
   idOne,
   features,
   pointPPP,
-  centroids
+  centroids,
+  nCell
 )
 }
 \arguments{
@@ -28,7 +29,7 @@ calcUniPIs(
 
 \item{verbose}{A boolean, should verbose output be printed}
 
-\item{ecdfsEdgeAndMidpoint}{ecdfs within the cells}
+\item{ecdfsCell}{ecdfs within the cells}
 
 \item{owins, centroids}{The list of windows corresponding to cells, and their centroids}
 
