@@ -23,7 +23,7 @@
 #' #First build the weight function
 #' yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))
 #' fittedModels = fitLMMs(yangObj, fixedVars = "day", randomVars = "root")
-fitLMMs = function(resList, pi = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint", "fixedpoint"),
+fitLMMs = function(resList, pi = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint"),
                    fixedVars, randomVars, verbose = TRUE, resultsOnly = TRUE, Formula = NULL){
     pi = match.arg(pi)
     designVars = c(fixedVars, randomVars)

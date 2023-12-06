@@ -35,7 +35,7 @@ addWeightFunction = function(hypFrame, pis = attr(hypFrame, "pis"), designVars,
                              c("ppp", "image", "tabObs", "owins", "centroids")]
         #If missing take everything but the ones that are obviously
         #no design variables
-    if(all(pis %in% c("edge", "midpoint", "fixedpoint")))
+    if(all(pis %in% c("edge", "midpoint",)))
         stop("Calculating weight matrices for distances to fixed points is unnecessary as they are independent.
              Simply proceed with fitting the model on the indiviual evaluations of the B-function.")
     pis = match.arg(pis, choices = c("nn", "nnPair", "allDist", "allDistPair"),
