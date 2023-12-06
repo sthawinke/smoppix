@@ -14,7 +14,7 @@
 #' @seealso \link{addCell}, \link{estPims}
 #' @references
 #' \insertAllCited{}
-calcWindowDistPI = function(pSub, owins, centroids, ecdfAll, pi, null, ecdfs){
+calcWindowDistPI = function(pSub, owins, centroids, ecdfAll, pi, null, ecdfs, id){
     splitPPP = split.ppp(pSub, f = "cell")
     obsDistEdge = lapply(names(splitPPP), function(x){
         Dist = switch(pi,
@@ -34,7 +34,7 @@ calcWindowDistPI = function(pSub, owins, centroids, ecdfAll, pi, null, ecdfs){
                        Dist = as.matrix(Dist)
                        mean(vapply(seq_len(ncol(Dist)), FUN.VALUE = double(ncol(Dist)-1),
                                    function(i){
-                                       ecdfs[[x]]$allDistCell[[i]](Dist[i, -i])
+                                       ecdfs[[x]]$allDistCell[[id[i]]](Dist[i, -i])
                                        }))
                        }
                        )
@@ -47,7 +47,7 @@ calcWindowDistPI = function(pSub, owins, centroids, ecdfAll, pi, null, ecdfs){
             mean(vapply(seq_along(approxRanks), FUN.VALUE = double(1), function(ar){
                 pnhyper(approxRanks[ar], r = 1, m = NP - 1,
                     n = switch(null, "CSR" = getN(ecdfAll[[x]]$allDistCell),
-                               "background" = getN(ecdfs[[ar]]) - NP + 1))
+                               "background" = getN(ecdfs[[x]]$allDistCell[[id[ar]]]) - NP + 1))
             }))
         }
         }
@@ -55,14 +55,12 @@ calcWindowDistPI = function(pSub, owins, centroids, ecdfAll, pi, null, ecdfs){
     names(obsDistEdge) = names(splitPPP)
     obsDistEdge
 }
-calcWindowPairPI = function(pSub1, pSub2, feat1, feat2, cd, ecdfAll, pi, null, ecdfs){
+calcWindowPairPI = function(pSub1, pSub2, id1, id2, cd, ecdfAll, pi, null, ecdfs){
     splitPPP1 = split.ppp(pSub1, f = "cell")
     splitPPP2 = split.ppp(pSub2, f = "cell")
     out = vapply(nam <- intersect(names(splitPPP1), names(splitPPP2)),
                  FUN.VALUE = double(1), function(x){
         cd = crossdist(splitPPP1[[x]], splitPPP2[[x]])
-        id1 = marks(splitPPP1[[x]], drop = FALSE)$gene == feat1
-        id2 = marks(splitPPP2[[x]], drop = FALSE)$gene == feat2
         if(pi == "allDistPairCell"){
             switch(null,
                    "CSR" =  mean(ecdfAll[[x]]$allDistCell(cd)),
@@ -87,15 +85,15 @@ calcWindowPairPI = function(pSub1, pSub2, feat1, feat2, cd, ecdfAll, pi, null, e
                 pi2 = pnhyper(approxRanks[-seq1], r = 1, m = np2, n = n - np2)
             } else if(null == "background"){
                 approxRanks = vapply(seq_along(nnDist), FUN.VALUE = double(1), function(i){
-                    getApproxRanks(ecdfs[[x]]$allDistCell[[i]], nnDist[i])
+                    getApproxRanks(ecdfs[[x]]$allDistCell[[c(id1, id2)[i]]], nnDist[i])
                 })
-                pi1 = vapply(seq_along(approxRanks)[seq1], FUN.VALUE = double(1), function(ar){
-                    pnhyper(approxRanks[ar], r = 1, m = np1 - 1,
-                            n = getN(ecdfs[[x]]$allDistCell[[ar]]) - np1 + 1)
+                pi1 = vapply(seq1, FUN.VALUE = double(1), function(air){
+                    pnhyper(approxRanks[i], r = 1, m = np1 - 1,
+                            n = getN(ecdfs[[x]]$allDistCell[[id1[i]]]) - np1 + 1)
                 })
-                pi2 = vapply(seq_along(approxRanks)[-seq1], FUN.VALUE = double(1), function(ar){
-                    pnhyper(approxRanks[ar], r = 1, m = np2 - 1,
-                            n = getN(ecdfs[[x]]$allDistCell[[ar]]) - np2 + 1)
+                pi2 = vapply(seq_len(np2), FUN.VALUE = double(1), function(i){
+                    pnhyper(approxRanks[i + np1], r = 1, m = np2 - 1,
+                            n = getN(ecdfs[[x]]$allDistCell[[id2[i]]]) - np2 + 1)
                 })
             }
             mean(c(pi1, pi2))

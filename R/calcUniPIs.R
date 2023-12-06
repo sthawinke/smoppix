@@ -33,10 +33,10 @@ calcUniPIs = function(p, pis, verbose, ecdfsCell, owins, tabObs,
             calcWindowDistPI(pSub, owins, centroids,
                              ecdfAll = ecdfsCell, pi = "midpoint")}
         nnCellPI = if(any(pis == "nnCell")){
-            calcWindowDistPI(pSub, owins, ecdfAll = ecdfsCell,
+            calcWindowDistPI(pSub, owins, ecdfAll = ecdfsCell, id = id,
                               pi = "nnCell", null = null, ecdfs = ecdfsCell)}
         allDistCellPI = if(any(pis == "allDistCell")){
-            calcWindowDistPI(pSub, owins, ecdfAll = ecdfsCell,
+            calcWindowDistPI(pSub, owins, ecdfAll = ecdfsCell, id = id,
                             pi = "allDistCell", null = null, ecdfs = ecdfsCell)}
         list("pointDists" = c("nn" = NNdistPI, "allDist" = allDistPI),
              "windowDists" = list("edge" = edgeDistPI, "nnCell" = nnCellPI,

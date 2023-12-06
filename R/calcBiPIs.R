@@ -36,13 +36,13 @@ calcBiPIs = function(p, pis, null, ecdfs, nSub, ecdfAll, features,
             }
             nnCellPI = if(any(pis == "nnPairCell")){
                 calcWindowPairPI(pSub1, pSub2, ecdfAll = ecdfsCell,
-                                 ecdfs = ecdfs, pi = "nnPairCell", null = null,
-                                 feat1 = feat1, feat2 = feat2,
+                                 ecdfs = ecdfsCell, pi = "nnPairCell", null = null,
+                                 id1 = id12, id2 = id2,
                                  cd = cd)}
             allDistCellPI = if(any(pis == "allDistPairCell")){
                 calcWindowPairPI(pSub1, pSub2, cd = cd, null = null,
                         ecdfAll = ecdfsCell, pi = "allDistPairCell",
-                        ecdfs = ecdfs)}
+                        ecdfs = ecdfsCell)}
             list("pointDists" = c("nnPair" = NNdistPI, "allDistPair" = allDistPI),
                  "windowDists" = list("allDistCell" = allDistCellPI, "nnCell" = nnCellPI))
     })
