@@ -44,11 +44,10 @@ hypFrame2 = addCell(hypFrame, wList)
 #register(SerialParam())
 nCores = 2
 register(MulticoreParam(nCores))
-pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", "fixedpoint",
+pis = c("nn", "allDist", "nnPair", "allDistPair", "edge",
         "midpoint", "nnCell", "allDistCell", "nnPairCell", "allDistPairCell")
-piEstsBG <- estPims(hypFrame2, pis = pis, point = c(0.5, 0.5),
-                    null = "background")
-piEstsCSR <- estPims(hypFrame2, pis = pis, point = c(0.5, 0.5), null = "CSR")
+piEstsBG <- estPims(hypFrame2, pis = pis, null = "background")
+piEstsCSR <- estPims(hypFrame2, pis = pis, null = "CSR")
 objBG <- addWeightFunction(piEstsBG, designVars = "condition")
 objCSR <- addWeightFunction(piEstsCSR, designVars = "condition")
 test_check("spatrans")

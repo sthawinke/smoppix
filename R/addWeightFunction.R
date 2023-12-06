@@ -1,15 +1,22 @@
 #' Build a weight function based on the data
 #'
 #' @param hypFrame The hyperframe with all the data
-#' @param designVars A character vector containing all design factors (both fixed and random), that are also present as variables in hypFrame
+#' @param designVars A character vector containing all design factors
+#' (both fixed and random), that are also present as variables in hypFrame
 #' @param ... Additional arguments passed on to the scam::scam function
 #' @param maxObs,maxFeatures The maximum number of observations respectively
 #' features for fitting the weight function. See details
 #' @param pis The PIs for which weight functions are constructed
+#' @param lowestLevelVar The design variable at the lowest level of nesting,
+#' often separating technical replicates. The conditional variance is calculated
+#' within the groups of PIs defined by this variable
 #' @details For computational and memory reasons,
 #'  for large datasets the trend fitting
 #' is restricted to a subset of the data through the maxObs and maxFeatures
 #' parameters.
+#' Provide either 'designVars' or 'lowestLevelVar'. In the latter case, the
+#' design variables are set to all imageVars in the hypFrame object except
+#' lowestLevelVar
 #'
 #' @return A fitted scam object, which can be used to
 #' @details The scam functions fits a decreasing spline of the variance as a
@@ -28,11 +35,25 @@
 #' features = attr(hypYang, "features")[1:12])
 #' #Build the weight function for all PIs present
 #' yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))
+#' #Alternative formulation with 'lowestLevelVar'
+#' yangObj2 <- addWeightFunction(yangPims, lowestLevelVar = "section")
 addWeightFunction = function(hypFrame, pis = attr(hypFrame, "pis"), designVars,
-                               maxObs = 1e5, maxFeatures = 5e2,...){
+                             lowestLevelVar, maxObs = 1e5, maxFeatures = 5e2,
+                             ...){
+    if(missing(designVars) && missing(lowestLevelVar)){
+        stop("Provide either designVars or lowestLevelVar!")
+    }
+    if(!missing(designVars) && !missing(lowestLevelVar)){
+        stop("Provide either designVars or lowestLevelVar, both not both!")
+    }
     if(missing(designVars))
-        designVars = names(hypFrame)[!names(hypFrame) %in%
-                             c("ppp", "image", "tabObs", "owins", "centroids")]
+        if(length(lowestLevelVar)!=1){
+            stop("lowestLevelVar must have length 1")
+        }
+        if(!(lowestLevelVar %in% attr(hypFrame, "imageVars")))
+            stop("lowestLevelVar must be part of the design,
+                 see attr(hypFrame, 'imageVars')")
+        designVars = setdiff(attr(hypFrame, "imageVars"), lowestLevelVar)
         #If missing take everything but the ones that are obviously
         #no design variables
     if(all(pis %in% c("edge", "midpoint",)))

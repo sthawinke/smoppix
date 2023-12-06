@@ -33,7 +33,7 @@ calcWindowDistPI = function(pSub, owins, centroids, ecdfAll, pi, null, ecdfs){
                        "CSR" = mean(ecdfAll[[x]]$allDistCell(Dist)),
                        "background" = {
                            Dist = as.matrix(Dist)
-                           mean(vapply(seq_along(Dist), FUN.VALUE = double(1),
+                           mean(vapply(seq_along(Dist), FUN.VALUE = double(ncol(Dist)-1),
                                        function(i){ecdfs[[i]](Dist[i, -i])}))
                            }
                        )
@@ -45,7 +45,8 @@ calcWindowDistPI = function(pSub, owins, centroids, ecdfAll, pi, null, ecdfs){
             )
             mean(vapply(seq_along(approxRanks), FUN.VALUE = double(1), function(ar){
                 pnhyper(approxRanks[ar], r = 1, m = NP - 1,
-                    n = switch(null, "CSR" = getN(ecdfAll[[x]]$allDistCell), "background" = getN(ecdfs[[ar]]) - NP + 1))
+                    n = switch(null, "CSR" = getN(ecdfAll[[x]]$allDistCell),
+                               "background" = getN(ecdfs[[ar]]) - NP + 1))
             }))
         }
         }
@@ -63,9 +64,11 @@ calcWindowPairPI = function(pSub1, pSub2, cd, ecdfAll, pi, null, ecdfs){
             switch(null,
                    "CSR" =  mean(ecdfAll[[x]]$allDistCell(cd)),
                    "background" = {
-                       pi1 = vapply(seq_len(NP1 <- npoints(splitPPP1[[x]])), FUN.VALUE = double(1),
+                       pi1 = vapply(seq_len(NP1 <- npoints(splitPPP1[[x]])),
+                                    FUN.VALUE = double(nrow(cd)),
                                    function(i){ecdfs[[i]](cd[i, ])})
-                       pi2 = vapply(seq_len(npoints(pSub2)), FUN.VALUE = double(1),
+                       pi2 = vapply(seq_len(npoints(pSub2)),
+                                    FUN.VALUE = double(ncol(cd)),
                                     function(i){ecdfs[[i + NP1]](cd[,i ])})
                        mean(c(pi1, pi2))
                    }
