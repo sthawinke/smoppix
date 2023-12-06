@@ -6,8 +6,8 @@
 \usage{
 estPims(
   hypFrame,
-  pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint", "fixedpoint",
-    "nnCell", "allDistCell", "nnPairCell", "allDistPairCell"),
+  pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint", "nnCell",
+    "allDistCell", "nnPairCell", "allDistPairCell"),
   null = c("background", "CSR"),
   features = attr(hypFrame, "features"),
   ...
@@ -42,7 +42,6 @@ The suffix 'Pair' indicates that bivariate probabilistic indices,
 testing for co- and antilocalization are being used.
 'edge' and 'midpoint' calculate the distance to the edge respectively
  the midpoint of the windows added using the addCell() function.
-'fixedpoint' calculates the distances to a supplied list of points.
 The suffix "Cell" indicates distances are being calculated within cells only.
 }
 \examples{

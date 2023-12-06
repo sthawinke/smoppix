@@ -16,8 +16,7 @@ estPimsSingle(
   manyPairs = 1e+06,
   verbose = FALSE,
   owins = NULL,
-  centroids = NULL,
-  point
+  centroids = NULL
 )
 }
 \arguments{
@@ -43,8 +42,6 @@ and distance to point}
 \item{verbose}{Should verbose output be printed?}
 
 \item{owins, centroids}{The list of windows corresponding to cells, and their centroids}
-
-\item{point}{The point to which the distances are to be calculated}
 }
 \value{
 Data frames with estimated quantities per gene and/or gene pair

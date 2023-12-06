@@ -17,7 +17,6 @@ calcUniPIs(
   ecdfAll,
   idOne,
   features,
-  ecdfFixedPoint,
   pointPPP,
   centroids
 )
@@ -47,9 +46,9 @@ calcUniPIs(
 
 \item{features}{A character vector, for which features should the probabilistic indices be calculated?}
 
-\item{ecdfFixedPoint}{The ecdf of the fixed point}
-
 \item{pointPPP}{the point pattern containing the fixed point}
+
+\item{ecdfFixedPoint}{The ecdf of the fixed point}
 }
 \value{
 PIs for every feature

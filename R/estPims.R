@@ -10,7 +10,6 @@
 #' @param manyPairs An integer, what are considered many gene pairs
 #' @param verbose Should verbose output be printed?
 #' @param owins,centroids The list of windows corresponding to cells, and their centroids
-#' @param point The point to which the distances are to be calculated
 #' @param features A character vector, for which features should the probabilistic indices be calculated?
 #' @param tabObs A table of observed gene frequencies
 #'
@@ -25,21 +24,14 @@
 estPimsSingle = function(p, pis, null, tabObs, nPointsAll = 5e2,
                          nPointsAllWin = 5e2, features = NULL,
                    allowManyGenePairs = FALSE, manyPairs = 1e6, verbose = FALSE,
-                   owins = NULL, centroids = NULL, point){
+                   owins = NULL, centroids = NULL){
     if(is.null(features)){
         features = names(tabObs)
     } else {
         features = intersect(features, names(tabObs))
     }
-    if(any(pis == "fixedpoint"))
-        if(missing(point))
-            stop("Provide fixed point to measure distances to when requesting",
-                 "pi = 'fixedPoint'")
-        else
-            pointPPP = ppp(point[1], point[2])
     if(null == "CSR"){
-        if(any(pis %in% c("allDist", "allDistPair", "nn", "nnPair",
-                          "fixedpoint"))){
+        if(any(pis %in% c("allDist", "allDistPair", "nn", "nnPair"))){
            pSim = runifpoint(nPointsAll, win = p$window)
            nSub = npoints(pSim)
         }
@@ -60,10 +52,8 @@ estPimsSingle = function(p, pis, null, tabObs, nPointsAll = 5e2,
                      "allDistCell" = allDistCell)
             });names(ecdfsEdgeAndMidpoint) = names(owins)
         }
-        if(any(pis == "fixedpoint"))
-            ecdfFixedPoint = ecdf(nncross(pSim, pointPPP, what = "dist"))
     } else if(null == "background"){
-        if(any(pis %in% c("edge", "fixedpoint", "midpoint"))){
+        if(any(pis %in% c("edge", "midpoint"))){
             if(any(pis %in% c("edge", "midpoint"))){
                 ecdfsEdgeAndMidpoint = lapply(names(owins), function(nam) {
                     pSub = subSampleP(p[marks(p, drop = FALSE)$cell == nam,],
@@ -77,9 +67,6 @@ estPimsSingle = function(p, pis, null, tabObs, nPointsAll = 5e2,
                     list("edge" = edge, "midpoint" = midpoint, "allDistCell" = allDistCell)
                 });names(ecdfsEdgeAndMidpoint) = names(owins)
             }
-            if(any(pis == "fixedpoint"))
-                    ecdfFixedPoint = ecdf(nncross(subSampleP(p, nPointsAll),
-                                                  pointPPP, what = "dist"))
         }
         if(any(pis %in% c("nn", "nnPair", "allDist", "allDistPair"))){
                 #Prepare some null distances, either with CSR or background
@@ -100,8 +87,8 @@ estPimsSingle = function(p, pis, null, tabObs, nPointsAll = 5e2,
     piPair <- grepl(pis, pattern = "Pair")
     uniPIs = if(any(!piPair)){
         calcUniPIs(p, pis, verbose, ecdfsEdgeAndMidpoint, owins, tabObs, null,
-                ecdfs, nSub, ecdfAll, idOne, features, ecdfFixedPoint,
-                   pointPPP, centroids = centroids)
+                ecdfs, nSub, ecdfAll, idOne, features, pointPPP,
+                centroids = centroids)
     }
     #Bivariate patterns
     biPIs = if(any(piPair)){
@@ -137,10 +124,9 @@ estPimsSingle = function(p, pis, null, tabObs, nPointsAll = 5e2,
 #' testing for co- and antilocalization are being used.
 #' 'edge' and 'midpoint' calculate the distance to the edge respectively
 #'  the midpoint of the windows added using the addCell() function.
-#' 'fixedpoint' calculates the distances to a supplied list of points.
 #' The suffix "Cell" indicates distances are being calculated within cells only.
 estPims = function(hypFrame, pis = c("nn", "allDist", "nnPair", "allDistPair",
-                    "edge", "midpoint", "fixedpoint", "nnCell", "allDistCell",
+                    "edge", "midpoint", "nnCell", "allDistCell",
                     "nnPairCell", "allDistPairCell"),
                    null = c("background", "CSR"),
                    features = attr(hypFrame, "features"),...){

@@ -31,7 +31,7 @@
 #'#Evidence for anticorrelation
 buildDfMM = function(resList, gene,
                      pi = c("nn", "allDist", "nnPair", "allDistPair", "edge",
-                            "midpoint", "fixedpoint", "nnCell", "allDistCell",
+                            "midpoint", "nnCell", "allDistCell",
                             "nnPairCell", "allDistPairCell")){
     pi = match.arg(pi)
     stopifnot((lg <- length(gene)) %in% c(1, 2))
@@ -41,7 +41,7 @@ buildDfMM = function(resList, gene,
     }
     #Establish whether pi and gene match, and call separate functions
     foo = checkAttr(resList$hypFrame, pi)
-    # if(!(pi %in% c("edge", "midpoint", "fixedpoint")) && is.null(resList$Wfs[[pi]]))
+    # if(!(pi %in% c("edge", "midpoint")) && is.null(resList$Wfs[[pi]]))
     #     message("No weight function supplied, we will use approximative weigths.\n",
     #             "Consider fitting a weight function with addWeightFunction() " ,
     #             "and supplying it in the 'weightFunction' argument for improved inference.")
@@ -64,7 +64,7 @@ buildDfMM = function(resList, gene,
     out
 }
 buildDfMMUni = function(resList, gene, pi){
-    piListNameInner = if(fixedId <- any(pi == c("edge", "midpoint", "fixedpoint"))) "windowDists" else "pointDists"
+    piListNameInner = if(fixedId <- any(pi == c("edge", "midpoint"))) "windowDists" else "pointDists"
     #fixedId: Is the distance to a fixed point?
     winId = any(pi == c("edge", "midpoint")) #winId: is a window involved?
     piEsts = lapply(seq_along(resList$hypFrame$pimRes), function(n){

@@ -6,7 +6,7 @@
 \usage{
 fitLMMs(
   resList,
-  pi = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint", "fixedpoint"),
+  pi = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint"),
   fixedVars,
   randomVars,
   verbose = TRUE,
