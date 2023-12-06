@@ -55,7 +55,7 @@ estPimsSingle = function(p, pis, null, tabObs, nPointsAll = 5e2,
     } else if(null == "background"){
         if(any(pis %in% c("edge", "midpoint"))){
             ecdfsCell = lapply(names(owins), function(nam) {
-                pSub = subSampleP(pCell < - p[marks(p, drop = FALSE)$cell == nam,],
+                pSub = subSampleP(pCell <- p[marks(p, drop = FALSE)$cell == nam,],
                                   nPointsAllWin)
                 edge = if(any(pis == "edge"))
                     ecdf(nncross(pSub, edges(owins[[nam]]), what = "dist"))
