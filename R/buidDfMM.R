@@ -9,7 +9,6 @@
 #' @return A dataframe
 #' @export
 #' @importFrom scam predict.scam
-#' @importFrom Rfast colSort
 #' @examples
 #' data(Yang)
 #' hypYang = buildHyperFrame(Yang, coordVars = c("x", "y"),
@@ -55,7 +54,7 @@ buildDfMM = function(resList, gene,
         buildDfMMBi(gene = gene, pi = pi, resList = resList)
     } else {
         if(lg !=1){
-            stop("Provide a one gene for univariate PIs!")
+            stop("Provide a single gene for univariate PIs!")
         }
         buildDfMMUni(gene = gene, pi = pi, resList = resList)
     }
@@ -118,7 +117,8 @@ buildDfMMUni = function(resList, gene, pi){
     if(!winId)
         rownames(piMat) = rownames(resList$hypFrame)
     return(piMat)
-    }
+}
+#' @importFrom Rfast colSort
 buildDfMMBi = function(resList, gene, pi){
     piListNameInner = if(winId <- grepl("Cell", pi)) "windowDists" else "pointDists"
     piEsts0 = lapply(seq_along(resList$hypFrame$pimRes), function(n){

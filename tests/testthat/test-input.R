@@ -1,17 +1,22 @@
 context("Test input spatrans package")
-
 test_that("Reading in data proceeds without errors", {
-  expect_message(hypFrame <- buildHyperFrame(df, coordVars = c("x", "y"), imageVars = "fov"))
+  expect_message(buildHyperFrame(df, coordVars = c("x", "y"), imageVars = "fov"))
+  #Should work also with single image variable
+  expect_message(hypFrame <- buildHyperFrame(df, coordVars = c("x", "y"),
+                                             imageVars = c("fov", "condition")))
   expect_s3_class(hypFrame, c("hyperframe", "list"))
-  expect_message(hypFrame2 <- buildHyperFrame(as.matrix(df[, c("x", "y")]), image = df$fov, covariates = df[, c("gene", "condition"), drop = FALSE]))
+  expect_message(buildHyperFrame(as.matrix(df[, c("x", "y")]),
+    image = df$fov, covariates = df[, c("gene", "condition"), drop = FALSE]))
+  expect_message(hypFrame2 <- buildHyperFrame(as.matrix(df[, c("x", "y")]),
+                                 image = df[, c("fov", "condition")], covariates = df[, "gene", drop = FALSE]))
+  expect_identical(hypFrame, hypFrame2)
   expect_silent(hypFrame3 <- buildHyperFrame(lapply(listPPP, identity)))
-  expect_identical(hypFrame, hypFrame2, hypFrame3)
 })
 #Read in spatial experiment
 library(SpatialExperiment)
 example(read10xVisium)
 test_that("Reading in data from SpatialExperiment class proceeds without errors", {
-    expect_message(hypFrame4 <- buildHyperFrame(spe, imageVars = "sample_id", coVar = "in_tissue"))
+    expect_message(hypFrame4 <- buildHyperFrame(spe, imageVars = "sample_id", coVars = "in_tissue"))
 })
 
 test_that("Adding regions of interest works", {

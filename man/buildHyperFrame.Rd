@@ -36,7 +36,8 @@ buildHyperFrame(x, ...)
 
 \item{coVars}{Names of covariates such as gene or cell for each single point}
 
-\item{image}{A single design variable distinguishing the different point patterns}
+\item{image}{A set of design variable whose unique combination distinguishes
+the different point patterns}
 
 \item{covariates}{A vector of covariates}
 
