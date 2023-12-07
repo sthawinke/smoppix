@@ -133,6 +133,7 @@ estPims = function(hypFrame, pis = c("nn", "allDist", "nnPair", "allDistPair",
                    features = attr(hypFrame, "features"),...){
     pis = match.arg(pis, several.ok = TRUE)
     null = match.arg(null)
+    Im = attr(hypFrame, "imageVars")
     if(any(pis %in% c("edge", "midpoint", "nnCell", "allDistCell")) && is.null(hypFrame$owins)){
         stop("No window provided for distance to edge or midpoint calculation.",
              "Add it using the addCell() function")
@@ -145,7 +146,7 @@ estPims = function(hypFrame, pis = c("nn", "allDist", "nnPair", "allDistPair",
             pis = pis, null = null, tabObs = tabObs, centroids = centroids,...))
    })
    attr(hypFrame, "pis") = pis #Tag the pims calculated
-   attr(hypFrame, "featuresEst") = features
+   attr(hypFrame, "featuresEst") = features;attr(hypFrame, "imageVars") = Im
    #Remember for which features the pims were calculated
    hypFrame
 }

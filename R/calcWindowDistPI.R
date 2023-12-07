@@ -4,6 +4,10 @@
 #' @param ecdfAll the cumulative distribution function under the null
 #' @inheritParams estPimsSingle
 #' @param pi The type of PI to calculate
+#' @param feat The features
+#' @param ecdfs The ecdfs of the distances of every single point in the cell
+#' @param cellAndGene The marks dataframe with cell and gene, used to match the
+#' observations with the ecdfs
 #'
 #' @return The estimated probabilistic index
 #' @importFrom spatstat.geom nncross edges nndist
