@@ -141,15 +141,16 @@ buildDfMMBi = function(resList, gene, pi){
             }
         }
     })
-    piEsts = Reduce(f = rbind, piEsts0[vapply(piEsts0, FUN.VALUE = TRUE, is.matrix)])
+    piEsts = Reduce(f = rbind, piEsts0[id <- !vapply(piEsts0, FUN.VALUE = TRUE, is.null)])
+    if(all(is.na(piEsts[,"pi"])))
+        stop("Gene pair not found!\n")
     rownames(piEsts) = if(winId) {
         rep(rownames(resList$hypFrame),
             times = vapply(piEsts0, FUN.VALUE = integer(1), NROW))
        } else {
-           rownames(resList$hypFrame)
+           rownames(resList$hypFrame)[id]
         }
-    if(all(is.na(piEsts[,"pi"])))
-        stop("Gene pair not found!\n")
+
     weight = evalWeightFunction(resList$Wfs[[pi]],
                                 newdata = data.frame(piEsts[, c("minP", "maxP")]))
     weight = weight/sum(weight, na.rm = TRUE)
