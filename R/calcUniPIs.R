@@ -7,13 +7,12 @@
 #' @param idOne Index of features with only one observation, to be excluded
 #' @param nSub The number of events in the subsampled pattern
 #' @param verbose A boolean, should verbose output be printed
-#' @param ecdfFixedPoint The ecdf of the fixed point
 #'
 #' @return PIs for every feature
 #' @importFrom spatstat.geom marks
 calcUniPIs = function(p, pis, verbose, ecdfsCell, owins, tabObs,
                       null, ecdfs, nSub, ecdfAll, idOne, features,
-                      centroids, nCell){
+                      centroids){
     if(verbose)
         message("Calculating univariate probabilistic indices...")
     uniPIs = lapply(nams <- names(tabObs[features])[!idOne], function(feat){

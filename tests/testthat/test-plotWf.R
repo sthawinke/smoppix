@@ -1,10 +1,10 @@
-context("Plotting the weight function")
+context("Adding and lotting the weight function")
 data(Yang)
 hypYang = buildHyperFrame(Yang, coordVars = c("x", "y"),
 imageVars = c("day", "root", "section"))
 yangPims = estPims(hypYang, pis = c("nn", "nnPair"),
                    features = attr(hypYang, "features")[1:20])
-#First Build the weight function
+#First build the weight function
 yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))
 test_that("Plotting the weight function works", {
     expect_silent(plotWf(yangObj, "nn"))

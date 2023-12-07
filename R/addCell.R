@@ -50,7 +50,7 @@ addCell = function(hypFrame, owins, checkOverlap = TRUE, warnOut = TRUE){
                       function(x) {vapply(x, FUN.VALUE = FALSE, is.owin)}))),
               all(rownames(hypFrame) %in% names(owins)),
     is(hypFrame, "hyperframe"))
-    Feat = attr(hypFrame, "features")
+    Feat = attr(hypFrame, "features");Im = attr(hypFrame, "imageVars")
     for(nn in rownames(hypFrame)){
         ppp = hypFrame[[nn, "ppp"]]
         if(any("cell" == names(marks(ppp, drop = FALSE)))){
@@ -82,8 +82,8 @@ addCell = function(hypFrame, owins, checkOverlap = TRUE, warnOut = TRUE){
             lapply(x, function(y) centroid.owin(y, as.ppp = TRUE))
         })
     #Add centroids for all windows
-    attr(hypFrame, "features") = Feat #Retain features attribute,
-    #which gets lost when setting the marks somehow
+    attr(hypFrame, "features") = Feat; attr(hypFrame, "imageVars") = Im
+    #Retain attributes, which gets lost when setting the marks
     return(hypFrame)
 }
 
