@@ -93,7 +93,12 @@ nCores = 2 #The number of CPUs
 register(MulticoreParam(nCores, progressbar = TRUE))
 ```
 
-The progress bar helps one keep track of the calculations
+The progress bar helps one keep track of the calculations. For serial calculations choose
+
+```{r ,eval = FALSE}
+register(SerialParam(nCores))
+```
+
 
 ## Univariate tests
 

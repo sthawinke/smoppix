@@ -9,6 +9,7 @@
 #' @return A dataframe
 #' @export
 #' @importFrom scam predict.scam
+#' @importFrom Rfast colSort
 #' @examples
 #' data(Yang)
 #' hypYang = buildHyperFrame(Yang, coordVars = c("x", "y"),
@@ -64,9 +65,10 @@ buildDfMM = function(resList, gene,
     out
 }
 buildDfMMUni = function(resList, gene, pi){
-    piListNameInner = if(fixedId <- any(pi == c("edge", "midpoint"))) "windowDists" else "pointDists"
-    #fixedId: Is the distance to a fixed point?
-    winId = any(pi == c("edge", "midpoint")) #winId: is a window involved?
+    piListNameInner = if(winId <- any(pi == c("edge", "midpoint", "nnCell", "allDistCell"))) "windowDists" else "pointDists"
+    #winId: is a window involved?
+    fixedId = any(pi == c("edge", "midpoint"))
+    #fixedId: Is the distance to a fixed point? So no weighting needed
     piEsts = lapply(seq_along(resList$hypFrame$pimRes), function(n){
         x = resList$hypFrame$pimRes[[n]]
         if(idNull <- is.null(vec <- x[["uniPIs"]][[gene]][[piListNameInner]][pi]))
@@ -74,25 +76,33 @@ buildDfMMUni = function(resList, gene, pi){
         piOut = if(winId) {
             if(idNull) {
                 data.frame("pi" = NA, "cell" = "NA")
-                }else {
-                    data.frame("pi" = unlist(vec), "cell" = rep(names(vec[[pi]]),
-                    times = vapply(vec[[pi]], FUN.VALUE = integer(1), length)))}
+            } else {
+                data.frame("pi" = unlist(vec), "cell" = rep(names(vec[[pi]]),
+                times = vapply(vec[[pi]], FUN.VALUE = integer(1), length)))
+            }
         } else if (fixedId){
             cbind("pi" = if(idNull) vec else vec[[pi]])
         } else
             c("pi" = unname(vec))
         if(!fixedId){
-            npVec = resList$hypFrame[n, "tabObs", drop = TRUE][gene]
-            names(npVec) = "NP"
-            return(c(piOut, npVec))
+            #If not fixed, provide counts to allow weighting
+            if(winId){
+                tabCell = with(marks(resList$hypFrame$ppp[[n]], drop = FALSE),
+                     table(gene, cell))
+                npVec = tabCell[gene, match(piOut[, "cell"], colnames(tabCell))]
+                return(cbind(piOut, "NP" = npVec))
+            } else {
+                npVec = resList$hypFrame[n, "tabObs", drop = TRUE][gene]
+                names(npVec) = "NP"
+                return(c(piOut, npVec))
+            }
         } else {
             return(piOut)
         }
     })
-    design = if(fixedId) {
+    design = if(winId) {
             rep(rownames(resList$hypFrame),
-                times = vapply(piEsts, FUN.VALUE = integer(1),
-                               if(winId) NROW else length))
+                times = vapply(piEsts, FUN.VALUE = integer(1), NROW))
         } else {
             rownames(resList$hypFrame)
         }
@@ -105,23 +115,39 @@ buildDfMMUni = function(resList, gene, pi){
         weight = weight/sum(weight, na.rm = TRUE)
         piMat = cbind(piMat, weight)
     }
-    if(!fixedId)
+    if(!winId)
         rownames(piMat) = rownames(resList$hypFrame)
     return(piMat)
     }
 buildDfMMBi = function(resList, gene, pi){
-    piEsts = t(vapply(seq_along(resList$hypFrame$pimRes),
-                      FUN.VALUE = double(3), function(n){
-        if(idNull <- is.null(vec <- getGp(resList$hypFrame$pimRes[[n]][["biPIs"]], gene, drop = FALSE)[,pi])){
-            vec = NA
-            npVec = rep(NA, 2)
+    piListNameInner = if(winId <- grepl("Cell", pi)) "windowDists" else "pointDists"
+    piEsts0 = lapply(seq_along(resList$hypFrame$pimRes), function(n){
+        if(idNull <- is.null(vec <- getGp(resList$hypFrame$pimRes[[n]][["biPIs"]],
+                                          gene, drop = FALSE)[[piListNameInner]][[pi]])){
+           NULL
         } else {
-            npVec = sort(resList$hypFrame[n, "tabObs", drop = TRUE][sund(gene)])
+            if(winId){
+                tabCell = with(marks(resList$hypFrame$ppp[[n]], drop = FALSE),
+                               table(gene, cell))
+                npVec0 = tabCell[sund(gene), match(names(vec), colnames(tabCell)), drop = FALSE]
+                npVec = colSort(npVec0)
+                colnames(npVec) = colnames(npVec0)
+                rownames(npVec) = c("minP", "maxP")
+                cbind("pi" = unlist(vec), t(npVec))
+            } else {
+                npVec = sort(resList$hypFrame[n, "tabObs", drop = TRUE][sund(gene)])
+                names(npVec) = c("minP", "maxP")
+                c("pi" = unname(vec), npVec)
+            }
         }
-        names(npVec) = c("minP", "maxP")
-        c("pi" = unname(vec), npVec)
-    }))
-    rownames(piEsts) = rownames(resList$hypFrame)
+    })
+    piEsts = Reduce(f = rbind, piEsts0[vapply(piEsts0, FUN.VALUE = TRUE, is.matrix)])
+    rownames(piEsts) = if(winId) {
+        rep(rownames(resList$hypFrame),
+            times = vapply(piEsts0, FUN.VALUE = integer(1), NROW))
+       } else {
+           rownames(resList$hypFrame)
+        }
     if(all(is.na(piEsts[,"pi"])))
         stop("Gene pair not found!\n")
     weight = evalWeightFunction(resList$Wfs[[pi]],
