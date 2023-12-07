@@ -28,7 +28,8 @@ extractResults = function(models, fixedVars = NULL, method = "BH"){
         })
         coefMat = matrix(unlist(coefs), byrow = TRUE, nrow = length(pVal))
         colnames(coefMat) = paste0(Var, seq_len(ncol(coefMat)))
-        cbind("pVal" = pVal, coefMat)[order(pVal),]
+        cbind(coefMat, "pVal" = pVal,
+              "pAdj" = p.adjust(pVal, method = method))[order(pVal),]
     })
     names(fixedOut) = fixedVars
     list("Intercept" = intMat, "fixedEffects" = fixedOut)
