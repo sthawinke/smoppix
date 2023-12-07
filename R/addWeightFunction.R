@@ -95,11 +95,11 @@ addWeightFunction = function(hypFrame, pis = attr(hypFrame, "pis"), designVars,
             if(cellId){
                 #If cellId, there is no tapply, cells are the lowest level anyway
                 tmp = lapply(ordDesign, function(x){
-                    if(!all(geneSplit %in% names(piList[[x]])))
+                    if(!all((if(pairId) gene else geneSplit) %in% names(piList[[x]])))
                         return(NULL)
                     CellGene = table(marks(hypFrame$ppp[[x]])$cell,
                                      marks(hypFrame$ppp[[x]])$gene)[,geneSplit,drop = FALSE]
-                    deps = vapply(piList[[x]][geneSplit], FUN.VALUE = double(sum(id <- rowAll(CellGene>0))), function(y){
+                    deps = vapply(piList[[x]][if(pairId) gene else geneSplit], FUN.VALUE = double(sum(id <- rowAll(CellGene>0))), function(y){
                             xx = unlist(y)
                             if(sum(!is.na(xx)) >= 2) {
                                 (xx-mean(xx, na.rm = TRUE))^2
@@ -110,7 +110,7 @@ addWeightFunction = function(hypFrame, pis = attr(hypFrame, "pis"), designVars,
                 out = t(Reduce(tmp, f = rbind))
             } else {
                 tmp = vapply(piList[ordDesign], FUN.VALUE = double(1), function(x){
-                    if(is.null(baa <- getGp(x,geneSplit))) NA else baa
+                    if(is.null(baa <- getGp(x,gene))) NA else baa
                 })
                 quadDeps = unlist(tapply(tmp, designVec, function(x){
                     if(sum(!is.na(x)) >= 2) {

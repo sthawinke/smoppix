@@ -89,8 +89,7 @@ estPimsSingle = function(p, pis, null, tabObs, nPointsAll = 5e2,
     piPair <- grepl(pis, pattern = "Pair")
     uniPIs = if(any(!piPair)){
         calcUniPIs(p, pis, verbose, ecdfsCell, owins, tabObs, null,
-                ecdfs, nSub, ecdfAll, idOne, features, pointPPP,
-                centroids = centroids)
+                ecdfs, nSub, ecdfAll, idOne, features, centroids = centroids)
     }
     #Bivariate patterns
     biPIs = if(any(piPair)){
