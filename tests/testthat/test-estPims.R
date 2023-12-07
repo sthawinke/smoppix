@@ -1,7 +1,7 @@
 context("Test pim calculation spatrans package")
 test_that("Calculating pims proceeds without errors", {
     expect_is(piEstsCSR <- estPims(hypFrame2, pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint"),
-                                    point = c(0.5, 0.5), null = "CSR", features = c("gene1", "gene2")), "list")
+                                     null = "CSR", features = c("gene1", "gene2")), "list")
     expect_is(piEstsBG <- estPims(hypFrame2, pis = c("nn", "allDist", "nnPair", "allDistPair"),
                                         null = "background", features = c("gene1", "gene2")), "list")
 })

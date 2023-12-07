@@ -17,7 +17,6 @@ calcUniPIs(
   ecdfAll,
   idOne,
   features,
-  pointPPP,
   centroids,
   nCell
 )
@@ -46,8 +45,6 @@ calcUniPIs(
 \item{idOne}{Index of features with only one observation, to be excluded}
 
 \item{features}{A character vector, for which features should the probabilistic indices be calculated?}
-
-\item{pointPPP}{the point pattern containing the fixed point}
 
 \item{ecdfFixedPoint}{The ecdf of the fixed point}
 }

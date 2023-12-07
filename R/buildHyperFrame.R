@@ -20,16 +20,23 @@ setGeneric("buildHyperFrame", function(x, ...) standardGeneric("buildHyperFrame"
 #' @param coVars Names of covariates such as gene or cell for each single point
 
 setMethod("buildHyperFrame", "data.frame",
-        function(x, coordVars, imageVars, coVars = setdiff(names(x), c(imageVars, coordVars)),...) {
-        buildHyperFrame(as.matrix(x[, coordVars]), image = x[,imageVars,drop = FALSE],
+          function(x, coordVars, imageVars, coVars = setdiff(names(x), c(imageVars, coordVars)),...) {
+        buildHyperFrame(as.matrix(x[, coordVars]), image = x[, imageVars, drop = FALSE],
                         covariates = x[, coVars, drop = FALSE], ...)
 })
 #' @param matrix The input matrix
-#' @param image A single design variable distinguishing the different point patterns
+#' @param image A set of design variable whose unique combination distinguishes
+#' the different point patterns
 #'
 #' @rdname buildHyperFrame
 #' @export
 setMethod("buildHyperFrame", "matrix", function(x, image, covariates, ...) {
+    if(length(intersect(names(image), names(covariates)))){
+        stop("Overlap detected between 'imageVars' and 'coVars'.
+        The combination of the first separates the images,
+             wheras the second defines point-specific data such as
+             gene identifiers.")
+    }
     if(ncol(x)!=2){
         stop("Coordinates must be 2 dimensional")
     }
@@ -38,7 +45,7 @@ setMethod("buildHyperFrame", "matrix", function(x, image, covariates, ...) {
     }
     designVec = if(NCOL(image)!=1){
         apply(image, 1, paste, collapse = "_")
-    } else image[,1]
+    } else image
 
     if(!any("gene" == colnames(covariates))){
         stop("Gene identity must be supplied in covariate matrix")
@@ -54,7 +61,9 @@ setMethod("buildHyperFrame", "matrix", function(x, image, covariates, ...) {
     #Replace underscore in gene names => Used to build pairs
     hypFrame = spatstat.geom::hyperframe("ppp" = ppps, image = names(ppps))
     rownames(hypFrame) = hypFrame$image
-    desMat = t(simplify2array(strsplit(names(ppps), "_"))); colnames(desMat) = names(image)
+    desMat = matrix(simplify2array(strsplit(names(ppps), "_")),
+                    nrow = nrow(hypFrame), byrow = TRUE)
+    colnames(desMat) = names(image)
     for(i in names(image)){hypFrame[, i] = desMat[, i]}
     hypFrame$tabObs = lapply(hypFrame$ppp, function(x) table(marks(x, drop = FALSE)$gene))
     attr(hypFrame, "features") = unique(unlist(lapply(hypFrame$tabObs, names)))
@@ -75,7 +84,7 @@ setMethod("buildHyperFrame", "list", function(x,...) {
 #' @importFrom SpatialExperiment SpatialExperiment spatialCoords
 #' @importFrom SummarizedExperiment colData
 setMethod("buildHyperFrame", "SpatialExperiment", function(x, imageVars, coVars, ...) {
-    buildHyperFrame(spatialCoords(x), image = colData(x)[, imageVars, drop = FALSE],
+    buildHyperFrame(spatialCoords(x), image = as.data.frame(colData(x)[, imageVars, drop = FALSE]),
                     covariates = cbind("gene" = rownames(colData(x)), as.data.frame(colData(x))[, coVars, drop = FALSE]))
 })
 

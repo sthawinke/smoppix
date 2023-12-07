@@ -4,7 +4,17 @@
 \alias{calcWindowDistPI}
 \title{Estimate the PI for the distance to a fixed region of interest}
 \usage{
-calcWindowDistPI(pSub, owins, centroids, ecdfAll, pi, null, ecdfs)
+calcWindowDistPI(
+  pSub,
+  owins,
+  centroids,
+  ecdfAll,
+  pi,
+  null,
+  ecdfs,
+  cellAndGene,
+  feat
+)
 }
 \arguments{
 \item{pSub}{The subset point pattern containing only a single gene}
