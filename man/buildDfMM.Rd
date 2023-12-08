@@ -29,22 +29,28 @@ for mixed model building
 }
 \examples{
 data(Yang)
-hypYang = buildHyperFrame(Yang, coordVars = c("x", "y"),
-imageVars = c("day", "root", "section"))
-#Fit a subset of features to limit computation time
-yangPims = estPims(hypYang, pis = c("nn", "nnPair"),
-features = c(attr(hypYang, "features")[1:12], "SmVND2", "SmPINR"))
-#First build the weight function
+hypYang <- buildHyperFrame(Yang,
+  coordVars = c("x", "y"),
+  imageVars = c("day", "root", "section")
+)
+# Fit a subset of features to limit computation time
+yangPims <- estPims(hypYang,
+  pis = c("nn", "nnPair"),
+  features = c(attr(hypYang, "features")[1:12], "SmVND2", "SmPINR")
+)
+# First build the weight function
 yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))
-#Now build the data frame for mixed model analysis
-dfUniNN = buildDfMM(yangObj, gene = "SmAHK4e", pi  = "nn")
-#A bivariate weight function for the pairs
-dfBiNN = buildDfMM(yangObj, gene = "SmVND2--SmPINR", pi  = "nnPair")
-#Example analysis with linear mixed model
+# Now build the data frame for mixed model analysis
+dfUniNN <- buildDfMM(yangObj, gene = "SmAHK4e", pi = "nn")
+# A bivariate weight function for the pairs
+dfBiNN <- buildDfMM(yangObj, gene = "SmVND2--SmPINR", pi = "nnPair")
+# Example analysis with linear mixed model
 library(lmerTest)
-#Use sum coding for day to maintain interpretability of the intercept
-mixedMod = lmer(pi - 0.5 ~ day + (1|root), weight = weight, data = dfBiNN,
-contrasts = list("day" = "contr.sum"))
+# Use sum coding for day to maintain interpretability of the intercept
+mixedMod <- lmer(pi - 0.5 ~ day + (1 | root),
+  weight = weight, data = dfBiNN,
+  contrasts = list("day" = "contr.sum")
+)
 summary(mixedMod)
-#Evidence for anticorrelation
+# Evidence for anticorrelation
 }

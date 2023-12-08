@@ -7,17 +7,17 @@
 #' @return A cross distance matrix without zeroes
 #' @importFrom spatstat.geom npoints crossdist
 getCrossDist <- function(p, pSub, null) {
-  cd <- crossdist(p, pSub)
-  nSub <- npoints(pSub)
-  if (null == "background") {
-    if (npoints(p) == nSub) {
-      # If all points used, drop diagonal
-      cd <- dropDiagonal(cd)
-    } else {
-      idDupl <- which(idMat <- (cd == 0), arr.ind = TRUE)
-      # Points resampled, and thus distance 0. Replace by other points
-      cd[idMat] <- crossdist(p[idDupl[, 1], ], p[sample(seq_len(npoints(p))[-idDupl], 1), ])
+    cd <- crossdist(p, pSub)
+    nSub <- npoints(pSub)
+    if (null == "background") {
+        if (npoints(p) == nSub) {
+            # If all points used, drop diagonal
+            cd <- dropDiagonal(cd)
+        } else {
+            idDupl <- which(idMat <- (cd == 0), arr.ind = TRUE)
+            # Points resampled, and thus distance 0. Replace by other points
+            cd[idMat] <- crossdist(p[idDupl[, 1], ], p[sample(seq_len(npoints(p))[-idDupl], 1), ])
+        }
     }
-  }
-  return(cd)
+    return(cd)
 }

@@ -134,8 +134,8 @@ This dataframe can then be used for mixed modelling, either in R or in an other 
 ```{r}
 library(lmerTest)
 lmeMod <- lmerTest::lmer(pi - 0.5 ~ day + (1 | root),
-  data = dfUniNN, na.action = na.omit,
-  weights = weight, contrasts = list("day" = "contr.sum")
+    data = dfUniNN, na.action = na.omit,
+    weights = weight, contrasts = list("day" = "contr.sum")
 )
 ```
 
@@ -173,8 +173,8 @@ Finally for the mixed model:
 
 ```{r}
 lmeModNN <- lmerTest::lmer(pi - 0.5 ~ day + (1 | root),
-  data = dfBiNN, na.action = na.omit,
-  weights = weight, contrasts = list("day" = "contr.sum")
+    data = dfBiNN, na.action = na.omit,
+    weights = weight, contrasts = list("day" = "contr.sum")
 )
 summary(lmeModNN)
 ```
