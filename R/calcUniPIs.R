@@ -10,17 +10,10 @@
 #'
 #' @return PIs for every feature
 #' @importFrom spatstat.geom marks
-<<<<<<< HEAD
 calcUniPIs <- function(p, pis, verbose, ecdfsCell, owins, tabObs,
                        null, ecdfs, nSub, ecdfAll, idOne, features,
                        centroids) {
     if (verbose) {
-=======
-calcUniPIs = function(p, pis, verbose, ecdfsCell, owins, tabObs,
-                      null, ecdfs, nSub, ecdfAll, idOne, features,
-                      centroids){
-    if(verbose)
->>>>>>> d2614d0d4780fc09e529e163278579595112568f
         message("Calculating univariate probabilistic indices...")
     }
     uniPIs <- lapply(nams <- names(tabObs[features])[!idOne], function(feat) {

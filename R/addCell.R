@@ -44,7 +44,6 @@
 #' wList <- lapply(seq_len(nDesignFactors), function(x) {
 #'     list("w1" = w1, "w2" = w2, "w3" = w3, "w4" = w4, "w5" = w5)
 #' })
-<<<<<<< HEAD
 #' names(wList) <- rownames(hypFrame) # Matching names is necessary
 #' hypFrame2 <- addCell(hypFrame, wList)
 addCell <- function(hypFrame, owins, checkOverlap = TRUE, warnOut = TRUE) {
@@ -64,20 +63,6 @@ addCell <- function(hypFrame, owins, checkOverlap = TRUE, warnOut = TRUE) {
     for (nn in rownames(hypFrame)) {
         ppp <- hypFrame[[nn, "ppp"]]
         if (any("cell" == names(marks(ppp, drop = FALSE)))) {
-=======
-#' names(wList) = rownames(hypFrame) #Matching names is necessary
-#' hypFrame2 = addCell(hypFrame, wList)
-addCell = function(hypFrame, owins, checkOverlap = TRUE, warnOut = TRUE){
-    stopifnot(nrow(hypFrame) == length(owins),
-    all(unlist(lapply(owins,
-                      function(x) {vapply(x, FUN.VALUE = FALSE, is.owin)}))),
-              all(rownames(hypFrame) %in% names(owins)),
-    is(hypFrame, "hyperframe"))
-    Feat = attr(hypFrame, "features");Im = attr(hypFrame, "imageVars")
-    for(nn in rownames(hypFrame)){
-        ppp = hypFrame[[nn, "ppp"]]
-        if(any("cell" == names(marks(ppp, drop = FALSE)))){
->>>>>>> d2614d0d4780fc09e529e163278579595112568f
             stop("Cell markers already present in point pattern ", nn)
         }
         if (checkOverlap) {
@@ -109,7 +94,6 @@ addCell = function(hypFrame, owins, checkOverlap = TRUE, warnOut = TRUE){
             cbind(marks(hypFrame[[nn, "ppp"]], drop = FALSE), cell = cellOut)
         )
     }
-<<<<<<< HEAD
     hypFrame$owins <- owins
     hypFrame$centroids <- lapply(hypFrame$owins, function(x) {
         lapply(x, function(y) centroid.owin(y, as.ppp = TRUE))
@@ -118,14 +102,5 @@ addCell = function(hypFrame, owins, checkOverlap = TRUE, warnOut = TRUE){
     attr(hypFrame, "features") <- Feat
     attr(hypFrame, "imageVars") <- Im
     # Retain attributes, which gets lost when setting the marks
-=======
-    hypFrame$owins = owins
-    hypFrame$centroids = lapply(hypFrame$owins, function(x) {
-            lapply(x, function(y) centroid.owin(y, as.ppp = TRUE))
-        })
-    #Add centroids for all windows
-    attr(hypFrame, "features") = Feat; attr(hypFrame, "imageVars") = Im
-    #Retain attributes, which gets lost when setting the marks
->>>>>>> d2614d0d4780fc09e529e163278579595112568f
     return(hypFrame)
 }
