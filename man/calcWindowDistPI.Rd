@@ -26,6 +26,13 @@ calcWindowDistPI(
 \item{pi}{The type of PI to calculate}
 
 \item{null}{A character vector, indicating how the null distribution is defined. See details.}
+
+\item{ecdfs}{The ecdfs of the distances of every single point in the cell}
+
+\item{cellAndGene}{The marks dataframe with cell and gene, used to match the
+observations with the ecdfs}
+
+\item{feat}{The features}
 }
 \value{
 The estimated probabilistic index

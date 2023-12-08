@@ -17,8 +17,7 @@ calcUniPIs(
   ecdfAll,
   idOne,
   features,
-  centroids,
-  nCell
+  centroids
 )
 }
 \arguments{
@@ -45,8 +44,6 @@ calcUniPIs(
 \item{idOne}{Index of features with only one observation, to be excluded}
 
 \item{features}{A character vector, for which features should the probabilistic indices be calculated?}
-
-\item{ecdfFixedPoint}{The ecdf of the fixed point}
 }
 \value{
 PIs for every feature
