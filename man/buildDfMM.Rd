@@ -30,13 +30,13 @@ for mixed model building
 \examples{
 data(Yang)
 hypYang <- buildHyperFrame(Yang,
-  coordVars = c("x", "y"),
-  imageVars = c("day", "root", "section")
+    coordVars = c("x", "y"),
+    imageVars = c("day", "root", "section")
 )
 # Fit a subset of features to limit computation time
 yangPims <- estPims(hypYang,
-  pis = c("nn", "nnPair"),
-  features = c(attr(hypYang, "features")[1:12], "SmVND2", "SmPINR")
+    pis = c("nn", "nnPair"),
+    features = c(attr(hypYang, "features")[1:12], "SmVND2", "SmPINR")
 )
 # First build the weight function
 yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))
@@ -48,8 +48,8 @@ dfBiNN <- buildDfMM(yangObj, gene = "SmVND2--SmPINR", pi = "nnPair")
 library(lmerTest)
 # Use sum coding for day to maintain interpretability of the intercept
 mixedMod <- lmer(pi - 0.5 ~ day + (1 | root),
-  weight = weight, data = dfBiNN,
-  contrasts = list("day" = "contr.sum")
+    weight = weight, data = dfBiNN,
+    contrasts = list("day" = "contr.sum")
 )
 summary(mixedMod)
 # Evidence for anticorrelation

@@ -47,8 +47,8 @@ The suffix "Cell" indicates distances are being calculated within cells only.
 \examples{
 data(Yang)
 hypYang <- buildHyperFrame(Yang,
-  coordVars = c("x", "y"),
-  imageVars = c("day", "root", "section")
+    coordVars = c("x", "y"),
+    imageVars = c("day", "root", "section")
 )
 # Fit a subset of features to limit computation time
 yangPims <- estPims(hypYang, pis = c("nn", "nnPair"))

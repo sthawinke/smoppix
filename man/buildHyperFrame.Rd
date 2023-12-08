@@ -52,7 +52,7 @@ Built the hyperframe containing all separate point patterns that will
 \examples{
 data(Yang)
 hypYang <- buildHyperFrame(Yang,
-  coordVars = c("x", "y"),
-  imageVars = c("day", "root", "section")
+    coordVars = c("x", "y"),
+    imageVars = c("day", "root", "section")
 )
 }

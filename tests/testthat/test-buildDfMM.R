@@ -1,4 +1,6 @@
 context("Test building of dataframes of probabilistic indices for mixed model building")
+objBG <- addWeightFunction(piEstsBG, designVars = "condition")
+objCSR <- addWeightFunction(piEstsCSR, designVars = "condition")
 test_that("Building data frames for mixed modelling proceeds without errors", {
     expect_silent(dfBG0 <- buildDfMM(objBG, gene = "gene1", pi = "nn"))
     # No weight fuction
