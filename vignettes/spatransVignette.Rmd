@@ -45,17 +45,17 @@ library(spatrans)
 
 # Multithreading
 
-The _spatrans_ package can be computationally intensive, especially for gene pairs. For this reason we provide multithreading through the _BiocParallel_ package. All the user needs to do is prepare the parallel backend as follows:
+The _spatrans_ package can be computationally intensive, especially for transcript pairs. For this reason we provide multithreading through the _BiocParallel_ package. All the user needs to do is prepare the parallel backend as follows:
 
-```{r}
+```{r,eval = FALSE}
 library(BiocParallel)
 nCores <- 2 # The number of CPUs
 register(MulticoreParam(nCores, progressbar = TRUE))
 ```
 
-The progress bar helps one keep track of the calculations. For serial calculations choose
+The progress bar helps one keep track of the calculations. For serial calculations, for instance if memory is limiting, choose
 
-```{r ,eval = FALSE}
+```{r }
 register(SerialParam(progressbar = TRUE))
 ```
 
@@ -87,7 +87,7 @@ We see the following elements:
  - __ppp__: the _spatstat_ point patterns of class _ppp_
  - __design__: The design variable uniquely defining each point pattern. Is a concatenation of the day, root and section variables.
  - __day__, __root__ and __section__: the covariates
- - __tabObs__: tabulation of the frequency of each gene in each point pattern
+ - __tabObs__: tabulation of the frequency of each transcript in each point pattern
  
  Zooming in on the first point pattern:
  
@@ -105,13 +105,13 @@ plotExplore(hypYang)
 
 ### Tests for univariate aggregation or regularity: interevent distances
 
-The first round of tests concerns the aggregation or regularity of individual genes. We choose to work with nearest neighbour distances here (pi = 'nn'). The background of all other genes serves as null distribution, i.e. we look for genes aggregated _with respect to_ all other genes. As this is computationally most efficient, we also fit the PI for the bivariate analysis in this step ('nnPair', see below).
+The first round of tests concerns the aggregation or regularity of individual transcripts. We choose to work with nearest neighbour distances here (pi = 'nn'). The background of all other transcripts. serves as null distribution, i.e. we look for transcripts aggregated _with respect to_ all other transcripts. As this is computationally most efficient, we also fit the PI for the bivariate analysis in this step ('nnPair', see below).
 
 ```{r, include = FALSE}
 nnObj <- estPims(hypYang, pis = c("nn", "nnPair"), null = "background")
 ```
 
-A data-driven weighing function is now fitted to the estimates of all genes to share information on variances across features. This requires information on the design too: all variables that will be included in the final modelling should be provided to 'designVars'. This includes the lowest level of the design variable, 'section' in this case. The variance is estimated over the different sections of the same day and root.
+A data-driven weighing function is now fitted to the estimates of all transcripts to share information on variances across features. This requires information on the design too: all variables that will be included in the final modelling should be provided to 'designVars'. This includes the lowest level of the design variable, 'section' in this case. The variance is estimated over the different sections of the same day and root.
 
 ```{r, include = FALSE}
 nnObj <- addWeightFunction(nnObj, designVars = c("day", "root"))
@@ -139,7 +139,7 @@ lmeMod <- lmerTest::lmer(pi - 0.5 ~ day + (1 | root),
 )
 ```
 
-Alternatively, a wrapper function is available that fits such LMMs for every gene:
+Alternatively, a wrapper function is available that fits such LMMs for every transcript:
 
 ```{r, include = FALSE}
 allModsNN <- fitLMMs(nnObj, fixedVars = "day", randomVars = "root")
@@ -190,5 +190,3 @@ We find a significant positive intercept `r summary(lmeModNN)$coef["(Intercept)"
 ```{r}
 sessionInfo()
 ```
-
-

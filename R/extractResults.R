@@ -13,13 +13,16 @@ extractResults <- function(models, fixedVars = NULL, method = "BH") {
             c("Estimate" = NA, "Std. Error" = NA, "Pr(>|t|)" = NA)
         } else {
             summary(x)$coef["(Intercept)", c("Estimate", "Std. Error", "Pr(>|t|)")]
-        }
+        }#Identical code fro lmerTest or lm
     }))
     colnames(ints) <- c("Estimate", "SE", "pVal")
     ints[, "Estimate"] <- ints[, "Estimate"] + 0.5
     intMat <- cbind(ints, "pAdj" = p.adjust(ints[, "pVal"], method = method))[order(ints[, "pVal"]), ]
     # Order by p-value
-    AnovaTabs <- lapply(models[id <- vapply(models, FUN.VALUE = TRUE, is, "lmerModLmerTest")], anova)
+    id <- vapply(models, FUN.VALUE = TRUE, function(x){
+        is(x, "lmerModLmerTest") || is(x, "lm")
+    })
+    AnovaTabs <- lapply(models[id], anova)
     fixedOut <- lapply(fixedVars, function(Var) {
         pVal <- vapply(AnovaTabs, FUN.VALUE = double(1), function(x) x[Var, "Pr(>F)"])
         coefs <- lapply(models[id], function(model) {

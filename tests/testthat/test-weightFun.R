@@ -1,5 +1,4 @@
 context("Constructing the weight function")
-
 test_that("Adding the weight function works", {
     expect_silent(objBG <- addWeightFunction(piEstsBG, designVars = "condition"))
     expect_silent(objCSR <- addWeightFunction(piEstsCSR, designVars = "condition"))

@@ -6,11 +6,11 @@
 \usage{
 fitLMMs(
   resList,
-  pi = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint"),
-  fixedVars,
-  randomVars,
+  pi,
+  fixedVars = NULL,
+  randomVars = NULL,
   verbose = TRUE,
-  resultsOnly = TRUE,
+  returnModels = FALSE,
   Formula = NULL
 )
 }
@@ -24,8 +24,8 @@ in the linear mixed model}
 
 \item{verbose}{A boolean, should the formula be printed?}
 
-\item{resultsOnly}{a boolean: should only the results be returned?
-If false, also the linear mixed models are returned}
+\item{returnModels}{a boolean: should the full models be returned?
+Otherzise only summary statistics are returned}
 
 \item{Formula}{A formula; if not supplied it will be constructed
 from the fixed and random variables}
@@ -46,5 +46,5 @@ hypYang <- buildHyperFrame(Yang,
 yangPims <- estPims(hypYang, pis = "nn", features = attr(hypYang, "features")[seq_len(20)])
 # First build the weight function
 yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))
-fittedModels <- fitLMMs(yangObj, fixedVars = "day", randomVars = "root")
+lmmModels <- fitLMMs(yangObj, fixedVars = "day", randomVars = "root")
 }

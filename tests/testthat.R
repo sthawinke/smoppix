@@ -47,13 +47,27 @@ wList2 <- lapply(seq_len(nDesignFactors), function(x) {
 names(wList) <- names(wList2) <- rownames(hypFrame)
 hypFrame2 <- addCell(hypFrame, wList)
 # Register the parallel backend
-# register(SerialParam())
-nCores <- 2
-register(MulticoreParam(nCores))
+register(SerialParam())
+# nCores <- 2
+# register(MulticoreParam(nCores))
 pis <- c(
     "nn", "allDist", "nnPair", "allDistPair", "edge",
     "midpoint", "nnCell", "allDistCell", "nnPairCell", "allDistPairCell"
 )
 piEstsBG <- estPims(hypFrame2, pis = pis, null = "background")
 piEstsCSR <- estPims(hypFrame2, pis = pis, null = "CSR")
+#Already add weight functions
+objBG <- addWeightFunction(piEstsBG, designVars = "condition")
+objCSR <- addWeightFunction(piEstsCSR, designVars = "condition")
+#Fit Yang models too
+data(Yang)
+hypYang <- buildHyperFrame(Yang,
+                           coordVars = c("x", "y"),
+                           imageVars = c("day", "root", "section")
+)
+yangPims <- estPims(hypYang,
+                    pis = c("nn", "nnPair"),
+                    features = attr(hypYang, "features")[1:20]
+)
+yangObj = addWeightFunction(yangPims, lowestLevelVar = "section")
 test_check("spatrans")
