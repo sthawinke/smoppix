@@ -32,6 +32,8 @@ fitLMMs <- function(resList, pi, fixedVars = NULL, randomVars = NULL, verbose = 
     "edge", "midpoint", "nnCell", "allDistCell",
     "nnPairCell", "allDistPairCell"
   ))
+  noWeight = pi %in% c("edge", "midpoint")
+  #For independent distances, no weights are needed
   designVars <- c(fixedVars, randomVars)
   stopifnot(all(designVars %in% resList$designVars))
   if (is.null(Formula)) {
@@ -73,14 +75,14 @@ fitLMMs <- function(resList, pi, fixedVars = NULL, randomVars = NULL, verbose = 
     }
     if (MM) {
       mod <- try(lmerTest::lmer(Formula,
-        data = df, na.action = na.omit, weights = weight,
+        data = df, na.action = na.omit, weights = if(noWeight) NULL else weight,
         contrasts = contrasts, control = Control
       ), silent = TRUE)
     }
     # If no random variables or fit failed, go for linear model
     if (!MM || is(mod, "try-error")) {
       mod <- lm(Formula,
-        data = df, na.action = na.omit, weights = weight,
+        data = df, na.action = na.omit, weights = if(noWeight) NULL else weight,
         contrasts = contrasts
       )
     }

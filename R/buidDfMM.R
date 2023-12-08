@@ -36,8 +36,7 @@
 #' summary(mixedMod)
 #' # Evidence for anticorrelation
 buildDfMM <- function(resList, gene,
-                      pi = c(
-                          "nn", "allDist", "nnPair", "allDistPair", "edge",
+                      pi = c("nn", "allDist", "nnPair", "allDistPair", "edge",
                           "midpoint", "nnCell", "allDistCell",
                           "nnPairCell", "allDistPairCell"
                       )) {

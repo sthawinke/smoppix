@@ -45,10 +45,15 @@ library(spatrans)
 
 # Multithreading
 
-The _spatrans_ package can be computationally intensive, especially for transcript pairs. For this reason we provide multithreading through the _BiocParallel_ package. All the user needs to do is prepare the parallel backend as follows:
+The _spatrans_ package can be computationally intensive, especially for transcript pairs. For this reason we provide multithreading through the _BiocParallel_ package. 
+
+```{r}
+library(BiocParallel)
+```
+
+All the user needs to do is prepare the parallel backend as follows:
 
 ```{r,eval = FALSE}
-library(BiocParallel)
 nCores <- 2 # The number of CPUs
 register(MulticoreParam(nCores, progressbar = TRUE))
 ```
