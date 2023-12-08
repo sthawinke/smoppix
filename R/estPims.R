@@ -156,6 +156,7 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 5e2,
 #' 'edge' and 'midpoint' calculate the distance to the edge respectively
 #'  the midpoint of the windows added using the addCell() function.
 #' The suffix "Cell" indicates distances are being calculated within cells only.
+<<<<<<< HEAD
 estPims <- function(hypFrame, pis = c(
                         "nn", "allDist", "nnPair", "allDistPair",
                         "edge", "midpoint", "nnCell", "allDistCell",
@@ -171,10 +172,24 @@ estPims <- function(hypFrame, pis = c(
             "No window provided for distance to edge or midpoint calculation.",
             "Add it using the addCell() function"
         )
+=======
+estPims = function(hypFrame, pis = c("nn", "allDist", "nnPair", "allDistPair",
+                    "edge", "midpoint", "nnCell", "allDistCell",
+                    "nnPairCell", "allDistPairCell"),
+                   null = c("background", "CSR"),
+                   features = attr(hypFrame, "features"),...){
+    pis = match.arg(pis, several.ok = TRUE)
+    null = match.arg(null)
+    Im = attr(hypFrame, "imageVars")
+    if(any(pis %in% c("edge", "midpoint", "nnCell", "allDistCell")) && is.null(hypFrame$owins)){
+        stop("No window provided for distance to edge or midpoint calculation.",
+             "Add it using the addCell() function")
+>>>>>>> d2614d0d4780fc09e529e163278579595112568f
     }
     if (any(id <- !(features %in% attr(hypFrame, "features")))) {
         stop("Features ", features[id], " not found in hyperframe")
     }
+<<<<<<< HEAD
     hypFrame$pimRes <- bplapply(seq_len(nrow(hypFrame)), function(x) {
         with(hypFrame[x, , drop = TRUE], estPimsSingle(ppp,
             owins = owins,
@@ -186,4 +201,14 @@ estPims <- function(hypFrame, pis = c(
     attr(hypFrame, "imageVars") <- Im
     # Remember for which features the pims were calculated
     hypFrame
+=======
+    hypFrame$pimRes = bplapply(seq_len(nrow(hypFrame)), function(x){
+       with(hypFrame[x,, drop = TRUE], estPimsSingle(ppp, owins = owins,
+            pis = pis, null = null, tabObs = tabObs, centroids = centroids,...))
+   })
+   attr(hypFrame, "pis") = pis #Tag the pims calculated
+   attr(hypFrame, "featuresEst") = features;attr(hypFrame, "imageVars") = Im
+   #Remember for which features the pims were calculated
+   hypFrame
+>>>>>>> d2614d0d4780fc09e529e163278579595112568f
 }
