@@ -48,3 +48,6 @@ yangPims <- estPims(hypYang, pis = "nn", features = attr(hypYang, "features")[se
 yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))
 lmmModels <- fitLMMs(yangObj, fixedVars = "day", randomVars = "root")
 }
+\seealso{
+\link{buildDfMM},\link{getResults}
+}

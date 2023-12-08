@@ -147,7 +147,7 @@ lmeMod <- lmerTest::lmer(pi - 0.5 ~ day + (1 | root),
 Alternatively, a wrapper function is available that fits such LMMs for every transcript:
 
 ```{r, include = FALSE}
-allModsNN <- fitLMMs(nnObj, fixedVars = "day", randomVars = "root")
+allModsNN <- fitLMMs(nnObj, fixedVars = "day", randomVars = "root", pi = "nn")
 ```
 
 Various errors may occur while fitting, e.g. insufficient non-missing observations. The function finishes silently but returns the error messages in the output. The results can now be viewed as follows

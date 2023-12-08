@@ -13,13 +13,13 @@ extractResults <- function(models, fixedVars = NULL, method = "BH") {
             c("Estimate" = NA, "Std. Error" = NA, "Pr(>|t|)" = NA)
         } else {
             summary(x)$coef["(Intercept)", c("Estimate", "Std. Error", "Pr(>|t|)")]
-        }#Identical code fro lmerTest or lm
+        } # Identical code fro lmerTest or lm
     }))
     colnames(ints) <- c("Estimate", "SE", "pVal")
     ints[, "Estimate"] <- ints[, "Estimate"] + 0.5
     intMat <- cbind(ints, "pAdj" = p.adjust(ints[, "pVal"], method = method))[order(ints[, "pVal"]), ]
     # Order by p-value
-    id <- vapply(models, FUN.VALUE = TRUE, function(x){
+    id <- vapply(models, FUN.VALUE = TRUE, function(x) {
         is(x, "lmerModLmerTest") || is(x, "lm")
     })
     AnovaTabs <- lapply(models[id], anova)
@@ -28,6 +28,9 @@ extractResults <- function(models, fixedVars = NULL, method = "BH") {
         coefs <- lapply(models[id], function(model) {
             coefObj <- summary(model)$coef
             Coefs <- coefObj[grep(paste0(Var, "[[:digit:]]"), rownames(coefObj)), "Estimate"]
+            if(!length(Coefs)){
+                return(NA)
+            } else Coefs
         })
         coefMat <- matrix(unlist(coefs), byrow = TRUE, nrow = length(pVal))
         colnames(coefMat) <- paste0(Var, seq_len(ncol(coefMat)))

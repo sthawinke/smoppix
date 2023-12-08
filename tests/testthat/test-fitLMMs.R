@@ -1,13 +1,15 @@
 context("Large scale mixed model fitting")
 test_that("Fitting linear mixed models proceeds without errors", {
     expect_message(linModsNNint <- fitLMMs(yangObj, pi = "nn"))
-    expect_silent(linModsNNint <- fitLMMs(yangObj, pi = "nn", verbose = FALSE))
+    expect_silent(fitLMMs(yangObj, pi = "nn", verbose = FALSE))
+    #Supply your own formula
+    expect_message(fitLMMs(yangObj, pi = "nn", Formula = "pi - 0.5 ~ day +1|root"))
     expect_message(linModsNNPairint <- fitLMMs(yangObj, pi = "nnPair"))
     expect_message(linModsNN <- fitLMMs(yangObj, fixedVars = "day", pi = "nn"))
     expect_message(linModsNNPair <- fitLMMs(yangObj, fixedVars = "day", pi = "nnPair"))
     expect_message(linMModsNN <- fitLMMs(yangObj, fixedVars = "day", randomVars = "root", pi = "nn"))
     expect_message(linMModsNNPair <- fitLMMs(yangObj, fixedVars = "day", randomVars = "root", pi = "nnPair"))
-    #Returning the models
+    # Returning the models
     expect_message(linModsNNfull <- fitLMMs(yangObj, fixedVars = "day", pi = "nn", returnModels = TRUE))
     expect_message(linMModsNNfull <- fitLMMs(yangObj, fixedVars = "day", randomVars = "root", pi = "nn", returnModels = TRUE))
     expect_s3_class(linModsNNfull$models[[1]], "lm")

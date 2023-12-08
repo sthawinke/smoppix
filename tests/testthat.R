@@ -56,18 +56,18 @@ pis <- c(
 )
 piEstsBG <- estPims(hypFrame2, pis = pis, null = "background")
 piEstsCSR <- estPims(hypFrame2, pis = pis, null = "CSR")
-#Already add weight functions
+# Already add weight functions
 objBG <- addWeightFunction(piEstsBG, designVars = "condition")
 objCSR <- addWeightFunction(piEstsCSR, designVars = "condition")
-#Fit Yang models too
+# Fit Yang models too
 data(Yang)
 hypYang <- buildHyperFrame(Yang,
-                           coordVars = c("x", "y"),
-                           imageVars = c("day", "root", "section")
+    coordVars = c("x", "y"),
+    imageVars = c("day", "root", "section")
 )
 yangPims <- estPims(hypYang,
-                    pis = c("nn", "nnPair"),
-                    features = attr(hypYang, "features")[1:20]
+    pis = c("nn", "nnPair"),
+    features = attr(hypYang, "features")[1:20]
 )
-yangObj = addWeightFunction(yangPims, lowestLevelVar = "section")
+yangObj <- addWeightFunction(yangPims, lowestLevelVar = "section")
 test_check("spatrans")

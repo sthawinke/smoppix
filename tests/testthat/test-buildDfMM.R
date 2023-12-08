@@ -9,9 +9,11 @@ test_that("Building data frames for mixed modelling proceeds without errors", {
     expect_s3_class(dfBG4 <- buildDfMM(objBG, gene = "gene1--gene2", pi = "allDistPair"), "data.frame")
     expect_silent(dfBG5 <- buildDfMM(objBG, gene = "gene1", pi = "midpoint"))
     expect_silent(dfBG6 <- buildDfMM(objBG, gene = "gene1", pi = "edge"))
-    totPointsGene1 = sum(vapply(objBG$hypFrame$ppp, FUN.VALUE = double(1),
-                        function(x) sum(marks(x, drop = TRUE)$gene == "gene1")))
-    #For fixed points, number of PI must match number of events
+    totPointsGene1 <- sum(vapply(objBG$hypFrame$ppp,
+        FUN.VALUE = double(1),
+        function(x) sum(marks(x, drop = TRUE)$gene == "gene1")
+    ))
+    # For fixed points, number of PI must match number of events
     expect_equal(totPointsGene1, nrow(dfBG6))
     expect_equal(totPointsGene1, nrow(objBG$hypFrame))
     expect_s3_class(dfBG7 <- buildDfMM(objBG, gene = "gene1", pi = "nnCell"), "data.frame")

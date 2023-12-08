@@ -2,7 +2,8 @@
 #' plus include the list of regions
 #'
 #' @param hypFrame The hyperframe
-#' @param owins the list of list of owins per hyperframe
+#' @param owins the list containing a list of owins per point pattern.
+#' The names of the windows can be used to supply cell types.
 #' @param checkOverlap a boolean, should windows be checked for overlap
 #' @param warnOut a boolean, should warning be issued when points are not
 #' contained in window
@@ -10,6 +11,10 @@
 #' @importFrom Rfast rowAny
 #' @importFrom spatstat.geom is.owin
 #' @export
+#' @seealso \link{buildHyperFrame}
+#' @details First the different cells are checked for overlap per point pattern.
+#' If no overlap is found, each event is assigned the cell that it falls into.
+#' Events not belonging to any cell will trigger a warning and be assigned 'NA'.
 #' @examples
 #' library(spatstat.random)
 #' n <- 1e3 # number of molecules

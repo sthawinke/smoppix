@@ -43,5 +43,6 @@ plotExplore <- function(hypFrame, features = attr(hypFrame, "features"), ppps) {
     })
     plot(0, 0, type = "n", xlab = "", ylab = "", xaxt = "n", yaxt = "n")
     idCols <- which(Cols != "grey")
-    legend("center", legend = names(Cols)[idCols], pch = 20, col = Cols[idCols])
+    legend("center", legend = names(Cols)[idCols], pch = 20, col = Cols[idCols],
+           ncol = 2)
 }

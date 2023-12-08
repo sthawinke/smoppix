@@ -10,7 +10,7 @@ addCell(hypFrame, owins, checkOverlap = TRUE, warnOut = TRUE)
 \arguments{
 \item{hypFrame}{The hyperframe}
 
-\item{owins}{the list of list of owins per hyperframe}
+\item{owins}{the list containing a list of owins per point pattern}
 
 \item{checkOverlap}{a boolean, should windows be checked for overlap}
 
@@ -60,4 +60,7 @@ wList <- lapply(seq_len(nDesignFactors), function(x) {
 })
 names(wList) <- rownames(hypFrame) # Matching names is necessary
 hypFrame2 <- addCell(hypFrame, wList)
+}
+\seealso{
+\link{buildHyperFrame}
 }
