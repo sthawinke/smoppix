@@ -16,7 +16,8 @@
 #' yangPims <- estPims(hypYang, pis = "nn", features = attr(hypYang, "features")[seq_len(20)])
 #' # First build the weighting function
 #' yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))
-#' fittedModels <- fitLMMs(yangObj, fixedVars = "day", randomVars = "root")
+#' fittedModels <- fitLMMs(yangObj, fixedVars = "day", randomVars = "root",
+#' pi = "nn")
 #' res <- getResults(fittedModels, "Intercept")
 #' head(res)
 getResults <- function(obj, parameter) {

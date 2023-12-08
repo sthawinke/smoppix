@@ -28,6 +28,7 @@
 #' lmmModels <- fitLMMs(yangObj, fixedVars = "day", randomVars = "root",
 #' pi = "nn")
 #' @seealso \link{buildDfMM},\link{getResults}
+#' #FIX ME: write wrapper over all PIs!
 fitLMMs <- function(resList, pi, fixedVars = NULL, randomVars = NULL,
                     verbose = TRUE, returnModels = FALSE, Formula = NULL) {
     pi <- match.arg(pi, choices = c(

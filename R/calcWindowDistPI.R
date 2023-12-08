@@ -75,6 +75,7 @@ calcWindowDistPI <- function(pSub, owins, centroids, ecdfAll, pi, null, ecdfs, c
 calcWindowPairPI <- function(pSub1, pSub2, feat1, feat2, cellAndGene, cd, ecdfAll, pi, null, ecdfs) {
     splitPPP1 <- split.ppp(pSub1, f = "cell")
     splitPPP2 <- split.ppp(pSub2, f = "cell")
+    #FIX ME: fast alternative for split.ppp?
     out <- vapply(nam <- intersect(names(splitPPP1), names(splitPPP2)),
         FUN.VALUE = double(1), function(x) {
             cd <- crossdist(splitPPP1[[x]], splitPPP2[[x]])
