@@ -1,31 +1,35 @@
 context("Test input spatrans package")
 test_that("Reading in data proceeds without errors", {
   expect_message(buildHyperFrame(df, coordVars = c("x", "y"), imageVars = "fov"))
-  #Should work also with single image variable
-  expect_message(hypFrame <- buildHyperFrame(df, coordVars = c("x", "y"),
-                                             imageVars = c("fov", "condition")))
+  # Should work also with single image variable
+  expect_message(hypFrame <- buildHyperFrame(df,
+    coordVars = c("x", "y"),
+    imageVars = c("fov", "condition")
+  ))
   expect_s3_class(hypFrame, c("hyperframe", "list"))
   expect_message(buildHyperFrame(as.matrix(df[, c("x", "y")]),
-    image = df$fov, covariates = df[, c("gene", "condition"), drop = FALSE]))
+    image = df$fov, covariates = df[, c("gene", "condition"), drop = FALSE]
+  ))
   expect_message(hypFrame2 <- buildHyperFrame(as.matrix(df[, c("x", "y")]),
-                                 image = df[, c("fov", "condition")], covariates = df[, "gene", drop = FALSE]))
+    image = df[, c("fov", "condition")], covariates = df[, "gene", drop = FALSE]
+  ))
   expect_identical(hypFrame, hypFrame2)
   expect_silent(hypFrame3 <- buildHyperFrame(lapply(listPPP, identity)))
 })
-#Read in spatial experiment
+# Read in spatial experiment
 library(SpatialExperiment)
 example(read10xVisium)
 test_that("Reading in data from SpatialExperiment class proceeds without errors", {
-    expect_message(hypFrame4 <- buildHyperFrame(spe, imageVars = "sample_id", coVars = "in_tissue"))
+  expect_message(hypFrame4 <- buildHyperFrame(spe, imageVars = "sample_id", coVars = "in_tissue"))
 })
 
 test_that("Adding regions of interest works", {
-    expect_s3_class(hypFrame5 <- addCell(hypFrame, wList), "hyperframe")
-    expect_error(addCell(hypFrame, wList2))#Detect overlap
-    expect_type(marks(hypFrame5[[1, "ppp"]])$cell, "character")
+  expect_s3_class(hypFrame5 <- addCell(hypFrame, wList), "hyperframe")
+  expect_error(addCell(hypFrame, wList2)) # Detect overlap
+  expect_type(marks(hypFrame5[[1, "ppp"]])$cell, "character")
 })
 
 test_that("Adding regions of interest throws errors when appropriate", {
-    expect_error(addCell(addCell(hypFrame, wList), wList))
-    expect_error(addCell(hypFrame$ppp[[1]], wList))
+  expect_error(addCell(addCell(hypFrame, wList), wList))
+  expect_error(addCell(hypFrame$ppp[[1]], wList))
 })
