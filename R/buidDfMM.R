@@ -20,11 +20,11 @@
 #'     pis = c("nn", "nnPair"),
 #'     features = c(attr(hypYang, "features")[1:12], "SmVND2", "SmPINR")
 #' )
-#' # First build the weight function
+#' # First build the weighting function
 #' yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))
 #' # Now build the data frame for mixed model analysis
 #' dfUniNN <- buildDfMM(yangObj, gene = "SmAHK4e", pi = "nn")
-#' # A bivariate weight function for the pairs
+#' # A bivariate weighting function for the pairs
 #' dfBiNN <- buildDfMM(yangObj, gene = "SmVND2--SmPINR", pi = "nnPair")
 #' # Example analysis with linear mixed model
 #' library(lmerTest)
@@ -50,8 +50,8 @@ buildDfMM <- function(resList, gene,
     # Establish whether pi and gene match, and call separate functions
     foo <- checkAttr(resList$hypFrame, pi)
     # if(!(pi %in% c("edge", "midpoint")) && is.null(resList$Wfs[[pi]]))
-    #     message("No weight function supplied, we will use approximative weigths.\n",
-    #             "Consider fitting a weight function with addWeightFunction() " ,
+    #     message("No weighting function supplied, we will use approximative weigths.\n",
+    #             "Consider fitting a weighting function with addWeightFunction() " ,
     #             "and supplying it in the 'weightFunction' argument for improved inference.")
     df <- if (pairId <- grepl(pattern = "Pair", pi)) {
         if (lg == 2) {

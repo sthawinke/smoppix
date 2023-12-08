@@ -2,7 +2,7 @@
 % Please edit documentation in R/addWeightFunction.R
 \name{addWeightFunction}
 \alias{addWeightFunction}
-\title{Build a weight function based on the data}
+\title{Build a weighting function based on the data}
 \usage{
 addWeightFunction(
   hypFrame,
@@ -17,7 +17,7 @@ addWeightFunction(
 \arguments{
 \item{hypFrame}{The hyperframe with all the data}
 
-\item{pis}{The PIs for which weight functions are constructed}
+\item{pis}{The PIs for which weighting functions are constructed}
 
 \item{designVars}{A character vector containing all design factors
 (both fixed and random), that are also present as variables in hypFrame}
@@ -27,7 +27,7 @@ often separating technical replicates. The conditional variance is calculated
 within the groups of PIs defined by this variable}
 
 \item{maxObs, maxFeatures}{The maximum number of observations respectively
-features for fitting the weight function. See details}
+features for fitting the weighting function. See details}
 
 \item{...}{Additional arguments passed on to the scam::scam function}
 }
@@ -35,7 +35,7 @@ features for fitting the weight function. See details}
 A fitted scam object, which can be used to
 }
 \description{
-Build a weight function based on the data
+Build a weighting function based on the data
 }
 \details{
 For computational and memory reasons,
@@ -61,7 +61,7 @@ yangPims <- estPims(hypYang,
     pis = c("nn", "nnPair"),
     features = attr(hypYang, "features")[1:12]
 )
-# Build the weight function for all PIs present
+# Build the weighting function for all PIs present
 yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))
 # Alternative formulation with 'lowestLevelVar'
 yangObj2 <- addWeightFunction(yangPims, lowestLevelVar = "section")

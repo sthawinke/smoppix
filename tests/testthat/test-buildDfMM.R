@@ -15,7 +15,10 @@ test_that("Building data frames for mixed modelling proceeds without errors", {
     ))
     # For fixed points, number of PI must match number of events
     expect_equal(totPointsGene1, nrow(dfBG6))
-    expect_equal(totPointsGene1, nrow(objBG$hypFrame))
+    expect_equal(nrow(dfBG3), sum(vapply(objBG$hypFrame$ppp,
+                                         FUN.VALUE = logical(1),
+                    function(x) sum(marks(x, drop = TRUE)$gene == "gene1")>1
+    )))
     expect_s3_class(dfBG7 <- buildDfMM(objBG, gene = "gene1", pi = "nnCell"), "data.frame")
     expect_s3_class(dfBG8 <- buildDfMM(objBG, gene = "gene1", pi = "allDistCell"), "data.frame")
     expect_s3_class(dfBG9 <- buildDfMM(objBG, gene = "gene1--gene2", pi = "nnPairCell"), "data.frame")

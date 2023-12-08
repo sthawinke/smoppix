@@ -21,13 +21,15 @@
 #'     imageVars = c("day", "root", "section")
 #' )
 #' # Fit a subset of features to limit computation time
-#' yangPims <- estPims(hypYang, pis = "nn", features = attr(hypYang, "features")[seq_len(20)])
-#' # First build the weight function
+#' yangPims <- estPims(hypYang, pis = "nn",
+#' features = attr(hypYang, "features")[seq_len(20)])
+#' # First build the weighting function
 #' yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))
-#' lmmModels <- fitLMMs(yangObj, fixedVars = "day", randomVars = "root")
+#' lmmModels <- fitLMMs(yangObj, fixedVars = "day", randomVars = "root",
+#' pi = "nn")
 #' @seealso \link{buildDfMM},\link{getResults}
-fitLMMs <- function(resList, pi, fixedVars = NULL, randomVars = NULL, verbose = TRUE,
-                    returnModels = FALSE, Formula = NULL) {
+fitLMMs <- function(resList, pi, fixedVars = NULL, randomVars = NULL,
+                    verbose = TRUE, returnModels = FALSE, Formula = NULL) {
     pi <- match.arg(pi, choices = c(
         "nn", "allDist", "nnPair", "allDistPair",
         "edge", "midpoint", "nnCell", "allDistCell",
@@ -36,7 +38,8 @@ fitLMMs <- function(resList, pi, fixedVars = NULL, randomVars = NULL, verbose = 
     noWeight <- pi %in% c("edge", "midpoint")
     # For independent distances, no weights are needed
     designVars <- c(fixedVars, randomVars)
-    stopifnot(all(designVars %in% resList$designVars))
+    stopifnot(all(designVars %in% c(resList$designVars, "cell")))
+    #Allow cell as design variable, both fixed and random
     if (is.null(Formula)) {
         fixedPart = paste(
             "pi - 0.5 ~ 1",
@@ -47,6 +50,8 @@ fitLMMs <- function(resList, pi, fixedVars = NULL, randomVars = NULL, verbose = 
                     paste("+", paste0("(1|", randomVars, ")", collapse = "+"))
                 }
             ))
+    } else {
+        formChar = paste(as.character(Formula), collapse = "")
     }
     MM <- any(grepl("|", formChar))
     if (verbose) {
@@ -54,7 +59,8 @@ fitLMMs <- function(resList, pi, fixedVars = NULL, randomVars = NULL, verbose = 
     }
     Control <- lmerControl( ## convergence checking options
         check.conv.grad     = .makeCC("ignore", tol = 2e-3, relTol = NULL),
-        check.conv.singular = .makeCC(action = "ignore", tol = formals(isSingular)$tol),
+        check.conv.singular = .makeCC(action = "ignore",
+                                      tol = formals(isSingular)$tol),
         check.conv.hess     = .makeCC(action = "ignore", tol = 1e-6)
     )
     if (is.null(fixedVars)) {
@@ -75,7 +81,8 @@ fitLMMs <- function(resList, pi, fixedVars = NULL, randomVars = NULL, verbose = 
         }
         if (MM) {
             mod <- try(lmerTest::lmer(Formula,
-                data = df, na.action = na.omit, weights = if (noWeight) NULL else weight,
+                data = df, na.action = na.omit,
+                weights = if (noWeight) NULL else weight,
                 contrasts = contrasts, control = Control
             ), silent = TRUE)
         }
@@ -96,11 +103,13 @@ fitLMMs <- function(resList, pi, fixedVars = NULL, randomVars = NULL, verbose = 
         }
         return(mod)
     })
+    names(models) = Features
     results <- extractResults(models, fixedVars)
     # Effect size, standard error, p-value and adjusted p-value per mixed effect
     if (!returnModels) {
         return(list("results" = results, "resList" = resList))
     } else {
-        return(list("results" = results, "resList" = resList, "models" = models))
+        return(list("results" = results, "resList" = resList,
+                    "models" = models))
     }
 }

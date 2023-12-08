@@ -1,6 +1,6 @@
-#' Evaluate the weight function and return (unnormalized) weights
+#' Evaluate the weighting function and return (unnormalized) weights
 #'
-#' @param wf The weight function
+#' @param wf The weighting function
 #' @param newdata Optional, a data frame with new data
 #' @return A vector of predictions
 #' @importFrom scam predict.scam

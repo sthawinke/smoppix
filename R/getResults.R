@@ -14,7 +14,7 @@
 #' )
 #' # Fit a subset of features to limit computation time
 #' yangPims <- estPims(hypYang, pis = "nn", features = attr(hypYang, "features")[seq_len(20)])
-#' # First build the weight function
+#' # First build the weighting function
 #' yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))
 #' fittedModels <- fitLMMs(yangObj, fixedVars = "day", randomVars = "root")
 #' res <- getResults(fittedModels, "Intercept")

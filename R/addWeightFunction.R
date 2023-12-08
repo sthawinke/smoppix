@@ -1,12 +1,12 @@
-#' Build a weight function based on the data
+#' Build a weighting function based on the data
 #'
 #' @param hypFrame The hyperframe with all the data
 #' @param designVars A character vector containing all design factors
 #' (both fixed and random), that are also present as variables in hypFrame
 #' @param ... Additional arguments passed on to the scam::scam function
 #' @param maxObs,maxFeatures The maximum number of observations respectively
-#' features for fitting the weight function. See details
-#' @param pis The PIs for which weight functions are constructed
+#' features for fitting the weighting function. See details
+#' @param pis The PIs for which weighting functions are constructed
 #' @param lowestLevelVar The design variable at the lowest level of nesting,
 #' often separating technical replicates. The conditional variance is calculated
 #' within the groups of PIs defined by this variable
@@ -39,7 +39,7 @@
 #'     pis = c("nn", "nnPair"),
 #'     features = attr(hypYang, "features")[1:12]
 #' )
-#' # Build the weight function for all PIs present
+#' # Build the weighting function for all PIs present
 #' yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))
 #' # Alternative formulation with 'lowestLevelVar'
 #' yangObj2 <- addWeightFunction(yangPims, lowestLevelVar = "section")

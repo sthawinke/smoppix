@@ -29,7 +29,7 @@ extractResults <- function(models, fixedVars = NULL, method = "BH") {
             coefObj <- summary(model)$coef
             Coefs <- coefObj[grep(paste0(Var, "[[:digit:]]"), rownames(coefObj)), "Estimate"]
             if(!length(Coefs)){
-                return(NA)
+                return(NA) #When fixed effects were not fitted
             } else Coefs
         })
         coefMat <- matrix(unlist(coefs), byrow = TRUE, nrow = length(pVal))

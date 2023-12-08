@@ -10,7 +10,8 @@ addCell(hypFrame, owins, checkOverlap = TRUE, warnOut = TRUE)
 \arguments{
 \item{hypFrame}{The hyperframe}
 
-\item{owins}{the list containing a list of owins per point pattern}
+\item{owins}{the list containing a list of owins per point pattern.
+The names of the windows can be used to supply cell types.}
 
 \item{checkOverlap}{a boolean, should windows be checked for overlap}
 
@@ -23,6 +24,11 @@ the modified hyperframe
 \description{
 Check in which cell each event lies and add a cell marker,
 plus include the list of regions
+}
+\details{
+First the different cells are checked for overlap per point pattern.
+If no overlap is found, each event is assigned the cell that it falls into.
+Events not belonging to any cell will trigger a warning and be assigned 'NA'.
 }
 \examples{
 library(spatstat.random)

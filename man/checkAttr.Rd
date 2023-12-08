@@ -7,7 +7,7 @@
 checkAttr(x, pi)
 }
 \arguments{
-\item{x}{The result of the PI calculation, or a weight function}
+\item{x}{The result of the PI calculation, or a weighting function}
 
 \item{pi}{A character string indicating the desired PI}
 }

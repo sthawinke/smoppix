@@ -2,12 +2,12 @@
 % Please edit documentation in R/evalWeightFun.R
 \name{evalWeightFunction}
 \alias{evalWeightFunction}
-\title{Evaluate the weight function and return (unnormalized) weights}
+\title{Evaluate the weighting function and return (unnormalized) weights}
 \usage{
 evalWeightFunction(wf, newdata)
 }
 \arguments{
-\item{wf}{The weight function}
+\item{wf}{The weighting function}
 
 \item{newdata}{Optional, a data frame with new data}
 }
@@ -15,5 +15,5 @@ evalWeightFunction(wf, newdata)
 A vector of predictions
 }
 \description{
-Evaluate the weight function and return (unnormalized) weights
+Evaluate the weighting function and return (unnormalized) weights
 }

@@ -38,11 +38,11 @@ yangPims <- estPims(hypYang,
     pis = c("nn", "nnPair"),
     features = c(attr(hypYang, "features")[1:12], "SmVND2", "SmPINR")
 )
-# First build the weight function
+# First build the weighting function
 yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))
 # Now build the data frame for mixed model analysis
 dfUniNN <- buildDfMM(yangObj, gene = "SmAHK4e", pi = "nn")
-# A bivariate weight function for the pairs
+# A bivariate weighting function for the pairs
 dfBiNN <- buildDfMM(yangObj, gene = "SmVND2--SmPINR", pi = "nnPair")
 # Example analysis with linear mixed model
 library(lmerTest)
