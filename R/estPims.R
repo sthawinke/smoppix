@@ -165,7 +165,7 @@ estPims <- function(hypFrame, pis = c(
                     features = attr(hypFrame, "features"), ...) {
     pis <- match.arg(pis, several.ok = TRUE)
     null <- match.arg(null)
-    Im <- attr(hypFrame, "imageVars")
+    Im <- attr(hypFrame, "imageVars"); Cv = attr(hypFrame, "cellVars")
     if (any(pis %in% c("edge", "midpoint", "nnCell", "allDistCell")) && is.null(hypFrame$owins)) {
         stop(
             "No window provided for distance to edge or midpoint calculation.",
@@ -183,7 +183,7 @@ estPims <- function(hypFrame, pis = c(
     })
     attr(hypFrame, "pis") <- pis # Tag the pims calculated
     attr(hypFrame, "featuresEst") <- features
-    attr(hypFrame, "imageVars") <- Im
+    attr(hypFrame, "imageVars") <- Im;attr(hypFrame, "cellVars") <- Cv
     # Remember for which features the pims were calculated
     hypFrame
 }

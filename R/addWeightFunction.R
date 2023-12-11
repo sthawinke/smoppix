@@ -43,10 +43,12 @@
 #' yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))
 #' # Alternative formulation with 'lowestLevelVar'
 #' yangObj2 <- addWeightFunction(yangPims, lowestLevelVar = "section")
-addWeightFunction <- function(hypFrame, pis = attr(hypFrame, "pis"), designVars,
-                              lowestLevelVar, maxObs = 1e5, maxFeatures = 5e2,
+addWeightFunction <- function(hypFrame, pis = attr(hypFrame, "pis")[
+    !attr(hypFrame, "pis") %in% c("edge", "midpoint")],
+                              designVars, lowestLevelVar, maxObs = 1e5,
+                              maxFeatures = 5e2,
                               ...) {
-    if (all(pis %in% c("edge", "midpoint"))) {
+    if (any(pis %in% c("edge", "midpoint"))) {
         stop("Calculating weight matrices for distances to fixed points is ", "unnecessary as they are independent.
              Simply proceed with fitting the model on the", " indiviual evaluations of the B-function.")
     }
@@ -57,19 +59,21 @@ addWeightFunction <- function(hypFrame, pis = attr(hypFrame, "pis"), designVars,
     if (!missing(designVars) && !missing(lowestLevelVar)) {
         stop("Provide either designVars or lowestLevelVar, both not both!")
     }
+    allVars <- c(attr(hypFrame, "imageVars"), attr(hypFrame, "cellVars"))
     if (missing(designVars)) {
         if (length(lowestLevelVar) != 1) {
             stop("lowestLevelVar must have length 1")
         }
-        if (!(lowestLevelVar %in% (allVars <- c(attr(hypFrame, "imageVars"),
-                                    attr(hypFrame, "cellVars"))))) {
+        if (!(lowestLevelVar %in% allVars)) {
             stop("lowestLevelVar must be part of the design,
             see attr(hypFrame, 'imageVars') and attr(hypFrame, 'cellVars')")
         }
-        designVars <- setdiff(allVars, lowestLevelVar)
+        designVars <- setdiff(attr(hypFrame, "imageVars"), lowestLevelVar)
         # If missing take everything but the ones that are obviously
         # no design variables
-    } else if (any(idMissing <- !(designVars %in% colnames(hypFrame)))) {
+    }
+    if(any(idMissing <- !(designVars %in% c(colnames(hypFrame),
+                                            attr(hypFrame, "cellVars"))))){
         stop(
             "Design variables\n", designVars[idMissing],
             "\nnot found in hypFrame object"
@@ -90,20 +94,23 @@ addWeightFunction <- function(hypFrame, pis = attr(hypFrame, "pis"), designVars,
     }
     Wfs <- bplapply(pis, function(pi) {
         piListName <- if (pairId <- grepl("Pair", pi)) "biPIs" else "uniPIs"
-        subListName <- if (cellId <- grepl("Cell", pi)) "windowDists" else "pointDists"
+        subListName <- if (cellId<- grepl("Cell", pi)) "windowDists" else "pointDists"
+        features <- attr(hypFrame, "featuresEst")
         piList <- lapply(hypFrame$pimRes, function(x) {
             lapply(x[[piListName]], function(y) {
                 y[[subListName]][[pi]]
             })
         })
-        designVec <- apply(as.data.frame(hypFrame[, designVars, drop = FALSE]),
-            1, paste,
-            collapse = "_"
-        )
-        ordDesign <- order(designVec) # Ensure correct ordering for tapply
-        features <- attr(hypFrame, "featuresEst")
         if (pairId) {
             features <- apply(combn(features, 2), 2, paste, collapse = "--")
+        }
+        if(cellId){
+           ordDesign = seq_len(nrow(hypFrame))
+        } else {
+            designVec <- apply(as.data.frame(hypFrame[, designVars, drop = FALSE]),
+                               1, paste, collapse = "_"
+            )
+            ordDesign <- order(designVec) # Ensure correct ordering for tapply
         }
         varEls <- lapply(features, function(gene) {
             geneSplit <- if (pairId) {
@@ -121,7 +128,8 @@ addWeightFunction <- function(hypFrame, pis = attr(hypFrame, "pis"), designVars,
                         marks(hypFrame$ppp[[x]])$cell,
                         marks(hypFrame$ppp[[x]])$gene
                     )[, geneSplit, drop = FALSE]
-                    deps <- vapply(piList[[x]][if (pairId) gene else geneSplit], FUN.VALUE = double(sum(id <- rowAll(CellGene > 0))), function(y) {
+                    deps <- vapply(piList[[x]][if (pairId) gene else geneSplit],
+                                   FUN.VALUE = double(sum(id <- rowAll(CellGene > 0))), function(y) {
                         xx <- unlist(y)
                         if (sum(!is.na(xx)) >= 2) {
                             (xx - mean(xx, na.rm = TRUE))^2
@@ -131,7 +139,10 @@ addWeightFunction <- function(hypFrame, pis = attr(hypFrame, "pis"), designVars,
                     })
                     cbind("quadDeps" = deps, rowSort(CellGene[id, , drop = FALSE]))
                 })
-                out <- t(Reduce(tmp, f = rbind))
+                if(all(vapply(tmp, FUN.VALUE = logical(1), is.null)))
+                    return(NULL)
+                else
+                    out <- t(Reduce(tmp, f = rbind))
             } else {
                 tmp <- vapply(piList[ordDesign], FUN.VALUE = double(1), function(x) {
                     if (is.null(baa <- getGp(x, gene))) NA else baa

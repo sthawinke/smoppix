@@ -85,11 +85,14 @@ buildDfMMUni <- function(resList, gene, pi) {
         }
         piOut <- if (winId) {
             if (idNull) {
-                data.frame("pi" = NA, "cell" = "NA")
+                NULL
             } else {
-                data.frame("pi" = unlist(vec), "cell" = rep(names(vec[[pi]]),
-                    times = vapply(vec[[pi]], FUN.VALUE = integer(1), length)
-                ))
+                Cell = rep(names(vec[[pi]]),
+                           times = vapply(vec[[pi]], FUN.VALUE = integer(1), length)
+                )
+                cellCovars = marks(resList$hypFrame$ppp[[n]], drop = FALSE)[
+                    ,attr(hypFrame, "cellVars"), drop = FALSE]
+                data.frame("pi" = unlist(vec), cellCovars[match(Cell, cellCovars$cell),])
             }
         } else if (fixedId) {
             cbind("pi" = if (idNull) vec else vec[[pi]])
@@ -121,7 +124,8 @@ buildDfMMUni <- function(resList, gene, pi) {
     } else {
         rownames(resList$hypFrame)
     }
-    piMat <- data.frame(Reduce(piEsts, f = rbind), "design" = design)
+    piMat <- data.frame(Reduce(Filter(piEsts, f = function(x) !is.null(x)),
+                               f = rbind), "design" = design)
     if (is.null(piMat)) {
         stop("Gene  not found!\n")
     }
