@@ -11,7 +11,7 @@
 #' @return A fitted linear mixed model of class 'lmerTest'
 #' @export
 #' @importFrom lmerTest lmer
-#' @importFrom stats formula na.omit anova
+#' @importFrom stats formula na.omit anova lm
 #' @importFrom lme4 lmerControl .makeCC isSingular
 #'
 #' @examples
@@ -39,7 +39,7 @@ fitLMMs <- function(resList, pi, fixedVars = NULL, randomVars = NULL,
     noWeight <- pi %in% c("edge", "midpoint")
     # For independent distances, no weights are needed
     designVars <- c(fixedVars, randomVars)
-    stopifnot(all(designVars %in% c(resList$designVars, "cell")))
+    stopifnot(all(designVars %in% c(resList$designVars, attr(hypFrame, "cellVars"))))
     #Allow cell as design variable, both fixed and random
     if (is.null(Formula)) {
         fixedPart = paste(
@@ -54,7 +54,7 @@ fitLMMs <- function(resList, pi, fixedVars = NULL, randomVars = NULL,
     } else {
         formChar = paste(as.character(Formula), collapse = "")
     }
-    MM <- any(grepl("|", formChar))
+    MM <- any(grepl("\\|", formChar))
     if (verbose) {
         message("Fitted formula:\n", formChar)
     }
@@ -67,8 +67,8 @@ fitLMMs <- function(resList, pi, fixedVars = NULL, randomVars = NULL,
     if (is.null(fixedVars)) {
         contrasts <- NULL
     } else {
-        contrasts <- lapply(fixedVars, function(x) "contr.sum")
-        names(contrasts) <- fixedVars
+        names(fixedVars) = fixedVars
+        contrasts <- lapply(fixedVars, function(x) "named.contr.sum")
     }
     Features <- if (grepl("Pair", pi)) {
         makePairs(attr(resList$hypFrame, "featuresEst"))
@@ -97,11 +97,17 @@ fitLMMs <- function(resList, pi, fixedVars = NULL, randomVars = NULL,
         }
         #If still fails, drop fixed effects
         if (is(mod, "try-error")) {
-            mod <- lm(formula("pi - 0.5 ~ 1"),
-                      data = df, na.action = na.omit,
+            mod <- lm(formula("pi - 0.5 ~ 1"), data = df, na.action = na.omit,
                       weights = if (noWeight) NULL else weight
             )
         }
+        mod$unFix = lapply(fixedVars, function(fvar){
+            if(is.factor(df[[fvar]])){
+                paste0(fvar, unique(df[[fvar]]))
+            } else {
+                NULL
+            }
+        })
         return(mod)
     })
     names(models) = Features
@@ -114,3 +120,10 @@ fitLMMs <- function(resList, pi, fixedVars = NULL, randomVars = NULL,
                     "models" = models))
     }
 }
+named.contr.sum<-function(x, ...) {
+    lev <- x
+    x<-contr.sum(x, ...)
+    colnames(x) <- lev[-length(lev)]
+    x
+}
+#After https://stackoverflow.com/questions/24515892/r-how-to-contrast-code-factors-and-retain-meaningful-labels-in-output-summary

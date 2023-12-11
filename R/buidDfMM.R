@@ -70,6 +70,10 @@ buildDfMM <- function(resList, gene,
         df$design,
         rownames(resList$hypFrame)
     ), resList$designVars]))
+    for(i in names(out)){
+        if(is.character(out[[i]]))
+            out[[i]] = factor(out[[i]])
+    }
     attr(out, "pi") <- pi
     out
 }
@@ -81,7 +85,7 @@ buildDfMMUni <- function(resList, gene, pi) {
     piEsts <- lapply(seq_along(resList$hypFrame$pimRes), function(n) {
         x <- resList$hypFrame$pimRes[[n]]
         if (idNull <- is.null(vec <- x[["uniPIs"]][[gene]][[piListNameInner]][pi])) {
-            vec <- NA
+            return(NULL)
         }
         piOut <- if (winId) {
             if (idNull) {
@@ -91,7 +95,7 @@ buildDfMMUni <- function(resList, gene, pi) {
                            times = vapply(vec[[pi]], FUN.VALUE = integer(1), length)
                 )
                 cellCovars = marks(resList$hypFrame$ppp[[n]], drop = FALSE)[
-                    ,attr(hypFrame, "cellVars"), drop = FALSE]
+                    ,attr(resList$hypFrame, "cellVars"), drop = FALSE]
                 data.frame("pi" = unlist(vec), cellCovars[match(Cell, cellCovars$cell),])
             }
         } else if (fixedId) {

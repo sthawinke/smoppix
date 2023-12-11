@@ -6,7 +6,7 @@
 \usage{
 addWeightFunction(
   hypFrame,
-  pis = attr(hypFrame, "pis"),
+  pis = attr(hypFrame, "pis")[!attr(hypFrame, "pis") \%in\% c("edge", "midpoint")],
   designVars,
   lowestLevelVar,
   maxObs = 1e+05,

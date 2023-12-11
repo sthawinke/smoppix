@@ -32,6 +32,10 @@ test_that("Fitting linear mixed models proceeds without errors", {
     #Account for cell as random effect
     expect_message(linModsEdgeCell <- fitLMMs(objBG, fixedVars = "condition",
                                               randomVars = "cell", pi = "edge"))
+    expect_message(linModsMidCellType <- fitLMMs(objBG, fixedVars = c("condition", "cellType"),
+                                              randomVars = "cell", pi = "midpoint"))
+    expect_message(linModsNNCellType <- fitLMMs(objBG, fixedVars = c("condition", "cellType"),
+                                                  pi = "nnCell"))
     expect_is(resMat <- getResults(linModsMP, "Intercept"), "matrix")
     expect_is(resMatCond <- getResults(linModsEdge, "condition"), "matrix")
     expect_false(is.unsorted(getResults(linModsMP, "Intercept")[, "pVal"]))

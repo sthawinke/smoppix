@@ -14,7 +14,8 @@ extractResults(models, fixedVars = NULL, method = "BH")
 \item{method}{passed onto p.adjust}
 }
 \value{
-A list of matrices, all containing estimate, standard error, p-value and ajdusted p-value
+A list of matrices, all containing estimate, standard error,
+p-value and ajdusted p-value
 }
 \description{
 Extract results from a list of fitted LMMs

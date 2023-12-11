@@ -25,7 +25,7 @@ in the linear mixed model}
 \item{verbose}{A boolean, should the formula be printed?}
 
 \item{returnModels}{a boolean: should the full models be returned?
-Otherzise only summary statistics are returned}
+Otherwise only summary statistics are returned}
 
 \item{Formula}{A formula; if not supplied it will be constructed
 from the fixed and random variables}

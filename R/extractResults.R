@@ -5,7 +5,8 @@
 #' @param method passed onto p.adjust
 #' @importFrom stats p.adjust
 #' @import lmerTest
-#' @return A list of matrices, all containing estimate, standard error, p-value and ajdusted p-value
+#' @return A list of matrices, all containing estimate, standard error,
+#' p-value and ajdusted p-value
 #' @seealso \link{fitLMMs}
 extractResults <- function(models, fixedVars = NULL, method = "BH") {
     ints <- t(vapply(models, FUN.VALUE = double(3), function(x) {
@@ -26,11 +27,17 @@ extractResults <- function(models, fixedVars = NULL, method = "BH") {
     fixedOut <- lapply(fixedVars, function(Var) {
         pVal <- vapply(AnovaTabs, FUN.VALUE = double(1), function(x) x[Var, "Pr(>F)"])
         coefs <- lapply(models[id], function(model) {
+            emptyCoef = if(lu <- length(unFix <- model$unFix[[Var]])){
+                rep_len(NA, lu)
+            } else{NA} #Continuous variable
+            names(emptyCoef) = unFix
+            #Prepare the empty coefficient vector with all levels present.
+            #If outcome is NA for all levels, the factor level gets dropped,
+            #causing problems downstream.
             coefObj <- summary(model)$coef
-            Coefs <- coefObj[grep(paste0(Var, "[[:digit:]]"), rownames(coefObj)), "Estimate"]
-            if(!length(Coefs)){
-                return(NA) #When fixed effects were not fitted
-            } else Coefs
+            rn <- intersect(rownames(coefObj), names(emptyCoef))
+            emptyCoef[rn] <- coefObj[rn, "Estimate"]
+            emptyCoef
         })
         coefMat <- matrix(unlist(coefs), byrow = TRUE, nrow = length(pVal))
         colnames(coefMat) <- paste0(Var, seq_len(ncol(coefMat)))
