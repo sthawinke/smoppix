@@ -4,7 +4,7 @@
 #' @param fixedVars,randomVars Names of fixed and random variables
 #' @param verbose A boolean, should the formula be printed?
 #' @param returnModels a boolean: should the full models be returned?
-#' Otherzise only summary statistics are returned
+#' Otherwise only summary statistics are returned
 #' @param Formula A formula; if not supplied it will be constructed
 #' from the fixed and random variables
 #'
@@ -45,7 +45,7 @@ fitLMMs <- function(resList, pi, fixedVars = NULL, randomVars = NULL,
         fixedPart = paste(
             "pi - 0.5 ~ 1",
             paste(if (!is.null(fixedVars)) {
-                    paste("+", paste(fixedVars, sep = "+"))
+                    paste("+", paste(fixedVars, collapse = "+"))
                 }))
         Formula <- formula(formChar <- paste(fixedPart, if(!is.null(randomVars)){
                     paste("+", paste0("(1|", randomVars, ")", collapse = "+"))

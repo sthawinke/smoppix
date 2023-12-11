@@ -46,7 +46,12 @@
 addWeightFunction <- function(hypFrame, pis = attr(hypFrame, "pis"), designVars,
                               lowestLevelVar, maxObs = 1e5, maxFeatures = 5e2,
                               ...) {
-    if (missing(designVars) && missing(lowestLevelVar) && any(!grepl("Cell", pis))) {
+    if (all(pis %in% c("edge", "midpoint"))) {
+        stop("Calculating weight matrices for distances to fixed points is ", "unnecessary as they are independent.
+             Simply proceed with fitting the model on the", " indiviual evaluations of the B-function.")
+    }
+    if (missing(designVars) && missing(lowestLevelVar) &&
+        any(!grepl("Cell", pis))) {
         stop("Provide either designVars or lowestLevelVar!")
     }
     if (!missing(designVars) && !missing(lowestLevelVar)) {
@@ -56,17 +61,19 @@ addWeightFunction <- function(hypFrame, pis = attr(hypFrame, "pis"), designVars,
         if (length(lowestLevelVar) != 1) {
             stop("lowestLevelVar must have length 1")
         }
-        if (!(lowestLevelVar %in% attr(hypFrame, "imageVars"))) {
+        if (!(lowestLevelVar %in% (allVars <- c(attr(hypFrame, "imageVars"),
+                                    attr(hypFrame, "cellVars"))))) {
             stop("lowestLevelVar must be part of the design,
-                 see attr(hypFrame, 'imageVars')")
+            see attr(hypFrame, 'imageVars') and attr(hypFrame, 'cellVars')")
         }
-        designVars <- setdiff(attr(hypFrame, "imageVars"), lowestLevelVar)
+        designVars <- setdiff(allVars, lowestLevelVar)
         # If missing take everything but the ones that are obviously
         # no design variables
-    }
-    if (all(pis %in% c("edge", "midpoint"))) {
-        stop("Calculating weight matrices for distances to fixed points is unnecessary as they are independent.
-             Simply proceed with fitting the model on the indiviual evaluations of the B-function.")
+    } else if (any(idMissing <- !(designVars %in% colnames(hypFrame)))) {
+        stop(
+            "Design variables\n", designVars[idMissing],
+            "\nnot found in hypFrame object"
+        )
     }
     pis <- match.arg(pis,
         choices = c(
@@ -75,12 +82,6 @@ addWeightFunction <- function(hypFrame, pis = attr(hypFrame, "pis"), designVars,
         ),
         several.ok = TRUE
     )
-    if (any(idMissing <- !(designVars %in% colnames(hypFrame)))) {
-        stop(
-            "Design variables\n", designVars[idMissing],
-            "\nnot found in hypFrame object"
-        )
-    }
     if (is.null(hypFrame$pimRes)) {
         stop(
             "No pims found in the hyperframe.",

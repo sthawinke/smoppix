@@ -27,7 +27,7 @@ test_that("Fitting linear mixed models proceeds without errors", {
     #Including cell (type) either as fixed or random effect
     #E.g. test for differences between cell types
     expect_message(linModsMPcell <- fitLMMs(objBG,
-                        fixedVars = c("condition", "cell"), pi = "midpoint"))
+                        fixedVars = c("condition", "cellType"), pi = "midpoint"))
     #Check nesting for lmerTest! FIX ME!
     #Account for cell as random effect
     expect_message(linModsEdgeCell <- fitLMMs(objBG, fixedVars = "condition",

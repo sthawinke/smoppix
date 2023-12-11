@@ -122,6 +122,7 @@ addCell <- function(hypFrame, owins, cellTypes = NULL, checkOverlap = TRUE,
     # Add centroids for all windows
     attr(hypFrame, "features") <- Feat
     attr(hypFrame, "imageVars") <- Im
+    attr(hypFrame, "cellVars") = names(cellTypes)
     # Retain attributes, which gets lost when setting the marks
     return(hypFrame)
 }
