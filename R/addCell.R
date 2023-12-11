@@ -3,8 +3,10 @@
 #'
 #' @param hypFrame The hyperframe
 #' @param owins the list containing a list of owins per point pattern.
-#' The names of the windows can be used to supply cell types.
-#' @param checkOverlap a boolean, should windows be checked for overlap
+#' The length of the list must match the length of the hyperframe, and the names must match.
+#' @param cellTypes A dataframe of cell types and other cell-associated covariates.
+#' If supplied, it must contain a variable "cell" that is matched with the names of the owins
+#' @param checkOverlap a boolean, should windows be checked for overlap?
 #' @param warnOut a boolean, should warning be issued when points are not
 #' contained in window
 #' @return the modified hyperframe
@@ -15,6 +17,7 @@
 #' @details First the different cells are checked for overlap per point pattern.
 #' If no overlap is found, each event is assigned the cell that it falls into.
 #' Events not belonging to any cell will trigger a warning and be assigned 'NA'.
+#' Cell types and other variables are added to the marks if applicable
 #' @examples
 #' library(spatstat.random)
 #' n <- 1e3 # number of molecules
@@ -51,7 +54,8 @@
 #' })
 #' names(wList) <- rownames(hypFrame) # Matching names is necessary
 #' hypFrame2 <- addCell(hypFrame, wList)
-addCell <- function(hypFrame, owins, checkOverlap = TRUE, warnOut = TRUE) {
+addCell <- function(hypFrame, owins, cellTypes = NULL, checkOverlap = TRUE,
+                    warnOut = TRUE) {
     stopifnot(
         nrow(hypFrame) == length(owins),
         all(unlist(lapply(
@@ -61,10 +65,18 @@ addCell <- function(hypFrame, owins, checkOverlap = TRUE, warnOut = TRUE) {
             }
         ))),
         all(rownames(hypFrame) %in% names(owins)),
-        is(hypFrame, "hyperframe")
+        is(hypFrame, "hyperframe"),
+        is.null(cellTypes) || is.data.frame(cellTypes)
     )
     Feat <- attr(hypFrame, "features")
     Im <- attr(hypFrame, "imageVars")
+    if(ct <- is.data.frame(cellTypes)){
+        if(!("cell" %in% names(cellTypes))){
+        stop("Variable names 'cell' must be contained in cell types dataframe")
+        }
+        otherCellNames = names(cellTypes)[names(cellTypes) != "cell"]
+        #Names of the other covariates
+    }
     for (nn in rownames(hypFrame)) {
         ppp <- hypFrame[[nn, "ppp"]]
         if (any("cell" == names(marks(ppp, drop = FALSE)))) {
@@ -95,8 +107,12 @@ addCell <- function(hypFrame, owins, checkOverlap = TRUE, warnOut = TRUE) {
         cellOut <- rep("NA", NP)
         cellOut[idIn] <- rownames(which(t(idWindow[idIn, ]), arr.ind = TRUE))
         hypFrame[[nn, "ppp"]] <- setmarks(
-            hypFrame[[nn, "ppp"]],
-            cbind(marks(hypFrame[[nn, "ppp"]], drop = FALSE), cell = cellOut)
+            hypFrame[[nn, "ppp"]],{
+            m = cbind(marks(hypFrame[[nn, "ppp"]], drop = FALSE), cell = cellOut)
+            if(ct)
+                m = cbind(m, cellTypes[match(cellOut, cellTypes$cell),
+                                       otherCellNames, drop = FALSE])
+            m}
         )
     }
     hypFrame$owins <- owins

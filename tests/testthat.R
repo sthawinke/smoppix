@@ -36,7 +36,9 @@ hypFrame <- buildHyperFrame(df,
 )
 nDesignFactors <- length(unique(hypFrame$image))
 wList <- lapply(seq_len(nDesignFactors), function(x) {
-    list("w1" = w1, "w2" = w2, "w3" = w3, "w4" = w4, "w5" = w5)
+    Li = list("w1" = w1, "w2" = w2, "w3" = w3, "w4" = w4, "w5" = w5)
+    names(Li) = paste0(names(Li), "_", x)
+    Li
 })
 wList2 <- lapply(seq_len(nDesignFactors), function(x) {
     list(
@@ -44,8 +46,12 @@ wList2 <- lapply(seq_len(nDesignFactors), function(x) {
         "wWrong" = wWrong
     )
 })
+unCells = unlist(lapply(wList, names))
+cellTypesDf = data.frame("cell" = unCells,
+                         "cellType" = sample(paste0("CellType_",
+                        LETTERS[seq_len(5)]), length(unCells), replace = TRUE))
 names(wList) <- names(wList2) <- rownames(hypFrame)
-hypFrame2 <- addCell(hypFrame, wList)
+hypFrame2 <- addCell(hypFrame, wList, cellTypes = cellTypesDf)
 # Register the parallel backend
 register(SerialParam())
 # nCores <- 2
