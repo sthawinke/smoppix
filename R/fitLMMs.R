@@ -39,7 +39,8 @@ fitLMMs <- function(resList, pi, fixedVars = NULL, randomVars = NULL,
     noWeight <- pi %in% c("edge", "midpoint")
     # For independent distances, no weights are needed
     designVars <- c(fixedVars, randomVars)
-    stopifnot(all(designVars %in% c(resList$designVars, attr(hypFrame, "cellVars"))))
+    stopifnot(all(designVars %in% c(resList$designVars,
+                                    attr(resList$hypFrame, "cellVars"))))
     #Allow cell as design variable, both fixed and random
     if (is.null(Formula)) {
         fixedPart = paste(

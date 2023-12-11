@@ -128,8 +128,8 @@ buildDfMMUni <- function(resList, gene, pi) {
     } else {
         rownames(resList$hypFrame)
     }
-    piMat <- data.frame(Reduce(Filter(piEsts, f = function(x) !is.null(x)),
-                               f = rbind), "design" = design)
+    piMat <- data.frame(Reduce(piEsts, f = rbind),
+                        "design" = design[vapply(piEsts, FUN.VALUE = TRUE, function(x) !is.null(x))])
     if (is.null(piMat)) {
         stop("Gene  not found!\n")
     }
