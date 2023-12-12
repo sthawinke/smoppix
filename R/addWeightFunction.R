@@ -37,12 +37,13 @@
 #' # Fit a subset of features to limit computation time
 #' yangPims <- estPims(hypYang,
 #'   pis = c("nn", "nnPair"),
-#'   features = attr(hypYang, "features")[1:12]
+#'   features = attr(hypYang, "features")[1:10]
 #' )
 #' # Build the weighting function for all PIs present
 #' yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))
 #' # Alternative formulation with 'lowestLevelVar'
-#' yangObj2 <- addWeightFunction(yangPims, lowestLevelVar = "section")
+#' yangObj2 <- addWeightFunction(yangPims, lowestLevelVar = "section",
+#' pi = "nn")
 addWeightFunction <- function(hypFrame, pis = attr(hypFrame, "pis")[
                                 !attr(hypFrame, "pis") %in% c("edge", "midpoint")
                               ],

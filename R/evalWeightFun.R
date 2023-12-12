@@ -11,7 +11,8 @@
 #'   coordVars = c("x", "y"),
 #'   imageVars = c("day", "root", "section")
 #' )
-#' yangPims <- estPims(hypYang, pis = "nn", features = attr(hypYang, "features")[1:12])
+#' yangPims <- estPims(hypYang, pis = "nn",
+#' features = attr(hypYang, "features")[1:10])
 #' # First Build the weighting function
 #' yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))
 #' evalWeightFunction(yangObj$Wfs$nn, newdata = data.frame("NP" = 2))

@@ -9,7 +9,7 @@ estPimsSingle(
   pis,
   null,
   tabObs,
-  nPointsAll = 500,
+  nPointsAll = 400,
   nPointsAllWin = 200,
   features = NULL,
   allowManyGenePairs = FALSE,
@@ -29,7 +29,7 @@ estPimsSingle(
 \item{tabObs}{A table of observed gene frequencies}
 
 \item{nPointsAll}{How many points to subsample or simulate to calculate overall interpoint distance
-and distance to point}
+and distance to point. This parameter is a main determinant of computation time}
 
 \item{nPointsAllWin}{How many points to subsample or simulate to calculate distance to cell edge or midpoint distribution}
 

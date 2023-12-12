@@ -15,7 +15,7 @@
 #' )
 #' yangPims <- estPims(hypYang,
 #'   pis = c("nn", "nnPair"),
-#'   features = attr(hypYang, "features")[1:12]
+#'   features = attr(hypYang, "features")[1:10]
 #' )
 #' # First Build the weighting function
 #' yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))

@@ -61,6 +61,7 @@ test_that("Fitting linear mixed models proceeds without errors", {
   ))
   expect_is(resMat <- getResults(linModsMP, "Intercept"), "matrix")
   expect_is(resMatCond <- getResults(linModsEdge, "condition"), "matrix")
+  expect_is(getResults(linModsMP, "cellType"), "matrix")
   expect_false(is.unsorted(getResults(linModsMP, "Intercept")[, "pVal"]))
 })
 test_that("Fitting linear mixed models throws errors where appropriate", {

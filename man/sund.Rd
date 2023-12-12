@@ -11,6 +11,9 @@ sund(x, sep = "--")
 
 \item{sep}{The character used to split}
 }
+\value{
+The split string
+}
 \description{
 Helper function to spit gene pairs
 }

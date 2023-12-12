@@ -15,7 +15,7 @@ calcNNPI <- function(pSub, p, null, ecdfs, n, ecdfAll) {
   NP <- npoints(pSub)
   if (null == "background") {
     approxRanks <- vapply(seq_along(obsDistNN), FUN.VALUE = double(1), function(i) {
-      round(ecdfs[[i]](obsDistNN[i]) * getN(ecdfs[[i]]))
+      round(ecdfs[[i]](obsDistNN[i]) *n)
       # Approximate rank: quantile in overall distribution times
       # number of observations.
     })
@@ -28,7 +28,6 @@ calcNNPI <- function(pSub, p, null, ecdfs, n, ecdfAll) {
   } else if (null == "CSR") {
     # Weigh by Poisson and negative hypergeometric distribution to bypass Monte-Carlo simulations
     approxRanks <- getApproxRanks(ecdfAll, obsDistNN)
-    # getPoissonPi(NP = npoints(pSub), nAll, approxRanks)
     mean(pnhyper(approxRanks, n = getN(ecdfAll) - (NP - 1), m = NP - 1, r = 1))
   }
 }
@@ -37,7 +36,7 @@ calcNNPIpair <- function(cd, id1, id2, null, p, ecdfs, n, ecdfAll) {
   obsDistNN <- c(rowMins(cd, value = TRUE), colMins(cd, value = TRUE))
   obsDistRank <- if (null == "background") {
     vapply(seq_along(obsDistNN), FUN.VALUE = double(1), function(i) {
-      round(ecdfs[[i]](obsDistNN[i]) * getN(ecdfs[[i]]))
+      round(ecdfs[[i]](obsDistNN[i]) * n)
     })
   } else {
     round(ecdfAll(obsDistNN) * (n <- getN(ecdfAll)))

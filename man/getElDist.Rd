@@ -11,6 +11,9 @@ getElDist(distMat, i, j)
 
 \item{i, j}{Indices for which entries are extracted}
 }
+\value{
+The required distances
+}
 \description{
 Extract elements from a distance matrix by index
 }

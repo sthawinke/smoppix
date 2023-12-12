@@ -4,7 +4,7 @@
 #' @param pis The probabilistic indices to be estimated
 #' @param null A character vector, indicating how the null distribution is defined. See details.
 #' @param nPointsAll How many points to subsample or simulate to calculate overall interpoint distance
-#' and distance to point
+#' and distance to point. This parameter is a main determinant of computation time
 #' @param nPointsAllWin How many points to subsample or simulate to calculate distance to cell edge or midpoint distribution
 #' @param allowManyGenePairs A boolean, set to true to suppress warning messages for large numbers of gene pairs
 #' @param manyPairs An integer, what are considered many gene pairs
@@ -21,7 +21,7 @@
 #' @importFrom Rdpack reprompt
 #' @importFrom Rfast rowSort rowMins rowAny
 #' @importFrom extraDistr pnhyper
-estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 5e2,
+estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 4e2,
                           nPointsAllWin = 2e2, features = NULL,
                           allowManyGenePairs = FALSE, manyPairs = 1e6, verbose = FALSE,
                           owins = NULL, centroids = NULL) {

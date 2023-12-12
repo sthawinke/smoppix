@@ -22,8 +22,8 @@ Plot the hyperframe for exploratory purposes
 \examples{
 data(Yang)
 hypYang <- buildHyperFrame(Yang,
-    coordVars = c("x", "y"),
-    imageVars = c("day", "root", "section")
+  coordVars = c("x", "y"),
+  imageVars = c("day", "root", "section")
 )
 plotExplore(hypYang)
 }

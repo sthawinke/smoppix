@@ -45,6 +45,9 @@ the different point patterns}
 
 \item{list}{A list of point patterns of class "ppp"}
 }
+\value{
+An object of class 'hyperframe' from the 'spatstat' package
+}
 \description{
 Built the hyperframe containing all separate point patterns that will
  be used throughout the analysis. Both matrices, dataframe and SpatialExperiment inputs are accepted.
@@ -52,7 +55,7 @@ Built the hyperframe containing all separate point patterns that will
 \examples{
 data(Yang)
 hypYang <- buildHyperFrame(Yang,
-    coordVars = c("x", "y"),
-    imageVars = c("day", "root", "section")
+  coordVars = c("x", "y"),
+  imageVars = c("day", "root", "section")
 )
 }
