@@ -19,122 +19,122 @@
 #' @references
 #' \insertAllCited{}
 calcWindowDistPI <- function(pSub, owins, centroids, ecdfAll, pi, null, ecdfs, cellAndGene, feat) {
-  splitPPP <- split.ppp(pSub, f = "cell")
-  obsDistEdge <- lapply(names(splitPPP), function(x) {
-    Dist <- switch(pi,
-      "midpoint" = crossdist(splitPPP[[x]], centroids[[x]]),
-      "edge" = nncross(splitPPP[[x]], edges(owins[[x]]), what = "dist"),
-      "nnCell" = nndist(splitPPP[[x]]),
-      "allDistCell" = dist(coords(splitPPP[[x]]))
-    )
-    if (pi %in% c("edge", "midpoint")) {
-      ecdfAll[[x]][[pi]](Dist) # Do not average here, independent observations
-    } else {
-      if ((NP <- npoints(splitPPP[[x]])) == 1) {
-        return(NA)
-      }
-      id <- which(cellAndGene$gene[cellAndGene$cell == x] == feat)
-      if (pi == "allDistCell") {
-        switch(null,
-          "CSR" = mean(ecdfAll[[x]]$allDistCell(Dist)),
-          "background" = {
-            Dist <- as.matrix(Dist)
-            mean(vapply(seq_len(ncol(Dist)),
-              FUN.VALUE = double(ncol(Dist) - 1),
-              function(i) {
-                ecdfs[[x]]$allDistCell[[id[i]]](Dist[i, -i])
-              }
-            ))
-          }
+    splitPPP <- split.ppp(pSub, f = "cell")
+    obsDistEdge <- lapply(names(splitPPP), function(x) {
+        Dist <- switch(pi,
+            "midpoint" = crossdist(splitPPP[[x]], centroids[[x]]),
+            "edge" = nncross(splitPPP[[x]], edges(owins[[x]]), what = "dist"),
+            "nnCell" = nndist(splitPPP[[x]]),
+            "allDistCell" = dist(coords(splitPPP[[x]]))
         )
-      } else if (pi == "nnCell") {
-        approxRanks <- switch(null,
-          "CSR" = getApproxRanks(ecdfAll[[x]]$allDistCell, Dist),
-          "background" = vapply(seq_along(Dist),
-            FUN.VALUE = double(1),
-            function(i) {
-              getApproxRanks(ecdfs[[x]]$allDistCell[[i]], Dist[i])
+        if (pi %in% c("edge", "midpoint")) {
+            ecdfAll[[x]][[pi]](Dist) # Do not average here, independent observations
+        } else {
+            if ((NP <- npoints(splitPPP[[x]])) == 1) {
+                return(NA)
             }
-          )
-        )
-        mean(vapply(seq_along(approxRanks), FUN.VALUE = double(1), function(ar) {
-          pnhyper(approxRanks[ar],
-            r = 1, m = NP - 1,
-            n = switch(null,
-              "CSR" = getN(ecdfAll[[x]]$allDistCell),
-              "background" = getN(ecdfs[[x]]$allDistCell[[id[ar]]]) - NP + 1
-            )
-          )
-        }))
-      }
-    }
-  })
-  names(obsDistEdge) <- names(splitPPP)
-  obsDistEdge
+            id <- which(cellAndGene$gene[cellAndGene$cell == x] == feat)
+            if (pi == "allDistCell") {
+                switch(null,
+                    "CSR" = mean(ecdfAll[[x]]$allDistCell(Dist)),
+                    "background" = {
+                        Dist <- as.matrix(Dist)
+                        mean(vapply(seq_len(ncol(Dist)),
+                            FUN.VALUE = double(ncol(Dist) - 1),
+                            function(i) {
+                                ecdfs[[x]]$allDistCell[[id[i]]](Dist[i, -i])
+                            }
+                        ))
+                    }
+                )
+            } else if (pi == "nnCell") {
+                approxRanks <- switch(null,
+                    "CSR" = getApproxRanks(ecdfAll[[x]]$allDistCell, Dist),
+                    "background" = vapply(seq_along(Dist),
+                        FUN.VALUE = double(1),
+                        function(i) {
+                            getApproxRanks(ecdfs[[x]]$allDistCell[[i]], Dist[i])
+                        }
+                    )
+                )
+                mean(vapply(seq_along(approxRanks), FUN.VALUE = double(1), function(ar) {
+                    pnhyper(approxRanks[ar],
+                        r = 1, m = NP - 1,
+                        n = switch(null,
+                            "CSR" = getN(ecdfAll[[x]]$allDistCell),
+                            "background" = getN(ecdfs[[x]]$allDistCell[[id[ar]]]) - NP + 1
+                        )
+                    )
+                }))
+            }
+        }
+    })
+    names(obsDistEdge) <- names(splitPPP)
+    obsDistEdge
 }
 calcWindowPairPI <- function(pSub1, pSub2, feat1, feat2, cellAndGene, cd, ecdfAll, pi, null, ecdfs) {
-  splitPPP1 <- split.ppp(pSub1, f = "cell")
-  splitPPP2 <- split.ppp(pSub2, f = "cell")
-  # FIX ME: fast alternative for split.ppp?
-  out <- vapply(nam <- intersect(names(splitPPP1), names(splitPPP2)),
-    FUN.VALUE = double(1), function(x) {
-      cd <- crossdist(splitPPP1[[x]], splitPPP2[[x]])
-      if (null == "background") {
-        id1 <- which(cellAndGene$gene[cellAndGene$cell == x] == feat1)
-        id2 <- which(cellAndGene$gene[cellAndGene$cell == x] == feat2)
-      }
-      if (pi == "allDistPairCell") {
-        switch(null,
-          "CSR" = mean(ecdfAll[[x]]$allDistCell(cd)),
-          "background" = {
-            pi1 <- vapply(seq_len(NP1 <- npoints(splitPPP1[[x]])),
-              FUN.VALUE = double(ncol(cd)),
-              function(i) {
-                ecdfs[[x]]$allDistCell[[id1[i]]](cd[i, ])
-              }
-            )
-            pi2 <- vapply(seq_len(npoints(splitPPP2[[x]])),
-              FUN.VALUE = double(nrow(cd)),
-              function(i) {
-                ecdfs[[x]]$allDistCell[[id2[i]]](cd[, i])
-              }
-            )
-            mean(c(pi1, pi2))
-          }
-        )
-      } else if (pi == "nnPairCell") {
-        nnDist <- c(rowMins(cd, value = TRUE), colMins(cd, value = TRUE))
-        np1 <- npoints(splitPPP1[[x]])
-        np2 <- npoints(splitPPP2[[x]])
-        seq1 <- seq_len(np1)
-        if (null == "CSR") {
-          approxRanks <- getApproxRanks(ecdfAll[[x]]$allDistCell, nnDist)
-          n <- getN(ecdfAll[[x]]$allDistCell)
-          pi1 <- pnhyper(approxRanks[seq1], r = 1, m = np1, n = n - np1)
-          pi2 <- pnhyper(approxRanks[-seq1], r = 1, m = np2, n = n - np2)
-        } else if (null == "background") {
-          approxRanks <- vapply(seq_along(nnDist), FUN.VALUE = double(1), function(i) {
-            getApproxRanks(ecdfs[[x]]$allDistCell[[c(id1, id2)[i]]], nnDist[i])
-          })
-          pi1 <- vapply(seq1, FUN.VALUE = double(1), function(i) {
-            pnhyper(approxRanks[i],
-              r = 1, m = np2,
-              n = getN(ecdfs[[x]]$allDistCell[[id1[i]]]) - np2
-            )
-          })
-          pi2 <- vapply(seq_len(np2), FUN.VALUE = double(1), function(i) {
-            pnhyper(approxRanks[i + np1],
-              r = 1, m = np1,
-              n = getN(ecdfs[[x]]$allDistCell[[id2[i]]]) - np1
-            )
-          })
+    splitPPP1 <- split.ppp(pSub1, f = "cell")
+    splitPPP2 <- split.ppp(pSub2, f = "cell")
+    # FIX ME: fast alternative for split.ppp?
+    out <- vapply(nam <- intersect(names(splitPPP1), names(splitPPP2)),
+        FUN.VALUE = double(1), function(x) {
+            cd <- crossdist(splitPPP1[[x]], splitPPP2[[x]])
+            if (null == "background") {
+                id1 <- which(cellAndGene$gene[cellAndGene$cell == x] == feat1)
+                id2 <- which(cellAndGene$gene[cellAndGene$cell == x] == feat2)
+            }
+            if (pi == "allDistPairCell") {
+                switch(null,
+                    "CSR" = mean(ecdfAll[[x]]$allDistCell(cd)),
+                    "background" = {
+                        pi1 <- vapply(seq_len(NP1 <- npoints(splitPPP1[[x]])),
+                            FUN.VALUE = double(ncol(cd)),
+                            function(i) {
+                                ecdfs[[x]]$allDistCell[[id1[i]]](cd[i, ])
+                            }
+                        )
+                        pi2 <- vapply(seq_len(npoints(splitPPP2[[x]])),
+                            FUN.VALUE = double(nrow(cd)),
+                            function(i) {
+                                ecdfs[[x]]$allDistCell[[id2[i]]](cd[, i])
+                            }
+                        )
+                        mean(c(pi1, pi2))
+                    }
+                )
+            } else if (pi == "nnPairCell") {
+                nnDist <- c(rowMins(cd, value = TRUE), colMins(cd, value = TRUE))
+                np1 <- npoints(splitPPP1[[x]])
+                np2 <- npoints(splitPPP2[[x]])
+                seq1 <- seq_len(np1)
+                if (null == "CSR") {
+                    approxRanks <- getApproxRanks(ecdfAll[[x]]$allDistCell, nnDist)
+                    n <- getN(ecdfAll[[x]]$allDistCell)
+                    pi1 <- pnhyper(approxRanks[seq1], r = 1, m = np1, n = n - np1)
+                    pi2 <- pnhyper(approxRanks[-seq1], r = 1, m = np2, n = n - np2)
+                } else if (null == "background") {
+                    approxRanks <- vapply(seq_along(nnDist), FUN.VALUE = double(1), function(i) {
+                        getApproxRanks(ecdfs[[x]]$allDistCell[[c(id1, id2)[i]]], nnDist[i])
+                    })
+                    pi1 <- vapply(seq1, FUN.VALUE = double(1), function(i) {
+                        pnhyper(approxRanks[i],
+                            r = 1, m = np2,
+                            n = getN(ecdfs[[x]]$allDistCell[[id1[i]]]) - np2
+                        )
+                    })
+                    pi2 <- vapply(seq_len(np2), FUN.VALUE = double(1), function(i) {
+                        pnhyper(approxRanks[i + np1],
+                            r = 1, m = np1,
+                            n = getN(ecdfs[[x]]$allDistCell[[id2[i]]]) - np1
+                        )
+                    })
+                }
+                mean(c(pi1, pi2))
+            }
         }
-        mean(c(pi1, pi2))
-      }
-    }
-  )
-  names(out) <- nam
-  return(out)
+    )
+    names(out) <- nam
+    return(out)
 }
 #' Approximate the ranks given and ecdf
 #'
@@ -143,7 +143,7 @@ calcWindowPairPI <- function(pSub1, pSub2, feat1, feat2, cellAndGene, cd, ecdfAl
 #'
 #' @return The approximate ranks
 getApproxRanks <- function(ecdf, obs) {
-  ranks <- round(ecdf(obs) * environment(ecdf)$nobs)
-  ranks[ranks == 0] <- 1
-  ranks
+    ranks <- round(ecdf(obs) * environment(ecdf)$nobs)
+    ranks[ranks == 0] <- 1
+    ranks
 }

@@ -18,10 +18,10 @@ condition <- sample(conditions, n, TRUE)
 df <- data.frame(gene, x, y, fov, "condition" = condition)
 # A list of point patterns
 listPPP <- tapply(seq(nrow(df)), df$fov, function(i) {
-  ppp(
-    x = df$x[i], y = df$y[i],
-    marks = df[i, c("gene", "condition"), drop = FALSE]
-  )
+    ppp(
+        x = df$x[i], y = df$y[i],
+        marks = df[i, c("gene", "condition"), drop = FALSE]
+    )
 }, simplify = FALSE)
 # Regions of interest (roi): Diamond in the center plus four triangles
 w1 <- owin(poly = list(x = c(0, .5, 1, .5), y = c(.5, 0, .5, 1)))
@@ -31,28 +31,28 @@ w4 <- owin(poly = list(x = c(1, 1, .5), y = c(0.5, 1, 1)))
 w5 <- owin(poly = list(x = c(1, 1, .5), y = c(0, 0.5, 0)))
 wWrong <- owin(poly = list(x = c(0, 1, 1, 0), y = c(.75, .5, .75, 1)))
 hypFrame <- buildHyperFrame(df,
-  coordVars = c("x", "y"),
-  imageVars = c("condition", "fov")
+    coordVars = c("x", "y"),
+    imageVars = c("condition", "fov")
 )
 nDesignFactors <- length(unique(hypFrame$image))
 wList <- lapply(seq_len(nDesignFactors), function(x) {
-  Li <- list("w1" = w1, "w2" = w2, "w3" = w3, "w4" = w4, "w5" = w5)
-  names(Li) <- paste0(names(Li), "_", x)
-  Li
+    Li <- list("w1" = w1, "w2" = w2, "w3" = w3, "w4" = w4, "w5" = w5)
+    names(Li) <- paste0(names(Li), "_", x)
+    Li
 })
 wList2 <- lapply(seq_len(nDesignFactors), function(x) {
-  list(
-    "w1" = w1, "w2" = w2, "w3" = w3, "w4" = w4, "w5" = w5,
-    "wWrong" = wWrong
-  )
+    list(
+        "w1" = w1, "w2" = w2, "w3" = w3, "w4" = w4, "w5" = w5,
+        "wWrong" = wWrong
+    )
 })
 unCells <- unlist(lapply(wList, names))
 cellTypesDf <- data.frame(
-  "cell" = unCells,
-  "cellType" = sample(paste0(
-    "CellType_",
-    LETTERS[seq_len(5)]
-  ), length(unCells), replace = TRUE)
+    "cell" = unCells,
+    "cellType" = sample(paste0(
+        "CellType_",
+        LETTERS[seq_len(5)]
+    ), length(unCells), replace = TRUE)
 )
 names(wList) <- names(wList2) <- rownames(hypFrame)
 hypFrame2 <- addCell(hypFrame, wList, cellTypes = cellTypesDf)
@@ -61,8 +61,8 @@ register(SerialParam())
 # nCores <- 2
 # register(MulticoreParam(nCores))
 pis <- c(
-  "nn", "allDist", "nnPair", "allDistPair", "edge",
-  "midpoint", "nnCell", "allDistCell", "nnPairCell", "allDistPairCell"
+    "nn", "allDist", "nnPair", "allDistPair", "edge",
+    "midpoint", "nnCell", "allDistCell", "nnPairCell", "allDistPairCell"
 )
 piEstsBG <- estPims(hypFrame2, pis = pis, null = "background")
 piEstsCSR <- estPims(hypFrame2, pis = pis, null = "CSR")
@@ -72,12 +72,12 @@ objCSR <- addWeightFunction(piEstsCSR, designVars = "condition")
 # Fit Yang models too
 data(Yang)
 hypYang <- buildHyperFrame(Yang,
-  coordVars = c("x", "y"),
-  imageVars = c("day", "root", "section")
+    coordVars = c("x", "y"),
+    imageVars = c("day", "root", "section")
 )
 yangPims <- estPims(hypYang,
-  pis = c("nn", "nnPair"),
-  features = attr(hypYang, "features")[1:10]
+    pis = c("nn", "nnPair"),
+    features = attr(hypYang, "features")[1:10]
 )
 yangObj <- addWeightFunction(yangPims, lowestLevelVar = "section")
 test_check("spatrans")
