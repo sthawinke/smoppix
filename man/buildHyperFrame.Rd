@@ -21,7 +21,7 @@ buildHyperFrame(x, ...)
 
 \S4method{buildHyperFrame}{matrix}(x, image, covariates, ...)
 
-\S4method{buildHyperFrame}{list}(x, ...)
+\S4method{buildHyperFrame}{list}(x, coordVars = c("x", "y"), ...)
 
 \S4method{buildHyperFrame}{SpatialExperiment}(x, imageVars, coVars, ...)
 }
@@ -43,7 +43,7 @@ the different point patterns}
 
 \item{matrix}{The input matrix}
 
-\item{list}{A list of point patterns of class "ppp"}
+\item{list}{A list of matrices or of point patterns of class "ppp"}
 }
 \value{
 An object of class 'hyperframe' from the 'spatstat' package

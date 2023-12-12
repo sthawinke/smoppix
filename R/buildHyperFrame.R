@@ -79,20 +79,41 @@ setMethod("buildHyperFrame", "matrix", function(x, image, covariates, ...) {
     for (i in names(image)) {
         hypFrame[, i] <- desMat[, i]
     }
-    hypFrame$tabObs <- lapply(hypFrame$ppp, function(x) table(marks(x, drop = FALSE)$gene))
+    hypFrame <- addTabObs(hypFrame)
     attr(hypFrame, "features") <- unique(unlist(lapply(hypFrame$tabObs, names)))
     attr(hypFrame, "imageVars") <- colnames(image)
     return(hypFrame)
 })
-#' @param list A list of point patterns of class "ppp"
+#' @param list A list of matrices or of point patterns of class "ppp"
 #'
 #' @rdname buildHyperFrame
 #' @export
-setMethod("buildHyperFrame", "list", function(x, ...) {
-    hypFrame <- spatstat.geom::hyperframe(
-        "ppp" = x, image = names(x),
-        "tabObs" = lapply(x, function(y) table(marks(y, drop = FALSE)$gene))
-    )
+setMethod("buildHyperFrame", "list", function(x, coordVars = c("x", "y"),...) {
+    if(all(vapply(x, is.ppp, FUN.VALUE = TRUE))){
+        hypFrame <- spatstat.geom::hyperframe(
+            "ppp" = x, "image" = names(x),
+            "tabObs" = lapply(x, function(y) table(marks(y, drop = FALSE)$gene))
+        )
+    } else if(all(vapply(x, is.matrix, FUN.VALUE = TRUE))){
+        hypFrame <- spatstat.geom::hyperframe(
+            "ppp" = lapply(x, function(z) {
+                covariates = setDiff(colnames(z), coordVars)
+                if(!("gene" %in% covariates)){
+                    stop("Gene marker is missing in at least one point pattern")
+                }
+                spatstat.geom::ppp(
+                x = z[, coordVars[1]], y = z[, coordVars[2]],
+                marks = z[, covariates, drop = FALSE],
+                xrange = range(z[, coordVars[1]]),
+                yrange = range(z[, coordVars[2]]), drop = FALSE
+            )}),
+            "image" = names(x)
+        )
+        hypFrame <- addTabObs(hypFrame)
+        buildHyperFrame(Reduce(f = rbind, x), ...)
+    } else{
+        stop("Supply a list of point patterns (ppp) or of matrices")
+    }
     return(hypFrame)
 })
 #' @rdname buildHyperFrame
