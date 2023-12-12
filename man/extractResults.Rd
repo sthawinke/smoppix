@@ -9,6 +9,8 @@ extractResults(models, hypFrame, fixedVars = NULL, method = "BH")
 \arguments{
 \item{models}{The models}
 
+\item{hypFrame}{The original hyperframe}
+
 \item{fixedVars}{The fixed effects for which the effect is to be reported}
 
 \item{method}{passed onto p.adjust}
