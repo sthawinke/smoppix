@@ -17,3 +17,14 @@ A vector of predictions
 \description{
 Evaluate the weighting function and return (unnormalized) weights
 }
+\examples{
+data(Yang)
+hypYang <- buildHyperFrame(Yang,
+    coordVars = c("x", "y"),
+    imageVars = c("day", "root", "section")
+)
+yangPims <- estPims(hypYang, pis = "nn", features = attr(hypYang, "features")[1:12])
+# First Build the weighting function
+yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))
+evalWeightFunction(yangObj$Wfs$nn, newdata = data.frame("NP" = 2))
+}

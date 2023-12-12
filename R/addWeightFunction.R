@@ -54,7 +54,7 @@ addWeightFunction <- function(hypFrame, pis = attr(hypFrame, "pis")[
     }
     if (missing(designVars) && missing(lowestLevelVar) &&
         any(!grepl("Cell", pis))) {
-        stop("Provide either designVars or lowestLevelVar!")
+        stop("Provide either designVars or lowestLevelVar for measures not on cell level!")
     }
     if (!missing(designVars) && !missing(lowestLevelVar)) {
         stop("Provide either designVars or lowestLevelVar, both not both!")

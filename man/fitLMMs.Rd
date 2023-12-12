@@ -36,6 +36,10 @@ A fitted linear mixed model of class 'lmerTest'
 \description{
 Fit linear mixed nodels for all features of a pimRes object
 }
+\details{
+Genes or gene pairs with insufficient observations will be silently
+omitted
+}
 \examples{
 data(Yang)
 hypYang <- buildHyperFrame(Yang,

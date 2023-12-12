@@ -8,13 +8,13 @@
 #' @return A list of matrices, all containing estimate, standard error,
 #' p-value and ajdusted p-value
 #' @seealso \link{fitLMMs}
-extractResults <- function(models, fixedVars = NULL, method = "BH") {
+extractResults <- function(models, hypFrame, fixedVars = NULL, method = "BH") {
     ints <- t(vapply(models, FUN.VALUE = double(3), function(x) {
         if (is.null(x) || is(x, "try-error")) {
             c("Estimate" = NA, "Std. Error" = NA, "Pr(>|t|)" = NA)
         } else {
             summary(x)$coef["(Intercept)", c("Estimate", "Std. Error", "Pr(>|t|)")]
-        } # Identical code fro lmerTest or lm
+        } # Identical code for lmerTest or lm
     }))
     colnames(ints) <- c("Estimate", "SE", "pVal")
     ints[, "Estimate"] <- ints[, "Estimate"] + 0.5
@@ -25,12 +25,18 @@ extractResults <- function(models, fixedVars = NULL, method = "BH") {
     })
     AnovaTabs <- lapply(models[id], anova)
     fixedOut <- lapply(fixedVars, function(Var) {
-        pVal <- vapply(AnovaTabs, FUN.VALUE = double(1), function(x) x[Var, "Pr(>F)"])
+        unVals = if(Var %in% attr(hypFrame, "cellVars")){
+            unique(unlist(lapply(hypFrame$ppp, function(x){
+                marks(x, drop = FALSE)[[Var]]
+            })))
+        } else {
+            unique(hypFrame[[Var]])
+        }
+        emptyCoef = rep_len(NA, length(unVals))
+        names(emptyCoef) = paste0(Var, unVals)#Prepare empty coefficient
+        pVal <- vapply(AnovaTabs, FUN.VALUE = double(1),
+                       function(x) x[Var, "Pr(>F)"])
         coefs <- lapply(models[id], function(model) {
-            emptyCoef = if(lu <- length(unFix <- model$unFix[[Var]])){
-                rep_len(NA, lu)
-            } else{NA} #Continuous variable
-            names(emptyCoef) = unFix
             #Prepare the empty coefficient vector with all levels present.
             #If outcome is NA for all levels, the factor level gets dropped,
             #causing problems downstream.

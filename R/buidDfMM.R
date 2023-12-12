@@ -5,7 +5,6 @@
 #' @param gene A character string indicating the desired gene or gene pair
 #' @param pi character string indicating the desired pim as outcome
 #'  in the linear mixed model
-#'
 #' @return A dataframe
 #' @export
 #' @importFrom scam predict.scam
@@ -49,10 +48,6 @@ buildDfMM <- function(resList, gene,
     }
     # Establish whether pi and gene match, and call separate functions
     foo <- checkAttr(resList$hypFrame, pi)
-    # if(!(pi %in% c("edge", "midpoint")) && is.null(resList$Wfs[[pi]]))
-    #     message("No weighting function supplied, we will use approximative weigths.\n",
-    #             "Consider fitting a weighting function with addWeightFunction() " ,
-    #             "and supplying it in the 'weightFunction' argument for improved inference.")
     df <- if (pairId <- grepl(pattern = "Pair", pi)) {
         if (lg == 2) {
             gene <- paste(gene, collapse = "--")
@@ -67,8 +62,7 @@ buildDfMM <- function(resList, gene,
         buildDfMMUni(gene = gene, pi = pi, resList = resList)
     }
     out <- data.frame(df, as.data.frame(resList$hypFrame[match(
-        df$design,
-        rownames(resList$hypFrame)
+        df$design, rownames(resList$hypFrame)
     ), resList$designVars]))
     for(i in names(out)){
         if(is.character(out[[i]]))
@@ -129,7 +123,7 @@ buildDfMMUni <- function(resList, gene, pi) {
         rownames(resList$hypFrame)
     }
     piMat <- data.frame(Reduce(piEsts, f = rbind),
-                        "design" = design[vapply(piEsts, FUN.VALUE = TRUE, function(x) !is.null(x))])
+                        "design" = design[id <- vapply(piEsts, FUN.VALUE = TRUE, function(x) !is.null(x))])
     if (is.null(piMat)) {
         stop("Gene  not found!\n")
     }
@@ -139,9 +133,6 @@ buildDfMMUni <- function(resList, gene, pi) {
         )
         weight <- weight / sum(weight, na.rm = TRUE)
         piMat <- cbind(piMat, weight)
-    }
-    if (!winId) {
-        rownames(piMat) <- rownames(resList$hypFrame)
     }
     return(piMat)
 }
@@ -172,7 +163,8 @@ buildDfMMBi <- function(resList, gene, pi) {
             }
         }
     })
-    piEsts <- Reduce(f = rbind, piEsts0[id <- !vapply(piEsts0, FUN.VALUE = TRUE, is.null)])
+    piEsts <- matrix(unlist(piEsts0[id <- !vapply(piEsts0, FUN.VALUE = TRUE, is.null)]),
+                     ncol = 3, byrow = TRUE, dimnames = list(NULL, c("pi", "minP", "maxP")))
     if (all(is.na(piEsts[, "pi"]))) {
         stop("Gene pair not found!\n")
     }
@@ -183,9 +175,8 @@ buildDfMMBi <- function(resList, gene, pi) {
     } else {
         rownames(resList$hypFrame)[id]
     }
-
     weight <- evalWeightFunction(resList$Wfs[[pi]],
-        newdata = data.frame(piEsts[, c("minP", "maxP")])
+        newdata = data.frame(piEsts[, c("minP", "maxP"), drop = FALSE])
     )
     weight <- weight / sum(weight, na.rm = TRUE)
     piMat <- data.frame(piEsts, weight, design = rownames(piEsts))

@@ -5,6 +5,8 @@ test_that("Adding the weight function works", {
     # Alternatively, specifying the lowest level
     expect_silent(objBG2 <- addWeightFunction(piEstsBG, lowestLevelVar = "fov"))
     expect_silent(objCSR2 <- addWeightFunction(piEstsCSR, lowestLevelVar = "fov"))
+    expect_silent(objCSR2 <- addWeightFunction(piEstsCSR,
+        pi = c("nnCell", "nnCellPair", "allDistCell", "allDistPairCell")))
     expect_true(all(vapply(objBG$wfs, FUN.VALUE = TRUE, is, "scam")))
     expect_true(all(vapply(objCSR$wfs, FUN.VALUE = TRUE, is, "scam")))
     expect_type(pred <- evalWeightFunction(objBG$Wfs[["nn"]]), "double")

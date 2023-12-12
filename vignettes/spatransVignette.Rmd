@@ -144,7 +144,10 @@ lmeMod <- lmerTest::lmer(pi - 0.5 ~ day + (1 | root),
 )
 ```
 
-Alternatively, a wrapper function is available that fits such LMMs for every transcript:
+Alternatively, a wrapper function is available that fits such LMMs 
+for every transcript. A simple random intercept is assumed 
+for every random effect, for more complex designs it is better to supply
+your own formula through the __Formula__ argument, passed on to _lmer()_.
 
 ```{r, include = FALSE}
 allModsNN <- fitLMMs(nnObj, fixedVars = "day", randomVars = "root", pi = "nn")
@@ -184,7 +187,12 @@ lmeModNN <- lmerTest::lmer(pi - 0.5 ~ day + (1 | root),
 summary(lmeModNN)
 ```
 
-We find a significant positive intercept `r summary(lmeModNN)$coef["(Intercept)", "Estimate"]+0.5`, indicating strong antilocalization.
+We find a significant positive intercept `r summary(lmeModNN)$coef["(Intercept)", "Estimate"]+0.5`, indicating strong antilocalization. And similarly, this process can be wrapped using _fitLMMs()_:
+
+```{r, include = FALSE}
+allModsNNpair <- fitLMMs(nnObj, fixedVars = "day", randomVars = "root", pi = "nnPair")
+head(getResults(allModsNNpair, "Intercept"))
+```
 
 # Eng2019: Mouse brain cells
 

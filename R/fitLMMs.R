@@ -7,12 +7,15 @@
 #' Otherwise only summary statistics are returned
 #' @param Formula A formula; if not supplied it will be constructed
 #' from the fixed and random variables
+#' @details Genes or gene pairs with insufficient observations will be silently
+#' omitted
 #'
 #' @return A fitted linear mixed model of class 'lmerTest'
 #' @export
 #' @importFrom lmerTest lmer
 #' @importFrom stats formula na.omit anova lm
 #' @importFrom lme4 lmerControl .makeCC isSingular
+#' @importFrom BiocParallel bplapply
 #'
 #' @examples
 #' data(Yang)
@@ -72,13 +75,27 @@ fitLMMs <- function(resList, pi, fixedVars = NULL, randomVars = NULL,
         contrasts <- lapply(fixedVars, function(x) "named.contr.sum")
     }
     Features <- if (grepl("Pair", pi)) {
-        makePairs(attr(resList$hypFrame, "featuresEst"))
+        feats = makePairs(attr(resList$hypFrame, "featuresEst"))
+        featIds = colSums(vapply(feats, FUN.VALUE = double(nrow(resList$hypFrame)),
+             function(gene) {
+                 vapply(resList$hypFrame$tabObs, FUN.VALUE = double(1),
+                        function(x) all(x[sund(gene)] >= 1))
+             }), na.rm = TRUE) >= 1
+        feats[featIds]
     } else {
-        attr(resList$hypFrame, "featuresEst")
+        feats = attr(resList$hypFrame, "featuresEst")
+        #First check if gene is present at all
+        featIds = colSums(vapply(feats,
+            FUN.VALUE = double(nrow(resList$hypFrame)), function(gene) {
+                vapply(resList$hypFrame$tabObs, FUN.VALUE = double(1),
+                       function(x) x[gene])
+            }) >1, na.rm = TRUE) >= 1
+        feats[featIds]
+        #Leave out barely expressed genes
     }
-    models <- lapply(Features, function(gene) {
+    models <- bplapply(Features, function(gene) {
         df <- buildDfMM(resList, gene = gene, pi = pi)
-        if (sum(!is.na(df$pi)) < 3) {
+        if (is.null(df) && sum(!is.na(df$pi)) < 3) {
             return(NULL)
         }
         if (MM) {
@@ -102,17 +119,10 @@ fitLMMs <- function(resList, pi, fixedVars = NULL, randomVars = NULL,
                       weights = if (noWeight) NULL else weight
             )
         }
-        mod$unFix = lapply(fixedVars, function(fvar){
-            if(is.factor(df[[fvar]])){
-                paste0(fvar, unique(df[[fvar]]))
-            } else {
-                NULL
-            }
-        })
         return(mod)
     })
     names(models) = Features
-    results <- extractResults(models, fixedVars)
+    results <- extractResults(models, hypFrame = resList$hypFrame, fixedVars)
     # Effect size, standard error, p-value and adjusted p-value per mixed effect
     if (!returnModels) {
         return(list("results" = results, "resList" = resList))
@@ -121,10 +131,4 @@ fitLMMs <- function(resList, pi, fixedVars = NULL, randomVars = NULL,
                     "models" = models))
     }
 }
-named.contr.sum<-function(x, ...) {
-    lev <- x
-    x<-contr.sum(x, ...)
-    colnames(x) <- lev[-length(lev)]
-    x
-}
-#After https://stackoverflow.com/questions/24515892/r-how-to-contrast-code-factors-and-retain-meaningful-labels-in-output-summary
+

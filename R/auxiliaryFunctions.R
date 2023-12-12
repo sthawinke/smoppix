@@ -56,3 +56,16 @@ dropDiagonal <- function(x) {
     diagId <- seq(1, length(x), by = (NR <- nrow(x)) + 1)
     t(matrix(t(x)[-diagId], ncol = NR))
 }
+#' A version of contr.sum that retains names, a bit controversial but also
+#' clearer
+#'
+#' @param x,... passed on to contr.sum
+#'
+#' @return The matrix of contrasts
+named.contr.sum<-function(x, ...) {
+    lev <- x
+    x<-contr.sum(x, ...)
+    colnames(x) <- lev[-length(lev)]
+    x
+}
+#After https://stackoverflow.com/questions/24515892/r-how-to-contrast-code-factors-and-retain-meaningful-labels-in-output-summary
