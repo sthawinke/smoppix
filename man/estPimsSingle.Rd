@@ -29,7 +29,7 @@ estPimsSingle(
 \item{tabObs}{A table of observed gene frequencies}
 
 \item{nPointsAll}{How many points to subsample or simulate to calculate overall interpoint distance
-and distance to point. This parameter is a main determinant of computation time}
+and distance to point.}
 
 \item{nPointsAllWin}{How many points to subsample or simulate to calculate distance to cell edge or midpoint distribution}
 

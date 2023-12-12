@@ -4,7 +4,7 @@
 #' @param pis The probabilistic indices to be estimated
 #' @param null A character vector, indicating how the null distribution is defined. See details.
 #' @param nPointsAll How many points to subsample or simulate to calculate overall interpoint distance
-#' and distance to point. This parameter is a main determinant of computation time
+#' and distance to point.
 #' @param nPointsAllWin How many points to subsample or simulate to calculate distance to cell edge or midpoint distribution
 #' @param allowManyGenePairs A boolean, set to true to suppress warning messages for large numbers of gene pairs
 #' @param manyPairs An integer, what are considered many gene pairs

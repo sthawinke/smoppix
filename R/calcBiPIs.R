@@ -18,9 +18,6 @@ calcBiPIs <- function(p, pis, null, ecdfs, nSub, ecdfAll, features,
     message("Calculating bivariate probabilistic indices...")
   }
   genePairsMat <- combn(features, 2)
-  # matrix(nrow = ncol(genePairsMat), byrow = TRUE, FUN.VALUE = double(length(grep(pis, pattern = "Pair"))),
-  # , dimnames = list(apply(genePairsMat, 2, paste, collapse = "--"), grep("Pair", pis, value = TRUE)))
-
   tmp <- lapply(seq_len(ncol(genePairsMat)), function(i) {
     feat1 <- genePairsMat[1, i]
     feat2 <- genePairsMat[2, i]
@@ -46,21 +43,23 @@ calcBiPIs <- function(p, pis, null, ecdfs, nSub, ecdfAll, features,
       calcWindowPairPI(pSub1, pSub2,
         ecdfAll = ecdfsCell,
         ecdfs = ecdfsCell, pi = "nnPairCell", null = null,
-        feat1 = feat1, feat2 = feat2, cellAndGene = marks(p, drop = FALSE)[, c("gene", "cell")],
-        cd = cd
+        feat1 = feat1, feat2 = feat2, cd = cd,
+        cellAndGene = marks(p, drop = FALSE)[, c("gene", "cell")]
       )
     }
     allDistCellPI <- if (any(pis == "allDistPairCell")) {
       calcWindowPairPI(pSub1, pSub2,
         cd = cd, null = null,
-        feat1 = feat1, feat2 = feat2, cellAndGene = marks(p, drop = FALSE)[, c("gene", "cell")],
+        feat1 = feat1, feat2 = feat2,
+        cellAndGene = marks(p, drop = FALSE)[, c("gene", "cell")],
         ecdfAll = ecdfsCell, pi = "allDistPairCell",
         ecdfs = ecdfsCell
       )
     }
     list(
       "pointDists" = c("nnPair" = NNdistPI, "allDistPair" = allDistPI),
-      "windowDists" = list("allDistPairCell" = allDistCellPI, "nnPairCell" = nnCellPI)
+      "windowDists" = list("allDistPairCell" = allDistCellPI,
+                           "nnPairCell" = nnCellPI)
     )
   })
   names(tmp) <- apply(genePairsMat, 2, paste, collapse = "--")

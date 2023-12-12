@@ -14,7 +14,8 @@ calcNNPI <- function(pSub, p, null, ecdfs, n, ecdfAll) {
   obsDistNN <- nndist(pSub)
   NP <- npoints(pSub)
   if (null == "background") {
-    approxRanks <- vapply(seq_along(obsDistNN), FUN.VALUE = double(1), function(i) {
+    approxRanks <- vapply(seq_along(obsDistNN), FUN.VALUE = double(1),
+                          function(i) {
       round(ecdfs[[i]](obsDistNN[i]) *n)
       # Approximate rank: quantile in overall distribution times
       # number of observations.
@@ -26,7 +27,8 @@ calcNNPI <- function(pSub, p, null, ecdfs, n, ecdfAll) {
     # n = n - (NP-1): black balls, number of events of other genes in background
     # r=1: Nearest neighbour so first occurrence
   } else if (null == "CSR") {
-    # Weigh by Poisson and negative hypergeometric distribution to bypass Monte-Carlo simulations
+    # Weigh by Poisson and negative hypergeometric distribution to bypass
+    # Monte-Carlo simulations
     approxRanks <- getApproxRanks(ecdfAll, obsDistNN)
     mean(pnhyper(approxRanks, n = getN(ecdfAll) - (NP - 1), m = NP - 1, r = 1))
   }

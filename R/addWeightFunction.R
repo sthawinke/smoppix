@@ -45,24 +45,28 @@
 #' yangObj2 <- addWeightFunction(yangPims, lowestLevelVar = "section",
 #' pi = "nn")
 addWeightFunction <- function(hypFrame, pis = attr(hypFrame, "pis")[
-                                !attr(hypFrame, "pis") %in% c("edge", "midpoint")
-                              ],
+                        !attr(hypFrame, "pis") %in% c("edge", "midpoint")],
                               designVars, lowestLevelVar, maxObs = 1e5,
                               maxFeatures = 5e2,
                               ...) {
   if (any(pis %in% c("edge", "midpoint"))) {
-    stop("Calculating weight matrices for distances to fixed points is ", "unnecessary as they are independent.
-             Simply proceed with fitting the model on the", " indiviual evaluations of the B-function.")
+    stop("Calculating weight matrices for distances to fixed points is ",
+    "unnecessary as they are independent.
+             Simply proceed with fitting the model on the",
+    " indiviual evaluations of the B-function.")
   }
   if (missing(designVars) && missing(lowestLevelVar) &&
-    any(!grepl("Cell", pis))) {
-    stop("Provide either designVars or lowestLevelVar for measures not on cell level!")
+    !(allCell <- all(grepl("Cell", pis)))) {
+    stop("Provide either designVars or lowestLevelVar for measures",
+         "not on cell level!")
   }
   if (!missing(designVars) && !missing(lowestLevelVar)) {
     stop("Provide either designVars or lowestLevelVar, both not both!")
   }
   allVars <- c(attr(hypFrame, "imageVars"), attr(hypFrame, "cellVars"))
   if (missing(designVars)) {
+    if(allCell)
+        lowestLevelVar = "cell"
     if (length(lowestLevelVar) != 1) {
       stop("lowestLevelVar must have length 1")
     }

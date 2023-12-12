@@ -80,7 +80,7 @@ fitLMMs <- function(resList, pi, fixedVars = NULL, randomVars = NULL,
     contrasts <- NULL
   } else {
     names(fixedVars) <- fixedVars
-    contrasts <- lapply(fixedVars, function(x) "named.contr.sum")
+    contrasts <- lapply(fixedVars, function(x) "spatrans:::named.contr.sum")
   }
   Features <- if (grepl("Pair", pi)) {
     feats <- makePairs(attr(resList$hypFrame, "featuresEst"))
