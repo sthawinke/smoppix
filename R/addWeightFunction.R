@@ -57,7 +57,7 @@ addWeightFunction <- function(hypFrame, pis = attr(hypFrame, "pis")[
             "Calculating weight matrices for distances to fixed points is ",
             "unnecessary as they are independent.
              Simply proceed with fitting the model on the",
-            " indiviual evaluations of the B-function."
+            " individual evaluations of the B-function."
         )
     }
     allCell <- all(grepl("Cell", pis))
