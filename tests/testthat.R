@@ -60,10 +60,8 @@ hypFrame2 <- addCell(hypFrame, wList, cellTypes = cellTypesDf)
 register(SerialParam())
 # nCores <- 2
 # register(MulticoreParam(nCores))
-pis <- c(
-    "nn", "allDist", "nnPair", "allDistPair", "edge",
-    "midpoint", "nnCell", "allDistCell", "nnPairCell", "allDistPairCell"
-)
+pis <- c("nn", "allDist", "nnPair", "allDistPair", "edge",
+    "midpoint", "nnCell", "allDistCell", "nnPairCell", "allDistPairCell")
 piEstsBG <- estPims(hypFrame2, pis = pis, null = "background")
 piEstsCSR <- estPims(hypFrame2, pis = pis, null = "CSR")
 # Already add weight functions

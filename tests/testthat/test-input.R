@@ -18,7 +18,9 @@ test_that("Reading in data proceeds without errors", {
     expect_identical(hypFrame, hypFrame2)
     expect_silent(hypFrame3 <- buildHyperFrame(lapply(listPPP, identity)))
     expect_silent(hypFrame3 <- buildHyperFrame(split(df,
-        f = apply(df[, c("fov", "condition")], 1, paste, collapse = "_"))))
+        f = apply(df[, c("fov", "condition")], 1, paste, collapse = "_")),
+        covariates = df[!duplicated(df[, c("fov", "condition")]), c("fov", "condition")]))
+    expect_identical(attr(hypFrame3, "imageVars"), c("fov", "condition"))
 })
 # Read in spatial experiment
 library(SpatialExperiment)

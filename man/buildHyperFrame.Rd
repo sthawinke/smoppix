@@ -21,7 +21,7 @@ buildHyperFrame(x, ...)
 
 \S4method{buildHyperFrame}{matrix}(x, image, covariates, ...)
 
-\S4method{buildHyperFrame}{list}(x, coordVars = c("x", "y"), ...)
+\S4method{buildHyperFrame}{list}(x, coordVars = c("x", "y"), covariates = NULL, ...)
 
 \S4method{buildHyperFrame}{SpatialExperiment}(x, imageVars, coVars, ...)
 }
