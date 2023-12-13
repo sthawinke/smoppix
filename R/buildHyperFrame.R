@@ -80,7 +80,6 @@ setMethod("buildHyperFrame", "matrix", function(x, image, covariates, ...) {
         hypFrame[, i] <- desMat[, i]
     }
     hypFrame <- addTabObs(hypFrame)
-    attr(hypFrame, "features") <- unique(unlist(lapply(hypFrame$tabObs, names)))
     attr(hypFrame, "imageVars") <- colnames(image)
     return(hypFrame)
 })

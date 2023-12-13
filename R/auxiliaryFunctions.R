@@ -71,12 +71,15 @@ named.contr.sum <- function(x, ...) {
     x
 }
 # After https://stackoverflow.com/questions/24515892/r-how-to-contrast-code-factors-and-retain-meaningful-labels-in-output-summary
-#' Add tables with gene counts to the hyperframe
+#' Add tables with gene counts to the hyperframe, and the features attribute
 #'
 #' @param hypFrame The hyperframe
 #'
 #' @return The hyperframe with tabObs added
 addTabObs = function(hypFrame){
-    hypFrame$tabObs = lapply(hypFrame$ppp, function(x) table(marks(x, drop = FALSE)$gene))
+    hypFrame$tabObs = lapply(hypFrame$ppp, function(x) {
+        table(marks(x, drop = FALSE)$gene)
+        })
+    attr(hypFrame, "features") <- unique(unlist(lapply(hypFrame$tabObs, names)))
     hypFrame
 }
