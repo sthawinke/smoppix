@@ -15,7 +15,6 @@ calcUniPIs(
   ecdfs,
   nSub,
   ecdfAll,
-  idOne,
   features,
   centroids
 )
@@ -40,8 +39,6 @@ calcUniPIs(
 \item{nSub}{The number of events in the subsampled pattern}
 
 \item{ecdfAll}{Overall ecdf}
-
-\item{idOne}{Index of features with only one observation, to be excluded}
 
 \item{features}{A character vector, for which features should the probabilistic indices be calculated?}
 }

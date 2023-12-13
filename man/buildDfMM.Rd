@@ -34,23 +34,20 @@ hypYang <- buildHyperFrame(Yang,
     imageVars = c("day", "root", "section")
 )
 # Fit a subset of features to limit computation time
-yangPims <- estPims(hypYang,
-    pis = c("nn", "nnPair"),
+yangPims <- estPims(hypYang[c(seq_len(5), seq(25, 29)),], pis = "nn",
     features = c(attr(hypYang, "features")[1:12], "SmVND2", "SmPINR")
 )
 # First build the weighting function
 yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))
 # Now build the data frame for mixed model analysis
-dfUniNN <- buildDfMM(yangObj, gene = "SmAHK4e", pi = "nn")
-# A bivariate weighting function for the pairs
-dfBiNN <- buildDfMM(yangObj, gene = "SmVND2--SmPINR", pi = "nnPair")
+dfUniNN <- buildDfMM(yangObj, gene = "SmVND2", pi = "nn")
 # Example analysis with linear mixed model
 library(lmerTest)
 # Use sum coding for day to maintain interpretability of the intercept
 mixedMod <- lmer(pi - 0.5 ~ day + (1 | root),
-    weight = weight, data = dfBiNN,
+    weight = weight, data = dfUniNN,
     contrasts = list("day" = "contr.sum")
 )
 summary(mixedMod)
-# Evidence for anticorrelation
+# Evidence for aggregation
 }

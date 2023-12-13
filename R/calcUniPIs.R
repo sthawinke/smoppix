@@ -4,30 +4,30 @@
 #' @param ecdfsCell ecdfs within the cells
 #' @param ecdfAll Overall ecdf
 #' @param ecdfs Ecdfs per point
-#' @param idOne Index of features with only one observation, to be excluded
 #' @param nSub The number of events in the subsampled pattern
 #' @param verbose A boolean, should verbose output be printed
 #'
 #' @return PIs for every feature
 #' @importFrom spatstat.geom marks
 calcUniPIs <- function(p, pis, verbose, ecdfsCell, owins, tabObs,
-                       null, ecdfs, nSub, ecdfAll, idOne, features,
+                       null, ecdfs, nSub, ecdfAll, features,
                        centroids) {
     if (verbose) {
         message("Calculating univariate probabilistic indices...")
     }
-    uniPIs <- lapply(nams <- names(tabObs[features])[!idOne], function(feat) {
+    uniPIs <- lapply(nams <- names(tabObs[features]), function(feat) {
         pSub <- p[id <- which(marks(p, drop = FALSE)$gene == feat), ]
-        pLeft <- p[-id, ] # Avoid zero distances by removing observations of gene
+        pLeft <- p[-id, ];NP = npoints(pSub)
+        # Avoid zero distances by removing observations of gene itself
         NNdistPI <- if (any(pis == "nn")) {
-            calcNNPI(pSub, pLeft, null,
+            if(NP==1) NA else calcNNPI(pSub, pLeft, null,
                 ecdfs = ecdfs[id], n = nSub,
                 ecdfAll = ecdfAll
             )
         }
         # Also here room for improvement
         allDistPI <- if (any(pis == "allDist")) {
-            calcAllDistPI(pSub, pLeft,
+            if(NP==1) NA else calcAllDistPI(pSub, pLeft,
                 ecdfAll = ecdfAll, null = null,
                 ecdfs = ecdfs[id]
             )

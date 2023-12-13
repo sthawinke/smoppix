@@ -94,10 +94,11 @@ setMethod("buildHyperFrame", "list", function(x, coordVars = c("x", "y"),...) {
             "ppp" = x, "image" = names(x),
             "tabObs" = lapply(x, function(y) table(marks(y, drop = FALSE)$gene))
         )
-    } else if(all(vapply(x, is.matrix, FUN.VALUE = TRUE))){
+    } else if(all(vapply(x, function(y) {is.matrix(y) || is.data.frame(y)},
+                         FUN.VALUE = TRUE))){
         hypFrame <- spatstat.geom::hyperframe(
             "ppp" = lapply(x, function(z) {
-                covariates = setDiff(colnames(z), coordVars)
+                covariates = setdiff(colnames(z), coordVars)
                 if(!("gene" %in% covariates)){
                     stop("Gene marker is missing in at least one point pattern")
                 }
@@ -110,9 +111,9 @@ setMethod("buildHyperFrame", "list", function(x, coordVars = c("x", "y"),...) {
             "image" = names(x)
         )
         hypFrame <- addTabObs(hypFrame)
-        buildHyperFrame(Reduce(f = rbind, x), ...)
     } else{
-        stop("Supply a list of point patterns (ppp) or of matrices")
+        stop("Supply a list of point patterns (ppp)",
+             "or of dataframes or matrices")
     }
     return(hypFrame)
 })

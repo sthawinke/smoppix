@@ -15,7 +15,7 @@ test_that("Building data frames for mixed modelling proceeds without errors", {
     ))
     # For fixed points, number of PI must match number of events
     expect_equal(totPointsGene1, nrow(dfBG6))
-    expect_equal(nrow(dfBG3), sum(vapply(objBG$hypFrame$ppp,
+    expect_equal(sum(!is.na(dfBG3$pi)), sum(vapply(objBG$hypFrame$ppp,
         FUN.VALUE = logical(1),
         function(x) sum(marks(x, drop = TRUE)$gene == "gene1") > 1
     )))
