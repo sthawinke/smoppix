@@ -7,7 +7,8 @@
 \alias{buildHyperFrame,list-method}
 \alias{buildHyperFrame,SpatialExperiment-method}
 \title{Built the hyperframe containing all separate point patterns that will
- be used throughout the analysis. Both matrices, dataframe and SpatialExperiment inputs are accepted.}
+ be used throughout the analysis. Matrices, dataframe, lists and
+ SpatialExperiment inputs are accepted.}
 \usage{
 buildHyperFrame(x, ...)
 
@@ -21,7 +22,13 @@ buildHyperFrame(x, ...)
 
 \S4method{buildHyperFrame}{matrix}(x, image, covariates, ...)
 
-\S4method{buildHyperFrame}{list}(x, coordVars = c("x", "y"), covariates = NULL, ...)
+\S4method{buildHyperFrame}{list}(
+  x,
+  coordVars = c("x", "y"),
+  covariatesDf = NULL,
+  idVar = NULL,
+  ...
+)
 
 \S4method{buildHyperFrame}{SpatialExperiment}(x, imageVars, coVars, ...)
 }
@@ -32,7 +39,8 @@ buildHyperFrame(x, ...)
 
 \item{coordVars}{Names of coordinates}
 
-\item{imageVars}{A character vector of variables whose unique combinations define the separate point patterns (images)}
+\item{imageVars}{A character vector of variables whose unique combinations
+define the separate point patterns (images)}
 
 \item{coVars}{Names of covariates such as gene or cell for each single point}
 
@@ -40,6 +48,11 @@ buildHyperFrame(x, ...)
 the different point patterns}
 
 \item{covariates}{A vector of covariates}
+
+\item{covariatesDf}{A data frame or matrix of covariates}
+
+\item{idVar}{An optional id variable present in covariatesDf, that is matched
+with the names of covariatesDf}
 
 \item{matrix}{The input matrix}
 
@@ -50,7 +63,8 @@ An object of class 'hyperframe' from the 'spatstat' package
 }
 \description{
 Built the hyperframe containing all separate point patterns that will
- be used throughout the analysis. Both matrices, dataframe and SpatialExperiment inputs are accepted.
+ be used throughout the analysis. Matrices, dataframe, lists and
+ SpatialExperiment inputs are accepted.
 }
 \examples{
 data(Yang)

@@ -62,10 +62,12 @@ fitLMMs <- function(resList, pi, fixedVars = NULL, randomVars = NULL,
                 tmp
         }))
     designVars <- c(fixedVars, randomVarsSplit)
-    stopifnot(all(designVars %in% c(
+    if(any(id <- !(designVars %in% c(
         resList$designVars,
         attr(resList$hypFrame, "cellVars")
-    )))
+    )))){
+        stop("Design variables", designVars[id], "not found in object.")
+    }
     # Allow cell as design variable, both fixed and random
     if (is.null(Formula)) {
         fixedPart <- paste(

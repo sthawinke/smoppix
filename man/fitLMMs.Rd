@@ -11,7 +11,8 @@ fitLMMs(
   randomVars = NULL,
   verbose = TRUE,
   returnModels = FALSE,
-  Formula = NULL
+  Formula = NULL,
+  randomNested = TRUE
 )
 }
 \arguments{
@@ -20,7 +21,10 @@ fitLMMs(
 \item{pi}{character string indicating the desired pim as outcome
 in the linear mixed model}
 
-\item{fixedVars, randomVars}{Names of fixed and random variables}
+\item{fixedVars}{Names of fixed effects}
+
+\item{randomVars}{Names of random variables, possibly in a single vector to
+reflect nesting structure, see details.}
 
 \item{verbose}{A boolean, should the formula be printed?}
 
@@ -29,6 +33,9 @@ Otherwise only summary statistics are returned}
 
 \item{Formula}{A formula; if not supplied it will be constructed
 from the fixed and random variables}
+
+\item{randomNested}{A boolean, indicating if random effects are nested within
+point patterns. See details.}
 }
 \value{
 A fitted linear mixed model of class 'lmerTest'
@@ -38,7 +45,14 @@ Fit linear mixed nodels for all features of a pimRes object
 }
 \details{
 Genes or gene pairs with insufficient observations will be silently
-omitted
+omitted. When randomVars is provided as a vector, independent random
+intercepts are fitted for them by default. Providing them separated by "\" or
+":" as in the lmer formulas is also allowed to reflect nesting structure.
+
+It is by default assumed that random effects are nested within the point
+ patterns. This means for instance that cells with the same name but from
+ different point patterns are assigned to different random effects. Set
+ "randomNested" to FALSE to override this behaviour.
 }
 \examples{
 data(Yang)

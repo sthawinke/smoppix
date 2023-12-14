@@ -101,8 +101,8 @@ setMethod("buildHyperFrame", "list", function(x, coordVars = c("x", "y"),
     if(!is.null(names(x)) && !is.null(idVar)){
         covariatesDf = covariatesDf[match(names(x), covariatesDf[, idVar]),]
         #Match the ranking
-    } else {
-        message("No matching information supplied, matching point patterns",
+    } else if(!is.null(covariatesDf)){
+        message("No matching information supplied, matching point patterns ",
         "and covariates based on order.")
     }
 
