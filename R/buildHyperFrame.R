@@ -84,15 +84,28 @@ setMethod("buildHyperFrame", "matrix", function(x, image, covariates, ...) {
     return(hypFrame)
 })
 #' @param list A list of matrices or of point patterns of class "ppp"
+#' @param covariatesDf A data frame or matrix of covariates
+#' @param idVar An optional id variable present in covariatesDf, that is matched
+#' with the names of covariatesDf
 #'
 #' @rdname buildHyperFrame
 #' @export
 setMethod("buildHyperFrame", "list", function(x, coordVars = c("x", "y"),
-                                              covariates = NULL,...) {
-    stopifnot(is.null(covariates) || (nrow(covariates) == length(x)))
+                            covariatesDf = NULL, idVar = NULL,...) {
+    stopifnot(is.null(covariatesDf) || (nrow(covariatesDf) == length(x)),
+              is.null(idVar) || idVar %in% names(covariatesDf))
+    if(!is.null(names(x)) && (!is.null(rownames(covariatesDf)) || !is.null(idVar))){
+        covariatesDf = covariatesDf[if(is.null(idVar)) names(x) else
+            match(names(x), covariatesDf[, idVar]),]
+        #Match the ranking
+    } else {
+        message("No matching information supplied, matching point patterns",
+        "and covariates based on order.")
+    }
+
     if(all(vapply(x, is.ppp, FUN.VALUE = TRUE))){
         hypFrame <- spatstat.geom::hyperframe(
-            "ppp" = x, "image" = names(x), covariates
+            "ppp" = x, "image" = names(x), covariatesDf
         )
     } else if(all(vapply(x, function(y) {is.matrix(y) || is.data.frame(y)},
                          FUN.VALUE = TRUE))){
@@ -111,15 +124,15 @@ setMethod("buildHyperFrame", "list", function(x, coordVars = c("x", "y"),
             "image" = names(x)
         )
         #Add point pattern covariates
-        for (i in names(covariates)) {
-            hypFrame[, i] <- covariates[, i]
+        for (i in names(covariatesDf)) {
+            hypFrame[, i] <- covariatesDf[, i]
         }
     } else{
         stop("Supply a list of point patterns (ppp)",
              "or of dataframes or matrices")
     }
     hypFrame <- addTabObs(hypFrame)
-    attr(hypFrame, "imageVars") <- colnames(covariates)
+    attr(hypFrame, "imageVars") <- colnames(covariatesDf)
     return(hypFrame)
 })
 #' @rdname buildHyperFrame
