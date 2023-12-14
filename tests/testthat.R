@@ -18,9 +18,8 @@ condition <- sample(conditions, n, TRUE)
 df <- data.frame(gene, x, y, fov, "condition" = condition)
 # A list of point patterns
 listPPP <- tapply(seq(nrow(df)), df$fov, function(i) {
-    ppp(
-        x = df$x[i], y = df$y[i],
-        marks = df[i, c("gene", "condition"), drop = FALSE]
+    ppp(x = df$x[i], y = df$y[i],
+        marks = df[i, c("gene", "condition", "fov"), drop = FALSE]
     )
 }, simplify = FALSE)
 # Regions of interest (roi): Diamond in the center plus four triangles
