@@ -4,14 +4,22 @@
 \alias{plotExplore}
 \title{Plot the hyperframe for exploratory purposes}
 \usage{
-plotExplore(hypFrame, features = attr(hypFrame, "features"), ppps)
+plotExplore(
+  hypFrame,
+  features = attr(hypFrame, "features"),
+  ppps,
+  maxPlot = 2e+05
+)
 }
 \arguments{
 \item{hypFrame}{The hyperframa}
 
 \item{features}{A small number of features to be fitted. Defaults to the first 5}
 
-\item{ppps}{The rownames or indices of the point patterns to be plotted. Defaults to the first 9.}
+\item{ppps}{The rownames or indices of the point patterns to be plotted.
+Defaults to the first 8.}
+
+\item{maxPlot}{The maximum number of events plotted per point pattern}
 }
 \value{
 Plots a facet of point patterns to output
