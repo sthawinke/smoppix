@@ -83,3 +83,17 @@ addTabObs = function(hypFrame){
     attr(hypFrame, "features") <- unique(unlist(lapply(hypFrame$tabObs, names)))
     hypFrame
 }
+#' Nest random effects within point patterns, by pasting the design factor
+#' onto it
+#'
+#' @param df The dataframe
+#' @param randomVars The random variables
+#'
+#' @return The dataframe with adapted randomVars
+nestRandom = function(df, randomVars){
+    stopifnot(any("design" == names(df)))
+    for(i in randomVars){
+        df[, i] = apply(df[, c("design", i)], 1, paste, collapse = "_")
+    }
+    df
+}

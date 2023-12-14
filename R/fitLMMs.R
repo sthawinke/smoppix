@@ -1,14 +1,25 @@
 #' Fit linear mixed nodels for all features of a pimRes object
 #'
 #' @inheritParams buildDfMM
-#' @param fixedVars,randomVars Names of fixed and random variables
+#' @param fixedVars Names of fixed effects
+#' @param randomVars Names of random variables, possibly in a single vector to
+#' reflect nesting structure, see details.
 #' @param verbose A boolean, should the formula be printed?
 #' @param returnModels a boolean: should the full models be returned?
 #' Otherwise only summary statistics are returned
 #' @param Formula A formula; if not supplied it will be constructed
 #' from the fixed and random variables
+#' @param randomNested A boolean, indicating if random effects are nested within
+#' point patterns. See details.
 #' @details Genes or gene pairs with insufficient observations will be silently
-#' omitted
+#' omitted. When randomVars is provided as a vector, independent random
+#' intercepts are fitted for them by default. Providing them separated by "\" or
+#' ":" as in the lmer formulas is also allowed to reflect nesting structure.
+#'
+#' It is by default assumed that random effects are nested within the point
+#'  patterns. This means for instance that cells with the same name but from
+#'  different point patterns are assigned to different random effects. Set
+#'  "randomNested" to FALSE to override this behaviour.
 #'
 #' @return A fitted linear mixed model of class 'lmerTest'
 #' @export
@@ -35,7 +46,8 @@
 #' @seealso \link{buildDfMM},\link{getResults}
 #' #TO DO: write wrapper over all PIs!
 fitLMMs <- function(resList, pi, fixedVars = NULL, randomVars = NULL,
-                    verbose = TRUE, returnModels = FALSE, Formula = NULL) {
+                    verbose = TRUE, returnModels = FALSE, Formula = NULL,
+                    randomNested = TRUE) {
     pi <- match.arg(pi, choices = c(
         "nn", "allDist", "nnPair", "allDistPair",
         "edge", "midpoint", "nnCell", "allDistCell",
@@ -43,7 +55,13 @@ fitLMMs <- function(resList, pi, fixedVars = NULL, randomVars = NULL,
     ))
     noWeight <- pi %in% c("edge", "midpoint")
     # For independent distances, no weights are needed
-    designVars <- c(fixedVars, randomVars)
+    randomVarsSplit = if(!is.null(randomVars))
+        unlist(lapply(c("/", ":"), function(Split){
+            tmp = strsplit(randomVars, Split)
+            if(length(tmp)>2)
+                tmp
+        }))
+    designVars <- c(fixedVars, randomVarsSplit)
     stopifnot(all(designVars %in% c(
         resList$designVars,
         attr(resList$hypFrame, "cellVars")
@@ -53,11 +71,11 @@ fitLMMs <- function(resList, pi, fixedVars = NULL, randomVars = NULL,
         fixedPart <- paste(
             "pi - 0.5 ~ 1",
             paste(if (!is.null(fixedVars)) {
-                paste("+", paste(fixedVars, collapse = "+"))
+                paste("+", paste(fixedVars, collapse = " + "))
             })
         )
         Formula <- formula(formChar <- paste(fixedPart, if (!is.null(randomVars)) {
-            paste("+", paste0("(1|", randomVars, ")", collapse = "+"))
+            paste("+", paste0("(1|", randomVars, ")", collapse = " + "))
         }))
     } else {
         formChar <- paste(as.character(Formula), collapse = "")
@@ -68,10 +86,8 @@ fitLMMs <- function(resList, pi, fixedVars = NULL, randomVars = NULL,
     }
     Control <- lmerControl( ## convergence checking options
         check.conv.grad = .makeCC("ignore", tol = 2e-3, relTol = NULL),
-        check.conv.singular = .makeCC(
-            action = "ignore",
-            tol = formals(isSingular)$tol
-        ),
+        check.conv.singular = .makeCC(action = "ignore",
+            tol = formals(isSingular)$tol),
         check.conv.hess = .makeCC(action = "ignore", tol = 1e-6)
     )
     if (is.null(fixedVars)) {
@@ -108,6 +124,9 @@ fitLMMs <- function(resList, pi, fixedVars = NULL, randomVars = NULL,
     }
     models <- bplapply(Features, function(gene) {
         df <- buildDfMM(resList, gene = gene, pi = pi)
+        if(randomNested){
+            df = nestRandom(df, randomVarsSplit)
+        }
         if (is.null(df) && sum(!is.na(df$pi)) < 3) {
             return(NULL)
         }

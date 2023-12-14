@@ -45,19 +45,18 @@ test_that("Fitting linear mixed models proceeds without errors", {
     expect_message(linModsMPcell <- fitLMMs(objBG,
         fixedVars = c("condition", "cellType"), pi = "midpoint"
     ))
-    # Check nesting for lmerTest! FIX ME!
     # Account for cell as random effect
     expect_message(linModsEdgeCell <- fitLMMs(objBG,
         fixedVars = "condition",
-        randomVars = "cell", pi = "edge"
+        randomVars = "root/cell", pi = "edge"
     ))
     expect_message(linModsMidCellType <- fitLMMs(objBG,
         fixedVars = c("condition", "cellType"),
-        randomVars = "cell", pi = "midpoint"
+        randomVars = "root/cell", pi = "midpoint"
     ))
     expect_message(linModsNNCellType <- fitLMMs(objBG,
         fixedVars = c("condition", "cellType"),
-        pi = "nnCell"
+        pi = "nnCell", randomVars = "root"
     ))
     expect_is(resMat <- getResults(linModsMP, "Intercept"), "matrix")
     expect_is(resMatCond <- getResults(linModsEdge, "condition"), "matrix")
