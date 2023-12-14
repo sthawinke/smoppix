@@ -21,10 +21,10 @@
 #' @importFrom Rdpack reprompt
 #' @importFrom Rfast rowSort rowMins rowAny
 #' @importFrom extraDistr pnhyper
-estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 4e2,
+estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 5e2,
                           nPointsAllWin = 2e2, features = NULL,
-                          allowManyGenePairs = FALSE, manyPairs = 1e6, verbose = FALSE,
-                          owins = NULL, centroids = NULL) {
+                          allowManyGenePairs = FALSE, manyPairs = 1e6,
+                          verbose = FALSE, owins = NULL, centroids = NULL) {
   if (is.null(features)) {
     features <- names(tabObs)
   } else {
@@ -94,20 +94,18 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 4e2,
     }
     if (any(pis %in% c("nn", "nnPair", "allDist", "allDistPair"))) {
       # Prepare some null distances, either with CSR or background
-      subSamSize <- max(c(nPointsAll, tabObs + 1e2))
-      pSub <- subSampleP(p, subSamSize)
+      pSub <- subSampleP(p, nPointsAll)
       # Subsample for memory reasons
       cd <- getCrossDist(p, pSub, null)
       ecdfs <- apply(rowSort(cd), 1, ecdfPreSort)
       # For background, condition on point locations
-      nSub <- ncol(cd)
     }
   }
   # Univariate patterns
   piPair <- grepl(pis, pattern = "Pair")
   uniPIs <- if (any(!piPair)) {
     calcUniPIs(p, pis, verbose, ecdfsCell, owins, tabObs, null,
-      ecdfs, nSub, ecdfAll, features,
+      ecdfs, nSub = npoints(p), ecdfAll, features,
       centroids = centroids
     )
   }
@@ -115,7 +113,7 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 4e2,
   biPIs <- if (any(piPair)) {
     calcBiPIs(
       features = features[tabObs[features] > 0], p, pis, null,
-      ecdfs, nSub, ecdfAll, manyPairs, verbose, allowManyGenePairs,
+      ecdfs, nSub = npoints(p), ecdfAll, manyPairs, verbose, allowManyGenePairs,
       ecdfsCell
     )
   }
