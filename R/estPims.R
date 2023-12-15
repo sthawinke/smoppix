@@ -159,8 +159,6 @@ estPims <- function(hypFrame, pis = c(
                     features = attr(hypFrame, "features"), ...) {
   pis <- match.arg(pis, several.ok = TRUE)
   null <- match.arg(null)
-  Im <- attr(hypFrame, "imageVars")
-  Cv <- attr(hypFrame, "cellVars")
   if (any(pis %in% c("edge", "midpoint", "nnCell", "allDistCell")) &&
       is.null(hypFrame$owins)) {
     stop(
@@ -177,10 +175,5 @@ estPims <- function(hypFrame, pis = c(
       pis = pis, null = null, tabObs = tabObs, centroids = centroids, ...
     ))
   })
-  attr(hypFrame, "pis") <- pis # Tag the pims calculated
-  attr(hypFrame, "featuresEst") <- features
-  attr(hypFrame, "imageVars") <- Im
-  attr(hypFrame, "cellVars") <- Cv
-  # Remember for which features the pims were calculated
-  hypFrame
+  list("hypFrame" = hypFrame, "null" = null, "pis" = pis, "features" = features)
 }

@@ -84,7 +84,6 @@ setMethod("buildHyperFrame", "matrix", function(x, image, covariates, ...) {
         hypFrame[, i] <- desMat[, i]
     }
     hypFrame <- addTabObs(hypFrame)
-    attr(hypFrame, "imageVars") <- colnames(image)
     return(hypFrame)
 })
 #' @param list A list of matrices or of point patterns of class "ppp"
@@ -133,7 +132,6 @@ setMethod("buildHyperFrame", "list", function(x, coordVars = c("x", "y"),
         hypFrame[, i] <- covariatesDf[, i]
     }
     hypFrame <- addTabObs(hypFrame)
-    attr(hypFrame, "imageVars") <- colnames(covariatesDf)
     return(hypFrame)
 })
 #' @rdname buildHyperFrame

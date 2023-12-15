@@ -16,7 +16,7 @@
 #' )
 #' # Fit a subset of features to limit computation time
 #' yangPims <- estPims(hypYang[c(seq_len(5), seq(25, 29)),], pis = "nn",
-#'     features = c(attr(hypYang, "features")[1:12], "SmVND2", "SmPINR")
+#' "SmVND2", "SmPINR")
 #' )
 #' # First build the weighting function
 #' yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))
@@ -40,7 +40,7 @@ buildDfMM <- function(resList, gene,
     pi <- match.arg(pi)
     stopifnot((lg <- length(gene)) %in% c(1, 2))
     # Check whether genes are present
-    if (any(id <- !(sund(gene) %in% attr(resList$hypFrame, "featuresEst")))) {
+    if (any(id <- !(sund(gene) %in% getFeatures(resList)))) {
         stop("PIs for features\n", sund(gene)[id], "\nnot found in object")
     }
     # Establish whether pi and gene match, and call separate functions

@@ -18,7 +18,7 @@ calcNNPI <- function(pSub, p, null, cd, n, ecdfAll) {
         approxRanks <- vapply(seq_along(obsDistNN),
             FUN.VALUE = double(1),
             function(i) {
-                round((which.max(cd[i,] < obsDistNN[i]) - 0.5)*Fac)
+                round((which.max(cd[i,] > obsDistNN[i]) - 0.5)*Fac)
                 # Approximate rank: quantile in overall distribution times
                 # number of observations.
             }
@@ -42,7 +42,7 @@ calcNNPIpair <- function(obsDistNN, id1, id2, null, p, cd, n, ecdfAll) {
     obsDistRank <- if (null == "background") {
         Fac = n/length(obsDistNN)
         vapply(seq_along(obsDistNN), FUN.VALUE = double(1), function(i) {
-            round((which.max(cd[i,] < obsDistNN[i]) - 0.5)*Fac)
+            round((which.max(cd[i,] > obsDistNN[i]) - 0.5)*Fac)
         })
     } else {
         getApproxRanks(ecdfAll, obsDistNN)

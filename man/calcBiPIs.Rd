@@ -27,6 +27,8 @@ calcBiPIs(
 \item{null}{A character vector, indicating how the null distribution is
 defined. See details.}
 
+\item{cd}{A matrix of cross-distances}
+
 \item{nSub}{The number of events in the subsampled pattern}
 
 \item{ecdfAll}{Overall ecdf}
@@ -41,6 +43,9 @@ probabilistic indices be calculated?}
 \item{allowManyGenePairs}{A boolean, set to true to override warning on computation time}
 
 \item{ecdfsCell}{ecdfs within the cells}
+
+\item{maxNum}{The maximum number of points to calculate cross distances for,
+to avoid excessive memory usage.}
 }
 \value{
 A matrix of bivariate PIs

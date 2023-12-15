@@ -36,6 +36,8 @@ and their centroids}
 \item{null}{A character vector, indicating how the null distribution is
 defined. See details.}
 
+\item{cd}{A matrix of cross-distances}
+
 \item{nSub}{The number of events in the subsampled pattern}
 
 \item{ecdfAll}{Overall ecdf}

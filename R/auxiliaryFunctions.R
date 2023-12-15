@@ -116,3 +116,14 @@ which.max.early = function(x, a){
             return(i)
     }
 }
+#' Extract all unique features
+#'
+#' @param x A hyperframe or a results list containing a hyperframe
+#'
+#' @return A vector of features
+getFeatures = function(x){
+    if(!is(x, "hyperframe")){
+        x = x$hypFrame
+    }
+    unique(unlist(lapply(hypFrame$tabObs, names)))
+}

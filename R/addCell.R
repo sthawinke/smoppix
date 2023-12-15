@@ -68,8 +68,6 @@ addCell <- function(hypFrame, owins, cellTypes = NULL, checkOverlap = TRUE,
         is(hypFrame, "hyperframe"),
         is.null(cellTypes) || is.data.frame(cellTypes)
     )
-    Feat <- attr(hypFrame, "features")
-    Im <- attr(hypFrame, "imageVars")
     if (ct <- is.data.frame(cellTypes)) {
         if (!("cell" %in% names(cellTypes))) {
             stop("Variable names 'cell' must be contained in cell types dataframe")
@@ -125,9 +123,5 @@ addCell <- function(hypFrame, owins, cellTypes = NULL, checkOverlap = TRUE,
         lapply(x, function(y) centroid.owin(y, as.ppp = TRUE))
     })
     # Add centroids for all windows
-    attr(hypFrame, "features") <- Feat
-    attr(hypFrame, "imageVars") <- Im
-    attr(hypFrame, "cellVars") <- names(cellTypes)
-    # Retain attributes, which gets lost when setting the marks
     return(hypFrame)
 }
