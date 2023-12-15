@@ -5,10 +5,7 @@
 \title{Return all design variables, both at the level of the point pattern and the
 level of the event}
 \usage{
-getDesignVars(
-  x,
-  exclude = c("x", "y", "z", "tabObs", "centroids", "owins", "ppp")
-)
+getDesignVars(x)
 }
 \arguments{
 \item{x}{The results list}
@@ -21,4 +18,9 @@ A vector of likely design variables
 \description{
 Return all design variables, both at the level of the point pattern and the
 level of the event
+}
+\details{
+getDesignVars() returns all design variables, getPPPvars returns
+design variables related to the different images and getEventVars returs
+design variables related to the individual events
 }

@@ -124,6 +124,6 @@ getFeatures = function(x){
     if(!is(x, "hyperframe")){
         x = x$hypFrame
     }
-    unique(unlist(lapply(hypFrame$tabObs, names)))
+    unique(unlist(lapply(x$tabObs, names)))
 }
 

@@ -5,16 +5,19 @@
 #' @param exclude variables to exclude
 #'
 #' @return A vector of likely design variables
-getDesignVars = function(x, exclude = c("x", "y", "z", "tabObs", "centroids",
-                                        "owins", "ppp")){
-    pppVars = getPPPvars
-    eventVars = getEventVars(x, exclude)
+#' @details getDesignVars() returns all design variables, getPPPvars returns
+#' design variables related to the different images and getEventVars returs
+#' design variables related to the individual events
+getDesignVars = function(x){
+    pppVars = getPPPvars(x)
+    eventVars = getEventVars(x)
     c(pppVars, eventVars)
 }
-getPPPvars = function(x, exclude){
+getPPPvars = function(x, exclude = c("tabObs", "centroids", "owins", "ppp",
+                                     "pimRes", "image")){
     setdiff(names(x$hypFrame), exclude)
 }
-getEventVars = function(x, exclude){
+getEventVars = function(x, exclude = c("x", "y", "z")){
     setdiff(unique(lapply(x$hypFrame$ppp, function(ppp){
         names(marks(ppp, drop = FALSE))
     })), exclude)

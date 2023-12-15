@@ -32,8 +32,9 @@ plotWf <- function(resList, pi = resList$pis) {
     if (grepl("Pair", pi)) {
         tmp <- exp(wf$model[, c("log(maxP)", "log(minP)")])
         colnames(tmp) <- c("maxP", "minP")
-        df <- cbind("variance" = exp(predict.scam(wf, newdata = tmp)), tmp)
-        ggplot(df, aes(x = log10(minP), y = log10(maxP), col = 1 / variance)) +
+        df <- cbind("Weight" = exp(predict.scam(wf, newdata = tmp)), tmp)
+        df[, "Weight"] = df[, "Weight"]/sum(df[, "Weight"])
+        ggplot(df, aes(x = log10(minP), y = log10(maxP), col = Weight)) +
             geom_point(size = 1) +
             scale_colour_gradient(low = "yellow", high = "blue", name = "Weight") +
             xlab("Log10 number of events for least expressed gene") +
@@ -41,8 +42,9 @@ plotWf <- function(resList, pi = resList$pis) {
             ggtitle(paste("Weighting function for probabilistic indices of type", pi))
     } else {
         tmp <- data.frame("NP" = exp(wf$model[, "log(NP)"]))
-        df <- cbind("weight" = 1 / exp(predict.scam(wf, newdata = tmp)), tmp)
-        plot(weight ~ NP,
+        df <- cbind("Weight" = 1 / exp(predict.scam(wf, newdata = tmp)), tmp)
+        df[, "Weight"] = df[, "Weight"]/sum(df[, "Weight"])
+        plot(Weight ~ NP,
             data = df[order(df$NP), ], type = "l",
             xlab = "Number of observations", ylab = "Weight",
             main = paste("Weighting function for probabilistic indices of type", pi)

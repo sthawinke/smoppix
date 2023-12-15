@@ -49,7 +49,7 @@ addWeightFunction <- function(resList, pis = resList$pis,
                               designVars, lowestLevelVar, maxObs = 1e5,
                               maxFeatures = 5e2,
                               ...) {
-    if (any(pis %in% c("edge", "midpoint"))) {
+    if (all(pis %in% c("edge", "midpoint"))) {
         stop(
             "Calculating weight matrices for distances to fixed points is ",
             "unnecessary as they are independent.
@@ -106,7 +106,7 @@ addWeightFunction <- function(resList, pis = resList$pis,
     Wfs <- bplapply(pis, function(pi) {
         piListName <- if (pairId <- grepl("Pair", pi)) "biPIs" else "uniPIs"
         subListName <- if (cellId <- grepl("Cell", pi)) "windowDists" else "pointDists"
-        features <- getFeatures(hypFrame)
+        features <- getFeatures(resList)
         piList <- lapply(resList$hypFrame$pimRes, function(x) {
             lapply(x[[piListName]], function(y) {
                 y[[subListName]][[pi]]
