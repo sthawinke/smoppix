@@ -4,14 +4,15 @@
 \alias{calcAllDistPI}
 \title{Estimate the probabilistic index for the collection of all distances}
 \usage{
-calcAllDistPI(pSub, p, ecdfAll, null, ecdfs)
+calcAllDistPI(pSub, p, ecdfAll, null, cd)
 }
 \arguments{
 \item{pSub}{The subset point pattern with only one feature}
 
 \item{p}{The point pattern}
 
-\item{ecdfAll}{The empirical cumulative distribution function of all distances under the null}
+\item{ecdfAll}{The empirical cumulative distribution function of
+all distances under the null}
 
 \item{null}{A character vector, indicating how the null distribution is
 defined. See details.}

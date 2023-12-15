@@ -31,8 +31,7 @@ defined. See details.}
 
 \item{nPointsAll}{How many points to subsample or simulate to calculate
 overall interpoint distance and distance to point.
-This parameter is a strong driver of memory
-and cpu usage.}
+This parameter is a strong driver of memory and cpu usage.}
 
 \item{nPointsAllWin}{How many points to subsample or simulate
 to calculate distance to cell edge or midpoint distribution}

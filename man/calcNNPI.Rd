@@ -4,7 +4,7 @@
 \alias{calcNNPI}
 \title{Estimate the PI for the nearest neighbour distances}
 \usage{
-calcNNPI(pSub, p, null, ecdfs, n, ecdfAll)
+calcNNPI(pSub, p, null, cd, n, ecdfAll)
 }
 \arguments{
 \item{pSub}{The subset point pattern with only one feature}
@@ -14,11 +14,10 @@ calcNNPI(pSub, p, null, ecdfs, n, ecdfAll)
 \item{null}{A character vector, indicating how the null distribution is
 defined. See details.}
 
-\item{ecdfs}{A list of empirical distribution functions, one for each event}
-
 \item{n}{the number of subsampled distances}
 
-\item{ecdfAll}{The empirical cumulative distribution function of all distances under the null}
+\item{ecdfAll}{The empirical cumulative distribution function of
+all distances under the null}
 }
 \value{
 The estimated probabilistic index

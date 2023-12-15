@@ -12,12 +12,13 @@
 #' @return The estimated probabilistic index
 calcNNPI <- function(pSub, p, null, cd, n, ecdfAll) {
     obsDistNN <- nndist(pSub)
-    NP <- npoints(pSub);NC = ncol(cd)
+    NP <- npoints(pSub);
     if (null == "background") {
+        Fac = n/ncol(cd)
         approxRanks <- vapply(seq_along(obsDistNN),
             FUN.VALUE = double(1),
             function(i) {
-                round((which.max(cd[i,] < obsDistNN[i]) - 0.5)*n/NC)
+                round((which.max(cd[i,] < obsDistNN[i]) - 0.5)*Fac)
                 # Approximate rank: quantile in overall distribution times
                 # number of observations.
             }
@@ -35,13 +36,14 @@ calcNNPI <- function(pSub, p, null, cd, n, ecdfAll) {
         mean(pnhyper(approxRanks, n = getN(ecdfAll) - (NP - 1), m = NP - 1, r = 1))
     }
 }
-calcNNPIpair <- function(obsDistNN, id1, id2, null, p, ecdfs, n, ecdfAll) {
+calcNNPIpair <- function(obsDistNN, id1, id2, null, p, cd, n, ecdfAll) {
     obsDistRank <- if (null == "background") {
+        Fac = n/length(obsDistNN)
         vapply(seq_along(obsDistNN), FUN.VALUE = double(1), function(i) {
-            round(ecdfs[[i]](obsDistNN[i]) * n)
+            round((which.max(cd[i,] < obsDistNN[i]) - 0.5)*Fac)
         })
     } else {
-        round(ecdfAll(obsDistNN) * (n <- getN(ecdfAll)))
+        getApproxRanks(ecdfAll, obsDistNN)
     }
     obsDistRank[obsDistRank == 0] <- 1
     seq1 <- seq_along(id1)

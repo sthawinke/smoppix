@@ -40,8 +40,6 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 5e2,
     if (any(pis %in% c("allDist", "allDistPair", "nn", "nnPair"))) {
       pSim <- runifpoint(nPointsAll, win = p$window)
       nSub <- npoints(pSim)
-    }
-    if (any(pis %in% c("allDist", "allDistPair", "nn", "nnPair"))) {
       ecdfAll <- ecdf(dist(coords(pSim)))
     }
     if (any(pis %in% c(
@@ -62,10 +60,7 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 5e2,
         ))) {
           ecdf(dist(coords(pSub)))
         }
-        list(
-          "edge" = edge, "midpoint" = midpoint,
-          "allDistCell" = allDistCell
-        )
+        list("edge" = edge, "midpoint" = midpoint, "allDistCell" = allDistCell)
       })
       names(ecdfsCell) <- names(owins)
     }

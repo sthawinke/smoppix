@@ -27,7 +27,7 @@ calcUniPIs <- function(p, pis, verbose, ecdfsCell, owins, tabObs,
         # Also here room for improvement
         allDistPI <- if (any(pis == "allDist")) {
             if(NP==1) NA else calcAllDistPI(pSub, pLeft,
-                ecdfAll = ecdfAll, null = null, ecdfs = ecdfs[id]
+                ecdfAll = ecdfAll, null = null, cd = cd[id,]
             )
         }
         edgeDistPI <- if (any(pis == "edge")) {

@@ -8,7 +8,7 @@ calcBiPIs(
   p,
   pis,
   null,
-  ecdfs,
+  cd,
   nSub,
   ecdfAll,
   features,
@@ -26,8 +26,6 @@ calcBiPIs(
 
 \item{null}{A character vector, indicating how the null distribution is
 defined. See details.}
-
-\item{ecdfs}{Ecdfs per point}
 
 \item{nSub}{The number of events in the subsampled pattern}
 

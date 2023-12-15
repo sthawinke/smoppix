@@ -12,7 +12,7 @@ calcUniPIs(
   owins,
   tabObs,
   null,
-  ecdfs,
+  cd,
   nSub,
   ecdfAll,
   features,
@@ -36,14 +36,14 @@ and their centroids}
 \item{null}{A character vector, indicating how the null distribution is
 defined. See details.}
 
-\item{ecdfs}{Ecdfs per point}
-
 \item{nSub}{The number of events in the subsampled pattern}
 
 \item{ecdfAll}{Overall ecdf}
 
 \item{features}{A character vector, for which features should the
 probabilistic indices be calculated?}
+
+\item{ecdfs}{Ecdfs per point}
 }
 \value{
 PIs for every feature
