@@ -35,8 +35,7 @@
 #'     imageVars = c("day", "root", "section")
 #' )
 #' # Fit a subset of features to limit computation time
-#' yangPims <- estPims(hypYang[c(seq_len(5), seq(25, 29)),], pis = "nn",
-#'     features = attr(hypYang, "features")[seq_len(10)]
+#' yangPims <- estPims(hypYang[c(seq_len(5), seq(25, 29)),], pis = "nn")
 #' )
 #' # First build the weighting function
 #' yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))
@@ -62,10 +61,7 @@ fitLMMs <- function(resList, pi, fixedVars = NULL, randomVars = NULL,
                 tmp
         }))
     designVars <- c(fixedVars, randomVarsSplit)
-    if(any(id <- !(designVars %in% c(
-        resList$designVars,
-        attr(resList$hypFrame, "cellVars")
-    )))){
+    if(any(id <- !(designVars %in% getDesignVars(resList)))){
         stop("Design variables", designVars[id], "not found in object.")
     }
     # Allow cell as design variable, both fixed and random
@@ -99,7 +95,7 @@ fitLMMs <- function(resList, pi, fixedVars = NULL, randomVars = NULL,
         contrasts <- lapply(fixedVars, function(x) named.contr.sum)
     }
     Features <- if (grepl("Pair", pi)) {
-        feats <- makePairs(attr(resList$hypFrame, "featuresEst"))
+        feats <- makePairs(getFeatures(resList$hypFrame))
         featIds <- colSums(vapply(feats,
             FUN.VALUE = double(nrow(resList$hypFrame)),
             function(gene) {
@@ -111,7 +107,7 @@ fitLMMs <- function(resList, pi, fixedVars = NULL, randomVars = NULL,
         ), na.rm = TRUE) >= 1
         feats[featIds]
     } else {
-        feats <- attr(resList$hypFrame, "featuresEst")
+        feats <- getFeatures(resList)
         # First check if gene is present at all
         featIds <- colSums(vapply(feats,
             FUN.VALUE = double(nrow(resList$hypFrame)), function(gene) {

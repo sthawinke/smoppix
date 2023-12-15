@@ -1,6 +1,6 @@
 #' Build a weighting function based on the data
 #'
-#' @param hypFrame The hyperframe with all the data
+#' @param resList A results list, from a call to estPims()
 #' @param designVars A character vector containing all design factors
 #' (both fixed and random), that are also present as variables in hypFrame
 #' @param ... Additional arguments passed on to the scam::scam function
@@ -36,8 +36,7 @@
 #' )
 #' # Fit a subset of features to limit computation time
 #' yangPims <- estPims(hypYang[c(seq_len(5), seq(25, 29)),],
-#'     pis = c("nn", "nnPair"),
-#'     features = attr(hypYang, "features")[1:10]
+#'     pis = c("nn", "nnPair")
 #' )
 #' # Build the weighting function for all PIs present
 #' yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))
@@ -46,9 +45,7 @@
 #'     lowestLevelVar = "section",
 #'     pi = "nn"
 #' )
-addWeightFunction <- function(hypFrame, pis = attr(hypFrame, "pis")[
-                                  !attr(hypFrame, "pis") %in% c("edge", "midpoint")
-                              ],
+addWeightFunction <- function(resList, pis = resList$pis,
                               designVars, lowestLevelVar, maxObs = 1e5,
                               maxFeatures = 5e2,
                               ...) {
@@ -71,7 +68,7 @@ addWeightFunction <- function(hypFrame, pis = attr(hypFrame, "pis")[
     if (!missing(designVars) && !missing(lowestLevelVar)) {
         stop("Provide either designVars or lowestLevelVar, both not both!")
     }
-    allVars <- c(attr(hypFrame, "imageVars"), attr(hypFrame, "cellVars"))
+    allVars <- getDesignVars(resList)
     if (missing(designVars)) {
         if (allCell) {
             lowestLevelVar <- "cell"
@@ -81,16 +78,13 @@ addWeightFunction <- function(hypFrame, pis = attr(hypFrame, "pis")[
         }
         if (!(lowestLevelVar %in% allVars)) {
             stop("lowestLevelVar must be part of the design,
-            see attr(hypFrame, 'imageVars') and attr(hypFrame, 'cellVars')")
+            see getFeatures(resList)")
         }
-        designVars <- setdiff(attr(hypFrame, "imageVars"), lowestLevelVar)
+        designVars <- setdiff(getPPPvars(resList), lowestLevelVar)
         # If missing take everything but the ones that are obviously
         # no design variables
     }
-    if (any(idMissing <- !(designVars %in% c(
-        colnames(hypFrame),
-        attr(hypFrame, "cellVars")
-    )))) {
+    if (any(idMissing <- !(designVars %in% allVars))) {
         stop(
             "Design variables\n", designVars[idMissing],
             "\nnot found in hypFrame object"
@@ -103,7 +97,7 @@ addWeightFunction <- function(hypFrame, pis = attr(hypFrame, "pis")[
         ),
         several.ok = TRUE
     )
-    if (is.null(hypFrame$pimRes)) {
+    if (is.null(resList$pis)) {
         stop(
             "No pims found in the hyperframe.",
             "First estimate them using the estPims() function."
@@ -112,8 +106,8 @@ addWeightFunction <- function(hypFrame, pis = attr(hypFrame, "pis")[
     Wfs <- bplapply(pis, function(pi) {
         piListName <- if (pairId <- grepl("Pair", pi)) "biPIs" else "uniPIs"
         subListName <- if (cellId <- grepl("Cell", pi)) "windowDists" else "pointDists"
-        features <- attr(hypFrame, "featuresEst")
-        piList <- lapply(hypFrame$pimRes, function(x) {
+        features <- getFeatures(hypFrame)
+        piList <- lapply(resList$hypFrame$pimRes, function(x) {
             lapply(x[[piListName]], function(y) {
                 y[[subListName]][[pi]]
             })
@@ -122,9 +116,9 @@ addWeightFunction <- function(hypFrame, pis = attr(hypFrame, "pis")[
             features <- apply(combn(features, 2), 2, paste, collapse = "--")
         }
         if (cellId) {
-            ordDesign <- seq_len(nrow(hypFrame))
+            ordDesign <- seq_len(nrow(resList$hypFrame))
         } else {
-            designVec <- apply(as.data.frame(hypFrame[, designVars, drop = FALSE]),
+            designVec <- apply(as.data.frame(resList$hypFrame[, designVars, drop = FALSE]),
                 1, paste, collapse = "_"
             )
             ordDesign <- order(designVec) # Ensure correct ordering for tapply
@@ -142,8 +136,8 @@ addWeightFunction <- function(hypFrame, pis = attr(hypFrame, "pis")[
                         return(NULL)
                     }
                     CellGene <- table(
-                        marks(hypFrame$ppp[[x]])$cell,
-                        marks(hypFrame$ppp[[x]])$gene
+                        marks(resList$hypFrame$ppp[[x]])$cell,
+                        marks(resList$hypFrame$ppp[[x]])$gene
                     )[, geneSplit, drop = FALSE]
                     deps <- vapply(piList[[x]][if (pairId) gene else geneSplit],
                         FUN.VALUE = double(sum(id <- rowAll(CellGene > 0))), function(y) {
@@ -173,7 +167,7 @@ addWeightFunction <- function(hypFrame, pis = attr(hypFrame, "pis")[
                         rep_len(NA, length(x))
                     }
                 })) # The quadratic departures from the conditional mean
-                tabEntries <- vapply(hypFrame$tabObs[ordDesign],
+                tabEntries <- vapply(resList$hypFrame$tabObs[ordDesign],
                     FUN.VALUE = double(if (pairId) 2 else 1), function(x) {
                         if (pairId) {
                             if (all(geneSplit %in% names(x))) sort(x[geneSplit]) else rep(NA, 2)
@@ -210,5 +204,5 @@ addWeightFunction <- function(hypFrame, pis = attr(hypFrame, "pis")[
         return(scamMod)
     })
     names(Wfs) <- pis
-    return(list("hypFrame" = hypFrame, "Wfs" = Wfs, "designVars" = designVars))
+    return(list("resList" = resList, "Wfs" = Wfs, "designVars" = designVars))
 }

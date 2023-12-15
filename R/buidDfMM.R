@@ -44,7 +44,7 @@ buildDfMM <- function(resList, gene,
         stop("PIs for features\n", sund(gene)[id], "\nnot found in object")
     }
     # Establish whether pi and gene match, and call separate functions
-    foo <- checkAttr(resList$hypFrame, pi)
+    foo <- checkPi(resList, pi)
     df <- if (pairId <- grepl(pattern = "Pair", pi)) {
         if (lg == 2) {
             gene <- paste(gene, collapse = "--")
@@ -87,7 +87,7 @@ buildDfMMUni <- function(resList, gene, pi) {
                     times = vapply(vec[[pi]], FUN.VALUE = integer(1), length)
                 )
                 cellCovars <- marks(resList$hypFrame$ppp[[n]], drop = FALSE)[
-                    , attr(resList$hypFrame, "cellVars"),
+                    , getEventVars(resList),
                     drop = FALSE
                 ]
                 data.frame("pi" = unlist(vec), cellCovars[match(Cell, cellCovars$cell), ])

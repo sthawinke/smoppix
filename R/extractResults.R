@@ -26,7 +26,7 @@ extractResults <- function(models, hypFrame, fixedVars = NULL, method = "BH") {
     })
     AnovaTabs <- lapply(models[id], anova)
     fixedOut <- lapply(fixedVars, function(Var) {
-        unVals <- if (Var %in% attr(hypFrame, "cellVars")) {
+        unVals <- if (Var %in% getEventVars(hypFrame)) {
             unique(unlist(lapply(hypFrame$ppp, function(x) {
                 marks(x, drop = FALSE)[[Var]]
             })))

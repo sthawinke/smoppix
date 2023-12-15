@@ -76,7 +76,7 @@ named.contr.sum <- function(x, ...) {
     x
 }
 # After https://stackoverflow.com/questions/24515892/r-how-to-contrast-code-factors-and-retain-meaningful-labels-in-output-summary
-#' Add tables with gene counts to the hyperframe, and the features attribute
+#' Add tables with gene counts to the hyperframe
 #'
 #' @param hypFrame The hyperframe
 #'
@@ -85,7 +85,6 @@ addTabObs = function(hypFrame){
     hypFrame$tabObs = lapply(hypFrame$ppp, function(x) {
         table(marks(x, drop = FALSE)$gene)
         })
-    attr(hypFrame, "features") <- unique(unlist(lapply(hypFrame$tabObs, names)))
     hypFrame
 }
 #' Nest random effects within point patterns, by pasting the design factor
@@ -127,3 +126,4 @@ getFeatures = function(x){
     }
     unique(unlist(lapply(hypFrame$tabObs, names)))
 }
+

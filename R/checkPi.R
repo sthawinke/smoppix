@@ -4,8 +4,8 @@
 #' @param pi A character string indicating the desired PI
 #'
 #' @return Throws an error when the PIs are not found, otherwise returns invisible
-checkAttr <- function(x, pi) {
-    if (!(pi %in% attr(x, "pis"))) {
+checkPi <- function(x, pi) {
+    if (!(pi %in% x$pis)) {
         stop(
             "Required PI not present in object. Rerun ",
             switch(class(x)[1],

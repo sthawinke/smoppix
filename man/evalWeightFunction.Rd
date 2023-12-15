@@ -24,8 +24,7 @@ hypYang <- buildHyperFrame(Yang,
     imageVars = c("day", "root", "section")
 )
 yangPims <- estPims(hypYang[c(seq_len(5), seq(25, 29)),],
-    pis = "nn",
-    features = attr(hypYang, "features")[1:10]
+    pis = "nn"
 )
 # First Build the weighting function
 yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))

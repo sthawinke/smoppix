@@ -5,8 +5,8 @@
 \title{Build a weighting function based on the data}
 \usage{
 addWeightFunction(
-  hypFrame,
-  pis = attr(hypFrame, "pis")[!attr(hypFrame, "pis") \%in\% c("edge", "midpoint")],
+  resList,
+  pis = resList$pis,
   designVars,
   lowestLevelVar,
   maxObs = 1e+05,
@@ -15,7 +15,7 @@ addWeightFunction(
 )
 }
 \arguments{
-\item{hypFrame}{The hyperframe with all the data}
+\item{resList}{A results list, from a call to estPims()}
 
 \item{pis}{The PIs for which weighting functions are constructed}
 
@@ -58,8 +58,7 @@ hypYang <- buildHyperFrame(Yang,
 )
 # Fit a subset of features to limit computation time
 yangPims <- estPims(hypYang[c(seq_len(5), seq(25, 29)),],
-    pis = c("nn", "nnPair"),
-    features = attr(hypYang, "features")[1:10]
+    pis = c("nn", "nnPair")
 )
 # Build the weighting function for all PIs present
 yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))

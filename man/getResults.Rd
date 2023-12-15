@@ -24,8 +24,7 @@ hypYang <- buildHyperFrame(Yang,
     imageVars = c("day", "root", "section")
 )
 # Fit a subset of features to limit computation time
-yangPims <- estPims(hypYang, pis = "nn",
-features = sample(attr(hypYang, "features"), 20))
+yangPims <- estPims(hypYang, pis = "nn")
 # First build the weighting function
 yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))
 fittedModels <- fitLMMs(yangObj,

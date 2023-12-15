@@ -4,12 +4,7 @@
 \alias{plotExplore}
 \title{Plot the hyperframe for exploratory purposes}
 \usage{
-plotExplore(
-  hypFrame,
-  features = attr(hypFrame, "features"),
-  ppps,
-  maxPlot = 1e+05
-)
+plotExplore(hypFrame, features = getFeatures(hypFrame), ppps, maxPlot = 1e+05)
 }
 \arguments{
 \item{hypFrame}{The hyperframa}

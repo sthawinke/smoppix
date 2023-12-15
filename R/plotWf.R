@@ -14,14 +14,13 @@
 #'     imageVars = c("day", "root", "section")
 #' )
 #' yangPims <- estPims(hypYang[c(seq_len(5), seq(25, 29)),],
-#'     pis = c("nn", "nnPair"),
-#'     features = attr(hypYang, "features")[1:10]
+#'     pis = c("nn", "nnPair")
 #' )
 #' # First Build the weighting function
 #' yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))
 #' plotWf(yangObj, "nn")
 #' plotWf(yangObj, "nnPair")
-plotWf <- function(resList, pi = attr(resList$hypFrame, "pis")[1]) {
+plotWf <- function(resList, pi = resList$pis) {
     pi <- match.arg(pi, choices = c(
         "nn", "nnPair", "allDist", "allDistPair",
         "nnCell", "allDistCell",
@@ -39,14 +38,14 @@ plotWf <- function(resList, pi = attr(resList$hypFrame, "pis")[1]) {
             scale_colour_gradient(low = "yellow", high = "blue", name = "Weight") +
             xlab("Log10 number of events for least expressed gene") +
             ylab("Log10 number of events for most expressed gene") +
-            ggtitle(paste("Weighting function for probabilistic indices of type", attr(wf, "pi")))
+            ggtitle(paste("Weighting function for probabilistic indices of type", pi))
     } else {
         tmp <- data.frame("NP" = exp(wf$model[, "log(NP)"]))
         df <- cbind("weight" = 1 / exp(predict.scam(wf, newdata = tmp)), tmp)
         plot(weight ~ NP,
             data = df[order(df$NP), ], type = "l",
             xlab = "Number of observations", ylab = "Weight",
-            main = paste("Weighting function for probabilistic indices of type", attr(wf, "pi"))
+            main = paste("Weighting function for probabilistic indices of type", pi)
         )
     }
 }

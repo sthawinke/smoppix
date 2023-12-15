@@ -134,8 +134,7 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 5e2,
 #'   imageVars = c("day", "root", "section")
 #' )
 #' # Fit a subset of features to limit computation time
-#' yangPims <- estPims(hypYang[c(seq_len(5), seq(25, 29)),], pis = "nn",
-#'   features = attr(hypYang, "features")[seq_len(10)])
+#' yangPims <- estPims(hypYang[c(seq_len(5), seq(25, 29)),], pis = "nn")
 #' # Univariate nearest neighbour distances
 #' @details
 #' The null distribution used to calculate the PIs. Can be either "background",
@@ -156,7 +155,7 @@ estPims <- function(hypFrame, pis = c(
                       "nnPairCell", "allDistPairCell"
                     ),
                     null = c("background", "CSR"),
-                    features = attr(hypFrame, "features"), ...) {
+                    features = getFeatures(hypFrame), ...) {
   pis <- match.arg(pis, several.ok = TRUE)
   null <- match.arg(null)
   if (any(pis %in% c("edge", "midpoint", "nnCell", "allDistCell")) &&
@@ -166,7 +165,7 @@ estPims <- function(hypFrame, pis = c(
       "Add it using the addCell() function"
     )
   }
-  if (any(id <- !(features %in% attr(hypFrame, "features")))) {
+  if (any(id <- !(features %in% getFeatures(hypFrame)))) {
     stop("Features ", features[id], " not found in hyperframe")
   }
   hypFrame$pimRes <- bplapply(seq_len(nrow(hypFrame)), function(x) {

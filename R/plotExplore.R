@@ -19,7 +19,7 @@
 #'     imageVars = c("day", "root", "section")
 #' )
 #' plotExplore(hypYang)
-plotExplore <- function(hypFrame, features = attr(hypFrame, "features"), ppps,
+plotExplore <- function(hypFrame, features = getFeatures(hypFrame), ppps,
                         maxPlot = 1e5) {
     stopifnot(is.hyperframe(hypFrame), is.character(features),
               is.numeric(maxPlot))

@@ -9,7 +9,7 @@ estPims(
   pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint", "nnCell",
     "allDistCell", "nnPairCell", "allDistPairCell"),
   null = c("background", "CSR"),
-  features = attr(hypFrame, "features"),
+  features = getFeatures(hypFrame),
   ...
 )
 }
@@ -53,7 +53,6 @@ hypYang <- buildHyperFrame(Yang,
   imageVars = c("day", "root", "section")
 )
 # Fit a subset of features to limit computation time
-yangPims <- estPims(hypYang[c(seq_len(5), seq(25, 29)),], pis = "nn",
-  features = attr(hypYang, "features")[seq_len(10)])
+yangPims <- estPims(hypYang[c(seq_len(5), seq(25, 29)),], pis = "nn")
 # Univariate nearest neighbour distances
 }

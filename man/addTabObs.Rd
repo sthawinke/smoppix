@@ -2,7 +2,7 @@
 % Please edit documentation in R/auxiliaryFunctions.R
 \name{addTabObs}
 \alias{addTabObs}
-\title{Add tables with gene counts to the hyperframe, and the features attribute}
+\title{Add tables with gene counts to the hyperframe}
 \usage{
 addTabObs(hypFrame)
 }
@@ -13,5 +13,5 @@ addTabObs(hypFrame)
 The hyperframe with tabObs added
 }
 \description{
-Add tables with gene counts to the hyperframe, and the features attribute
+Add tables with gene counts to the hyperframe
 }
