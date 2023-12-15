@@ -15,7 +15,8 @@ calcBiPIs(
   manyPairs,
   verbose,
   allowManyGenePairs,
-  ecdfsCell
+  ecdfsCell,
+  maxNum = 10000
 )
 }
 \arguments{
@@ -23,7 +24,8 @@ calcBiPIs(
 
 \item{pis}{The probabilistic indices to be estimated}
 
-\item{null}{A character vector, indicating how the null distribution is defined. See details.}
+\item{null}{A character vector, indicating how the null distribution is
+defined. See details.}
 
 \item{ecdfs}{Ecdfs per point}
 
@@ -31,7 +33,8 @@ calcBiPIs(
 
 \item{ecdfAll}{Overall ecdf}
 
-\item{features}{A character vector, for which features should the probabilistic indices be calculated?}
+\item{features}{A character vector, for which features should the
+probabilistic indices be calculated?}
 
 \item{manyPairs}{Number of gene pairs to be considered "many"}
 

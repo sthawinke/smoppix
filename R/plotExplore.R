@@ -20,7 +20,7 @@
 #' )
 #' plotExplore(hypYang)
 plotExplore <- function(hypFrame, features = attr(hypFrame, "features"), ppps,
-                        maxPlot = 2e5) {
+                        maxPlot = 1e5) {
     stopifnot(is.hyperframe(hypFrame), is.character(features),
               is.numeric(maxPlot))
     npp <- nrow(hypFrame)

@@ -3,10 +3,12 @@
 #' @param manyPairs Number of gene pairs to be considered "many"
 #' @param allowManyGenePairs A boolean, set to true to override warning on computation time
 #' @inheritParams calcUniPIs
+#' @importFrom spatstat.geom nncross
 #'
 #' @return A matrix of bivariate PIs
 calcBiPIs <- function(p, pis, null, ecdfs, nSub, ecdfAll, features,
-                      manyPairs, verbose, allowManyGenePairs, ecdfsCell) {
+                      manyPairs, verbose, allowManyGenePairs, ecdfsCell,
+                      maxNum = 1e4) {
     if (!allowManyGenePairs &&
         (numGenePairs <- choose(length(features), 2)) > manyPairs) {
         warning(
@@ -23,16 +25,17 @@ calcBiPIs <- function(p, pis, null, ecdfs, nSub, ecdfAll, features,
         feat2 <- genePairsMat[2, i]
         pSub1 <- p[id1 <- which(marks(p, drop = FALSE)$gene == feat1), ]
         pSub2 <- p[id2 <- which(marks(p, drop = FALSE)$gene == feat2), ]
-        cd <- crossdist(pSub1, pSub2)
         # Reorder and subset if needed
         NNdistPI <- if (any(pis == "nnPair")) {
             calcNNPIpair(
-                cd = cd, id1 = id1, id2 = id2, null = null,
-                ecdfs = ecdfs[c(id1, id2)], p = p,
+                obsDistNN = nncross(pSub1, pSub2, what = "dist"), id1 = id1,
+                id2 = id2, null = null, ecdfs = ecdfs[c(id1, id2)], p = p,
                 ecdfAll = ecdfAll, n = nSub
             )
         }
         allDistPI <- if (any(pis == "allDistPair")) {
+            cd <- crossdist(subSampleP(pSub1, maxNum),
+                            subSampleP(pSub2, maxNum))
             calcAllDistPIpair(
                 id1 = id1, id2 = id2, ecdfAll = ecdfAll,
                 null = null, ecdfs = ecdfs[c(id1, id2)],
@@ -43,13 +46,13 @@ calcBiPIs <- function(p, pis, null, ecdfs, nSub, ecdfAll, features,
             calcWindowPairPI(pSub1, pSub2,
                 ecdfAll = ecdfsCell,
                 ecdfs = ecdfsCell, pi = "nnPairCell", null = null,
-                feat1 = feat1, feat2 = feat2, cd = cd,
+                feat1 = feat1, feat2 = feat2,
                 cellAndGene = marks(p, drop = FALSE)[, c("gene", "cell")]
             )
         }
         allDistCellPI <- if (any(pis == "allDistPairCell")) {
             calcWindowPairPI(pSub1, pSub2,
-                cd = cd, null = null,
+                null = null,
                 feat1 = feat1, feat2 = feat2,
                 cellAndGene = marks(p, drop = FALSE)[, c("gene", "cell")],
                 ecdfAll = ecdfsCell, pi = "allDistPairCell",

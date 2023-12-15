@@ -11,7 +11,8 @@ getCrossDist(p, pSub, null)
 
 \item{pSub}{A smaller sampled point pattern, representing the null}
 
-\item{null}{A character vector, indicating how the null distribution is defined. See details.}
+\item{null}{A character vector, indicating how the null distribution is
+defined. See details.}
 }
 \value{
 A cross distance matrix without zeroes

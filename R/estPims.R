@@ -2,15 +2,21 @@
 #'
 #' @param p The point pattern
 #' @param pis The probabilistic indices to be estimated
-#' @param null A character vector, indicating how the null distribution is defined. See details.
-#' @param nPointsAll How many points to subsample or simulate to calculate overall interpoint distance
-#' and distance to point.
-#' @param nPointsAllWin How many points to subsample or simulate to calculate distance to cell edge or midpoint distribution
-#' @param allowManyGenePairs A boolean, set to true to suppress warning messages for large numbers of gene pairs
+#' @param null A character vector, indicating how the null distribution is
+#'  defined. See details.
+#' @param nPointsAll How many points to subsample or simulate to calculate
+#' overall interpoint distance and distance to point.
+#' This parameter is a strong driver of memory and cpu usage.
+#' @param nPointsAllWin How many points to subsample or simulate
+#' to calculate distance to cell edge or midpoint distribution
+#' @param allowManyGenePairs A boolean, set to true to suppress
+#' warning messages for large numbers of gene pairs
 #' @param manyPairs An integer, what are considered many gene pairs
 #' @param verbose Should verbose output be printed?
-#' @param owins,centroids The list of windows corresponding to cells, and their centroids
-#' @param features A character vector, for which features should the probabilistic indices be calculated?
+#' @param owins,centroids The list of windows corresponding to cells,
+#' and their centroids
+#' @param features A character vector, for which features should the
+#' probabilistic indices be calculated?
 #' @param tabObs A table of observed gene frequencies
 #'
 #' @return Data frames with estimated quantities per gene and/or gene pair
@@ -96,8 +102,11 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 5e2,
       # Prepare some null distances, either with CSR or background
       pSub <- subSampleP(p, nPointsAll)
       # Subsample for memory reasons
-      cd <- getCrossDist(p, pSub, null)
-      ecdfs <- apply(rowSort(cd), 1, ecdfPreSort)
+      cd = getCrossDist(p, pSub, null)
+      cd <- rowSort(cd)
+      ecdfs <- lapply(seq_len(npoints(p)), function(i){
+          ecdfPreSort(cd[i,])
+      })
       # For background, condition on point locations
     }
   }

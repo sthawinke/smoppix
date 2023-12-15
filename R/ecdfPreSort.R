@@ -10,6 +10,5 @@ ecdfPreSort <- function(x) {
     )
     class(rval) <- c("ecdf", "stepfun", class(rval))
     assign("nobs", n, envir = environment(rval))
-    attr(rval, "call") <- sys.call()
     rval
 }

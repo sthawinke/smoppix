@@ -72,7 +72,7 @@ calcWindowDistPI <- function(pSub, owins, centroids, ecdfAll, pi, null, ecdfs, c
     names(obsDistEdge) <- names(splitPPP)
     obsDistEdge
 }
-calcWindowPairPI <- function(pSub1, pSub2, feat1, feat2, cellAndGene, cd, ecdfAll, pi, null, ecdfs) {
+calcWindowPairPI <- function(pSub1, pSub2, feat1, feat2, cellAndGene, ecdfAll, pi, null, ecdfs) {
     splitPPP1 <- split.ppp(pSub1, f = "cell")
     splitPPP2 <- split.ppp(pSub2, f = "cell")
     # FIX ME: fast alternative for split.ppp?

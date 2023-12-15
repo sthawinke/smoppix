@@ -18,9 +18,11 @@ estPims(
 
 \item{pis}{The probabilistic indices to be estimated}
 
-\item{null}{A character vector, indicating how the null distribution is defined. See details.}
+\item{null}{A character vector, indicating how the null distribution is
+defined. See details.}
 
-\item{features}{A character vector, for which features should the probabilistic indices be calculated?}
+\item{features}{A character vector, for which features should the
+probabilistic indices be calculated?}
 
 \item{...}{additional arguments, passed on to estPimsSingle}
 }

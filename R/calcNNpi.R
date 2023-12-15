@@ -35,9 +35,7 @@ calcNNPI <- function(pSub, p, null, ecdfs, n, ecdfAll) {
         mean(pnhyper(approxRanks, n = getN(ecdfAll) - (NP - 1), m = NP - 1, r = 1))
     }
 }
-calcNNPIpair <- function(cd, id1, id2, null, p, ecdfs, n, ecdfAll) {
-    npp <- npoints(p)
-    obsDistNN <- c(rowMins(cd, value = TRUE), colMins(cd, value = TRUE))
+calcNNPIpair <- function(obsDistNN, id1, id2, null, p, ecdfs, n, ecdfAll) {
     obsDistRank <- if (null == "background") {
         vapply(seq_along(obsDistNN), FUN.VALUE = double(1), function(i) {
             round(ecdfs[[i]](obsDistNN[i]) * n)
@@ -53,14 +51,4 @@ calcNNPIpair <- function(cd, id1, id2, null, p, ecdfs, n, ecdfAll) {
     ))
     # Using the negative hypergeometric precludes Monte-Carlo
     return(pis)
-}
-#' Fast version of nncross
-#'
-#' @param p1,p2 The point patterns
-#'
-#' @return A vector of nearest neighbour distances
-#' @importFrom Rfast rowMins
-#' @importFrom spatstat.geom crossdist
-nncrossFast <- function(p1, p2) {
-    rowMins(crossdist(p1, p2), value = TRUE)
 }

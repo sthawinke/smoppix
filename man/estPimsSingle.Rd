@@ -9,7 +9,7 @@ estPimsSingle(
   pis,
   null,
   tabObs,
-  nPointsAll = 400,
+  nPointsAll = 500,
   nPointsAllWin = 200,
   features = NULL,
   allowManyGenePairs = FALSE,
@@ -24,24 +24,31 @@ estPimsSingle(
 
 \item{pis}{The probabilistic indices to be estimated}
 
-\item{null}{A character vector, indicating how the null distribution is defined. See details.}
+\item{null}{A character vector, indicating how the null distribution is
+defined. See details.}
 
 \item{tabObs}{A table of observed gene frequencies}
 
-\item{nPointsAll}{How many points to subsample or simulate to calculate overall interpoint distance
-and distance to point.}
+\item{nPointsAll}{How many points to subsample or simulate to calculate
+overall interpoint distance and distance to point.
+This parameter is a strong driver of memory
+and cpu usage.}
 
-\item{nPointsAllWin}{How many points to subsample or simulate to calculate distance to cell edge or midpoint distribution}
+\item{nPointsAllWin}{How many points to subsample or simulate
+to calculate distance to cell edge or midpoint distribution}
 
-\item{features}{A character vector, for which features should the probabilistic indices be calculated?}
+\item{features}{A character vector, for which features should the
+probabilistic indices be calculated?}
 
-\item{allowManyGenePairs}{A boolean, set to true to suppress warning messages for large numbers of gene pairs}
+\item{allowManyGenePairs}{A boolean, set to true to suppress
+warning messages for large numbers of gene pairs}
 
 \item{manyPairs}{An integer, what are considered many gene pairs}
 
 \item{verbose}{Should verbose output be printed?}
 
-\item{owins, centroids}{The list of windows corresponding to cells, and their centroids}
+\item{owins, centroids}{The list of windows corresponding to cells,
+and their centroids}
 }
 \value{
 Data frames with estimated quantities per gene and/or gene pair

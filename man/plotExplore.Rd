@@ -8,7 +8,7 @@ plotExplore(
   hypFrame,
   features = attr(hypFrame, "features"),
   ppps,
-  maxPlot = 2e+05
+  maxPlot = 1e+05
 )
 }
 \arguments{

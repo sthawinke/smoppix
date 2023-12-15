@@ -11,7 +11,8 @@ calcNNPI(pSub, p, null, ecdfs, n, ecdfAll)
 
 \item{p}{The point pattern}
 
-\item{null}{A character vector, indicating how the null distribution is defined. See details.}
+\item{null}{A character vector, indicating how the null distribution is
+defined. See details.}
 
 \item{ecdfs}{A list of empirical distribution functions, one for each event}
 

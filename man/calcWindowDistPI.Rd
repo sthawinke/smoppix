@@ -19,13 +19,15 @@ calcWindowDistPI(
 \arguments{
 \item{pSub}{The subset point pattern containing only a single gene}
 
-\item{owins, centroids}{The list of windows corresponding to cells, and their centroids}
+\item{owins, centroids}{The list of windows corresponding to cells,
+and their centroids}
 
 \item{ecdfAll}{the cumulative distribution function under the null}
 
 \item{pi}{The type of PI to calculate}
 
-\item{null}{A character vector, indicating how the null distribution is defined. See details.}
+\item{null}{A character vector, indicating how the null distribution is
+defined. See details.}
 
 \item{ecdfs}{The ecdfs of the distances of every single point in the cell}
 

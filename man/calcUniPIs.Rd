@@ -28,11 +28,13 @@ calcUniPIs(
 
 \item{ecdfsCell}{ecdfs within the cells}
 
-\item{owins, centroids}{The list of windows corresponding to cells, and their centroids}
+\item{owins, centroids}{The list of windows corresponding to cells,
+and their centroids}
 
 \item{tabObs}{A table of observed gene frequencies}
 
-\item{null}{A character vector, indicating how the null distribution is defined. See details.}
+\item{null}{A character vector, indicating how the null distribution is
+defined. See details.}
 
 \item{ecdfs}{Ecdfs per point}
 
@@ -40,7 +42,8 @@ calcUniPIs(
 
 \item{ecdfAll}{Overall ecdf}
 
-\item{features}{A character vector, for which features should the probabilistic indices be calculated?}
+\item{features}{A character vector, for which features should the
+probabilistic indices be calculated?}
 }
 \value{
 PIs for every feature
