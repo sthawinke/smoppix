@@ -10,14 +10,14 @@
 #' @importFrom Rfast rowMins colMins
 #' @importFrom extraDistr pnhyper
 #' @return The estimated probabilistic index
-calcNNPI <- function(pSub, p, null, ecdfs, n, ecdfAll) {
+calcNNPI <- function(pSub, p, null, cd, n, ecdfAll) {
     obsDistNN <- nndist(pSub)
-    NP <- npoints(pSub)
+    NP <- npoints(pSub);NC = ncol(cd)
     if (null == "background") {
         approxRanks <- vapply(seq_along(obsDistNN),
             FUN.VALUE = double(1),
             function(i) {
-                round(ecdfs[[i]](obsDistNN[i]) * n)
+                round((which.max(cd[i,] < obsDistNN[i]) - 0.5)*n/NC)
                 # Approximate rank: quantile in overall distribution times
                 # number of observations.
             }

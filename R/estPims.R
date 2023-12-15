@@ -104,9 +104,6 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 5e2,
       # Subsample for memory reasons
       cd = getCrossDist(p, pSub, null)
       cd <- rowSort(cd)
-      ecdfs <- lapply(seq_len(npoints(p)), function(i){
-          ecdfPreSort(cd[i,])
-      })
       # For background, condition on point locations
     }
   }
@@ -114,15 +111,15 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 5e2,
   piPair <- grepl(pis, pattern = "Pair")
   uniPIs <- if (any(!piPair)) {
     calcUniPIs(p, pis, verbose, ecdfsCell, owins, tabObs, null,
-      ecdfs, nSub = npoints(p), ecdfAll, features,
+      cd = cd, nSub = npoints(p), ecdfAll, features,
       centroids = centroids
     )
   }
   # Bivariate patterns
   biPIs <- if (any(piPair)) {
     calcBiPIs(
-      features = features[tabObs[features] > 0], p, pis, null,
-      ecdfs, nSub = npoints(p), ecdfAll, manyPairs, verbose, allowManyGenePairs,
+      features = features, p, pis, null,
+      cd = cd, nSub = npoints(p), ecdfAll, manyPairs, verbose, allowManyGenePairs,
       ecdfsCell
     )
   }

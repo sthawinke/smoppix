@@ -10,7 +10,7 @@
 #' @return PIs for every feature
 #' @importFrom spatstat.geom marks
 calcUniPIs <- function(p, pis, verbose, ecdfsCell, owins, tabObs,
-                       null, ecdfs, nSub, ecdfAll, features,
+                       null, cd, nSub, ecdfAll, features,
                        centroids) {
     if (verbose) {
         message("Calculating univariate probabilistic indices...")
@@ -21,15 +21,13 @@ calcUniPIs <- function(p, pis, verbose, ecdfsCell, owins, tabObs,
         # Avoid zero distances by removing observations of gene itself
         NNdistPI <- if (any(pis == "nn")) {
             if(NP==1) NA else calcNNPI(pSub, pLeft, null,
-                ecdfs = ecdfs[id], n = nSub,
-                ecdfAll = ecdfAll
+                cd = cd[id,], n = nSub, ecdfAll = ecdfAll
             )
         }
         # Also here room for improvement
         allDistPI <- if (any(pis == "allDist")) {
             if(NP==1) NA else calcAllDistPI(pSub, pLeft,
-                ecdfAll = ecdfAll, null = null,
-                ecdfs = ecdfs[id]
+                ecdfAll = ecdfAll, null = null, ecdfs = ecdfs[id]
             )
         }
         edgeDistPI <- if (any(pis == "edge")) {
