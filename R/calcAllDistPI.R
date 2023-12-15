@@ -3,7 +3,6 @@
 #' @param pSub The subset point pattern with only one feature
 #' @param ecdfAll The empirical cumulative distribution function of
 #' all distances under the null
-#' @param ecdfs A list of empirical distribution functions, one for each event
 #'
 #' @return The probabilistic index for all distances
 #' @inheritParams estPimsSingle

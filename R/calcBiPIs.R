@@ -2,6 +2,8 @@
 #'
 #' @param manyPairs Number of gene pairs to be considered "many"
 #' @param allowManyGenePairs A boolean, set to true to override warning on computation time
+#' @param maxNum The maximum number of points to calculate cross distances for,
+#' to avoid excessive memory usage.
 #' @inheritParams calcUniPIs
 #' @importFrom spatstat.geom nncross
 #'

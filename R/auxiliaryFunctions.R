@@ -24,6 +24,11 @@ makeDesignVar <- function(x, designVars, sep = "_") {
 makePairs <- function(genes) {
     apply(combn(genes, 2), 2, paste, collapse = "--")
 }
+#' Return the number of observations used to fit the ecdf
+#'
+#' @param ecdf The ecdf function
+#'
+#' @return The number of observations
 getN <- function(ecdf) {
     environment(ecdf)$nobs
 }
@@ -43,7 +48,7 @@ subSampleP <- function(p, nSims) {
 #' @details See documentation of the stats::dist function
 #' @return The required distances
 getElDist <- function(distMat, i, j) {
-    id <- outer(attr(distMat, "Size") * (i - 1) - i * (i - 1) / 2 - i, j, FUN = "+")
+    id <- outer(attr(distMat, "Size") * (i-1) - i*(i-1)/2 - i, j, FUN = "+")
     # Following dist help
     distMat[c(id)]
 }
@@ -96,4 +101,18 @@ nestRandom = function(df, randomVars){
         df[, i] = apply(df[, c("design", i)], 1, paste, collapse = "_")
     }
     df
+}
+#' A faster way to find the first element in a vector larger than a fixed value,
+#'  by stopping early. This function is only faster than which.max is the match
+#'  indeed comes early, as for nearest neighbour in a set of all distances.
+#'
+#' @param x An ordered vector
+#' @param a A value to be queried
+#'
+#' @return The index
+which.max.early = function(x, a){
+    for(i in seq_along(x)){
+        if(a<x[i])
+            return(i)
+    }
 }

@@ -64,7 +64,7 @@ addWeightFunction <- function(hypFrame, pis = attr(hypFrame, "pis")[
     if (missing(designVars) && missing(lowestLevelVar) &&
         !allCell) {
         stop(
-            "Provide either designVars or lowestLevelVar for measures",
+            "Provide either designVars or lowestLevelVar for measures ",
             "not on cell level!"
         )
     }
@@ -125,8 +125,7 @@ addWeightFunction <- function(hypFrame, pis = attr(hypFrame, "pis")[
             ordDesign <- seq_len(nrow(hypFrame))
         } else {
             designVec <- apply(as.data.frame(hypFrame[, designVars, drop = FALSE]),
-                1, paste,
-                collapse = "_"
+                1, paste, collapse = "_"
             )
             ordDesign <- order(designVec) # Ensure correct ordering for tapply
         }

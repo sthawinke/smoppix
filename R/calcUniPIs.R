@@ -6,6 +6,7 @@
 #' @param ecdfs Ecdfs per point
 #' @param nSub The number of events in the subsampled pattern
 #' @param verbose A boolean, should verbose output be printed
+#' @param cd A matrix of cross-distances
 #'
 #' @return PIs for every feature
 #' @importFrom spatstat.geom marks

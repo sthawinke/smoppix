@@ -24,7 +24,7 @@ extractResults <- function(models, hypFrame, fixedVars = NULL, method = "BH") {
     id <- vapply(models, FUN.VALUE = TRUE, function(x) {
         is(x, "lmerModLmerTest") || is(x, "lm")
     })
-    AnovaTabs <- suppressWarnings(lapply(models[id], anova))
+    AnovaTabs <- lapply(models[id], anova)
     fixedOut <- lapply(fixedVars, function(Var) {
         unVals <- if (Var %in% attr(hypFrame, "cellVars")) {
             unique(unlist(lapply(hypFrame$ppp, function(x) {
