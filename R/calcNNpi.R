@@ -40,7 +40,7 @@ calcNNPI <- function(pSub, p, null, cd, n, ecdfAll) {
 }
 calcNNPIpair <- function(obsDistNN, id1, id2, null, p, cd, n, ecdfAll) {
     obsDistRank <- if (null == "background") {
-        Fac = n/length(obsDistNN)
+        Fac = n/ncol(cd)
         vapply(seq_along(obsDistNN), FUN.VALUE = double(1), function(i) {
             round((which.max(cd[i,] > obsDistNN[i]) - 0.5)*Fac)
         })
