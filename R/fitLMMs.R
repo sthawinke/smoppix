@@ -180,8 +180,8 @@ fitLMMs <- function(obj, pi, fixedVars = NULL, randomVars = NULL,
 #' allModels = fitLMMsWrapper(yangPims)
 fitLMMsAll = function(obj, pis = obj$pis, ...){
     out = lapply(pis, function(pi){
-        fitLMMs(obj, pi = pi, ...)
+        fitLMMs(obj, pi = pi, verbose = pi==pis[1],...)
     })
-    names(out) = obj$pis
+    names(out) = pis
     return(out)
 }

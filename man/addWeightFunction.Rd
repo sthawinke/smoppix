@@ -45,7 +45,9 @@ parameters.
 Provide either 'designVars' or 'lowestLevelVar'. In the latter case, the
 design variables are set to all imageVars in the hypFrame object except
 lowestLevelVar. When the PI is calculated on the cell level,
-this the lowest nesting level so inputs will be ignored for these PIs
+this the lowest nesting level so inputs will be ignored for these PIs.
+The registered parallel backend will be used for fitting the trends of the
+different PIs.
 
 The scam functions fits a decreasing spline of the variance as a
  function of the number of observations

@@ -65,7 +65,7 @@ addCell <- function(hypFrame, owins, cellTypes = NULL, checkOverlap = TRUE,
             }
         ))),
         all(rownames(hypFrame) %in% names(owins)),
-        is(hypFrame, "hyperframe"),
+        is.hyperframe(hypFrame),
         is.null(cellTypes) || is.data.frame(cellTypes)
     )
     if (ct <- is.data.frame(cellTypes)) {

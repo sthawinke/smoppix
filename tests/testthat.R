@@ -41,8 +41,7 @@ wList <- lapply(seq_len(nDesignFactors), function(x) {
 })
 wList2 <- lapply(seq_len(nDesignFactors), function(x) {
     list(
-        "w1" = w1, "w2" = w2, "w3" = w3, "w4" = w4, "w5" = w5,
-        "wWrong" = wWrong
+        "w1" = w1, "w2" = w2, "w3" = w3, "w4" = w4, "w5" = w5, "wWrong" = wWrong
     )
 })
 unCells <- unlist(lapply(wList, names))
@@ -56,9 +55,9 @@ cellTypesDf <- data.frame(
 names(wList) <- names(wList2) <- rownames(hypFrame)
 hypFrame2 <- addCell(hypFrame, wList, cellTypes = cellTypesDf)
 # Register the parallel backend
-register(SerialParam())
-# nCores <- 2
-# register(MulticoreParam(nCores))
+#register(SerialParam())
+nCores <- 2
+register(MulticoreParam(nCores))
 pis <- c("nn", "allDist", "nnPair", "allDistPair", "edge",
     "midpoint", "nnCell", "allDistCell", "nnPairCell", "allDistPairCell")
 piEstsBG <- estPims(hypFrame2, pis = pis, null = "background")

@@ -17,7 +17,9 @@
 #' Provide either 'designVars' or 'lowestLevelVar'. In the latter case, the
 #' design variables are set to all imageVars in the hypFrame object except
 #' lowestLevelVar. When the PI is calculated on the cell level,
-#' this the lowest nesting level so inputs will be ignored for these PIs
+#' this the lowest nesting level so inputs will be ignored for these PIs.
+#' The registered parallel backend will be used for fitting the trends of the
+#' different PIs.
 #'
 #' @return A fitted scam object, which can be used to
 #' @details The scam functions fits a decreasing spline of the variance as a
@@ -195,7 +197,7 @@ addWeightFunction <- function(resList, pis = resList$pis,
             varElMat <- varElMat[sample(nrow(varElMat), maxObs), ]
         }
         scamForm <- formula(paste("log(quadDeps) ~", if (pairId) {
-            "s(log(maxP), bs = 'mpd') + s(log(minP), bs = 'mpd')"
+            "s(log(minP), bs = 'mpd') + s(log(maxP), bs = 'mpd')"
         } else {
             "s(log(NP), bs = 'mpd')"
         }))

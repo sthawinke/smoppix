@@ -168,10 +168,9 @@ estPims <- function(hypFrame, pis = c(
     stop("Features ", features[id], " not found in hyperframe")
   }
   hypFrame$pimRes <- bplapply(seq_len(nrow(hypFrame)), function(x) {
-    estPimsSingle(hypFrame[x, "ppp"], owins = hypFrame[x,"owins"],
-      pis = hypFrame[x,"pis"], null = hypFrame[x,"null"],
-      tabObs = hypFrame[x,"tabObs"],
-      centroids = hypFrame[x,"centroids"], ...
+    estPimsSingle(hypFrame[[x,"ppp"]], owins = hypFrame[x,"owins", drop = TRUE],
+      pis = pis, null = null, tabObs = hypFrame[[x,"tabObs"]],
+      centroids = hypFrame[x,"centroids", drop = TRUE], ...
     )
   })
   list("hypFrame" = hypFrame, "null" = null, "pis" = pis, "features" = features)

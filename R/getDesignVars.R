@@ -26,7 +26,8 @@ getPPPvars = function(x, exclude = c("tabObs", "centroids", "owins", "ppp",
 #' @return A vector of variables
 #' @inheritParams getDesignVars
 getEventVars = function(x, exclude = c("x", "y", "z")){
-    setdiff(unique(unlist(lapply(x$hypFrame$ppp, function(ppp){
+    setdiff(unique(unlist(lapply((if(is.hyperframe(x)) x else x$hypFrame)$ppp,
+    function(ppp){
         names(marks(ppp, drop = FALSE))
     }))), exclude)
 }

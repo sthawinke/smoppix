@@ -37,9 +37,9 @@ hypYang <- buildHyperFrame(Yang,
 yangPims <- estPims(hypYang[c(seq_len(5), seq(25, 29)),], pis = "nn",
 "SmVND2", "SmPINR")
 # First build the weighting function
-yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))
+yangPims <- addWeightFunction(yangPims, designVars = c("day", "root"))
 # Now build the data frame for mixed model analysis
-dfUniNN <- buildDfMM(yangObj, gene = "SmVND2", pi = "nn")
+dfUniNN <- buildDfMM(yangPims, gene = "SmVND2", pi = "nn")
 # Example analysis with linear mixed model
 library(lmerTest)
 # Use sum coding for day to maintain interpretability of the intercept

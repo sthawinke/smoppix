@@ -6,6 +6,9 @@
 \usage{
 getEventVars(x, exclude = c("x", "y", "z"))
 }
+\arguments{
+\item{x}{The results list}
+}
 \value{
 A vector of variables
 }

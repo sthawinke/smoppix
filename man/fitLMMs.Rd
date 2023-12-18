@@ -37,6 +37,9 @@ from the fixed and random variables}
 
 \item{randomNested}{A boolean, indicating if random effects are nested within
 point patterns. See details.}
+
+\item{features}{The features for which to fit linear mixed models.
+Defaults to all features in the object}
 }
 \value{
 A fitted linear mixed model of class 'lmerTest'
@@ -63,12 +66,10 @@ hypYang <- buildHyperFrame(Yang,
 )
 # Fit a subset of features to limit computation time
 yangPims <- estPims(hypYang[c(seq_len(5), seq(25, 29)),], pis = "nn")
-)
 # First build the weighting function
 yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))
 lmmModels <- fitLMMs(yangObj, fixedVars = "day", randomVars = "root",
-    pi = "nn"
-)
+    pi = "nn")
 }
 \seealso{
 \link{buildDfMM},\link{getResults}

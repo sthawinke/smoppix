@@ -10,6 +10,8 @@ getPPPvars(
 )
 }
 \arguments{
+\item{x}{The results list}
+
 \item{exclude}{variables to exclude}
 }
 \value{

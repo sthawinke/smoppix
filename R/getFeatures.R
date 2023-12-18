@@ -12,9 +12,9 @@
 #' )
 #' head(getFeatures(hypYang))
 getFeatures = function(x){
-    x = if(is(x, "hyperframe")){
+    x = if(is.hyperframe(x)){
         x
-    } else if(is(x$hypFrame, "hyperframe")){
+    } else if(is.hyperframe(x$hypFrame)){
         x$hypFrame
     }
     unique(unlist(lapply(x$tabObs, names)))
