@@ -39,7 +39,6 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 5e2,
   if (null == "CSR") {
     if (any(pis %in% c("allDist", "allDistPair", "nn", "nnPair"))) {
       pSim <- runifpoint(nPointsAll, win = p$window)
-      nSub <- npoints(pSim)
       ecdfAll <- ecdf(dist(coords(pSim)))
     }
     if (any(pis %in% c(
@@ -169,10 +168,10 @@ estPims <- function(hypFrame, pis = c(
     stop("Features ", features[id], " not found in hyperframe")
   }
   hypFrame$pimRes <- bplapply(seq_len(nrow(hypFrame)), function(x) {
-    with(hypFrame[x, , drop = TRUE], estPimsSingle(ppp,
-      owins = owins,
-      pis = pis, null = null, tabObs = tabObs, centroids = centroids, ...
-    ))
+    estPimsSingle(hypFrame[x, "ppp"], owins = hypFrame[x,"owins"],
+      pis = hypFrame[x,"pis"], null = hypFrame[x,"null"], tabObs = hypFrame[x,"tabObs"],
+      centroids = hypFrame[x,"centroids"], ...
+    )
   })
   list("hypFrame" = hypFrame, "null" = null, "pis" = pis, "features" = features)
 }
