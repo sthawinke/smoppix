@@ -32,7 +32,7 @@ plotWf <- function(resList, pi = resList$pis) {
     if (grepl("Pair", pi)) {
         tmp <- exp(wf$model[, c("log(maxP)", "log(minP)")])
         colnames(tmp) <- c("maxP", "minP")
-        df <- cbind("Weight" = exp(predict.scam(wf, newdata = tmp)), tmp)
+        df <- cbind("Weight" = 1/exp(predict.scam(wf, newdata = tmp)), tmp)
         df[, "Weight"] = df[, "Weight"]/sum(df[, "Weight"])
         ggplot(df, aes(x = log10(minP), y = log10(maxP), col = Weight)) +
             geom_point(size = 1) +

@@ -16,8 +16,6 @@ fitLMMs(
 )
 }
 \arguments{
-\item{resList}{The result of a call to estPims()}
-
 \item{pi}{character string indicating the desired pim as outcome
 in the linear mixed model}
 

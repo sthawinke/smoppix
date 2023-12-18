@@ -204,5 +204,5 @@ addWeightFunction <- function(resList, pis = resList$pis,
         return(scamMod)
     })
     names(Wfs) <- pis
-    return(list("resList" = resList, "Wfs" = Wfs, "designVars" = designVars))
+    return(c(resList, list("Wfs" = Wfs, "designVars" = designVars)))
 }

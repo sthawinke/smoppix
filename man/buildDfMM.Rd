@@ -6,14 +6,14 @@
 for mixed model building}
 \usage{
 buildDfMM(
-  resList,
+  obj,
   gene,
   pi = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint", "nnCell",
     "allDistCell", "nnPairCell", "allDistPairCell")
 )
 }
 \arguments{
-\item{resList}{The result of a call to estPims()}
+\item{obj}{The result of a call to buildWeightFunction()}
 
 \item{gene}{A character string indicating the desired gene or gene pair}
 

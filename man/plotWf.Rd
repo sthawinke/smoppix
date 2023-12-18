@@ -7,8 +7,6 @@
 plotWf(resList, pi = resList$pis)
 }
 \arguments{
-\item{resList}{The result of a call to estPims()}
-
 \item{pi}{The PI for which to plot the weighting function}
 }
 \value{

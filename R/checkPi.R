@@ -8,11 +8,11 @@ checkPi <- function(x, pi) {
     if (!(pi %in% x$pis)) {
         stop(
             "Required PI not present in object. Rerun ",
-            switch(class(x)[1],
-                "list" = "estPims",
-                "scam" = "buildWeightFunction"
-            ),
-            " with correct 'pis' argument"
+            if("Wfs" %in% names(x)){
+                "buildWeightFunction"
+            } else {
+                "estPims"
+            }, " with correct 'pis' argument"
         )
     } else {
         invisible()

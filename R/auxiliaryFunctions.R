@@ -121,8 +121,10 @@ which.max.early = function(x, a){
 #'
 #' @return A vector of features
 getFeatures = function(x){
-    if(!is(x, "hyperframe")){
-        x = x$hypFrame
+    x = if(is(x, "hyperframe")){
+        x
+    } else if(is(x$hypFrame, "hyperframe")){
+        x$hypFrame
     }
     unique(unlist(lapply(x$tabObs, names)))
 }
