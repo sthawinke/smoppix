@@ -99,10 +99,8 @@ buildDfMMUni <- function(obj, gene, pi) {
         if (!fixedId) {
             # If not fixed, provide counts to allow weighting
             if (winId) {
-                tabCell <- with(
-                    marks(obj$hypFrame$ppp[[n]], drop = FALSE),
-                    table(gene, cell)
-                )
+                tabCell <- table(marks(obj$hypFrame$ppp[[n]], drop = FALSE)$gene,
+                          marks(obj$hypFrame$ppp[[n]], drop = FALSE)$cell)
                 npVec <- tabCell[gene, match(piOut[, "cell"], colnames(tabCell))]
                 return(cbind(piOut, "NP" = npVec))
             } else {
@@ -148,10 +146,8 @@ buildDfMMBi <- function(obj, gene, pi) {
             NULL
         } else {
             if (winId) {
-                tabCell <- with(
-                    marks(obj$hypFrame$ppp[[n]], drop = FALSE),
-                    table(gene, cell)
-                )
+                tabCell <- table(marks(obj$hypFrame$ppp[[n]], drop = FALSE)$gene,
+                                 marks(obj$hypFrame$ppp[[n]], drop = FALSE)$cell)
                 npVec0 <- tabCell[sund(gene), match(names(vec), colnames(tabCell)), drop = FALSE]
                 npVec <- colSort(npVec0)
                 colnames(npVec) <- colnames(npVec0)

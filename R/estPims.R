@@ -169,7 +169,8 @@ estPims <- function(hypFrame, pis = c(
   }
   hypFrame$pimRes <- bplapply(seq_len(nrow(hypFrame)), function(x) {
     estPimsSingle(hypFrame[x, "ppp"], owins = hypFrame[x,"owins"],
-      pis = hypFrame[x,"pis"], null = hypFrame[x,"null"], tabObs = hypFrame[x,"tabObs"],
+      pis = hypFrame[x,"pis"], null = hypFrame[x,"null"],
+      tabObs = hypFrame[x,"tabObs"],
       centroids = hypFrame[x,"centroids"], ...
     )
   })
