@@ -53,14 +53,14 @@ library(BiocParallel)
 
 All the user needs to do is prepare the parallel backend as follows:
 
-```{r}
+```{r, eval = FALSE}
 nCores <- 2 # The number of CPUs
 register(MulticoreParam(nCores, progressbar = TRUE))
 ```
 
 The progress bar helps one keep track of the calculations. For serial calculations, for instance if memory is limiting, choose
 
-```{r , eval = FALSE}
+```{r }
 register(SerialParam(progressbar = TRUE))
 ```
 

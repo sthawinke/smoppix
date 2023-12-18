@@ -14,6 +14,8 @@ calcNNPI(pSub, p, null, cd, n, ecdfAll)
 \item{null}{A character vector, indicating how the null distribution is
 defined. See details.}
 
+\item{cd}{A matrix of cross-distances}
+
 \item{n}{the number of subsampled distances}
 
 \item{ecdfAll}{The empirical cumulative distribution function of

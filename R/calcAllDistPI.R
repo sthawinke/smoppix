@@ -6,6 +6,7 @@
 #'
 #' @return The probabilistic index for all distances
 #' @inheritParams estPimsSingle
+#' @inheritParams calcUniPIs
 #' @importFrom stats dist
 calcAllDistPI <- function(pSub, p, ecdfAll, null, cd) {
     obsDist <- dist(coords(pSub))

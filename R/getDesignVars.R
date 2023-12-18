@@ -2,7 +2,6 @@
 #' level of the event
 #'
 #' @param x The results list
-#' @param exclude variables to exclude
 #'
 #' @return A vector of likely design variables
 #' @details getDesignVars() returns all design variables, getPPPvars returns
@@ -13,12 +12,19 @@ getDesignVars = function(x){
     eventVars = getEventVars(x)
     c(pppVars, eventVars)
 }
+#' Extract variables from point patterns
+#'
+#' @param exclude variables to exclude
+#' @return A vector of variables
 getPPPvars = function(x, exclude = c("tabObs", "centroids", "owins", "ppp",
                                      "pimRes", "image")){
     setdiff(names(x$hypFrame), exclude)
 }
+#' Extract variables from events (the marks)
+#'
+#' @return A vector of variables
 getEventVars = function(x, exclude = c("x", "y", "z")){
-    setdiff(unique(lapply(x$hypFrame$ppp, function(ppp){
+    setdiff(unique(unlist(lapply(x$hypFrame$ppp, function(ppp){
         names(marks(ppp, drop = FALSE))
-    })), exclude)
+    }))), exclude)
 }

@@ -3,7 +3,6 @@
 #' @inheritParams estPimsSingle
 #' @param ecdfsCell ecdfs within the cells
 #' @param ecdfAll Overall ecdf
-#' @param ecdfs Ecdfs per point
 #' @param nSub The number of events in the subsampled pattern
 #' @param verbose A boolean, should verbose output be printed
 #' @param cd A matrix of cross-distances

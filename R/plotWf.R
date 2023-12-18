@@ -20,13 +20,13 @@
 #' yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))
 #' plotWf(yangObj, "nn")
 #' plotWf(yangObj, "nnPair")
-plotWf <- function(resList, pi = resList$pis) {
+plotWf <- function(obj, pi = obj$pis) {
     pi <- match.arg(pi, choices = c(
         "nn", "nnPair", "allDist", "allDistPair",
         "nnCell", "allDistCell",
         "nnPairCell", "allDistPairCell"
     ))
-    if (is.null(wf <- resList$Wfs[[pi]])) {
+    if (is.null(wf <- obj$Wfs[[pi]])) {
         stop("This type of pi (", pi, ") is not available in the object)")
     }
     if (grepl("Pair", pi)) {

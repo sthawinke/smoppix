@@ -44,8 +44,6 @@ defined. See details.}
 
 \item{features}{A character vector, for which features should the
 probabilistic indices be calculated?}
-
-\item{ecdfs}{Ecdfs per point}
 }
 \value{
 PIs for every feature

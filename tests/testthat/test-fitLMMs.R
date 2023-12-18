@@ -1,63 +1,65 @@
 context("Large scale mixed model fitting")
 test_that("Fitting linear mixed models proceeds without errors", {
-    expect_message(linModsNNint <- fitLMMs(yangObj, pi = "nn"))
-    expect_silent(fitLMMs(yangObj, pi = "nn", verbose = FALSE))
+    expect_is(linModsNNint <- fitLMMs(yangObj, pi = "nn"), "list")
+    expect_is(fitLMMs(yangObj, pi = "nn", verbose = FALSE), "list")
     # Supply your own formula
-    expect_message(fitLMMs(yangObj,
+    expect_is(fitLMMs(yangObj,
         pi = "nn",
         Formula = "pi - 0.5 ~ day +1|root"
-    ))
-    expect_message(linModsNNPairint <- fitLMMs(yangObj, pi = "nnPair"))
-    expect_message(linModsNN <- fitLMMs(yangObj, fixedVars = "day", pi = "nn"))
-    expect_message(linModsNNPair <- fitLMMs(yangObj,
+    ), "list")
+    expect_is(linModsNNPairint <- fitLMMs(yangObj, pi = "nnPair"), "list")
+    expect_is(linModsNN <- fitLMMs(yangObj, fixedVars = "day", pi = "nn"), "list")
+    expect_is(linModsNNPair <- fitLMMs(yangObj,
         fixedVars = "day",
         pi = "nnPair"
-    ))
-    expect_message(linMModsNN <- fitLMMs(yangObj,
+    ), "list")
+    expect_is(linMModsNN <- fitLMMs(yangObj,
         fixedVars = "day",
         randomVars = "root", pi = "nn"
-    ))
-    expect_message(linMModsNNPair <- fitLMMs(yangObj,
-        fixedVars = "day",
+    ), "list")
+    expect_is(linMModsNNPair <- fitLMMs(yangObj,
+        fixedVars = "day", features = getFeatures(yangObj)[1:5],
         randomVars = "root", pi = "nnPair"
-    ))
+    ), "list")
     # Returning the models
-    expect_message(linModsNNfull <- fitLMMs(yangObj,
+    expect_is(linModsNNfull <- fitLMMs(yangObj,
         fixedVars = "day",
         pi = "nn", returnModels = TRUE
-    ))
-    expect_message(linMModsNNfull <- fitLMMs(yangObj,
+    ), "list")
+    expect_is(linMModsNNfull <- fitLMMs(yangObj,
         fixedVars = "day",
         randomVars = "root", pi = "nn", returnModels = TRUE
-    ))
+    ), "list")
     expect_s3_class(linModsNNfull$models[[1]], "lm")
     expect_s4_class(linMModsNNfull$models[[1]], "lmerModLmerTest")
-    expect_message(linModsMP <- fitLMMs(objBG,
+    expect_is(linModsMP <- fitLMMs(objBG,
         fixedVars = "condition",
         pi = "midpoint"
-    ))
-    expect_message(linModsEdge <- fitLMMs(objBG,
+    ), "list")
+    expect_is(linModsEdge <- fitLMMs(objBG,
         fixedVars = "condition",
         pi = "edge"
-    ))
+    ), "list")
     # Including cell (type) either as fixed or random effect
     # E.g. test for differences between cell types
-    expect_message(linModsMPcell <- fitLMMs(objBG,
+    expect_is(linModsMPcell <- fitLMMs(objBG,
         fixedVars = c("condition", "cellType"), pi = "midpoint"
-    ))
+    ), "list")
     # Account for cell as random effect
-    expect_message(linModsEdgeCell <- fitLMMs(objBG,
+    expect_is(linModsEdgeCell <- fitLMMs(objBG,
         fixedVars = "condition",
         randomVars = "root/cell", pi = "edge"
-    ))
-    expect_message(linModsMidCellType <- fitLMMs(objBG,
+    ), "list")
+    expect_is(linModsMidCellType <- fitLMMs(objBG,
         fixedVars = c("condition", "cellType"),
         randomVars = "root/cell", pi = "midpoint"
-    ))
-    expect_message(linModsNNCellType <- fitLMMs(objBG,
+    ), "list")
+    expect_is(linModsNNCellType <- fitLMMs(objBG,
         fixedVars = c("condition", "cellType"),
         pi = "nnCell", randomVars = "root"
-    ))
+    ), "list")
+    expect_is(fitLMMsWrapper(objBG, fixedVars = c("condition", "cellType"),
+        randomVars = "root", pis = c("nn", "nnCell"), features = getFeatures(yangObj)[1:5]), "list")
     expect_is(resMat <- getResults(linModsMP, "Intercept"), "matrix")
     expect_is(resMatCond <- getResults(linModsEdge, "condition"), "matrix")
     expect_is(getResults(linModsMPcell, "cellType"), "matrix")

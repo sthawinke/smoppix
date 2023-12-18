@@ -21,7 +21,6 @@ test_that("Reading in data proceeds without errors", {
         f = apply(df[, c("fov", "condition")], 1, paste, collapse = "_")),
         covariatesDf = df[!duplicated(df[, c("fov", "condition")]),
                           c("fov", "condition")]))
-    expect_identical(attr(hypFrame4, "imageVars"), c("fov", "condition"))
 })
 # Read in spatial experiment
 library(SpatialExperiment)

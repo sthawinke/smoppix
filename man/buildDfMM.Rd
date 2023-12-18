@@ -36,7 +36,6 @@ hypYang <- buildHyperFrame(Yang,
 # Fit a subset of features to limit computation time
 yangPims <- estPims(hypYang[c(seq_len(5), seq(25, 29)),], pis = "nn",
 "SmVND2", "SmPINR")
-)
 # First build the weighting function
 yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))
 # Now build the data frame for mixed model analysis

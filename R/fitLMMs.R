@@ -43,10 +43,9 @@
 #'     pi = "nn"
 #' )
 #' @seealso \link{buildDfMM},\link{getResults}
-#' #TO DO: write wrapper over all PIs!
-fitLMMs <- function(resList, pi, fixedVars = NULL, randomVars = NULL,
+fitLMMs <- function(obj, pi, fixedVars = NULL, randomVars = NULL,
                     verbose = TRUE, returnModels = FALSE, Formula = NULL,
-                    randomNested = TRUE) {
+                    randomNested = TRUE, features = getFeatures(obj)) {
     pi <- match.arg(pi, choices = c(
         "nn", "allDist", "nnPair", "allDistPair",
         "edge", "midpoint", "nnCell", "allDistCell",
@@ -61,7 +60,7 @@ fitLMMs <- function(resList, pi, fixedVars = NULL, randomVars = NULL,
                 tmp
         }))
     designVars <- c(fixedVars, randomVarsSplit)
-    if(any(id <- !(designVars %in% getDesignVars(resList)))){
+    if(any(id <- !(designVars %in% getDesignVars(obj)))){
         stop("Design variables", designVars[id], "not found in object.")
     }
     # Allow cell as design variable, both fixed and random
@@ -95,11 +94,11 @@ fitLMMs <- function(resList, pi, fixedVars = NULL, randomVars = NULL,
         contrasts <- lapply(fixedVars, function(x) named.contr.sum)
     }
     Features <- if (grepl("Pair", pi)) {
-        feats <- makePairs(getFeatures(resList$hypFrame))
+        feats <- makePairs(features)
         featIds <- colSums(vapply(feats,
-            FUN.VALUE = double(nrow(resList$hypFrame)),
+            FUN.VALUE = double(nrow(obj$hypFrame)),
             function(gene) {
-                vapply(resList$hypFrame$tabObs,
+                vapply(obj$hypFrame$tabObs,
                     FUN.VALUE = double(1),
                     function(x) all(x[sund(gene)] >= 1)
                 )
@@ -107,21 +106,20 @@ fitLMMs <- function(resList, pi, fixedVars = NULL, randomVars = NULL,
         ), na.rm = TRUE) >= 1
         feats[featIds]
     } else {
-        feats <- getFeatures(resList)
         # First check if gene is present at all
-        featIds <- colSums(vapply(feats,
-            FUN.VALUE = double(nrow(resList$hypFrame)), function(gene) {
-                vapply(resList$hypFrame$tabObs,
+        featIds <- colSums(vapply(features,
+            FUN.VALUE = double(nrow(obj$hypFrame)), function(gene) {
+                vapply(obj$hypFrame$tabObs,
                     FUN.VALUE = double(1),
                     function(x) x[gene]
                 )
             }
         ) > 1, na.rm = TRUE) >= 1
-        feats[featIds]
+        features[featIds]
         # Leave out barely expressed genes
     }
     models <- bplapply(Features, function(gene) {
-        df <- buildDfMM(resList, gene = gene, pi = pi)
+        df <- buildDfMM(obj, gene = gene, pi = pi)
         if(randomNested){
             df = nestRandom(df, randomVarsSplit)
         }
@@ -153,14 +151,31 @@ fitLMMs <- function(resList, pi, fixedVars = NULL, randomVars = NULL,
         return(mod)
     })
     names(models) <- Features
-    results <- extractResults(models, hypFrame = resList$hypFrame, fixedVars)
+    results <- extractResults(models, hypFrame = obj$hypFrame, fixedVars)
     # Effect size, standard error, p-value and adjusted p-value per mixed effect
     if (!returnModels) {
-        return(list("results" = results, "resList" = resList))
+        return(list("results" = results, "obj" = obj))
     } else {
         return(list(
-            "results" = results, "resList" = resList,
+            "results" = results, "obj" = obj,
             "models" = models
         ))
     }
+}
+#' A wrapper function for linear mixed model fitting for all PIs
+#'
+#' @param obj The result object
+#' @param pis Optional, the pis required. Defaults to all pis in the object
+#' @param ... Passed onto fitLMMs
+#'
+#' @return A list of fitted objects
+#' @export
+#'
+#' @examples
+fitLMMsAll = function(obj, pis = obj$pis, ...){
+    out = lapply(pis, function(pi){
+        fitLMMs(obj, pi = pi, ...)
+    })
+    names(out) = obj$pis
+    return(out)
 }

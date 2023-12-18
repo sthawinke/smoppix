@@ -5,17 +5,20 @@
 \title{Fit linear mixed nodels for all features of a pimRes object}
 \usage{
 fitLMMs(
-  resList,
+  obj,
   pi,
   fixedVars = NULL,
   randomVars = NULL,
   verbose = TRUE,
   returnModels = FALSE,
   Formula = NULL,
-  randomNested = TRUE
+  randomNested = TRUE,
+  features = getFeatures(obj)
 )
 }
 \arguments{
+\item{obj}{The result of a call to buildWeightFunction()}
+
 \item{pi}{character string indicating the desired pim as outcome
 in the linear mixed model}
 
@@ -69,5 +72,4 @@ lmmModels <- fitLMMs(yangObj, fixedVars = "day", randomVars = "root",
 }
 \seealso{
 \link{buildDfMM},\link{getResults}
-#TO DO: write wrapper over all PIs!
 }

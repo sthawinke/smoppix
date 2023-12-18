@@ -16,6 +16,8 @@ all distances under the null}
 
 \item{null}{A character vector, indicating how the null distribution is
 defined. See details.}
+
+\item{cd}{A matrix of cross-distances}
 }
 \value{
 The probabilistic index for all distances

@@ -9,8 +9,6 @@ getDesignVars(x)
 }
 \arguments{
 \item{x}{The results list}
-
-\item{exclude}{variables to exclude}
 }
 \value{
 A vector of likely design variables
