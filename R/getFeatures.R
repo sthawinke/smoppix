@@ -3,6 +3,14 @@
 #' @param x A hyperframe or a results list containing a hyperframe
 #'
 #' @return A vector of features
+#' @export
+#' @examples
+#' data(Yang)
+#' hypYang <- buildHyperFrame(Yang,
+#'                            coordVars = c("x", "y"),
+#'                            imageVars = c("day", "root", "section")
+#' )
+#' head(getFeatures(hypYang))
 getFeatures = function(x){
     x = if(is(x, "hyperframe")){
         x

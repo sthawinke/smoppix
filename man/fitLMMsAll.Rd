@@ -19,3 +19,11 @@ A list of fitted objects
 \description{
 A wrapper function for linear mixed model fitting for all PIs
 }
+\examples{
+data(Yang)
+hypYang <- buildHyperFrame(Yang, coordVars = c("x", "y"),
+imageVars = c("day", "root", "section"))
+yangPims <- estPims(hypYang, features = getFeatures(hypYang)[seq_len(10)],
+pis = c("nn", "nnPair"))
+allModels = fitLMMsWrapper(yangPims)
+}

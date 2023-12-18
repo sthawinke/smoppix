@@ -1,32 +1,32 @@
 context("Large scale mixed model fitting")
 test_that("Fitting linear mixed models proceeds without errors", {
-    expect_is(linModsNNint <- fitLMMs(yangObj, pi = "nn"), "list")
-    expect_is(fitLMMs(yangObj, pi = "nn", verbose = FALSE), "list")
+    expect_is(linModsNNint <- fitLMMs(yangPims, pi = "nn"), "list")
+    expect_is(fitLMMs(yangPims, pi = "nn", verbose = FALSE), "list")
     # Supply your own formula
-    expect_is(fitLMMs(yangObj,
+    expect_is(fitLMMs(yangPims,
         pi = "nn",
         Formula = "pi - 0.5 ~ day +1|root"
     ), "list")
-    expect_is(linModsNNPairint <- fitLMMs(yangObj, pi = "nnPair"), "list")
-    expect_is(linModsNN <- fitLMMs(yangObj, fixedVars = "day", pi = "nn"), "list")
-    expect_is(linModsNNPair <- fitLMMs(yangObj,
+    expect_is(linModsNNPairint <- fitLMMs(yangPims, pi = "nnPair"), "list")
+    expect_is(linModsNN <- fitLMMs(yangPims, fixedVars = "day", pi = "nn"), "list")
+    expect_is(linModsNNPair <- fitLMMs(yangPims,
         fixedVars = "day",
         pi = "nnPair"
     ), "list")
-    expect_is(linMModsNN <- fitLMMs(yangObj,
+    expect_is(linMModsNN <- fitLMMs(yangPims,
         fixedVars = "day",
         randomVars = "root", pi = "nn"
     ), "list")
-    expect_is(linMModsNNPair <- fitLMMs(yangObj,
-        fixedVars = "day", features = getFeatures(yangObj)[1:5],
+    expect_is(linMModsNNPair <- fitLMMs(yangPims,
+        fixedVars = "day", features = getFeatures(yangPims)[1:5],
         randomVars = "root", pi = "nnPair"
     ), "list")
     # Returning the models
-    expect_is(linModsNNfull <- fitLMMs(yangObj,
+    expect_is(linModsNNfull <- fitLMMs(yangPims,
         fixedVars = "day",
         pi = "nn", returnModels = TRUE
     ), "list")
-    expect_is(linMModsNNfull <- fitLMMs(yangObj,
+    expect_is(linMModsNNfull <- fitLMMs(yangPims,
         fixedVars = "day",
         randomVars = "root", pi = "nn", returnModels = TRUE
     ), "list")

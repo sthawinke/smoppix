@@ -11,6 +11,8 @@
 #' from the fixed and random variables
 #' @param randomNested A boolean, indicating if random effects are nested within
 #' point patterns. See details.
+#' @param features The features for which to fit linear mixed models.
+#' Defaults to all features in the object
 #' @details Genes or gene pairs with insufficient observations will be silently
 #' omitted. When randomVars is provided as a vector, independent random
 #' intercepts are fitted for them by default. Providing them separated by "\" or
@@ -36,12 +38,10 @@
 #' )
 #' # Fit a subset of features to limit computation time
 #' yangPims <- estPims(hypYang[c(seq_len(5), seq(25, 29)),], pis = "nn")
-#' )
 #' # First build the weighting function
 #' yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))
 #' lmmModels <- fitLMMs(yangObj, fixedVars = "day", randomVars = "root",
-#'     pi = "nn"
-#' )
+#'     pi = "nn")
 #' @seealso \link{buildDfMM},\link{getResults}
 fitLMMs <- function(obj, pi, fixedVars = NULL, randomVars = NULL,
                     verbose = TRUE, returnModels = FALSE, Formula = NULL,
@@ -172,6 +172,12 @@ fitLMMs <- function(obj, pi, fixedVars = NULL, randomVars = NULL,
 #' @export
 #'
 #' @examples
+#' data(Yang)
+#' hypYang <- buildHyperFrame(Yang, coordVars = c("x", "y"),
+#' imageVars = c("day", "root", "section"))
+#' yangPims <- estPims(hypYang, features = getFeatures(hypYang)[seq_len(10)],
+#' pis = c("nn", "nnPair"))
+#' allModels = fitLMMsWrapper(yangPims)
 fitLMMsAll = function(obj, pis = obj$pis, ...){
     out = lapply(pis, function(pi){
         fitLMMs(obj, pi = pi, ...)

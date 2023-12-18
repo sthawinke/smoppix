@@ -15,3 +15,11 @@ A vector of features
 \description{
 Extract all unique features from an object
 }
+\examples{
+data(Yang)
+hypYang <- buildHyperFrame(Yang,
+                           coordVars = c("x", "y"),
+                           imageVars = c("day", "root", "section")
+)
+head(getFeatures(hypYang))
+}

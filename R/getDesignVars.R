@@ -15,6 +15,7 @@ getDesignVars = function(x){
 #' Extract variables from point patterns
 #'
 #' @param exclude variables to exclude
+#' @inheritParams getDesignVars
 #' @return A vector of variables
 getPPPvars = function(x, exclude = c("tabObs", "centroids", "owins", "ppp",
                                      "pimRes", "image")){
@@ -23,6 +24,7 @@ getPPPvars = function(x, exclude = c("tabObs", "centroids", "owins", "ppp",
 #' Extract variables from events (the marks)
 #'
 #' @return A vector of variables
+#' @inheritParams getDesignVars
 getEventVars = function(x, exclude = c("x", "y", "z")){
     setdiff(unique(unlist(lapply(x$hypFrame$ppp, function(ppp){
         names(marks(ppp, drop = FALSE))

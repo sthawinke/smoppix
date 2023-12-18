@@ -1,7 +1,7 @@
 context("Adding and plotting the weight function")
 test_that("Plotting the weight function works", {
-    expect_silent(plotWf(yangObj, "nn"))
-    expect_is(plotWf(yangObj, "nnPair"), "ggplot")
+    expect_silent(plotWf(yangPims, "nn"))
+    expect_is(plotWf(yangPims, "nnPair"), "ggplot")
     expect_silent(plotWf(objBG, "nn"))
     expect_silent(plotWf(objBG, "allDist"))
     expect_silent(plotWf(objBG, "nnCell"))
