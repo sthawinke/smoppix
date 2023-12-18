@@ -30,7 +30,7 @@
 estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 5e2,
                           nPointsAllWin = 2e2, features = NULL,
                           allowManyGenePairs = FALSE, manyPairs = 1e6,
-                          verbose = FALSE, owins = NULL, centroids = NULL) {
+                          verbose = TRUE, owins = NULL, centroids = NULL) {
   if (is.null(features)) {
     features <- names(tabObs)
   } else {
@@ -167,7 +167,7 @@ estPims <- function(hypFrame, pis = c(
   if (any(id <- !(features %in% getFeatures(hypFrame)))) {
     stop("Features ", features[id], " not found in hyperframe")
   }
-  hypFrame$pimRes <- bplapply(seq_len(nrow(hypFrame)), function(x) {
+  hypFrame$pimRes <- lapply(seq_len(nrow(hypFrame)), function(x) {
     estPimsSingle(hypFrame[[x,"ppp"]], owins = hypFrame[x,"owins", drop = TRUE],
       pis = pis, null = null, tabObs = hypFrame[[x,"tabObs"]],
       centroids = hypFrame[x,"centroids", drop = TRUE], ...

@@ -22,7 +22,7 @@ calcBiPIs <- function(p, pis, null, cd, nSub, ecdfAll, features,
         message("Calculating bivariate probabilistic indices...")
     }
     genePairsMat <- combn(features, 2)
-    tmp <- lapply(seq_len(ncol(genePairsMat)), function(i) {
+    tmp <- bplapply(seq_len(ncol(genePairsMat)), function(i) {
         feat1 <- genePairsMat[1, i]
         feat2 <- genePairsMat[2, i]
         pSub1 <- p[id1 <- which(marks(p, drop = FALSE)$gene == feat1), ]
