@@ -39,7 +39,8 @@ getN <- function(ecdf) {
 #'
 #' @return A point pattern, subsample if necessary
 subSampleP <- function(p, nSims) {
-    if ((NP <- npoints(p)) > nSims) p[sample(NP, nSims), ] else p
+    if ((NP <- npoints(p)) > nSims)
+        p[sample(NP, nSims), ] else p
 }
 #' Extract elements from a distance matrix by index
 #'
@@ -48,7 +49,7 @@ subSampleP <- function(p, nSims) {
 #' @details See documentation of the stats::dist function
 #' @return The required distances
 getElDist <- function(distMat, i, j) {
-    id <- outer(attr(distMat, "Size") * (i-1) - i*(i-1)/2 - i, j, FUN = "+")
+    id <- outer(attr(distMat, "Size") * (i - 1) - i * (i - 1)/2 - i, j, FUN = "+")
     # Following dist help
     distMat[c(id)]
 }
@@ -75,16 +76,17 @@ named.contr.sum <- function(x, ...) {
     colnames(x) <- lev[-length(lev)]
     x
 }
-# After https://stackoverflow.com/questions/24515892/r-how-to-contrast-code-factors-and-retain-meaningful-labels-in-output-summary
+# After
+# https://stackoverflow.com/questions/24515892/r-how-to-contrast-code-factors-and-retain-meaningful-labels-in-output-summary
 #' Add tables with gene counts to the hyperframe
 #'
 #' @param hypFrame The hyperframe
 #'
 #' @return The hyperframe with tabObs added
-addTabObs = function(hypFrame){
-    hypFrame$tabObs = lapply(hypFrame$ppp, function(x) {
+addTabObs <- function(hypFrame) {
+    hypFrame$tabObs <- lapply(hypFrame$ppp, function(x) {
         table(marks(x, drop = FALSE)$gene)
-        })
+    })
     hypFrame
 }
 #' Nest random effects within point patterns, by pasting the design factor
@@ -94,10 +96,10 @@ addTabObs = function(hypFrame){
 #' @param randomVars The random variables
 #'
 #' @return The dataframe with adapted randomVars
-nestRandom = function(df, randomVars){
+nestRandom <- function(df, randomVars) {
     stopifnot(any("design" == names(df)))
-    for(i in randomVars){
-        df[, i] = apply(df[, c("design", i)], 1, paste, collapse = "_")
+    for (i in randomVars) {
+        df[, i] <- apply(df[, c("design", i)], 1, paste, collapse = "_")
     }
     df
 }
@@ -109,9 +111,9 @@ nestRandom = function(df, randomVars){
 #' @param a A value to be queried
 #'
 #' @return The index
-which.max.early = function(x, a){
-    for(i in seq_along(x)){
-        if(a<x[i])
+which.max.early <- function(x, a) {
+    for (i in seq_along(x)) {
+        if (a < x[i])
             return(i)
     }
 }

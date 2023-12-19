@@ -11,31 +11,27 @@
 #' @examples
 #' data(Yang)
 #' hypYang <- buildHyperFrame(Yang,
-#'     coordVars = c("x", "y"),
-#'     imageVars = c("day", "root", "section")
+#'     coordVars = c('x', 'y'),
+#'     imageVars = c('day', 'root', 'section')
 #' )
 #' # Fit a subset of features to limit computation time
-#' yangPims <- estPims(hypYang[c(seq_len(5), seq(25, 29)),], pis = "nn",
-#' features = c("SmVND2", "SmPINR"))
+#' yangPims <- estPims(hypYang[c(seq_len(5), seq(25, 29)),], pis = 'nn',
+#' features = c('SmVND2', 'SmPINR'))
 #' # First build the weighting function
-#' yangPims <- addWeightFunction(yangPims, designVars = c("day", "root"))
+#' yangPims <- addWeightFunction(yangPims, designVars = c('day', 'root'))
 #' # Now build the data frame for mixed model analysis
-#' dfUniNN <- buildDfMM(yangPims, gene = "SmVND2", pi = "nn")
+#' dfUniNN <- buildDfMM(yangPims, gene = 'SmVND2', pi = 'nn')
 #' # Example analysis with linear mixed model
 #' library(lmerTest)
 #' # Use sum coding for day to maintain interpretability of the intercept
 #' mixedMod <- lmer(pi - 0.5 ~ day + (1 | root),
 #'     weight = weight, data = dfUniNN,
-#'     contrasts = list("day" = "contr.sum")
+#'     contrasts = list('day' = 'contr.sum')
 #' )
 #' summary(mixedMod)
 #' # Evidence for aggregation
-buildDfMM <- function(obj, gene,
-                      pi = c(
-                          "nn", "allDist", "nnPair", "allDistPair", "edge",
-                          "midpoint", "nnCell", "allDistCell",
-                          "nnPairCell", "allDistPairCell"
-                      )) {
+buildDfMM <- function(obj, gene, pi = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint", "nnCell", "allDistCell",
+    "nnPairCell", "allDistPairCell")) {
     pi <- match.arg(pi)
     stopifnot((lg <- length(gene)) %in% c(1, 2))
     # Check whether genes are present
@@ -57,9 +53,7 @@ buildDfMM <- function(obj, gene,
         }
         buildDfMMUni(gene = gene, pi = pi, obj = obj)
     }
-    out <- data.frame(df, as.data.frame(obj$hypFrame[match(
-        df$design, rownames(obj$hypFrame)
-    ), obj$designVars]))
+    out <- data.frame(df, as.data.frame(obj$hypFrame[match(df$design, rownames(obj$hypFrame)), obj$designVars]))
     for (i in names(out)) {
         if (is.character(out[[i]])) {
             out[[i]] <- factor(out[[i]])
@@ -69,7 +63,8 @@ buildDfMM <- function(obj, gene,
     out
 }
 buildDfMMUni <- function(obj, gene, pi) {
-    piListNameInner <- if (winId <- any(pi == c("edge", "midpoint", "nnCell", "allDistCell"))) "windowDists" else "pointDists"
+    piListNameInner <- if (winId <- any(pi == c("edge", "midpoint", "nnCell", "allDistCell")))
+        "windowDists" else "pointDists"
     # winId: is a window involved?
     fixedId <- any(pi == c("edge", "midpoint"))
     # fixedId: Is the distance to a fixed point? So no weighting needed
@@ -82,27 +77,22 @@ buildDfMMUni <- function(obj, gene, pi) {
             if (idNull) {
                 NULL
             } else {
-                Cell <- rep(names(vec[[pi]]),
-                    times = vapply(vec[[pi]], FUN.VALUE = integer(1), length)
-                )
-                cellCovars <- marks(obj$hypFrame$ppp[[n]], drop = FALSE)[
-                    , getEventVars(obj),
-                    drop = FALSE
-                ]
-                data.frame("pi" = unlist(vec), cellCovars[match(Cell, cellCovars$cell), ])
+                Cell <- rep(names(vec[[pi]]), times = vapply(vec[[pi]], FUN.VALUE = integer(1), length))
+                cellCovars <- marks(obj$hypFrame$ppp[[n]], drop = FALSE)[, getEventVars(obj), drop = FALSE]
+                data.frame(pi = unlist(vec), cellCovars[match(Cell, cellCovars$cell), ])
             }
         } else if (fixedId) {
-            cbind("pi" = if (idNull) vec else vec[[pi]])
+            cbind(pi = if (idNull)
+                vec else vec[[pi]])
         } else {
-            c("pi" = unname(vec))
+            c(pi = unname(vec))
         }
         if (!fixedId) {
             # If not fixed, provide counts to allow weighting
             if (winId) {
-                tabCell <- table(marks(obj$hypFrame$ppp[[n]], drop = FALSE)$gene,
-                          marks(obj$hypFrame$ppp[[n]], drop = FALSE)$cell)
+                tabCell <- table(marks(obj$hypFrame$ppp[[n]], drop = FALSE)$gene, marks(obj$hypFrame$ppp[[n]], drop = FALSE)$cell)
                 npVec <- tabCell[gene, match(piOut[, "cell"], colnames(tabCell))]
-                return(cbind(piOut, "NP" = npVec))
+                return(cbind(piOut, NP = npVec))
             } else {
                 npVec <- obj$hypFrame[n, "tabObs", drop = TRUE][gene]
                 names(npVec) <- "NP"
@@ -113,70 +103,55 @@ buildDfMMUni <- function(obj, gene, pi) {
         }
     })
     design <- if (winId) {
-        rep(rownames(obj$hypFrame),
-            times = vapply(piEsts, FUN.VALUE = integer(1), NROW)
-        )
+        rep(rownames(obj$hypFrame), times = vapply(piEsts, FUN.VALUE = integer(1), NROW))
     } else {
-        rownames(obj$hypFrame)[id <- vapply(piEsts,
-            FUN.VALUE = TRUE,
-            function(x) !is.null(x)
-        )]
+        rownames(obj$hypFrame)[id <- vapply(piEsts, FUN.VALUE = TRUE, function(x) !is.null(x))]
     }
-    piMat <- data.frame(Reduce(piEsts, f = rbind), "design" = design)
+    piMat <- data.frame(Reduce(piEsts, f = rbind), design = design)
     if (is.null(piMat)) {
         stop("Gene  not found!\n")
     }
     if (!fixedId) {
-        weight <- evalWeightFunction(obj$Wfs[[pi]],
-            newdata = piMat[, "NP", drop = FALSE]
-        )
-        weight <- weight / sum(weight, na.rm = TRUE)
+        weight <- evalWeightFunction(obj$Wfs[[pi]], newdata = piMat[, "NP", drop = FALSE])
+        weight <- weight/sum(weight, na.rm = TRUE)
         piMat <- cbind(piMat, weight)
     }
     return(piMat)
 }
 #' @importFrom Rfast colSort
 buildDfMMBi <- function(obj, gene, pi) {
-    piListNameInner <- if (winId <- grepl("Cell", pi)) "windowDists" else "pointDists"
+    piListNameInner <- if (winId <- grepl("Cell", pi))
+        "windowDists" else "pointDists"
     piEsts0 <- lapply(seq_along(obj$hypFrame$pimRes), function(n) {
-        if (idNull <- is.null(vec <- getGp(obj$hypFrame$pimRes[[n]][["biPIs"]],
-            gene,
-            drop = FALSE
-        )[[piListNameInner]][[pi]])) {
+        if (idNull <- is.null(vec <- getGp(obj$hypFrame$pimRes[[n]][["biPIs"]], gene, drop = FALSE)[[piListNameInner]][[pi]])) {
             NULL
         } else {
             if (winId) {
-                tabCell <- table(marks(obj$hypFrame$ppp[[n]], drop = FALSE)$gene,
-                                 marks(obj$hypFrame$ppp[[n]], drop = FALSE)$cell)
+                tabCell <- table(marks(obj$hypFrame$ppp[[n]], drop = FALSE)$gene, marks(obj$hypFrame$ppp[[n]], drop = FALSE)$cell)
                 npVec0 <- tabCell[sund(gene), match(names(vec), colnames(tabCell)), drop = FALSE]
                 npVec <- colSort(npVec0)
                 colnames(npVec) <- colnames(npVec0)
                 rownames(npVec) <- c("minP", "maxP")
-                cbind("pi" = unlist(vec), t(npVec))
+                cbind(pi = unlist(vec), t(npVec))
             } else {
                 npVec <- sort(obj$hypFrame[n, "tabObs", drop = TRUE][sund(gene)])
                 names(npVec) <- c("minP", "maxP")
-                c("pi" = unname(vec), npVec)
+                c(pi = unname(vec), npVec)
             }
         }
     })
-    piEsts <- matrix(unlist(piEsts0[id <- !vapply(piEsts0, FUN.VALUE = TRUE, is.null)]),
-        ncol = 3, byrow = TRUE, dimnames = list(NULL, c("pi", "minP", "maxP"))
-    )
+    piEsts <- matrix(unlist(piEsts0[id <- !vapply(piEsts0, FUN.VALUE = TRUE, is.null)]), ncol = 3, byrow = TRUE, dimnames = list(NULL,
+        c("pi", "minP", "maxP")))
     if (all(is.na(piEsts[, "pi"]))) {
         stop("Gene pair not found!\n")
     }
     rownames(piEsts) <- if (winId) {
-        rep(rownames(obj$hypFrame),
-            times = vapply(piEsts0, FUN.VALUE = integer(1), NROW)
-        )
+        rep(rownames(obj$hypFrame), times = vapply(piEsts0, FUN.VALUE = integer(1), NROW))
     } else {
         rownames(obj$hypFrame)[id]
     }
-    weight <- evalWeightFunction(obj$Wfs[[pi]],
-        newdata = data.frame(piEsts[, c("minP", "maxP"), drop = FALSE])
-    )
-    weight <- weight / sum(weight, na.rm = TRUE)
+    weight <- evalWeightFunction(obj$Wfs[[pi]], newdata = data.frame(piEsts[, c("minP", "maxP"), drop = FALSE]))
+    weight <- weight/sum(weight, na.rm = TRUE)
     piMat <- data.frame(piEsts, weight, design = rownames(piEsts))
     return(piMat)
 }

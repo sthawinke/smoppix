@@ -16,10 +16,7 @@ getCrossDist <- function(p, pSub, null) {
         } else {
             idDupl <- which(idMat <- (cd == 0), arr.ind = TRUE)
             # Points resampled, and thus distance 0. Replace by other points
-            cd[idMat] <- crossdist(
-                p[idDupl[, 1], ],
-                p[sample(seq_len(npoints(p))[-idDupl], 1), ]
-            )
+            cd[idMat] <- crossdist(p[idDupl[, 1], ], p[sample(seq_len(npoints(p))[-idDupl], 1), ])
         }
     }
     return(cd)

@@ -7,9 +7,9 @@
 #' @details getDesignVars() returns all design variables, getPPPvars returns
 #' design variables related to the different images and getEventVars returs
 #' design variables related to the individual events
-getDesignVars = function(x){
-    pppVars = getPPPvars(x)
-    eventVars = getEventVars(x)
+getDesignVars <- function(x) {
+    pppVars <- getPPPvars(x)
+    eventVars <- getEventVars(x)
     c(pppVars, eventVars)
 }
 #' Extract variables from point patterns
@@ -17,17 +17,16 @@ getDesignVars = function(x){
 #' @param exclude variables to exclude
 #' @inheritParams getDesignVars
 #' @return A vector of variables
-getPPPvars = function(x, exclude = c("tabObs", "centroids", "owins", "ppp",
-                                     "pimRes", "image")){
+getPPPvars <- function(x, exclude = c("tabObs", "centroids", "owins", "ppp", "pimRes", "image")) {
     setdiff(names(x$hypFrame), exclude)
 }
 #' Extract variables from events (the marks)
 #' @return A vector of variables
 #' @inheritParams getDesignVars
 #' @inheritParams getPPPvars
-getEventVars = function(x, exclude = c("x", "y", "z")){
-    setdiff(unique(unlist(lapply((if(is.hyperframe(x)) x else x$hypFrame)$ppp,
-    function(ppp){
+getEventVars <- function(x, exclude = c("x", "y", "z")) {
+    setdiff(unique(unlist(lapply((if (is.hyperframe(x))
+        x else x$hypFrame)$ppp, function(ppp) {
         names(marks(ppp, drop = FALSE))
     }))), exclude)
 }

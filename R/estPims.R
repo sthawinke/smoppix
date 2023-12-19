@@ -28,97 +28,72 @@
 #' @importFrom Rdpack reprompt
 #' @importFrom Rfast rowSort rowMins rowAny
 #' @importFrom extraDistr pnhyper
-estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 5e2,
-                          nPointsAllWin = 2e2, features = NULL,
-                          allowManyGenePairs = FALSE, manyPairs = 1e6,
-                          verbose = FALSE, owins = NULL, centroids = NULL) {
-  if (is.null(features)) {
-    features <- names(tabObs)
-  } else {
-    features <- intersect(features, names(tabObs))
-  }
-  if (null == "CSR") {
-    if (any(pis %in% c("allDist", "allDistPair", "nn", "nnPair"))) {
-      pSim <- runifpoint(nPointsAll, win = p$window)
-      ecdfAll <- ecdf(dist(coords(pSim)))
+estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 500, nPointsAllWin = 200, features = NULL, allowManyGenePairs = FALSE,
+    manyPairs = 1e+06, verbose = FALSE, owins = NULL, centroids = NULL) {
+    if (is.null(features)) {
+        features <- names(tabObs)
+    } else {
+        features <- intersect(features, names(tabObs))
     }
-    if (any(pis %in% c(
-      "edge", "midpoint", "nnCell", "allDistCell",
-      "nnPairCell", "allDistPairCell"
-    ))) {
-      ecdfsCell <- lapply(names(owins), function(nam) {
-        pSub <- runifpoint(nPointsAllWin, win = owins[[nam]])
-        edge <- if (any(pis == "edge")) {
-          ecdf(nncross(pSub, edges(owins[[nam]]), what = "dist"))
+    if (null == "CSR") {
+        if (any(pis %in% c("allDist", "allDistPair", "nn", "nnPair"))) {
+            pSim <- runifpoint(nPointsAll, win = p$window)
+            ecdfAll <- ecdf(dist(coords(pSim)))
         }
-        midpoint <- if (any(pis == "midpoint")) {
-          ecdf(crossdist(pSub, centroids[[nam]]))
+        if (any(pis %in% c("edge", "midpoint", "nnCell", "allDistCell", "nnPairCell", "allDistPairCell"))) {
+            ecdfsCell <- lapply(names(owins), function(nam) {
+                pSub <- runifpoint(nPointsAllWin, win = owins[[nam]])
+                edge <- if (any(pis == "edge")) {
+                  ecdf(nncross(pSub, edges(owins[[nam]]), what = "dist"))
+                }
+                midpoint <- if (any(pis == "midpoint")) {
+                  ecdf(crossdist(pSub, centroids[[nam]]))
+                }
+                allDistCell <- if (any(pis %in% c("nnCell", "allDistCell", "nnPairCell", "allDistPairCell"))) {
+                  ecdf(dist(coords(pSub)))
+                }
+                list(edge = edge, midpoint = midpoint, allDistCell = allDistCell)
+            })
+            names(ecdfsCell) <- names(owins)
         }
-        allDistCell <- if (any(pis %in% c(
-          "nnCell", "allDistCell",
-          "nnPairCell", "allDistPairCell"
-        ))) {
-          ecdf(dist(coords(pSub)))
+    } else if (null == "background") {
+        if (any(pis %in% c("edge", "midpoint"))) {
+            ecdfsCell <- lapply(names(owins), function(nam) {
+                pSub <- subSampleP(pCell <- p[marks(p, drop = FALSE)$cell == nam, ], nPointsAllWin)
+                edge <- if (any(pis == "edge")) {
+                  ecdf(nncross(pSub, edges(owins[[nam]]), what = "dist"))
+                }
+                midpoint <- if (any(pis == "midpoint")) {
+                  ecdf(crossdist(pSub, centroids[[nam]]))
+                }
+                allDistCell <- if (any(pis %in% c("nnCell", "allDistCell", "nnPairCell", "allDistPairCell"))) {
+                  apply(rowSort(getCrossDist(pCell, pSub, null)), 1, ecdfPreSort)
+                }
+                list(edge = edge, midpoint = midpoint, allDistCell = allDistCell)
+            })
+            names(ecdfsCell) <- names(owins)
         }
-        list("edge" = edge, "midpoint" = midpoint, "allDistCell" = allDistCell)
-      })
-      names(ecdfsCell) <- names(owins)
+        if (any(pis %in% c("nn", "nnPair", "allDist", "allDistPair"))) {
+            # Prepare some null distances, either with CSR or background
+            pSub <- subSampleP(p, nPointsAll)
+            # Subsample for memory reasons
+            cd <- getCrossDist(p, pSub, null)
+            cd <- rowSort(cd)
+            # For background, condition on point locations
+        }
     }
-  } else if (null == "background") {
-    if (any(pis %in% c("edge", "midpoint"))) {
-      ecdfsCell <- lapply(names(owins), function(nam) {
-        pSub <- subSampleP(
-          pCell <- p[marks(p, drop = FALSE)$cell == nam, ],
-          nPointsAllWin
-        )
-        edge <- if (any(pis == "edge")) {
-          ecdf(nncross(pSub, edges(owins[[nam]]), what = "dist"))
-        }
-        midpoint <- if (any(pis == "midpoint")) {
-          ecdf(crossdist(pSub, centroids[[nam]]))
-        }
-        allDistCell <- if (any(pis %in% c(
-          "nnCell", "allDistCell",
-          "nnPairCell", "allDistPairCell"
-        ))) {
-          apply(
-            rowSort(getCrossDist(pCell, pSub, null)), 1,
-            ecdfPreSort
-          )
-        }
-        list(
-          "edge" = edge, "midpoint" = midpoint,
-          "allDistCell" = allDistCell
-        )
-      })
-      names(ecdfsCell) <- names(owins)
+    # Univariate patterns
+    piPair <- grepl(pis, pattern = "Pair")
+    uniPIs <- if (any(!piPair)) {
+        calcUniPIs(p, pis, verbose, ecdfsCell, owins, tabObs, null, cd = cd, nSub = npoints(p), ecdfAll, features,
+            centroids = centroids)
     }
-    if (any(pis %in% c("nn", "nnPair", "allDist", "allDistPair"))) {
-      # Prepare some null distances, either with CSR or background
-      pSub <- subSampleP(p, nPointsAll)
-      # Subsample for memory reasons
-      cd = getCrossDist(p, pSub, null)
-      cd <- rowSort(cd)
-      # For background, condition on point locations
+    # Bivariate patterns
+    biPIs <- if (any(piPair)) {
+        calcBiPIs(features = features, p, pis, null, cd = cd, nSub = npoints(p), ecdfAll, manyPairs, verbose, allowManyGenePairs,
+            ecdfsCell)
     }
-  }
-  # Univariate patterns
-  piPair <- grepl(pis, pattern = "Pair")
-  uniPIs <- if (any(!piPair)) {
-    calcUniPIs(p, pis, verbose, ecdfsCell, owins, tabObs, null,
-      cd = cd, nSub = npoints(p), ecdfAll, features,
-      centroids = centroids
-    )
-  }
-  # Bivariate patterns
-  biPIs <- if (any(piPair)) {
-    calcBiPIs(
-      features = features, p, pis, null,
-      cd = cd, nSub = npoints(p), ecdfAll, manyPairs, verbose, allowManyGenePairs,
-      ecdfsCell
-    )
-  }
-  list("uniPIs" = uniPIs, "biPIs" = biPIs)
+    list(uniPIs = uniPIs, biPIs = biPIs)
 }
 #' Estimate pims on a hyperframe
 #' @export
@@ -130,16 +105,16 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 5e2,
 #' @examples
 #' data(Yang)
 #' hypYang <- buildHyperFrame(Yang,
-#'   coordVars = c("x", "y"),
-#'   imageVars = c("day", "root", "section")
+#'   coordVars = c('x', 'y'),
+#'   imageVars = c('day', 'root', 'section')
 #' )
 #' # Fit a subset of features to limit computation time
-#' yangPims <- estPims(hypYang[c(seq_len(5), seq(25, 29)),], pis = "nn")
+#' yangPims <- estPims(hypYang[c(seq_len(5), seq(25, 29)),], pis = 'nn')
 #' # Univariate nearest neighbour distances
 #' @details
-#' The null distribution used to calculate the PIs. Can be either "background",
+#' The null distribution used to calculate the PIs. Can be either 'background',
 #' in which case the observed distributions of all genes is used. Alternatively,
-#' for null = "CSR", Monte-Carlo simulation under complete spatial randomness
+#' for null = 'CSR', Monte-Carlo simulation under complete spatial randomness
 #'  is performed within the given window.
 #'
 #' The 'nn' prefix indicates that nearest neighbour distances are being used,
@@ -148,36 +123,26 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 5e2,
 #' testing for co- and antilocalization are being used.
 #' 'edge' and 'midpoint' calculate the distance to the edge respectively
 #'  the midpoint of the windows added using the addCell() function.
-#' The suffix "Cell" indicates distances are being calculated within cells only.
-estPims <- function(hypFrame, pis = c(
-                      "nn", "allDist", "nnPair", "allDistPair",
-                      "edge", "midpoint", "nnCell", "allDistCell",
-                      "nnPairCell", "allDistPairCell"
-                    ), verbose = TRUE,
-                    null = c("background", "CSR"),
-                    features = getFeatures(hypFrame), ...) {
-  pis <- match.arg(pis, several.ok = TRUE)
-  null <- match.arg(null)
-  if (any(pis %in% c("edge", "midpoint", "nnCell", "allDistCell")) &&
-      is.null(hypFrame$owins)) {
-    stop(
-      "No window provided for distance to edge or midpoint calculation. ",
-      "Add it using the addCell() function"
-    )
-  }
-  if (any(id <- !(features %in% getFeatures(hypFrame)))) {
-    stop("Features ", features[id], " not found in hyperframe")
-  }
-  if(verbose)
-      message("Calculating PIs for hyperframe ")
-  hypFrame$pimRes <- lapply(seq_len(nrow(hypFrame)), function(x) {
-      if(verbose){
-          message(x, "of", nrow(hypFrame), "\t")
-      }
-    estPimsSingle(hypFrame[[x,"ppp"]], owins = hypFrame[x,"owins", drop = TRUE],
-      pis = pis, null = null, tabObs = hypFrame[[x,"tabObs"]],
-      centroids = hypFrame[x,"centroids", drop = TRUE], ...
-    )
-  })
-  list("hypFrame" = hypFrame, "null" = null, "pis" = pis, "features" = features)
+#' The suffix 'Cell' indicates distances are being calculated within cells only.
+estPims <- function(hypFrame, pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint", "nnCell", "allDistCell",
+    "nnPairCell", "allDistPairCell"), verbose = TRUE, null = c("background", "CSR"), features = getFeatures(hypFrame),
+    ...) {
+    pis <- match.arg(pis, several.ok = TRUE)
+    null <- match.arg(null)
+    if (any(pis %in% c("edge", "midpoint", "nnCell", "allDistCell")) && is.null(hypFrame$owins)) {
+        stop("No window provided for distance to edge or midpoint calculation. ", "Add it using the addCell() function")
+    }
+    if (any(id <- !(features %in% getFeatures(hypFrame)))) {
+        stop("Features ", features[id], " not found in hyperframe")
+    }
+    if (verbose)
+        message("Calculating PIs for hyperframe ")
+    hypFrame$pimRes <- lapply(seq_len(nrow(hypFrame)), function(x) {
+        if (verbose) {
+            message(x, " of ", nrow(hypFrame), "  ")
+        }
+        estPimsSingle(hypFrame[[x, "ppp"]], owins = hypFrame[x, "owins", drop = TRUE], pis = pis, null = null, tabObs = hypFrame[[x,
+            "tabObs"]], centroids = hypFrame[x, "centroids", drop = TRUE], ...)
+    })
+    list(hypFrame = hypFrame, null = null, pis = pis, features = features)
 }

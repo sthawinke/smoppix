@@ -13,12 +13,14 @@ getGp <- function(x, gp, drop = TRUE, Collapse = "--") {
         Names <- rownames(x)
     }
     if (gp %in% Names) {
-        if (isVec) x[[gp]] else x[gp, , drop = drop]
+        if (isVec)
+            x[[gp]] else x[gp, , drop = drop]
     } else {
         geneSplit <- sund(gp)
         gp <- paste(rev(geneSplit), collapse = Collapse)
         if (gp %in% Names) {
-            if (isVec) x[[gp]] else x[gp, , drop = drop]
+            if (isVec)
+                x[[gp]] else x[gp, , drop = drop]
         } else {
             NULL
         }

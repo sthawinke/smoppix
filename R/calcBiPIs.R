@@ -1,6 +1,6 @@
 #' Calculate bivaraiet PIs
 #'
-#' @param manyPairs Number of gene pairs to be considered "many"
+#' @param manyPairs Number of gene pairs to be considered 'many'
 #' @param allowManyGenePairs A boolean, set to true to override warning on computation time
 #' @param maxNum The maximum number of points to calculate cross distances for,
 #' to avoid excessive memory usage.
@@ -9,69 +9,42 @@
 #' @importFrom BiocParallel bpparam
 #'
 #' @return A matrix of bivariate PIs
-calcBiPIs <- function(p, pis, null, cd, nSub, ecdfAll, features,
-                      manyPairs, verbose, allowManyGenePairs, ecdfsCell,
-                      maxNum = 1e4) {
-    if (!allowManyGenePairs &&
-        (numGenePairs <- choose(length(features), 2)) > manyPairs) {
-        warning(
-            immediate. = TRUE, "Calculating probablistic indices for",
-            numGenePairs, "gene pairs may take a long time!\n",
-            "Set allowManyGenePairs to TRUE to suppress this announcement"
-        )
+calcBiPIs <- function(p, pis, null, cd, nSub, ecdfAll, features, manyPairs, verbose, allowManyGenePairs, ecdfsCell,
+    maxNum = 10000) {
+    if (!allowManyGenePairs && (numGenePairs <- choose(length(features), 2)) > manyPairs) {
+        warning(immediate. = TRUE, "Calculating probablistic indices for", numGenePairs, "gene pairs may take a long time!\n",
+            "Set allowManyGenePairs to TRUE to suppress this announcement")
     } else if (verbose) {
         message("Calculating bivariate probabilistic indices...")
     }
     genePairsMat <- combn(features, 2)
-    splitFac = rep(seq_len(bpparam()$workers), length.out = ncol(genePairsMat))
-    tmp <- unsplit(f = splitFac, bplapply(split(seq_len(ncol(genePairsMat)), f = splitFac), function(ss){
+    splitFac <- rep(seq_len(bpparam()$workers), length.out = ncol(genePairsMat))
+    tmp <- unsplit(f = splitFac, bplapply(split(seq_len(ncol(genePairsMat)), f = splitFac), function(ss) {
         lapply(ss, function(i) {
-        feat1 <- genePairsMat[1, i]
-        feat2 <- genePairsMat[2, i]
-        pSub1 <- p[id1 <- which(marks(p, drop = FALSE)$gene == feat1), ]
-        pSub2 <- p[id2 <- which(marks(p, drop = FALSE)$gene == feat2), ]
-        # Reorder and subset if needed
-        NNdistPI <- if (any(pis == "nnPair")) {
-            calcNNPIpair(
-                obsDistNN = nncross(pSub1, pSub2, what = "dist"), id1 = id1,
-                id2 = id2, null = null, cd = cd[c(id1, id2),], p = p,
-                ecdfAll = ecdfAll, n = nSub
-            )
-        }
-        allDistPI <- if (any(pis == "allDistPair")) {
-            cdSub <- crossdist(subSampleP(pSub1, maxNum),
-                            subSampleP(pSub2, maxNum))
-            calcAllDistPIpair(
-                id1 = id1, id2 = id2, ecdfAll = ecdfAll,
-                null = null, cd = cd[c(id1, id2),],
-                crossDistSub = cdSub
-            )
-        }
-        nnCellPI <- if (any(pis == "nnPairCell")) {
-            calcWindowPairPI(pSub1, pSub2,
-                ecdfAll = ecdfsCell,
-                ecdfs = ecdfsCell, pi = "nnPairCell", null = null,
-                feat1 = feat1, feat2 = feat2,
-                cellAndGene = marks(p, drop = FALSE)[, c("gene", "cell")]
-            )
-        }
-        allDistCellPI <- if (any(pis == "allDistPairCell")) {
-            calcWindowPairPI(pSub1, pSub2,
-                null = null,
-                feat1 = feat1, feat2 = feat2,
-                cellAndGene = marks(p, drop = FALSE)[, c("gene", "cell")],
-                ecdfAll = ecdfsCell, pi = "allDistPairCell",
-                ecdfs = ecdfsCell
-            )
-        }
-        list(
-            "pointDists" = c("nnPair" = NNdistPI, "allDistPair" = allDistPI),
-            "windowDists" = list(
-                "allDistPairCell" = allDistCellPI,
-                "nnPairCell" = nnCellPI
-            )
-        )
-    })
+            feat1 <- genePairsMat[1, i]
+            feat2 <- genePairsMat[2, i]
+            pSub1 <- p[id1 <- which(marks(p, drop = FALSE)$gene == feat1), ]
+            pSub2 <- p[id2 <- which(marks(p, drop = FALSE)$gene == feat2), ]
+            # Reorder and subset if needed
+            NNdistPI <- if (any(pis == "nnPair")) {
+                calcNNPIpair(obsDistNN = nncross(pSub1, pSub2, what = "dist"), id1 = id1, id2 = id2, null = null, cd = cd[c(id1,
+                  id2), ], p = p, ecdfAll = ecdfAll, n = nSub)
+            }
+            allDistPI <- if (any(pis == "allDistPair")) {
+                cdSub <- crossdist(subSampleP(pSub1, maxNum), subSampleP(pSub2, maxNum))
+                calcAllDistPIpair(id1 = id1, id2 = id2, ecdfAll = ecdfAll, null = null, cd = cd[c(id1, id2), ], crossDistSub = cdSub)
+            }
+            nnCellPI <- if (any(pis == "nnPairCell")) {
+                calcWindowPairPI(pSub1, pSub2, ecdfAll = ecdfsCell, ecdfs = ecdfsCell, pi = "nnPairCell", null = null,
+                  feat1 = feat1, feat2 = feat2, cellAndGene = marks(p, drop = FALSE)[, c("gene", "cell")])
+            }
+            allDistCellPI <- if (any(pis == "allDistPairCell")) {
+                calcWindowPairPI(pSub1, pSub2, null = null, feat1 = feat1, feat2 = feat2, cellAndGene = marks(p, drop = FALSE)[,
+                  c("gene", "cell")], ecdfAll = ecdfsCell, pi = "allDistPairCell", ecdfs = ecdfsCell)
+            }
+            list(pointDists = c(nnPair = NNdistPI, allDistPair = allDistPI), windowDists = list(allDistPairCell = allDistCellPI,
+                nnPairCell = nnCellPI))
+        })
     }))
     names(tmp) <- apply(genePairsMat, 2, paste, collapse = "--")
     return(tmp)

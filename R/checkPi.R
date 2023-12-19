@@ -6,14 +6,11 @@
 #' @return Throws an error when the PIs are not found, otherwise returns invisible
 checkPi <- function(x, pi) {
     if (!(pi %in% x$pis)) {
-        stop(
-            "Required PI not present in object. Rerun ",
-            if("Wfs" %in% names(x)){
-                "buildWeightFunction"
-            } else {
-                "estPims"
-            }, " with correct 'pis' argument"
-        )
+        stop("Required PI not present in object. Rerun ", if ("Wfs" %in% names(x)) {
+            "buildWeightFunction"
+        } else {
+            "estPims"
+        }, " with correct 'pis' argument")
     } else {
         invisible()
     }

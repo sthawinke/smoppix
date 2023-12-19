@@ -8,14 +8,14 @@
 #' @examples
 #' data(Yang)
 #' hypYang <- buildHyperFrame(Yang,
-#'     coordVars = c("x", "y"),
-#'     imageVars = c("day", "root", "section")
+#'     coordVars = c('x', 'y'),
+#'     imageVars = c('day', 'root', 'section')
 #' )
 #' yangPims <- estPims(hypYang[c(seq_len(5), seq(25, 29)),],
-#'     pis = "nn")
+#'     pis = 'nn')
 #' # First Build the weighting function
-#' yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))
-#' evalWeightFunction(yangObj$Wfs$nn, newdata = data.frame("NP" = 2))
+#' yangObj <- addWeightFunction(yangPims, designVars = c('day', 'root'))
+#' evalWeightFunction(yangObj$Wfs$nn, newdata = data.frame('NP' = 2))
 evalWeightFunction <- function(wf, newdata) {
-    1 / exp(predict.scam(wf, newdata = newdata))
+    1/exp(predict.scam(wf, newdata = newdata))
 }

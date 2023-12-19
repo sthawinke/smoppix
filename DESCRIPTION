@@ -20,3 +20,4 @@ biocViews: Transcriptomics, Spatial, SingleCell
 Depends: R (>= 4.3.0)
 VignetteBuilder: knitr
 BugReports: https://github.com/sthawinke/spatrans
+URL: https://github.com/sthawinke/spatrans

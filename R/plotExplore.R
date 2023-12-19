@@ -15,14 +15,12 @@
 #' @examples
 #' data(Yang)
 #' hypYang <- buildHyperFrame(Yang,
-#'     coordVars = c("x", "y"),
-#'     imageVars = c("day", "root", "section")
+#'     coordVars = c('x', 'y'),
+#'     imageVars = c('day', 'root', 'section')
 #' )
 #' plotExplore(hypYang)
-plotExplore <- function(hypFrame, features = getFeatures(hypFrame), ppps,
-                        maxPlot = 1e5) {
-    stopifnot(is.hyperframe(hypFrame), is.character(features),
-              is.numeric(maxPlot))
+plotExplore <- function(hypFrame, features = getFeatures(hypFrame), ppps, maxPlot = 1e+05) {
+    stopifnot(is.hyperframe(hypFrame), is.character(features), is.numeric(maxPlot))
     npp <- nrow(hypFrame)
     if (missing(ppps)) {
         ppps <- seq_len(min(8, npp))
@@ -32,27 +30,21 @@ plotExplore <- function(hypFrame, features = getFeatures(hypFrame), ppps,
     names(Cols) <- features
     old.par <- par(no.readonly = TRUE)
     on.exit(par(old.par))
-    par(mfrow = if ((LL <- length(ppps)) <= 3) c(2, 2) else c(3, 3),
-        mar = c(3, 3, 3, 3))
+    par(mfrow = if ((LL <- length(ppps)) <= 3)
+        c(2, 2) else c(3, 3), mar = c(3, 3, 3, 3))
     baa <- lapply(ppps, function(i) {
         id <- marks(hypFrame$ppp[[i]], drop = FALSE)$gene %in% features
         if (any(id)) {
-            if(length(id) > maxPlot)
-                id = sample(id, maxPlot)
+            if (length(id) > maxPlot)
+                id <- sample(id, maxPlot)
             colVec <- Cols[marks(hypFrame$ppp[[i]], drop = FALSE)$gene[id]]
             cordMat <- coords(hypFrame$ppp[[i]][id, ])
             ordVec <- order(colVec != "grey")
             # Plot grey background first and coloured dots on top
-            plot(cordMat[ordVec, ],
-                main = hypFrame$image[ppps[i]], pch = ".", asp = 1,
-                col = colVec[ordVec]
-            )
+            plot(cordMat[ordVec, ], main = hypFrame$image[ppps[i]], pch = ".", asp = 1, col = colVec[ordVec])
         }
     })
     plot(0, 0, type = "n", xlab = "", ylab = "", xaxt = "n", yaxt = "n")
     idCols <- which(Cols != "grey")
-    legend("center",
-        legend = names(Cols)[idCols], pch = 20, col = Cols[idCols],
-        ncol = 2
-    )
+    legend("center", legend = names(Cols)[idCols], pch = 20, col = Cols[idCols], ncol = 2)
 }

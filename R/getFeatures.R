@@ -7,14 +7,14 @@
 #' @examples
 #' data(Yang)
 #' hypYang <- buildHyperFrame(Yang,
-#'                            coordVars = c("x", "y"),
-#'                            imageVars = c("day", "root", "section")
+#'                            coordVars = c('x', 'y'),
+#'                            imageVars = c('day', 'root', 'section')
 #' )
 #' head(getFeatures(hypYang))
-getFeatures = function(x){
-    x = if(is.hyperframe(x)){
+getFeatures <- function(x) {
+    x <- if (is.hyperframe(x)) {
         x
-    } else if(is.hyperframe(x$hypFrame)){
+    } else if (is.hyperframe(x$hypFrame)) {
         x$hypFrame
     }
     unique(unlist(lapply(x$tabObs, names)))

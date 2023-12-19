@@ -33,39 +33,30 @@
 #' @examples
 #' data(Yang)
 #' hypYang <- buildHyperFrame(Yang,
-#'     coordVars = c("x", "y"),
-#'     imageVars = c("day", "root", "section")
+#'     coordVars = c('x', 'y'),
+#'     imageVars = c('day', 'root', 'section')
 #' )
 #' # Fit a subset of features to limit computation time
 #' yangPims <- estPims(hypYang[c(seq_len(5), seq(25, 29)),],
-#'     pis = c("nn", "nnPair")
+#'     pis = c('nn', 'nnPair')
 #' )
 #' # Build the weighting function for all PIs present
-#' yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))
+#' yangObj <- addWeightFunction(yangPims, designVars = c('day', 'root'))
 #' # Alternative formulation with 'lowestLevelVar'
 #' yangObj2 <- addWeightFunction(yangPims,
-#'     lowestLevelVar = "section",
-#'     pi = "nn"
+#'     lowestLevelVar = 'section',
+#'     pi = 'nn'
 #' )
-addWeightFunction <- function(resList, pis = resList$pis,
-                              designVars, lowestLevelVar, maxObs = 1e5,
-                              maxFeatures = 5e2,
-                              ...) {
+addWeightFunction <- function(resList, pis = resList$pis, designVars, lowestLevelVar, maxObs = 1e+05, maxFeatures = 500,
+    ...) {
     if (all(pis %in% c("edge", "midpoint"))) {
-        stop(
-            "Calculating weight matrices for distances to fixed points is ",
-            "unnecessary as they are independent.
+        stop("Calculating weight matrices for distances to fixed points is ", "unnecessary as they are independent.
              Simply proceed with fitting the model on the",
-            " individual evaluations of the B-function."
-        )
+            " individual evaluations of the B-function.")
     }
     allCell <- all(grepl("Cell", pis))
-    if (missing(designVars) && missing(lowestLevelVar) &&
-        !allCell) {
-        stop(
-            "Provide either designVars or lowestLevelVar for measures ",
-            "not on cell level!"
-        )
+    if (missing(designVars) && missing(lowestLevelVar) && !allCell) {
+        stop("Provide either designVars or lowestLevelVar for measures ", "not on cell level!")
     }
     if (!missing(designVars) && !missing(lowestLevelVar)) {
         stop("Provide either designVars or lowestLevelVar, both not both!")
@@ -83,31 +74,21 @@ addWeightFunction <- function(resList, pis = resList$pis,
             see getFeatures(resList)")
         }
         designVars <- setdiff(getPPPvars(resList), lowestLevelVar)
-        # If missing take everything but the ones that are obviously
-        # no design variables
+        # If missing take everything but the ones that are obviously no design variables
     }
     if (any(idMissing <- !(designVars %in% allVars))) {
-        stop(
-            "Design variables\n", designVars[idMissing],
-            "\nnot found in hypFrame object"
-        )
+        stop("Design variables\n", designVars[idMissing], "\nnot found in hypFrame object")
     }
-    pis <- match.arg(pis,
-        choices = c(
-            "nn", "nnPair", "allDist", "allDistPair",
-            "nnCell", "allDistCell", "nnPairCell", "allDistPairCell"
-        ),
-        several.ok = TRUE
-    )
+    pis <- match.arg(pis, choices = c("nn", "nnPair", "allDist", "allDistPair", "nnCell", "allDistCell", "nnPairCell",
+        "allDistPairCell"), several.ok = TRUE)
     if (is.null(resList$pis)) {
-        stop(
-            "No pims found in the hyperframe.",
-            "First estimate them using the estPims() function."
-        )
+        stop("No pims found in the hyperframe.", "First estimate them using the estPims() function.")
     }
     Wfs <- bplapply(pis, function(pi) {
-        piListName <- if (pairId <- grepl("Pair", pi)) "biPIs" else "uniPIs"
-        subListName <- if (cellId <- grepl("Cell", pi)) "windowDists" else "pointDists"
+        piListName <- if (pairId <- grepl("Pair", pi))
+            "biPIs" else "uniPIs"
+        subListName <- if (cellId <- grepl("Cell", pi))
+            "windowDists" else "pointDists"
         features <- getFeatures(resList)
         piList <- lapply(resList$hypFrame$pimRes, function(x) {
             lapply(x[[piListName]], function(y) {
@@ -120,10 +101,8 @@ addWeightFunction <- function(resList, pis = resList$pis,
         if (cellId) {
             ordDesign <- seq_len(nrow(resList$hypFrame))
         } else {
-            designVec <- apply(as.data.frame(resList$hypFrame[, designVars, drop = FALSE]),
-                1, paste, collapse = "_"
-            )
-            ordDesign <- order(designVec) # Ensure correct ordering for tapply
+            designVec <- apply(as.data.frame(resList$hypFrame[, designVars, drop = FALSE]), 1, paste, collapse = "_")
+            ordDesign <- order(designVec)  # Ensure correct ordering for tapply
         }
         varEls <- lapply(features, function(gene) {
             geneSplit <- if (pairId) {
@@ -134,65 +113,58 @@ addWeightFunction <- function(resList, pis = resList$pis,
             if (cellId) {
                 # If cellId, there is no tapply, cells are the lowest level anyway
                 tmp <- lapply(ordDesign, function(x) {
-                    if (!all((if (pairId) gene else geneSplit) %in% names(piList[[x]]))) {
-                        return(NULL)
+                  if (!all((if (pairId) gene else geneSplit) %in% names(piList[[x]]))) {
+                    return(NULL)
+                  }
+                  CellGene <- table(marks(resList$hypFrame$ppp[[x]])$cell, marks(resList$hypFrame$ppp[[x]])$gene)[,
+                    geneSplit, drop = FALSE]
+                  deps <- vapply(piList[[x]][if (pairId)
+                    gene else geneSplit], FUN.VALUE = double(sum(id <- rowAll(CellGene > 0))), function(y) {
+                    xx <- unlist(y)
+                    if (sum(!is.na(xx)) >= 2) {
+                      (xx - mean(xx, na.rm = TRUE))^2
+                    } else {
+                      rep_len(NA, length(xx))
                     }
-                    CellGene <- table(
-                        marks(resList$hypFrame$ppp[[x]])$cell,
-                        marks(resList$hypFrame$ppp[[x]])$gene
-                    )[, geneSplit, drop = FALSE]
-                    deps <- vapply(piList[[x]][if (pairId) gene else geneSplit],
-                        FUN.VALUE = double(sum(id <- rowAll(CellGene > 0))), function(y) {
-                            xx <- unlist(y)
-                            if (sum(!is.na(xx)) >= 2) {
-                                (xx - mean(xx, na.rm = TRUE))^2
-                            } else {
-                                rep_len(NA, length(xx))
-                            }
-                        }
-                    )
-                    cbind("quadDeps" = deps, rowSort(CellGene[id, , drop = FALSE]))
+                  })
+                  cbind(quadDeps = deps, rowSort(CellGene[id, , drop = FALSE]))
                 })
                 if (all(vapply(tmp, FUN.VALUE = logical(1), is.null))) {
-                    return(NULL)
+                  return(NULL)
                 } else {
-                    out <- t(Reduce(tmp, f = rbind))
+                  out <- t(Reduce(tmp, f = rbind))
                 }
             } else {
                 tmp <- vapply(piList[ordDesign], FUN.VALUE = double(1), function(x) {
-                    if (is.null(baa <- getGp(x, gene))) NA else baa
+                  if (is.null(baa <- getGp(x, gene)))
+                    NA else baa
                 })
                 quadDeps <- unlist(tapply(tmp, designVec, function(x) {
-                    if (sum(!is.na(x)) >= 2) {
-                        (x - mean(x, na.rm = TRUE))^2
-                    } else {
-                        rep_len(NA, length(x))
-                    }
-                })) # The quadratic departures from the conditional mean
-                tabEntries <- vapply(resList$hypFrame$tabObs[ordDesign],
-                    FUN.VALUE = double(if (pairId) 2 else 1), function(x) {
-                        if (pairId) {
-                            if (all(geneSplit %in% names(x))) sort(x[geneSplit]) else rep(NA, 2)
-                        } else {
-                            x[geneSplit]
-                        }
-                    }
-                )
-                out <- rbind("quadDeps" = quadDeps, tabEntries)
+                  if (sum(!is.na(x)) >= 2) {
+                    (x - mean(x, na.rm = TRUE))^2
+                  } else {
+                    rep_len(NA, length(x))
+                  }
+                }))  # The quadratic departures from the conditional mean
+                tabEntries <- vapply(resList$hypFrame$tabObs[ordDesign], FUN.VALUE = double(if (pairId)
+                  2 else 1), function(x) {
+                  if (pairId) {
+                    if (all(geneSplit %in% names(x)))
+                      sort(x[geneSplit]) else rep(NA, 2)
+                  } else {
+                    x[geneSplit]
+                  }
+                })
+                out <- rbind(quadDeps = quadDeps, tabEntries)
             }
-            rownames(out)[-1] <- if (pairId) c("minP", "maxP") else "NP"
+            rownames(out)[-1] <- if (pairId)
+                c("minP", "maxP") else "NP"
             out
         })
-        varElMat <- matrix(unlist(varEls),
-            ncol = if (pairId) 3 else 2,
-            byrow = TRUE, dimnames = list(
-                NULL,
-                c("quadDeps", if (pairId) c("minP", "maxP") else "NP")
-            )
-        )
+        varElMat <- matrix(unlist(varEls), ncol = if (pairId)
+            3 else 2, byrow = TRUE, dimnames = list(NULL, c("quadDeps", if (pairId) c("minP", "maxP") else "NP")))
         # Faster than cbind
-        varElMat <- varElMat[!is.na(varElMat[, "quadDeps"]) &
-            varElMat[, "quadDeps"] != 0, ]
+        varElMat <- varElMat[!is.na(varElMat[, "quadDeps"]) & varElMat[, "quadDeps"] != 0, ]
         if (nrow(varElMat) > maxObs) {
             varElMat <- varElMat[sample(nrow(varElMat), maxObs), ]
         }
@@ -206,5 +178,5 @@ addWeightFunction <- function(resList, pis = resList$pis,
         return(scamMod)
     })
     names(Wfs) <- pis
-    return(c(resList, list("Wfs" = Wfs, "designVars" = designVars)))
+    return(c(resList, list(Wfs = Wfs, designVars = designVars)))
 }
