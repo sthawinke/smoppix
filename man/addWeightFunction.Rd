@@ -60,7 +60,7 @@ hypYang <- buildHyperFrame(Yang,
 )
 # Fit a subset of features to limit computation time
 yangPims <- estPims(hypYang[c(seq_len(5), seq(25, 29)),],
-    pis = c('nn', 'nnPair')
+    pis = c('nn', 'nnPair'), features = getFeatures(hypYang)[1:10]
 )
 # Build the weighting function for all PIs present
 yangObj <- addWeightFunction(yangPims, designVars = c('day', 'root'))
