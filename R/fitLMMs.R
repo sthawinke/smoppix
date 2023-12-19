@@ -74,8 +74,12 @@ fitLMMs <- function(obj, pi, fixedVars = NULL, randomVars = NULL, verbose = TRUE
     if (verbose) {
         message("Fitted formula:\n", formChar)
     }
-    Control <- lmerControl(check.conv.grad = .makeCC("ignore", tol = 0.002, relTol = NULL), check.conv.singular = .makeCC(action = "ignore",
-        tol = formals(isSingular)$tol), check.conv.hess = .makeCC(action = "ignore", tol = 1e-06))  # convergence checking options
+    Control <- lmerControl(
+        check.conv.grad = .makeCC("ignore", tol = 0.002, relTol = NULL),
+        check.conv.singular = .makeCC(action = "ignore",
+        tol = formals(isSingular)$tol),
+        check.conv.hess = .makeCC(action = "ignore", tol = 1e-06))
+    # convergence checking options
     if (is.null(fixedVars)) {
         contrasts <- NULL
     } else {
@@ -84,14 +88,17 @@ fitLMMs <- function(obj, pi, fixedVars = NULL, randomVars = NULL, verbose = TRUE
     }
     Features <- if (grepl("Pair", pi)) {
         feats <- makePairs(features)
-        featIds <- colSums(vapply(feats, FUN.VALUE = double(nrow(obj$hypFrame)), function(gene) {
-            vapply(obj$hypFrame$tabObs, FUN.VALUE = double(1), function(x) all(x[sund(gene)] >= 1))
+        featIds <- colSums(vapply(feats, FUN.VALUE = double(nrow(obj$hypFrame)),
+                                  function(gene) {
+            vapply(obj$hypFrame$tabObs, FUN.VALUE = double(1),
+                   function(x) all(x[sund(gene)] >= 1))
         }), na.rm = TRUE) >= 1
         feats[featIds]
     } else {
         # First check if gene is present at all
         featIds <- colSums(vapply(features, FUN.VALUE = double(nrow(obj$hypFrame)), function(gene) {
-            vapply(obj$hypFrame$tabObs, FUN.VALUE = double(1), function(x) x[gene])
+            vapply(obj$hypFrame$tabObs, FUN.VALUE = double(1),
+                   function(x) x[gene])
         }) > 1, na.rm = TRUE) >= 1
         features[featIds]
         # Leave out barely expressed genes
@@ -101,22 +108,25 @@ fitLMMs <- function(obj, pi, fixedVars = NULL, randomVars = NULL, verbose = TRUE
         if (randomNested) {
             df <- nestRandom(df, randomVarsSplit)
         }
-        if (is.null(df) && sum(!is.na(df$pi)) < 3) {
+        if (is.null(df) || sum(!is.na(df$pi)) < 3) {
             return(NULL)
         }
         if (MM) {
-            mod <- try(lmerTest::lmer(Formula, data = df, na.action = na.omit, weights = if (noWeight)
-                NULL else weight, contrasts = contrasts, control = Control), silent = TRUE)
+            mod <- try(lmerTest::lmer(Formula, data = df, na.action = na.omit,
+                                      weights = if (noWeight)
+                NULL else weight, contrasts = contrasts, control = Control),
+                silent = TRUE)
         }
         # If no random variables or fit failed, go for linear model
         if (!MM || is(mod, "try-error")) {
-            mod <- try(lm(formula(fixedPart), data = df, na.action = na.omit, weights = if (noWeight)
-                NULL else weight, contrasts = contrasts), silent = TRUE)
+            mod <- try(lm(formula(fixedPart), data = df, na.action = na.omit,
+                          weights = if (noWeight) NULL else weight,
+                          contrasts = contrasts), silent = TRUE)
         }
         # If still fails, drop fixed effects
         if (is(mod, "try-error")) {
-            mod <- lm(formula("pi - 0.5 ~ 1"), data = df, na.action = na.omit, weights = if (noWeight)
-                NULL else weight)
+            mod <- lm(formula("pi - 0.5 ~ 1"), data = df, na.action = na.omit,
+                      weights = if (noWeight) NULL else weight)
         }
         return(mod)
     })
