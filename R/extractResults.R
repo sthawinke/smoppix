@@ -5,7 +5,7 @@
 #' @param fixedVars The fixed effects for which the effect is to be reported
 #' @param method passed onto p.adjust
 #' @importFrom stats p.adjust
-#' @import lmerTest
+#' @importFrom lmerTest anova.lmerModLmerTest
 #' @return A list of matrices, all containing estimate, standard error,
 #' p-value and ajdusted p-value
 #' @seealso \link{fitLMMs}

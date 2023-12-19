@@ -116,7 +116,7 @@ The first round of tests concerns the aggregation or regularity of individual tr
 nnObj <- estPims(hypYang, pis = c("nn", "nnPair"), null = "background")
 ```
 
-A data-driven weighing function is now fitted to the estimates of all transcripts to share information on variances across features. This requires information on the design too: all variables that will be included in the final modelling should be provided to 'designVars'. This includes the lowest level of the design variable, 'section' in this case. The variance is estimated over the different sections of the same day and root.
+A data-driven weighting function is now fitted to the estimates of all transcripts to share information on variances across features. This requires information on the design too: all variables that will be included in the final modelling should be provided to 'designVars'. This includes the lowest level of the design variable, 'section' in this case. The variance is estimated over the different sections of the same day and root. If there are no design variables, i.e. all point patterns are replicates of the exact same condition, no variable needs to be provided.
 
 ```{r, include = FALSE}
 nnObj <- addWeightFunction(nnObj, designVars = c("day", "root"))

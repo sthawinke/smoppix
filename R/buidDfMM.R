@@ -142,9 +142,6 @@ buildDfMMBi <- function(obj, gene, pi) {
     })
     piEsts <- matrix(unlist(piEsts0[id <- !vapply(piEsts0, FUN.VALUE = TRUE, is.null)]), ncol = 3, byrow = TRUE, dimnames = list(NULL,
         c("pi", "minP", "maxP")))
-    if (all(is.na(piEsts[, "pi"]))) {
-        stop("Gene pair not found!\n")
-    }
     rownames(piEsts) <- if (winId) {
         rep(rownames(obj$hypFrame), times = vapply(piEsts0, FUN.VALUE = integer(1), NROW))
     } else {
