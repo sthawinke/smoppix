@@ -169,10 +169,10 @@ estPims <- function(hypFrame, pis = c(
     stop("Features ", features[id], " not found in hyperframe")
   }
   if(verbose)
-      cat("Calculating PIs for hyperframe ")
+      message("Calculating PIs for hyperframe ")
   hypFrame$pimRes <- lapply(seq_len(nrow(hypFrame)), function(x) {
       if(verbose){
-          cat(x, "of", nrow(hypFrame), "\t")
+          message(x, "of", nrow(hypFrame), "\t")
       }
     estPimsSingle(hypFrame[[x,"ppp"]], owins = hypFrame[x,"owins", drop = TRUE],
       pis = pis, null = null, tabObs = hypFrame[[x,"tabObs"]],
