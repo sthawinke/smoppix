@@ -4,7 +4,7 @@
 \alias{plotWf}
 \title{Plot the weighting function: The observation weigth as a function of the number of observations}
 \usage{
-plotWf(obj, pi = obj$pis)
+plotWf(obj, pi = obj$pis[1])
 }
 \arguments{
 \item{obj}{The result of a call to buildWeightFunction()}

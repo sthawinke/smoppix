@@ -8,6 +8,7 @@ estPims(
   hypFrame,
   pis = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint", "nnCell",
     "allDistCell", "nnPairCell", "allDistPairCell"),
+  verbose = TRUE,
   null = c("background", "CSR"),
   features = getFeatures(hypFrame),
   ...
@@ -17,6 +18,8 @@ estPims(
 \item{hypFrame}{the hyperframe}
 
 \item{pis}{The probabilistic indices to be estimated}
+
+\item{verbose}{a boolean, should verbose output be printed?}
 
 \item{null}{A character vector, indicating how the null distribution is
 defined. See details.}

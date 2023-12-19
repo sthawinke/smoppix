@@ -44,7 +44,7 @@ warning messages for large numbers of gene pairs}
 
 \item{manyPairs}{An integer, what are considered many gene pairs}
 
-\item{verbose}{Should verbose output be printed?}
+\item{verbose}{a boolean, should verbose output be printed?}
 
 \item{owins, centroids}{The list of windows corresponding to cells,
 and their centroids}

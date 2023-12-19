@@ -20,7 +20,7 @@
 #' yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))
 #' plotWf(yangObj, "nn")
 #' plotWf(yangObj, "nnPair")
-plotWf <- function(obj, pi = obj$pis) {
+plotWf <- function(obj, pi = obj$pis[1]){
     pi <- match.arg(pi, choices = c(
         "nn", "nnPair", "allDist", "allDistPair",
         "nnCell", "allDistCell",

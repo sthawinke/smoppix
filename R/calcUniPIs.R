@@ -15,7 +15,9 @@ calcUniPIs <- function(p, pis, verbose, ecdfsCell, owins, tabObs,
     if (verbose) {
         message("Calculating univariate probabilistic indices...")
     }
-    uniPIs <- bplapply(nams <- names(tabObs[features]), function(feat) {
+    splitFac = rep(seq_len(bpparam()$workers), length.out = length(nams <- names(tabObs[features])))
+    uniPIs <-  unsplit(f = splitFac, bplapply(split(nams, f = splitFac), function(ss){
+        lapply(ss, function(feat) {
         pSub <- p[id <- which(marks(p, drop = FALSE)$gene == feat), ]
         pLeft <- p[-id, ];NP = npoints(pSub)
         # Avoid zero distances by removing observations of gene itself
@@ -60,6 +62,7 @@ calcUniPIs <- function(p, pis, verbose, ecdfsCell, owins, tabObs,
             )
         )
     })
+    }))
     names(uniPIs) <- nams
     return(uniPIs)
 }

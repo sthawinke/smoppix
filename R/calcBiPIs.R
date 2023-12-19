@@ -22,7 +22,9 @@ calcBiPIs <- function(p, pis, null, cd, nSub, ecdfAll, features,
         message("Calculating bivariate probabilistic indices...")
     }
     genePairsMat <- combn(features, 2)
-    tmp <- bplapply(seq_len(ncol(genePairsMat)), function(i) {
+    splitFac = rep(seq_len(bpparam()$workers), length.out = ncol(genePairsMat))
+    tmp <- unsplit(f = splitFac, bplapply(split(seq_len(ncol(genePairsMat)), f = splitFac), function(ss){
+        lapply(ss, function(i) {
         feat1 <- genePairsMat[1, i]
         feat2 <- genePairsMat[2, i]
         pSub1 <- p[id1 <- which(marks(p, drop = FALSE)$gene == feat1), ]
@@ -69,6 +71,7 @@ calcBiPIs <- function(p, pis, null, cd, nSub, ecdfAll, features,
             )
         )
     })
+    }))
     names(tmp) <- apply(genePairsMat, 2, paste, collapse = "--")
     return(tmp)
 }

@@ -18,6 +18,7 @@
 #' @param features A character vector, for which features should the
 #' probabilistic indices be calculated?
 #' @param tabObs A table of observed gene frequencies
+#' @param verbose a boolean, should verbose output be printed?
 #'
 #' @return Data frames with estimated quantities per gene and/or gene pair
 #' @importFrom stats ecdf dist
@@ -30,7 +31,7 @@
 estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 5e2,
                           nPointsAllWin = 2e2, features = NULL,
                           allowManyGenePairs = FALSE, manyPairs = 1e6,
-                          verbose = TRUE, owins = NULL, centroids = NULL) {
+                          verbose = FALSE, owins = NULL, centroids = NULL) {
   if (is.null(features)) {
     features <- names(tabObs)
   } else {
@@ -152,7 +153,7 @@ estPims <- function(hypFrame, pis = c(
                       "nn", "allDist", "nnPair", "allDistPair",
                       "edge", "midpoint", "nnCell", "allDistCell",
                       "nnPairCell", "allDistPairCell"
-                    ),
+                    ), verbose = TRUE,
                     null = c("background", "CSR"),
                     features = getFeatures(hypFrame), ...) {
   pis <- match.arg(pis, several.ok = TRUE)
@@ -167,7 +168,12 @@ estPims <- function(hypFrame, pis = c(
   if (any(id <- !(features %in% getFeatures(hypFrame)))) {
     stop("Features ", features[id], " not found in hyperframe")
   }
+  if(verbose)
+      cat("Calculating PIs for hyperframe ")
   hypFrame$pimRes <- lapply(seq_len(nrow(hypFrame)), function(x) {
+      if(verbose){
+          cat(x, "of", nrow(hypFrame), "\t")
+      }
     estPimsSingle(hypFrame[[x,"ppp"]], owins = hypFrame[x,"owins", drop = TRUE],
       pis = pis, null = null, tabObs = hypFrame[[x,"tabObs"]],
       centroids = hypFrame[x,"centroids", drop = TRUE], ...

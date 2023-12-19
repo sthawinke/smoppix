@@ -55,13 +55,13 @@ All the user needs to do is prepare the parallel backend as follows:
 
 ```{r}
 nCores <- 2 # The number of CPUs
-register(MulticoreParam(nCores, progressbar = TRUE))
+register(MulticoreParam(nCores, prog))
 ```
 
-The progress bar helps one keep track of the calculations. For serial calculations, for instance if memory is limiting, choose
+For serial calculations, for instance if memory is limiting, choose
 
 ```{r , eval = FALSE}
-register(SerialParam(progressbar = TRUE))
+register(SerialParam())
 ```
 
 # Yang data: lycophyte roots
