@@ -6,6 +6,7 @@
 #' to avoid excessive memory usage.
 #' @inheritParams calcUniPIs
 #' @importFrom spatstat.geom nncross
+#' @importFrom BiocParallel bpparam
 #'
 #' @return A matrix of bivariate PIs
 calcBiPIs <- function(p, pis, null, cd, nSub, ecdfAll, features,

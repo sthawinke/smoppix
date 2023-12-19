@@ -7,7 +7,7 @@ output:
     number_sections: true
     keep_md: true
 vignette: >
-  %\VignetteIndexEntry{Vignette of the oosse package}
+  %\VignetteIndexEntry{Vignette of the spatrans package}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -55,7 +55,7 @@ All the user needs to do is prepare the parallel backend as follows:
 
 ```{r}
 nCores <- 2 # The number of CPUs
-register(MulticoreParam(nCores, prog))
+register(MulticoreParam(nCores))
 ```
 
 For serial calculations, for instance if memory is limiting, choose
@@ -102,7 +102,7 @@ hypYang$ppp[[1]]
 
 As a final confirmation of successfully reading in the data, we can make an exploratory plot:
 
-```{r}
+```{r plotExplore, fig.height = 8}
 plotExplore(hypYang)
 ```
 
@@ -189,7 +189,7 @@ summary(lmeModNN)
 
 We find a significant positive intercept `r summary(lmeModNN)$coef["(Intercept)", "Estimate"]+0.5`, indicating strong antilocalization. And similarly, this process can be wrapped using _fitLMMs()_:
 
-```{r, include = FALSE}
+```{r fitlmmPair}
 allModsNNpair <- fitLMMs(nnObj, fixedVars = "day", randomVars = "root", pi = "nnPair")
 head(getResults(allModsNNpair, "Intercept"))
 ```

@@ -9,6 +9,7 @@
 #'
 #' @return PIs for every feature
 #' @importFrom spatstat.geom marks
+#' @importFrom BiocParallel bpparam
 calcUniPIs <- function(p, pis, verbose, ecdfsCell, owins, tabObs,
                        null, cd, nSub, ecdfAll, features,
                        centroids) {

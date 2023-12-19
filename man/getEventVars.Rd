@@ -8,6 +8,8 @@ getEventVars(x, exclude = c("x", "y", "z"))
 }
 \arguments{
 \item{x}{The results list}
+
+\item{exclude}{variables to exclude}
 }
 \value{
 A vector of variables
