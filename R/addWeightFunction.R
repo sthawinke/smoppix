@@ -43,8 +43,7 @@
 #' # Build the weighting function for all PIs present
 #' yangObj <- addWeightFunction(yangPims, designVars = c('day', 'root'))
 #' # Alternative formulation with 'lowestLevelVar'
-#' yangObj2 <- addWeightFunction(yangPims,
-#'     lowestLevelVar = 'section',
+#' yangObj2 <- addWeightFunction(yangPims, lowestLevelVar = 'section',
 #'     pi = 'nn'
 #' )
 addWeightFunction <- function(resList, pis = resList$pis, designVars, lowestLevelVar, maxObs = 1e+05, maxFeatures = 500,
@@ -54,30 +53,36 @@ addWeightFunction <- function(resList, pis = resList$pis, designVars, lowestLeve
              Simply proceed with fitting the model on the",
             " individual evaluations of the B-function.")
     }
+    isNested = length(getPPPvars(resList)) >= 1 #Is there a nested structure in the design
     allCell <- all(grepl("Cell", pis))
-    if (missing(designVars) && missing(lowestLevelVar) && !allCell) {
-        stop("Provide either designVars or lowestLevelVar for measures ", "not on cell level!")
-    }
-    if (!missing(designVars) && !missing(lowestLevelVar)) {
-        stop("Provide either designVars or lowestLevelVar, both not both!")
-    }
-    allVars <- getDesignVars(resList)
-    if (missing(designVars)) {
-        if (allCell) {
-            lowestLevelVar <- "cell"
+    if(isNested){
+        if (missing(designVars) && missing(lowestLevelVar) && !allCell) {
+            stop("Provide either designVars or lowestLevelVar for measures ", "not on cell level!")
         }
-        if (length(lowestLevelVar) != 1) {
-            stop("lowestLevelVar must have length 1")
+        if (!missing(designVars) && !missing(lowestLevelVar)) {
+            stop("Provide either designVars or lowestLevelVar, both not both!")
         }
-        if (!(lowestLevelVar %in% allVars)) {
-            stop("lowestLevelVar must be part of the design,
-            see getFeatures(resList)")
+        allVars <- getDesignVars(resList)
+        if (missing(designVars)) {
+            if (allCell) {
+                lowestLevelVar <- "cell"
+            }
+            if (length(lowestLevelVar) != 1) {
+                stop("lowestLevelVar must have length 1")
+            }
+            if (!(lowestLevelVar %in% allVars)) {
+                stop("lowestLevelVar must be part of the design,
+                see getFeatures(resList)")
+            }
+            designVars <- setdiff(getPPPvars(resList), lowestLevelVar)
+            # If missing take everything but the ones that are obviously no design variables
         }
-        designVars <- setdiff(getPPPvars(resList), lowestLevelVar)
-        # If missing take everything but the ones that are obviously no design variables
-    }
-    if (any(idMissing <- !(designVars %in% allVars))) {
-        stop("Design variables\n", designVars[idMissing], "\nnot found in hypFrame object")
+        if (any(idMissing <- !(designVars %in% allVars))) {
+            stop("Design variables\n", designVars[idMissing], "\nnot found in hypFrame object")
+        }
+    } else { #Only check design if there is nesting
+        designVec <- integer(nrow(resList$hypFrame))
+        designVars <- NULL
     }
     pis <- match.arg(pis, choices = c("nn", "nnPair", "allDist", "allDistPair", "nnCell", "allDistCell", "nnPairCell",
         "allDistPairCell"), several.ok = TRUE)
@@ -98,7 +103,7 @@ addWeightFunction <- function(resList, pis = resList$pis, designVars, lowestLeve
         if (pairId) {
             features <- apply(combn(features, 2), 2, paste, collapse = "--")
         }
-        if (cellId) {
+        if (cellId || !isNested) {
             ordDesign <- seq_len(nrow(resList$hypFrame))
         } else {
             designVec <- apply(as.data.frame(resList$hypFrame[, designVars, drop = FALSE]), 1, paste, collapse = "_")

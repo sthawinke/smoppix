@@ -62,6 +62,9 @@ pis <- c("nn", "allDist", "nnPair", "allDistPair", "edge",
     "midpoint", "nnCell", "allDistCell", "nnPairCell", "allDistPairCell")
 piEstsBG <- estPims(hypFrame2, pis = pis, null = "background", verbose = FALSE)
 piEstsCSR <- estPims(hypFrame2, pis = pis, null = "CSR", verbose = FALSE)
+piEstsBG2 <- estPims(hypFrame2[, c("ppp", "image", "tabObs")], pis = "nn",
+                     null = "background", verbose = FALSE)
+#No replication
 # Already add weight functions
 objBG <- addWeightFunction(piEstsBG, designVars = "condition")
 objCSR <- addWeightFunction(piEstsCSR, designVars = "condition")
