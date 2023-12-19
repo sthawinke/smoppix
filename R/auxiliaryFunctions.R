@@ -36,11 +36,19 @@ getN <- function(ecdf) {
 #'
 #' @param p The point pattern
 #' @param nSims The maximum size
+#' @param returnId A boolean, should the id of the sampled elements be returned?
 #'
 #' @return A point pattern, subsample if necessary
-subSampleP <- function(p, nSims) {
-    if ((NP <- npoints(p)) > nSims)
-        p[sample(NP, nSims), ] else p
+subSampleP <- function(p, nSims, returnId = FALSE) {
+    Pout = if (tooBig <- (NP <- npoints(p)) > nSims)
+        p[id <- sample(NP, nSims), ] else p
+    if(!tooBig && returnId)
+        id = seq_len(npoints(p))
+    if(returnId){
+        return(list("Pout" = Pout, "id" = id))
+    } else{
+        return(Pout)
+    }
 }
 #' Extract elements from a distance matrix by index
 #'
