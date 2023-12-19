@@ -9,7 +9,7 @@
 #' @inheritParams calcUniPIs
 #' @importFrom stats dist
 calcAllDistPI <- function(pSub, p, ecdfAll, null, cd) {
-    obsDist <- dist(coords(pSub))
+    obsDist <- stats::dist(coords(pSub))
     if (null == "CSR") {
         mean(ecdfAll(obsDist))  # Need to condition on point too?
     } else if (null == "background") {

@@ -22,7 +22,7 @@ calcWindowDistPI <- function(pSub, owins, centroids, ecdfAll, pi, null, ecdfs, c
     splitPPP <- split.ppp(pSub, f = "cell")
     obsDistEdge <- lapply(names(splitPPP), function(x) {
         Dist <- switch(pi, midpoint = crossdist(splitPPP[[x]], centroids[[x]]), edge = nncross(splitPPP[[x]], edges(owins[[x]]),
-            what = "dist"), nnCell = nndist(splitPPP[[x]]), allDistCell = dist(coords(splitPPP[[x]])))
+            what = "dist"), nnCell = nndist(splitPPP[[x]]), allDistCell = stats::dist(coords(splitPPP[[x]])))
         if (pi %in% c("edge", "midpoint")) {
             ecdfAll[[x]][[pi]](Dist)  # Do not average here, independent observations
         } else {
@@ -57,7 +57,7 @@ calcWindowPairPI <- function(pSub1, pSub2, feat1, feat2, cellAndGene, ecdfAll, p
     splitPPP2 <- split.ppp(pSub2, f = "cell")
     # FIX ME: fast alternative for split.ppp?
     out <- vapply(nam <- intersect(names(splitPPP1), names(splitPPP2)), FUN.VALUE = double(1), function(x) {
-        cd <- crossdist(splitPPP1[[x]], splitPPP2[[x]])
+        cd <- crossDistProxy(splitPPP1[[x]], splitPPP2[[x]])
         if (null == "background") {
             id1 <- which(cellAndGene$gene[cellAndGene$cell == x] == feat1)
             id2 <- which(cellAndGene$gene[cellAndGene$cell == x] == feat2)

@@ -38,10 +38,11 @@ calcNNPIpair <- function(obsDistNN, id1, id2, null, p, cd, n, ecdfAll) {
     } else {
         getApproxRanks(ecdfAll, obsDistNN)
     }
+    n = switch(null, "background" = ncol(cd), "CSR" = getN(ecdfAll))
     seq1 <- seq_along(id1)
-    pis <- mean(c(pnhyper(obsDistRank[seq1], n = ncol(cd) - length(id2),
+    pis <- mean(c(pnhyper(obsDistRank[seq1], n = n - length(id2),
                           m = length(id2), r = 1),
-                  pnhyper(obsDistRank[-seq1], n = ncol(cd) - length(id1),
+                  pnhyper(obsDistRank[-seq1], n = n - length(id1),
                           m = length(id1), r = 1)))
     # Using the negative hypergeometric precludes Monte-Carlo
     return(pis)

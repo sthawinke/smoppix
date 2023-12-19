@@ -39,7 +39,7 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 500,
     if (null == "CSR") {
         if (any(pis %in% c("allDist", "allDistPair", "nn", "nnPair"))) {
             pSim <- runifpoint(nPointsAll, win = p$window)
-            ecdfAll <- ecdf(dist(coords(pSim)))
+            ecdfAll <- ecdf(stats::dist(coords(pSim)))
         }
         if (any(pis %in% c("edge", "midpoint", "nnCell", "allDistCell",
                            "nnPairCell", "allDistPairCell"))) {
@@ -53,7 +53,7 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 500,
                 }
                 allDistCell <- if (any(pis %in% c("nnCell", "allDistCell",
                                         "nnPairCell", "allDistPairCell"))) {
-                  ecdf(dist(coords(pSub)))
+                  ecdf(stats::dist(coords(pSub)))
                 }
                 list("edge" = edge, "midpoint" = midpoint,
                      "allDistCell" = allDistCell)
