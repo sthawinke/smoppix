@@ -20,14 +20,14 @@ Plot the weighting function: The observation weigth as a function of the number 
 \examples{
 data(Yang)
 hypYang <- buildHyperFrame(Yang,
-    coordVars = c("x", "y"),
-    imageVars = c("day", "root", "section")
+    coordVars = c('x', 'y'),
+    imageVars = c('day', 'root', 'section')
 )
 yangPims <- estPims(hypYang[c(seq_len(5), seq(25, 29)),],
-    pis = c("nn", "nnPair")
+    pis = c('nn', 'nnPair')
 )
 # First Build the weighting function
-yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))
-plotWf(yangObj, "nn")
-plotWf(yangObj, "nnPair")
+yangObj <- addWeightFunction(yangPims, designVars = c('day', 'root'))
+plotWf(yangObj, 'nn')
+plotWf(yangObj, 'nnPair')
 }

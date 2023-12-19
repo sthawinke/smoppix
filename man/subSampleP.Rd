@@ -4,12 +4,14 @@
 \alias{subSampleP}
 \title{Subsample a point pattern when it is too large}
 \usage{
-subSampleP(p, nSims)
+subSampleP(p, nSims, returnId = FALSE)
 }
 \arguments{
 \item{p}{The point pattern}
 
 \item{nSims}{The maximum size}
+
+\item{returnId}{A boolean, should the id of the sampled elements be returned?}
 }
 \value{
 A point pattern, subsample if necessary

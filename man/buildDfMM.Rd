@@ -30,22 +30,22 @@ for mixed model building
 \examples{
 data(Yang)
 hypYang <- buildHyperFrame(Yang,
-    coordVars = c("x", "y"),
-    imageVars = c("day", "root", "section")
+    coordVars = c('x', 'y'),
+    imageVars = c('day', 'root', 'section')
 )
 # Fit a subset of features to limit computation time
-yangPims <- estPims(hypYang[c(seq_len(5), seq(25, 29)),], pis = "nn",
-features = c("SmVND2", "SmPINR"))
+yangPims <- estPims(hypYang[c(seq_len(5), seq(25, 29)),], pis = 'nn',
+features = c('SmVND2', 'SmPINR'))
 # First build the weighting function
-yangPims <- addWeightFunction(yangPims, designVars = c("day", "root"))
+yangPims <- addWeightFunction(yangPims, designVars = c('day', 'root'))
 # Now build the data frame for mixed model analysis
-dfUniNN <- buildDfMM(yangPims, gene = "SmVND2", pi = "nn")
+dfUniNN <- buildDfMM(yangPims, gene = 'SmVND2', pi = 'nn')
 # Example analysis with linear mixed model
 library(lmerTest)
 # Use sum coding for day to maintain interpretability of the intercept
 mixedMod <- lmer(pi - 0.5 ~ day + (1 | root),
     weight = weight, data = dfUniNN,
-    contrasts = list("day" = "contr.sum")
+    contrasts = list('day' = 'contr.sum')
 )
 summary(mixedMod)
 # Evidence for aggregation

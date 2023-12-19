@@ -50,26 +50,26 @@ Fit linear mixed nodels for all features of a pimRes object
 \details{
 Genes or gene pairs with insufficient observations will be silently
 omitted. When randomVars is provided as a vector, independent random
-intercepts are fitted for them by default. Providing them separated by "\" or
-":" as in the lmer formulas is also allowed to reflect nesting structure.
+intercepts are fitted for them by default. Providing them separated by '\' or
+':' as in the lmer formulas is also allowed to reflect nesting structure.
 
 It is by default assumed that random effects are nested within the point
  patterns. This means for instance that cells with the same name but from
  different point patterns are assigned to different random effects. Set
- "randomNested" to FALSE to override this behaviour.
+ 'randomNested' to FALSE to override this behaviour.
 }
 \examples{
 data(Yang)
 hypYang <- buildHyperFrame(Yang,
-    coordVars = c("x", "y"),
-    imageVars = c("day", "root", "section")
+    coordVars = c('x', 'y'),
+    imageVars = c('day', 'root', 'section')
 )
 # Fit a subset of features to limit computation time
-yangPims <- estPims(hypYang[c(seq_len(5), seq(25, 29)),], pis = "nn")
+yangPims <- estPims(hypYang[c(seq_len(5), seq(25, 29)),], pis = 'nn')
 # First build the weighting function
-yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))
-lmmModels <- fitLMMs(yangObj, fixedVars = "day", randomVars = "root",
-    pi = "nn")
+yangPims <- addWeightFunction(yangPims, designVars = c('day', 'root'))
+lmmModels <- fitLMMs(yangPims, fixedVars = 'day', randomVars = 'root',
+    pi = 'nn')
 }
 \seealso{
 \link{buildDfMM},\link{getResults}

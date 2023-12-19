@@ -33,7 +33,7 @@ buildHyperFrame(x, ...)
 \S4method{buildHyperFrame}{SpatialExperiment}(x, imageVars, coVars, ...)
 }
 \arguments{
-\item{x}{the input object, see methods("buildHyperFrame")}
+\item{x}{the input object, see methods('buildHyperFrame')}
 
 \item{...}{additional constructor arguments}
 
@@ -56,7 +56,7 @@ with the names of covariatesDf}
 
 \item{matrix}{The input matrix}
 
-\item{list}{A list of matrices or of point patterns of class "ppp"}
+\item{list}{A list of matrices or of point patterns of class 'ppp'}
 }
 \value{
 An object of class 'hyperframe' from the 'spatstat' package
@@ -69,7 +69,7 @@ Built the hyperframe containing all separate point patterns that will
 \examples{
 data(Yang)
 hypYang <- buildHyperFrame(Yang,
-    coordVars = c("x", "y"),
-    imageVars = c("day", "root", "section")
+    coordVars = c('x', 'y'),
+    imageVars = c('day', 'root', 'section')
 )
 }

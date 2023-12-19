@@ -36,7 +36,7 @@ defined. See details.}
 \item{features}{A character vector, for which features should the
 probabilistic indices be calculated?}
 
-\item{manyPairs}{Number of gene pairs to be considered "many"}
+\item{manyPairs}{Number of gene pairs to be considered 'many'}
 
 \item{verbose}{A boolean, should verbose output be printed}
 

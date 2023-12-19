@@ -7,12 +7,11 @@
 #' @export
 #' @examples
 #' data(Yang)
-#' hypYang <- buildHyperFrame(Yang,
-#'     coordVars = c('x', 'y'),
+#' hypYang <- buildHyperFrame(Yang, coordVars = c('x', 'y'),
 #'     imageVars = c('day', 'root', 'section')
 #' )
 #' yangPims <- estPims(hypYang[c(seq_len(5), seq(25, 29)),],
-#'     pis = 'nn')
+#'     pis = 'nn', features = getFeatures(hypYang)[1:10])
 #' # First Build the weighting function
 #' yangObj <- addWeightFunction(yangPims, designVars = c('day', 'root'))
 #' evalWeightFunction(yangObj$Wfs$nn, newdata = data.frame('NP' = 2))

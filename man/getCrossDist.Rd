@@ -4,7 +4,7 @@
 \alias{getCrossDist}
 \title{Get a cross distance matrix, avoiding zero entries}
 \usage{
-getCrossDist(p, pSub, null)
+getCrossDist(p, pSub, null, id = NULL)
 }
 \arguments{
 \item{p}{The total point pattern}
@@ -13,6 +13,8 @@ getCrossDist(p, pSub, null)
 
 \item{null}{A character vector, indicating how the null distribution is
 defined. See details.}
+
+\item{id}{The elements of p present in pSub}
 }
 \value{
 A cross distance matrix without zeroes

@@ -36,9 +36,9 @@ A list of estimated pims
 Estimate pims on a hyperframe
 }
 \details{
-The null distribution used to calculate the PIs. Can be either "background",
+The null distribution used to calculate the PIs. Can be either 'background',
 in which case the observed distributions of all genes is used. Alternatively,
-for null = "CSR", Monte-Carlo simulation under complete spatial randomness
+for null = 'CSR', Monte-Carlo simulation under complete spatial randomness
  is performed within the given window.
 
 The 'nn' prefix indicates that nearest neighbour distances are being used,
@@ -47,15 +47,15 @@ The suffix 'Pair' indicates that bivariate probabilistic indices,
 testing for co- and antilocalization are being used.
 'edge' and 'midpoint' calculate the distance to the edge respectively
  the midpoint of the windows added using the addCell() function.
-The suffix "Cell" indicates distances are being calculated within cells only.
+The suffix 'Cell' indicates distances are being calculated within cells only.
 }
 \examples{
 data(Yang)
 hypYang <- buildHyperFrame(Yang,
-  coordVars = c("x", "y"),
-  imageVars = c("day", "root", "section")
+  coordVars = c('x', 'y'),
+  imageVars = c('day', 'root', 'section')
 )
 # Fit a subset of features to limit computation time
-yangPims <- estPims(hypYang[c(seq_len(5), seq(25, 29)),], pis = "nn")
+yangPims <- estPims(hypYang[c(seq_len(5), seq(25, 29)),], pis = 'nn')
 # Univariate nearest neighbour distances
 }
