@@ -14,11 +14,8 @@ calcNNPI <- function(pSub, p, null, cd, n, ecdfAll) {
     obsDistNN <- nndist(pSub)
     NP <- npoints(pSub)
     if (null == "background") {
-        approxRanks <- vapply(seq_along(obsDistNN), FUN.VALUE = double(1), function(i) {
-            tmp = cd[i, ] > obsDistNN[i]
-            if(all(tmp)) length(tmp) else which.max(tmp)
-            # Approximate rank: quantile in overall distribution times number of observations.
-        })
+        approxRanks <- rowSums(cd < obsDistNN)
+        approxRanks[approxRanks==0] = 1
         mean(pnhyper(approxRanks, n = ncol(cd) - (NP - 1), m = NP - 1, r = 1))
         # Exclude event itself, so NP - 1 m = N-1: White balls, number of other events of the same gene n = n -
         # (NP-1): black balls, number of events of other genes in background r=1: Nearest neighbour so first
@@ -31,10 +28,12 @@ calcNNPI <- function(pSub, p, null, cd, n, ecdfAll) {
 }
 calcNNPIpair <- function(obsDistNN, id1, id2, null, p, cd, n, ecdfAll) {
     obsDistRank <- if (null == "background") {
-        vapply(seq_along(obsDistNN), FUN.VALUE = double(1), function(i) {
-            tmp = cd[i, ] > obsDistNN[i]
-            if(all(tmp)) length(tmp) else which.max(tmp)
-        })
+        approxRanks <- rowSums(cd < obsDistNN)
+        approxRanks[approxRanks==0] = 1
+        # vapply(seq_along(obsDistNN), FUN.VALUE = double(1), function(i) {
+        #     tmp = cd[i, ] > obsDistNN[i]
+        #     if(all(tmp)) length(tmp) else which.max(tmp)
+        # })
     } else {
         getApproxRanks(ecdfAll, obsDistNN)
     }

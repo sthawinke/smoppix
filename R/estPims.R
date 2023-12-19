@@ -85,7 +85,6 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 500,
             pSub <- subSampleP(p, nPointsAll, returnId = TRUE)
             # Subsample for memory reasons
             cd <- getCrossDist(p, pSub$Pout, null, id = pSub$id)
-            cd <- rowSort(cd)
             # For background, condition on point locations
         }
     }
