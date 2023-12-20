@@ -24,7 +24,7 @@
 #' @importFrom stats ecdf dist
 #' @importFrom spatstat.random runifpoint
 #' @importFrom utils combn
-#' @import spatstat.geom
+#' @importFrom spatstat.geom nncross crossdist coords
 #' @importFrom Rdpack reprompt
 #' @importFrom Rfast rowSort rowMins rowAny
 #' @importFrom extraDistr pnhyper
@@ -146,7 +146,7 @@ estPims <- function(hypFrame, pis = c("nn", "allDist", "nnPair", "allDistPair",
         stop("Features ", features[id], " not found in hyperframe")
     }
     if (verbose)
-        message("Calculating PIs for hyperframe ")
+        message("Calculating PIs for point pattern ")
     hypFrame$pimRes <- lapply(seq_len(nrow(hypFrame)), function(x) {
         if (verbose) {
             message(x, " of ", nrow(hypFrame), "  ")

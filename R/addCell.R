@@ -11,7 +11,7 @@
 #' contained in window
 #' @return the modified hyperframe
 #' @importFrom Rfast rowAny
-#' @importFrom spatstat.geom is.owin
+#' @importFrom spatstat.geom is.owin inside.owin setmarks centroid.owin
 #' @export
 #' @seealso \link{buildHyperFrame}
 #' @details First the different cells are checked for overlap per point pattern.

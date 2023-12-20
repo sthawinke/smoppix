@@ -28,6 +28,7 @@
 #' @importFrom stats formula na.omit anova lm
 #' @importFrom lme4 lmerControl .makeCC isSingular
 #' @importFrom BiocParallel bplapply
+#' @importFrom methods is
 #' @seealso \link{buildDfMM},\link{getResults}
 fitLMMsSingle <- function(obj, pi, fixedVars = NULL, randomVars = NULL, verbose = TRUE, returnModels = FALSE, Formula = NULL,
     randomNested = TRUE, features = getFeatures(obj)) {
@@ -129,6 +130,7 @@ fitLMMsSingle <- function(obj, pi, fixedVars = NULL, randomVars = NULL, verbose 
 #'
 #' @param obj The result object
 #' @param pis Optional, the pis required. Defaults to all pis in the object
+#' @param verbose a boolean, should output be printed?
 #' @param ... Passed onto fitLMMsSingle
 #'
 #' @return A list of fitted objects

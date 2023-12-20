@@ -8,6 +8,7 @@
 #' @inheritParams estPimsSingle
 #' @inheritParams calcUniPIs
 #' @importFrom stats dist
+#' @importFrom spatstat.geom coords
 calcAllDistPI <- function(pSub, p, ecdfAll, null, cd) {
     obsDist <- stats::dist(coords(pSub))
     if (null == "CSR") {

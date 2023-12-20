@@ -10,7 +10,7 @@
 #' observations with the ecdfs
 #'
 #' @return The estimated probabilistic index
-#' @importFrom spatstat.geom nncross edges nndist
+#' @importFrom spatstat.geom nncross edges nndist coords split.ppp
 #' @importFrom stats dist
 #' @importFrom Rfast rowMins colMins
 #' @details Analysis of the distance to the border was introduced by \insertCite{Joyner2013}{spatrans} in the form of the B-function.

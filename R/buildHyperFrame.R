@@ -3,7 +3,7 @@
 #'  SpatialExperiment inputs are accepted.
 #' @rdname buildHyperFrame
 #' @importFrom spatstat.geom ppp hyperframe
-#' @import methods
+#' @importFrom methods setGeneric setMethod
 #' @export
 #' @param x the input object, see methods('buildHyperFrame')
 #' @param ... additional constructor arguments
@@ -83,6 +83,7 @@ setMethod("buildHyperFrame", "matrix", function(x, image, covariates, ...) {
 #'
 #' @rdname buildHyperFrame
 #' @export
+#' @importFrom spatstat.geom is.ppp
 setMethod("buildHyperFrame", "list", function(x, coordVars = c("x", "y"), covariatesDf = NULL, idVar = NULL, ...) {
     stopifnot(is.null(covariatesDf) || (nrow(covariatesDf) == length(x)), is.null(idVar) || idVar %in% names(covariatesDf))
     if (!is.null(names(x)) && !is.null(idVar)) {

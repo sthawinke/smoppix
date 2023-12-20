@@ -7,7 +7,7 @@
 #' @param maxPlot The maximum number of events plotted per point pattern
 #'
 #' @return Plots a facet of point patterns to output
-#' @importFrom spatstat.geom is.hyperframe
+#' @importFrom spatstat.geom is.hyperframe coords
 #' @importFrom grDevices palette
 #' @importFrom graphics par legend
 #' @export

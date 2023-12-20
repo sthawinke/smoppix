@@ -4,12 +4,14 @@
 \alias{fitLMMs}
 \title{A wrapper function for linear mixed model fitting for all PIs}
 \usage{
-fitLMMs(obj, pis = obj$pis, ...)
+fitLMMs(obj, pis = obj$pis, verbose = TRUE, ...)
 }
 \arguments{
 \item{obj}{The result object}
 
 \item{pis}{Optional, the pis required. Defaults to all pis in the object}
+
+\item{verbose}{a boolean, should output be printed?}
 
 \item{...}{Passed onto fitLMMsSingle}
 }

@@ -4,6 +4,7 @@
 #'
 #' @return Throws an error when overlap found, otherwise returns invisible
 #' @importFrom utils combn
+#' @importFrom spatstat.geom overlap.owin
 findOverlap <- function(owins) {
     combs <- combn(length(owins), 2)
     lapply(seq_len(ncol(combs)), function(i) {

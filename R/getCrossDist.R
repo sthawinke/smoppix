@@ -29,6 +29,7 @@ getCrossDist <- function(p, pSub, null, id = NULL) {
     return(cd)
 }
 #' @importFrom proxy dist
+#' @importFrom spatstat.geom coords
 crossDistProxy = function(p, pSub){
     proxy::dist(coords(p), coords(pSub))
 }

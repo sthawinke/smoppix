@@ -4,7 +4,7 @@
 #' @param pi The PI for which to plot the weighting function
 #'
 #' @return For univariate PI, returns a line plot; for bivariate PI a ggplot object
-#' @import ggplot2
+#' @importFrom ggplot2 ggplot geom_point scale_colour_gradient xlab ylab ggtitle aes
 #' @export
 #'
 #' @examples
