@@ -34,6 +34,9 @@ buildDfMM <- function(obj, gene, pi = c("nn", "allDist", "nnPair", "allDistPair"
     "nnPairCell", "allDistPairCell")) {
     pi <- match.arg(pi)
     stopifnot((lg <- length(gene)) %in% c(1, 2))
+    if (is.null(obj$Wfs)) {
+        stop("No weight function added yet, run addWeightFunction first!")
+    }
     # Check whether genes are present
     if (any(id <- !(sund(gene) %in% getFeatures(obj)))) {
         stop("PIs for features\n", sund(gene)[id], "\nnot found in object")

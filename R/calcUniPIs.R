@@ -10,7 +10,7 @@
 #' @return PIs for every feature
 #' @importFrom spatstat.geom marks
 #' @importFrom BiocParallel bpparam
-calcUniPIs <- function(p, pis, verbose, ecdfsCell, owins, tabObs, null, cd, nSub, ecdfAll, features, centroids) {
+calcUniPIs <- function(p, pis, verbose, ecdfsCell, owins, tabObs, null, cd, nPointsAll, nSub, ecdfAll, features, centroids) {
     if (verbose) {
         message("Calculating univariate probabilistic indices...")
     }
@@ -20,6 +20,15 @@ calcUniPIs <- function(p, pis, verbose, ecdfsCell, owins, tabObs, null, cd, nSub
             pSub <- p[id <- which(marks(p, drop = FALSE)$gene == feat), ]
             pLeft <- p[-id, ]
             NP <- npoints(pSub)
+
+            if (any(pis %in% c("nn", "nnPair", "allDist", "allDistPair")) && null == "background") {
+                # Prepare some null distances, either with CSR or background
+                pSubLeft <- subSampleP(pLeft, nPointsAll)
+                # Subsample for memory reasons
+                cd <- crossDistProxy(pSub, pSubLeft)
+                # For background, condition on point locations
+                id = seq_len(nrow(cd))
+            }
             # Avoid zero distances by removing observations of gene itself
             NNdistPI <- if (any(pis == "nn")) {
                 if (NP == 1)

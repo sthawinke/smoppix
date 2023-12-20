@@ -23,9 +23,13 @@
 plotWf <- function(obj, pi = obj$pis[1]) {
     pi <- match.arg(pi, choices = c("nn", "nnPair", "allDist", "allDistPair", "nnCell", "allDistCell", "nnPairCell",
         "allDistPairCell"))
-    if (is.null(wf <- obj$Wfs[[pi]])) {
+    if (is.null(obj$Wfs)) {
+        stop("No weight function added yet, run addWeightFunction first!")
+    }
+    if (! pi %in% obj$pis) {
         stop("This type of pi (", pi, ") is not available in the object)")
     }
+    wf <- obj$Wfs[[pi]]
     if (grepl("Pair", pi)) {
         tmp <- exp(wf$model[, c("log(maxP)", "log(minP)")])
         colnames(tmp) <- c("maxP", "minP")

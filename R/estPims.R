@@ -80,19 +80,12 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 1e2,
             })
             names(ecdfsCell) <- names(owins)
         }
-        if (any(pis %in% c("nn", "nnPair", "allDist", "allDistPair"))) {
-            # Prepare some null distances, either with CSR or background
-            pSub <- subSampleP(p, nPointsAll, returnId = TRUE)
-            # Subsample for memory reasons
-            cd <- getCrossDist(p, pSub$Pout, null, id = pSub$id)
-            # For background, condition on point locations
-        }
     }
     # Univariate patterns
     piPair <- grepl(pis, pattern = "Pair")
     uniPIs <- if (any(!piPair)) {
-        calcUniPIs(p, pis, verbose, ecdfsCell, owins, tabObs, null, cd = cd,
-                   nSub = npoints(p), ecdfAll, features, centroids = centroids)
+        calcUniPIs(p, pis, verbose, ecdfsCell, owins, tabObs, null, nPointsAll = nPointsAll,
+                   cd = cd, nSub = npoints(p), ecdfAll, features, centroids = centroids)
     }
     # Bivariate patterns
     biPIs <- if (any(piPair)) {

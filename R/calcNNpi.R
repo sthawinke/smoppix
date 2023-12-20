@@ -13,9 +13,13 @@
 calcNNPI <- function(pSub, p, null, cd, n, ecdfAll) {
     obsDistNN <- nndist(pSub)
     NP <- npoints(pSub)
+    if(NP <= 1 ){
+        return(NA)
+    }
     if (null == "background") {
-        approxRanks <- rowSums(cd < obsDistNN)+1
-        mean(pnhyper(approxRanks, n = ncol(cd) - (NP - 1), m = NP - 1, r = 1))
+        nFac = n/ncol(cd)
+        approxRanks <- round(nFac*(rowSums(cd < obsDistNN)+1))
+        mean(pnhyper(approxRanks, n = n - (NP - 1), m = NP - 1, r = 1))
         # Exclude event itself, so NP - 1 m = N-1: White balls, number of other
         #events of the same gene n = n - (NP-1): black balls, number of events
         #of other genes in background r=1: Nearest neighbour so first
