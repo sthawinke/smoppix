@@ -24,26 +24,12 @@
 #'  'randomNested' to FALSE to override this behaviour.
 #'
 #' @return A fitted linear mixed model of class 'lmerTest'
-#' @export
 #' @importFrom lmerTest lmer
 #' @importFrom stats formula na.omit anova lm
 #' @importFrom lme4 lmerControl .makeCC isSingular
 #' @importFrom BiocParallel bplapply
-#'
-#' @examples
-#' data(Yang)
-#' hypYang <- buildHyperFrame(Yang,
-#'     coordVars = c('x', 'y'),
-#'     imageVars = c('day', 'root', 'section')
-#' )
-#' # Fit a subset of features to limit computation time
-#' yangPims <- estPims(hypYang[c(seq_len(5), seq(25, 29)),], pis = 'nn')
-#' # First build the weighting function
-#' yangPims <- addWeightFunction(yangPims, designVars = c('day', 'root'))
-#' lmmModels <- fitLMMs(yangPims, fixedVars = 'day', randomVars = 'root',
-#'     pi = 'nn')
 #' @seealso \link{buildDfMM},\link{getResults}
-fitLMMs <- function(obj, pi, fixedVars = NULL, randomVars = NULL, verbose = TRUE, returnModels = FALSE, Formula = NULL,
+fitLMMsSingle <- function(obj, pi, fixedVars = NULL, randomVars = NULL, verbose = TRUE, returnModels = FALSE, Formula = NULL,
     randomNested = TRUE, features = getFeatures(obj)) {
     pi <- match.arg(pi, choices = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint", "nnCell", "allDistCell",
         "nnPairCell", "allDistPairCell"))
@@ -143,23 +129,25 @@ fitLMMs <- function(obj, pi, fixedVars = NULL, randomVars = NULL, verbose = TRUE
 #'
 #' @param obj The result object
 #' @param pis Optional, the pis required. Defaults to all pis in the object
-#' @param ... Passed onto fitLMMs
+#' @param ... Passed onto fitLMMsSingle
 #'
 #' @return A list of fitted objects
 #' @export
 #'
 #' @examples
 #' data(Yang)
-#' hypYang <- buildHyperFrame(Yang, coordVars = c('x', 'y'),
-#' imageVars = c('day', 'root', 'section'))
-#' yangPims <- estPims(hypYang[c(seq_len(5), seq(25, 29)),],
-#' features = getFeatures(hypYang)[seq_len(5)],
-#' pis = c('nn', 'nnPair'))
+#' hypYang <- buildHyperFrame(Yang,
+#'     coordVars = c('x', 'y'),
+#'     imageVars = c('day', 'root', 'section')
+#' )
+#' # Fit a subset of features to limit computation time
+#' yangPims <- estPims(hypYang[c(seq_len(5), seq(25, 29)),], pis = c('nn', 'nnPair'))
+#' # First build the weighting function
 #' yangPims <- addWeightFunction(yangPims, designVars = c('day', 'root'))
-#' allModels = fitLMMsAll(yangPims, fixedVars = 'day', randomVars = 'root')
-fitLMMsAll <- function(obj, pis = obj$pis, ...) {
+#' lmmModels <- fitLMMs(yangPims, fixedVars = 'day', randomVars = 'root')
+fitLMMs <- function(obj, pis = obj$pis, ...) {
     out <- lapply(pis, function(pi) {
-        fitLMMs(obj, pi = pi, verbose = pi == pis[1], ...)
+        fitLMMsSingle(obj, pi = pi, verbose = pi == pis[1], ...)
     })
     names(out) <- pis
     return(out)

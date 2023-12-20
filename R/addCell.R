@@ -54,6 +54,7 @@
 #' })
 #' names(wList) <- rownames(hypFrame) # Matching names is necessary
 #' hypFrame2 <- addCell(hypFrame, wList)
+#' # TO DO: accept coordinate matrices, rois geojson
 addCell <- function(hypFrame, owins, cellTypes = NULL, checkOverlap = TRUE, warnOut = TRUE) {
     stopifnot(nrow(hypFrame) == length(owins), all(unlist(lapply(owins, function(x) {
         vapply(x, FUN.VALUE = FALSE, is.owin)

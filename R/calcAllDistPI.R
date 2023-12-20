@@ -13,8 +13,12 @@ calcAllDistPI <- function(pSub, p, ecdfAll, null, cd) {
     if (null == "CSR") {
         mean(ecdfAll(obsDist)) # Need to condition on point too?
     } else if (null == "background") {
-        obsDist <- dropDiagonal(as.matrix(obsDist))
-        mean(cd < obsDist)
+        obsDist <- as.matrix(obsDist)
+        piEsts <- vapply(seq_len(npoints(pSub)), FUN.VALUE = double(1),
+                         function(i) {
+                             mean(ecdf(cd[i, ])(obsDist[i, -i]))
+                         })
+        mean(piEsts)
     }
 }
 calcAllDistPIpair <- function(id1, id2, ecdfAll, null, crossDistSub, cd) {
@@ -22,8 +26,12 @@ calcAllDistPIpair <- function(id1, id2, ecdfAll, null, crossDistSub, cd) {
         mean(ecdfAll(crossDistSub))
     } else if (null == "background") {
         # #Keep observed points fixed
-        piEsts1 <- rowMeans(cd[id1,] < crossDistSub[id1, ])
-        piEsts2 <- rowMeans(cd[id2,] < crossDistSub[, id2])
+        piEsts1 <- vapply(seq_along(id1), FUN.VALUE = double(1),
+                         function(i) {mean(ecdf(cd[i, ])(crossDistSub[i,]))
+                         })
+        piEsts2 <- vapply(seq_along(id2) , FUN.VALUE = double(1),
+                          function(i) {mean(ecdf(cd[i+ length(id1), ])(crossDistSub[,i]))
+                          })
         mean(c(piEsts1, piEsts2))
     }
 }

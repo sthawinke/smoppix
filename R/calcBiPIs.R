@@ -31,8 +31,11 @@ calcBiPIs <- function(p, pis, null, cd, nSub, ecdfAll, features, manyPairs, verb
                   id2), ], p = p, ecdfAll = ecdfAll, n = nSub)
             }
             allDistPI <- if (any(pis == "allDistPair")) {
-                cdSub <- crossdist(subSampleP(pSub1, maxNum), subSampleP(pSub2, maxNum))
-                calcAllDistPIpair(id1 = id1, id2 = id2, ecdfAll = ecdfAll, null = null, cd = cd[c(id1, id2), ], crossDistSub = cdSub)
+                s1 = subSampleP(pSub1, maxNum, returnId = TRUE)
+                s2 = subSampleP(pSub2, maxNum, returnId = TRUE)
+                cdSub <- crossdist(s1$Pout, s2$Pout)
+                calcAllDistPIpair(id1 = s1$id, id2 = s2$id, ecdfAll = ecdfAll,
+                null = null, cd = cd[c(s1$id, s2$id), ], crossDistSub = cdSub)
             }
             nnCellPI <- if (any(pis == "nnPairCell")) {
                 calcWindowPairPI(pSub1, pSub2, ecdfAll = ecdfsCell, ecdfs = ecdfsCell, pi = "nnPairCell", null = null,

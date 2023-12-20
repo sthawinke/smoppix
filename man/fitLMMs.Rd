@@ -2,61 +2,22 @@
 % Please edit documentation in R/fitLMMs.R
 \name{fitLMMs}
 \alias{fitLMMs}
-\title{Fit linear mixed nodels for all features of a pimRes object}
+\title{A wrapper function for linear mixed model fitting for all PIs}
 \usage{
-fitLMMs(
-  obj,
-  pi,
-  fixedVars = NULL,
-  randomVars = NULL,
-  verbose = TRUE,
-  returnModels = FALSE,
-  Formula = NULL,
-  randomNested = TRUE,
-  features = getFeatures(obj)
-)
+fitLMMs(obj, pis = obj$pis, ...)
 }
 \arguments{
-\item{obj}{The result of a call to buildWeightFunction()}
+\item{obj}{The result object}
 
-\item{pi}{character string indicating the desired pim as outcome
-in the linear mixed model}
+\item{pis}{Optional, the pis required. Defaults to all pis in the object}
 
-\item{fixedVars}{Names of fixed effects}
-
-\item{randomVars}{Names of random variables, possibly in a single vector to
-reflect nesting structure, see details.}
-
-\item{verbose}{A boolean, should the formula be printed?}
-
-\item{returnModels}{a boolean: should the full models be returned?
-Otherwise only summary statistics are returned}
-
-\item{Formula}{A formula; if not supplied it will be constructed
-from the fixed and random variables}
-
-\item{randomNested}{A boolean, indicating if random effects are nested within
-point patterns. See details.}
-
-\item{features}{The features for which to fit linear mixed models.
-Defaults to all features in the object}
+\item{...}{Passed onto fitLMMsSingle}
 }
 \value{
-A fitted linear mixed model of class 'lmerTest'
+A list of fitted objects
 }
 \description{
-Fit linear mixed nodels for all features of a pimRes object
-}
-\details{
-Genes or gene pairs with insufficient observations will be silently
-omitted. When randomVars is provided as a vector, independent random
-intercepts are fitted for them by default. Providing them separated by '\' or
-':' as in the lmer formulas is also allowed to reflect nesting structure.
-
-It is by default assumed that random effects are nested within the point
- patterns. This means for instance that cells with the same name but from
- different point patterns are assigned to different random effects. Set
- 'randomNested' to FALSE to override this behaviour.
+A wrapper function for linear mixed model fitting for all PIs
 }
 \examples{
 data(Yang)
@@ -65,12 +26,8 @@ hypYang <- buildHyperFrame(Yang,
     imageVars = c('day', 'root', 'section')
 )
 # Fit a subset of features to limit computation time
-yangPims <- estPims(hypYang[c(seq_len(5), seq(25, 29)),], pis = 'nn')
+yangPims <- estPims(hypYang[c(seq_len(5), seq(25, 29)),], pis = c('nn', 'nnPair'))
 # First build the weighting function
 yangPims <- addWeightFunction(yangPims, designVars = c('day', 'root'))
-lmmModels <- fitLMMs(yangPims, fixedVars = 'day', randomVars = 'root',
-    pi = 'nn')
-}
-\seealso{
-\link{buildDfMM},\link{getResults}
+lmmModels <- fitLMMs(yangPims, fixedVars = 'day', randomVars = 'root')
 }
