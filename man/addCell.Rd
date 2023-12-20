@@ -70,6 +70,7 @@ wList <- lapply(seq_len(nDesignFactors), function(x) {
 })
 names(wList) <- rownames(hypFrame) # Matching names is necessary
 hypFrame2 <- addCell(hypFrame, wList)
+# TO DO: accept coordinate matrices, rois geojson
 }
 \seealso{
 \link{buildHyperFrame}

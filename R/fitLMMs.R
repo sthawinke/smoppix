@@ -145,9 +145,9 @@ fitLMMsSingle <- function(obj, pi, fixedVars = NULL, randomVars = NULL, verbose 
 #' # First build the weighting function
 #' yangPims <- addWeightFunction(yangPims, designVars = c('day', 'root'))
 #' lmmModels <- fitLMMs(yangPims, fixedVars = 'day', randomVars = 'root')
-fitLMMs <- function(obj, pis = obj$pis, ...) {
+fitLMMs <- function(obj, pis = obj$pis, verbose = TRUE, ...) {
     out <- lapply(pis, function(pi) {
-        fitLMMsSingle(obj, pi = pi, verbose = pi == pis[1], ...)
+        fitLMMsSingle(obj, pi = pi, verbose = verbose && pi == pis[1], ...)
     })
     names(out) <- pis
     return(out)
