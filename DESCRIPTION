@@ -22,4 +22,3 @@ VignetteBuilder: knitr
 BugReports: https://github.com/sthawinke/spatrans
 URL: https://github.com/sthawinke/spatrans
 LinkingTo: Rcpp
-

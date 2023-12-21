@@ -125,6 +125,18 @@ which.max.early <- function(x, a) {
             return(i)
     }
 }
+#' Approximate the ranks given and ecdf
+#'
+#' @param ecdf An empirical density function
+#' @param obs A vector of observations
+#' @param The total number of observations in the point pattern
+#'
+#' @return The approximate ranks
+getApproxRanks <- function(ecdf, obs, n = getN(ecdf)) {
+    ranks <- round(ecdf(obs) * n)
+    ranks[ranks == 0] <- 1
+    ranks
+}
 crossdistWrapper = function(x, y){
     crossdistFast(getCoordsMat(x), getCoordsMat(y))
 }

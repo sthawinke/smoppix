@@ -32,8 +32,8 @@ test_that("Fitting linear mixed models proceeds without errors", {
         fixedVars = "day",
         randomVars = "root", pi = "nn", returnModels = TRUE
     ), "list")
-    expect_s3_class(linModsNNfull$models[[1]], "lm")
-    expect_s4_class(linMModsNNfull$models[[1]], "lmerModLmerTest")
+    expect_s3_class(linModsNNfull$models[["nn"]][[1]], "lm")
+    expect_s4_class(linMModsNNfull$models[["nn"]][[1]], "lmerModLmerTest")
     expect_is(linModsMP <- fitLMMs(objBG, features = getFeatures(objBG)[1:5],
         fixedVars = "condition",
         pi = "midpoint"
@@ -60,7 +60,7 @@ test_that("Fitting linear mixed models proceeds without errors", {
         fixedVars = c("condition", "cellType"),
         pi = "nnCell", randomVars = "root"
     ), "list")
-    expect_is(fitLMMsAll(objBG, fixedVars = c("condition", "cellType"),
+    expect_is(fitLMM(objBG, fixedVars = c("condition", "cellType"),
         randomVars = "root", pis = c("nn", "nnCell"),
         features = getFeatures(objBG)[1:5]), "list")
     expect_is(resMat <- getResults(linModsMP, "Intercept"), "matrix")

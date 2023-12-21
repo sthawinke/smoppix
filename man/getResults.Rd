@@ -27,7 +27,7 @@ hypYang <- buildHyperFrame(Yang,
 yangPims <- estPims(hypYang, pis = 'nn')
 # First build the weighting function
 yangObj <- addWeightFunction(yangPims, designVars = c('day', 'root'))
-fittedModels <- fitLMMs(yangObj,
+fittedModels <- fitLMMs(yangObj, features = getFeatures(yangObj)[seq_len(10)],
     fixedVars = 'day', randomVars = 'root',
     pi = 'nn'
 )
