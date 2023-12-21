@@ -10,7 +10,7 @@
 #' @importFrom Rfast rowMins colMins
 #' @importFrom extraDistr pnhyper
 #' @return The estimated probabilistic index
-calcNNPI <- function(pSub, p, null, cd, n, ecdfAll) {
+calcNNPI <- function(pSub, null, cd, n, ecdfAll) {
     obsDistNN <- nndist(pSub)
     NP <- npoints(pSub)
     if(NP <= 1 ){
@@ -18,7 +18,7 @@ calcNNPI <- function(pSub, p, null, cd, n, ecdfAll) {
     }
     if (null == "background") {
         nFac = n/ncol(cd)
-        approxRanks <- round(nFac*(rowSums(cd < obsDistNN)+1))
+        approxRanks <- round(nFac*(rowSums(cd < obsDistNN) + 0.5))
         mean(pnhyper(approxRanks, n = n - (NP - 1), m = NP - 1, r = 1))
         # Exclude event itself, so NP - 1 m = N-1: White balls, number of other
         #events of the same gene n = n - (NP-1): black balls, number of events
@@ -27,23 +27,18 @@ calcNNPI <- function(pSub, p, null, cd, n, ecdfAll) {
     } else if (null == "CSR") {
         # Weigh by negative hypergeometric distribution to
         #bypass Monte-Carlo simulations
-        approxRanks <- getApproxRanks(ecdfAll, obsDistNN)
-        mean(pnhyper(approxRanks, n = getN(ecdfAll) - (NP - 1), m = NP - 1,
-                     r = 1))
+        approxRanks <- getApproxRanks(ecdfAll, obsDistNN, n)
+        mean(pnhyper(approxRanks, n = n - (NP - 1), m = NP - 1, r = 1))
     }
 }
-calcNNPIpair <- function(obsDistNN, id1, id2, null, p, cd, n, ecdfAll) {
+calcNNPIpair <- function(obsDistNN, id1, id2, null, cd, n, ecdfAll) {
     obsDistRank <- if (null == "background") {
-        approxRanks <- rowSums(cd < obsDistNN) +1
+        nFac = n/ncol(cd)
+        approxRanks <- round(nFac*(rowSums(cd < obsDistNN) + 0.5))
         approxRanks
-        # vapply(seq_along(obsDistNN), FUN.VALUE = double(1), function(i) {
-        #     tmp = cd[i, ] > obsDistNN[i]
-        #     if(all(tmp)) length(tmp) else which.max(tmp)
-        # })
     } else {
-        getApproxRanks(ecdfAll, obsDistNN)
+        getApproxRanks(ecdfAll, obsDistNN, n)
     }
-    n = switch(null, "background" = ncol(cd), "CSR" = getN(ecdfAll))
     seq1 <- seq_along(id1)
     pis <- mean(c(pnhyper(obsDistRank[seq1], n = n - length(id2),
                           m = length(id2), r = 1),

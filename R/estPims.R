@@ -90,8 +90,8 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 1e2,
     # Bivariate patterns
     biPIs <- if (any(piPair)) {
         calcBiPIs(features = features, p, pis, null, cd = cd, nSub = npoints(p),
-                  ecdfAll, manyPairs, verbose, allowManyGenePairs,
-            ecdfsCell)
+                  ecdfAll, manyPairs, verbose, allowManyGenePairs, ecdfsCell,
+                  nPointsAll = nPointsAll)
     }
     list(uniPIs = uniPIs, biPIs = biPIs)
 }

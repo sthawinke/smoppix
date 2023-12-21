@@ -9,10 +9,10 @@
 #' @inheritParams calcUniPIs
 #' @importFrom stats dist
 #' @importFrom spatstat.geom coords
-calcAllDistPI <- function(pSub, p, ecdfAll, null, cd) {
+calcAllDistPI <- function(pSub, ecdfAll, null, cd) {
     obsDist <- stats::dist(coords(pSub))
     if (null == "CSR") {
-        mean(ecdfAll(obsDist)) # Need to condition on point too?
+        mean(ecdfAll(obsDist))
     } else if (null == "background") {
         obsDist <- as.matrix(obsDist)
         piEsts <- vapply(seq_len(npoints(pSub)), FUN.VALUE = double(1),

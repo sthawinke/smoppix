@@ -9,7 +9,7 @@
 #' @importFrom BiocParallel bpparam
 #'
 #' @return A matrix of bivariate PIs
-calcBiPIs <- function(p, pis, null, cd, nSub, ecdfAll, features, manyPairs, verbose, allowManyGenePairs, ecdfsCell,
+calcBiPIs <- function(p, pis, null, cd, nSub, ecdfAll, features, manyPairs, verbose, allowManyGenePairs, ecdfsCell, nPointsAll,
     maxNum = 10000) {
     if (!allowManyGenePairs && (numGenePairs <- choose(length(features), 2)) > manyPairs) {
         warning(immediate. = TRUE, "Calculating probablistic indices for", numGenePairs, "gene pairs may take a long time!\n",
@@ -25,10 +25,17 @@ calcBiPIs <- function(p, pis, null, cd, nSub, ecdfAll, features, manyPairs, verb
             feat2 <- genePairsMat[2, i]
             pSub1 <- p[id1 <- which(marks(p, drop = FALSE)$gene == feat1), ]
             pSub2 <- p[id2 <- which(marks(p, drop = FALSE)$gene == feat2), ]
+            if (any(pis %in% c("nnPair", "allDistPair")) && null == "background") {
+                # Prepare some null distances, either with CSR or background
+                pSubLeft <- subSampleP(p[-c(id1, id2),], nPointsAll)
+                # Subsample for memory reasons
+                cd <- rbind(crossDistProxy(pSub1, pSubLeft),
+                            crossDistProxy(pSub2, pSubLeft))
+                # For background, condition on point locations
+            }
             # Reorder and subset if needed
             NNdistPI <- if (any(pis == "nnPair")) {
-                calcNNPIpair(obsDistNN = nncross(pSub1, pSub2, what = "dist"), id1 = id1, id2 = id2, null = null, cd = cd[c(id1,
-                  id2), ], p = p, ecdfAll = ecdfAll, n = nSub)
+                calcNNPIpair(obsDistNN = nncross(pSub1, pSub2, what = "dist"), id1 = id1, id2 = id2, null = null, cd = cd, ecdfAll = ecdfAll, n = nSub)
             }
             allDistPI <- if (any(pis == "allDistPair")) {
                 s1 = subSampleP(pSub1, maxNum, returnId = TRUE)

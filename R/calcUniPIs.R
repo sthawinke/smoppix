@@ -15,29 +15,28 @@ calcUniPIs <- function(p, pis, verbose, ecdfsCell, owins, tabObs, null, cd, nPoi
         message("Calculating univariate probabilistic indices...")
     }
     splitFac <- rep(seq_len(bpparam()$workers), length.out = length(nams <- names(tabObs[features])))
-    uniPIs <- unsplit(f = splitFac, bplapply(split(nams, f = splitFac), function(ss) {
+    uniPIs <- unsplit(f = splitFac, bplapply(split(nams, f = splitFac), function(ss){
         lapply(ss, function(feat) {
             pSub <- p[id <- which(marks(p, drop = FALSE)$gene == feat), ]
             pLeft <- p[-id, ]
             NP <- npoints(pSub)
 
-            if (any(pis %in% c("nn", "nnPair", "allDist", "allDistPair")) && null == "background") {
+            if (any(pis %in% c("nn", "allDist")) && null == "background") {
                 # Prepare some null distances, either with CSR or background
                 pSubLeft <- subSampleP(pLeft, nPointsAll)
                 # Subsample for memory reasons
                 cd <- crossDistProxy(pSub, pSubLeft)
                 # For background, condition on point locations
-                id = seq_len(nrow(cd))
             }
             # Avoid zero distances by removing observations of gene itself
             NNdistPI <- if (any(pis == "nn")) {
                 if (NP == 1)
-                  NA else calcNNPI(pSub, pLeft, null, cd = cd[id, ], n = nSub, ecdfAll = ecdfAll)
+                  NA else calcNNPI(pSub, null, cd = cd, n = nSub, ecdfAll = ecdfAll)
             }
             # Also here room for improvement
             allDistPI <- if (any(pis == "allDist")) {
                 if (NP == 1)
-                  NA else calcAllDistPI(pSub, pLeft, ecdfAll = ecdfAll, null = null, cd = cd[id, ])
+                  NA else calcAllDistPI(pSub, ecdfAll = ecdfAll, null = null, cd = cd)
             }
             edgeDistPI <- if (any(pis == "edge")) {
                 calcWindowDistPI(pSub, owins, ecdfAll = ecdfsCell, pi = "edge")

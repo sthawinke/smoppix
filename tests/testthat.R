@@ -55,7 +55,7 @@ cellTypesDf <- data.frame(
 names(wList) <- names(wList2) <- rownames(hypFrame)
 hypFrame2 <- addCell(hypFrame, wList, cellTypes = cellTypesDf)
 # Register the parallel backend
-#register(SerialParam())
+# register(SerialParam())
 nCores <- 2
 register(MulticoreParam(nCores))
 pis <- c("nn", "allDist", "nnPair", "allDistPair", "edge",
