@@ -26,3 +26,4 @@ NumericMatrix crossdistFast(NumericMatrix m1, NumericMatrix m2) {
 
   return out;
 }
+// #Taken from https://www.r-bloggers.com/2019/09/matrix-cross-distances-using-rcpp/

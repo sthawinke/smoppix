@@ -28,7 +28,7 @@
 #' @importFrom Rdpack reprompt
 #' @importFrom Rfast rowSort rowMins rowAny
 #' @importFrom extraDistr pnhyper
-estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 1e2,
+estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 5e2,
     nPointsAllWin = 200, features = NULL, allowManyGenePairs = FALSE,
     manyPairs = 1e+06, verbose = FALSE, owins = NULL, centroids = NULL) {
     if (is.null(features)) {

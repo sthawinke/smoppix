@@ -27,14 +27,16 @@ calcBiPIs <- function(p, pis, null, cd, nSub, ecdfAll, features, manyPairs, verb
             pSub2 <- p[id2 <- which(marks(p, drop = FALSE)$gene == feat2), ]
             # Reorder and subset if needed
             NNdistPI <- if (any(pis == "nnPair")) {
-                calcNNPIpair(obsDistNN = nncross(pSub1, pSub2, what = "dist"),
+                calcNNPIpair(obsDistNN = c(nncross(pSub1, pSub2, what = "dist"),
+                                           nncross(pSub2, pSub1, what = "dist")),
                              id1 = id1, id2 = id2, null = null,
-                             cd = cd[c(id1, id2),], ecdfAll = ecdfAll, n = nSub)
+                             cd = cd[c(id1, id2),],
+                             ecdfAll = ecdfAll, n = nSub)
             }
             allDistPI <- if (any(pis == "allDistPair")) {
                 s1 = subSampleP(pSub1, maxNum, returnId = TRUE)
                 s2 = subSampleP(pSub2, maxNum, returnId = TRUE)
-                cdSub <- crossdist(s1$Pout, s2$Pout)
+                cdSub <- crossdistWrapper(s1$Pout, s2$Pout)
                 calcAllDistPIpair(id1 = s1$id, id2 = s2$id, ecdfAll = ecdfAll,
                 null = null, cd = cd[c(s1$id, s2$id), ], crossDistSub = cdSub)
             }
