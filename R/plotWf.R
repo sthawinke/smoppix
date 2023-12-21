@@ -31,18 +31,25 @@ plotWf <- function(obj, pi = obj$pis[1]) {
     }
     wf <- obj$Wfs[[pi]]
     if (grepl("Pair", pi)) {
-        tmp <- exp(wf$model[, c("log(maxP)", "log(minP)")])
+        tmp <- wf$model[, c("log(maxP)", "log(minP)")]
         colnames(tmp) <- c("maxP", "minP")
-        df <- cbind(Weight = 1/exp(predict.scam(wf, newdata = tmp)), tmp)
+        tmp = tmp[tmp[, "maxP"] > 0 & tmp[, "minP"] >0 , ]
+        df <- cbind(Weight = evalWeightFunction(wf, newdata = tmp), exp(tmp))
         df[, "Weight"] <- df[, "Weight"]/max(df[, "Weight"])
-        ggplot(df, aes(x = log10(minP), y = log10(maxP), col = Weight)) + geom_point(size = 1) + scale_colour_gradient(low = "yellow",
-            high = "blue", name = "Weight") + xlab("Log10 number of events for least expressed gene") + ylab("Log10 number of events for most expressed gene") +
-            ggtitle(paste("Weighting function for probabilistic indices of type", pi))
+        ggplot(df, aes(x = log10(minP), y = log10(maxP), col = Weight)) +
+        geom_point(size = 1) + scale_colour_gradient(low = "yellow",
+        high = "blue", name = "Weight") +
+        xlab("Log10 number of events for least expressed gene") +
+        ylab("Log10 number of events for most expressed gene") +
+        ggtitle(paste("Weighting function for probabilistic indices of type",
+                      pi))
     } else {
-        tmp <- data.frame(NP = exp(wf$model[, "log(NP)"]))
-        df <- cbind(Weight = 1/exp(predict.scam(wf, newdata = tmp)), tmp)
+        tmp <- data.frame("NP" = wf$model[, "log(NP)"])
+        df <- cbind(Weight = evalWeightFunction(wf, newdata = tmp), exp(tmp))
         df[, "Weight"] <- df[, "Weight"]/max(df[, "Weight"])
-        plot(Weight ~ NP, data = df[order(df$NP), ], type = "l", xlab = "Number of observations", ylab = "Weight",
-            main = paste("Weighting function for probabilistic indices of type", pi))
+        plot(Weight ~ NP, data = df[order(df$NP), ], type = "l",
+             xlab = "Number of observations", ylab = "Weight",
+        main = paste("Weighting function for probabilistic indices of type",
+                     pi))
     }
 }
