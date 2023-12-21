@@ -80,11 +80,12 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 1e2,
             })
             names(ecdfsCell) <- names(owins)
         }
-        if (any(pis %in% c("nn", "allDist", "nnPair", "allDistPair")) && null == "background") {
+        if (any(pis %in% c("nn", "allDist", "nnPair", "allDistPair")) &&
+            null == "background") {
             # Prepare some null distances, either with CSR or background
             pSubLeft <- subSampleP(p, nPointsAll)
             # Subsample for memory reasons
-            cd <- crossdistFast(p, pSubLeft)
+            cd <- crossdistFast(coords(p), coords(pSubLeft))
             # For background, condition on point locations
         }
     }

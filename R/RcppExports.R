@@ -2,10 +2,10 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 crossdistFast <- function(m1, m2) {
-    .Call('_spatrans_crossdistFast', PACKAGE = 'spatrans', m1, m2)
+    .Call(`_spatrans_crossdistFast`, m1, m2)
 }
 
 rcpp_hello_world <- function() {
-    .Call('_spatrans_rcpp_hello_world', PACKAGE = 'spatrans')
+    .Call(`_spatrans_rcpp_hello_world`)
 }
 
