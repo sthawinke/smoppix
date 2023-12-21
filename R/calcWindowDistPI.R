@@ -99,14 +99,3 @@ calcWindowPairPI <- function(pSub1, pSub2, feat1, feat2, cellAndGene, ecdfAll, p
     names(out) <- nam
     return(out)
 }
-#' Approximate the ranks given and ecdf
-#'
-#' @param ecdf An empirical density function
-#' @param obs A vector of observations
-#'
-#' @return The approximate ranks
-getApproxRanks <- function(ecdf, obs, n = getN(ecdf)) {
-    ranks <- round(ecdf(obs) * n)
-    ranks[ranks == 0] <- 1
-    ranks
-}
