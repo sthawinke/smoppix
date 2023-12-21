@@ -129,7 +129,7 @@ which.max.early <- function(x, a) {
 #'
 #' @param ecdf An empirical density function
 #' @param obs A vector of observations
-#' @param The total number of observations in the point pattern
+#' @param n The total number of observations in the point pattern
 #'
 #' @return The approximate ranks
 getApproxRanks <- function(ecdf, obs, n = getN(ecdf)) {
@@ -137,8 +137,14 @@ getApproxRanks <- function(ecdf, obs, n = getN(ecdf)) {
     ranks[ranks == 0] <- 1
     ranks
 }
+#' A wrapper for C-functions calculating cross-distance matrix fast and with
+#' low memory usage. Big matrices are also supported
 #'@param returnBigMatrix a boolean, should the result be returned as
 #'a big matrix (low RAM use) or a regular r-matrix (faster)
+#'@param x,y the matrices or point patterns between which to calculate the
+#'cross distances
+#'@return a matrix of cross distances
+#'@inportFrom bigmemory big.matrix
 crossdistWrapper = function(x, y, returnBigMatrix = FALSE){
     if(returnBigMatrix){
         x = getCoordsMat(x);y = getCoordsMat(y)
@@ -150,6 +156,9 @@ crossdistWrapper = function(x, y, returnBigMatrix = FALSE){
     }
 
 }
+#' Extract coordinates from a point pattern or data frame
+#' @param x the point pattern, dataframe or matrix
+#' @return the matrix of coordinates
 getCoordsMat = function(x){
     if(is.ppp(x)){
         as.matrix(coords(x))
