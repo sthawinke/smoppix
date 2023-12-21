@@ -4,7 +4,7 @@
 \alias{getApproxRanks}
 \title{Approximate the ranks given and ecdf}
 \usage{
-getApproxRanks(ecdf, obs)
+getApproxRanks(ecdf, obs, n = getN(ecdf))
 }
 \arguments{
 \item{ecdf}{An empirical density function}

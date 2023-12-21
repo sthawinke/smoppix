@@ -16,6 +16,7 @@ calcBiPIs(
   verbose,
   allowManyGenePairs,
   ecdfsCell,
+  nPointsAll,
   maxNum = 10000
 )
 }
@@ -43,6 +44,10 @@ probabilistic indices be calculated?}
 \item{allowManyGenePairs}{A boolean, set to true to override warning on computation time}
 
 \item{ecdfsCell}{ecdfs within the cells}
+
+\item{nPointsAll}{How many points to subsample or simulate to calculate
+overall interpoint distance and distance to point.
+This parameter is a strong driver of memory and cpu usage.}
 
 \item{maxNum}{The maximum number of points to calculate cross distances for,
 to avoid excessive memory usage.}

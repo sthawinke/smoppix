@@ -13,6 +13,7 @@ calcUniPIs(
   tabObs,
   null,
   cd,
+  nPointsAll,
   nSub,
   ecdfAll,
   features,
@@ -37,6 +38,10 @@ and their centroids}
 defined. See details.}
 
 \item{cd}{A matrix of cross-distances}
+
+\item{nPointsAll}{How many points to subsample or simulate to calculate
+overall interpoint distance and distance to point.
+This parameter is a strong driver of memory and cpu usage.}
 
 \item{nSub}{The number of events in the subsampled pattern}
 

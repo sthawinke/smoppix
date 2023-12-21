@@ -84,7 +84,7 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 1e2,
             # Prepare some null distances, either with CSR or background
             pSubLeft <- subSampleP(p, nPointsAll)
             # Subsample for memory reasons
-            cd <- crossDistProxy(pSub, pSubLeft)
+            cd <- crossdistFast(p, pSubLeft)
             # For background, condition on point locations
         }
     }

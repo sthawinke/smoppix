@@ -4,12 +4,10 @@
 \alias{calcNNPI}
 \title{Estimate the PI for the nearest neighbour distances}
 \usage{
-calcNNPI(pSub, p, null, cd, n, ecdfAll)
+calcNNPI(pSub, null, cd, n, ecdfAll)
 }
 \arguments{
 \item{pSub}{The subset point pattern with only one feature}
-
-\item{p}{The point pattern}
 
 \item{null}{A character vector, indicating how the null distribution is
 defined. See details.}
