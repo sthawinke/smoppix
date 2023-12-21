@@ -125,5 +125,15 @@ which.max.early <- function(x, a) {
             return(i)
     }
 }
-
-
+crossdistWrapper = function(x, y){
+    crossdistFast(getCoordsMat(x), getCoordsMat(y))
+}
+getCoordsMat = function(x){
+    if(is.ppp(x)){
+        as.matrix(coords(x))
+    } else if(is.data.frame(x)){
+        as.matrix(x)
+    } else if(is.matrix(x)){
+        x
+    }
+}

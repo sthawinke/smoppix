@@ -57,7 +57,7 @@ calcWindowPairPI <- function(pSub1, pSub2, feat1, feat2, cellAndGene, ecdfAll, p
     splitPPP2 <- split.ppp(pSub2, f = "cell")
     # FIX ME: fast alternative for split.ppp?
     out <- vapply(nam <- intersect(names(splitPPP1), names(splitPPP2)), FUN.VALUE = double(1), function(x) {
-        cd <- crossDistProxy(splitPPP1[[x]], splitPPP2[[x]])
+        cd <- crossdistWrapper(splitPPP1[[x]], splitPPP2[[x]])
         if (null == "background") {
             id1 <- which(cellAndGene$gene[cellAndGene$cell == x] == feat1)
             id2 <- which(cellAndGene$gene[cellAndGene$cell == x] == feat2)

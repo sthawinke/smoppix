@@ -8,7 +8,7 @@
 #' @return A cross distance matrix without zeroes
 #' @importFrom spatstat.geom npoints
 getCrossDist <- function(p, pSub, null, id = NULL) {
-    cd <- crossDistProxy(p, pSub)
+    cd <- crossdistWrapper(p, pSub)
     nSub <- npoints(pSub)
     if (null == "background") {
         if (npoints(p) == nSub) {
@@ -18,18 +18,13 @@ getCrossDist <- function(p, pSub, null, id = NULL) {
             if(is.null(id)){
                 idDupl <- which(idMat <- (cd == 0), arr.ind = TRUE)
               # Points resampled, and thus distance 0. Replace by other points
-                cd[idMat] <- crossDistProxy(p[idDupl[, 1], ],
+                cd[idMat] <- crossdistWrapper(p[idDupl[, 1], ],
                             p[sample(seq_len(npoints(p))[-idDupl[, 1]], 1), ])
             } else {
-                diag(cd[id,]) = crossDistProxy(p[id, ],
+                diag(cd[id,]) = crossdistWrapper(p[id, ],
                                     p[sample(seq_len(npoints(p))[-id], 1), ])
             }
         }
     }
     return(cd)
-}
-#' @importFrom proxy dist
-#' @importFrom spatstat.geom coords
-crossDistProxy = function(p, pSub){
-    proxy::dist(coords(p), coords(pSub))
 }

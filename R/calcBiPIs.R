@@ -29,8 +29,8 @@ calcBiPIs <- function(p, pis, null, cd, nSub, ecdfAll, features, manyPairs, verb
                 # Prepare some null distances, either with CSR or background
                 pSubLeft <- subSampleP(p[-c(id1, id2),], nPointsAll)
                 # Subsample for memory reasons
-                cd <- rbind(crossDistProxy(pSub1, pSubLeft),
-                            crossDistProxy(pSub2, pSubLeft))
+                cd <- rbind(crossdistWrapper(pSub1, pSubLeft),
+                            crossdistWrapper(pSub2, pSubLeft))
                 # For background, condition on point locations
             }
             # Reorder and subset if needed
