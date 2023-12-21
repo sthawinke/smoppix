@@ -137,8 +137,18 @@ getApproxRanks <- function(ecdf, obs, n = getN(ecdf)) {
     ranks[ranks == 0] <- 1
     ranks
 }
-crossdistWrapper = function(x, y){
-    crossdistFast(getCoordsMat(x), getCoordsMat(y))
+#'@param returnBigMatrix a boolean, should the result be returned as
+#'a big matrix (low RAM use) or a regular r-matrix (faster)
+crossdistWrapper = function(x, y, returnBigMatrix = FALSE){
+    if(returnBigMatrix){
+        x = getCoordsMat(x);y = getCoordsMat(y)
+        bigMat = big.matrix(nrow = nrow(x), ncol = nrow(y), type = "double")
+        crossdistFast(x, y, bigMat@address)
+        return(bigMat)
+    } else {
+        crossdistFastLocal(getCoordsMat(x), getCoordsMat(y))
+    }
+
 }
 getCoordsMat = function(x){
     if(is.ppp(x)){
