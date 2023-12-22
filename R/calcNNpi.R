@@ -34,7 +34,7 @@ calcNNPI <- function(pSub, null, cd, n, ecdfAll) {
 calcNNPIpair <- function(obsDistNN, id1, id2, null, cd, n, ecdfAll) {
     obsDistRank <- if (null == "background") {
         nFac = n/ncol(cd)
-        approxRanks <- round(nFac*(rowSums(cd < obsDistNN) + 0.5))
+        approxRanks <- round(nFac*(rowSumsWrapper(cd, obsDistNN) + 0.5))
         approxRanks
     } else {
         getApproxRanks(ecdfAll, obsDistNN, n)

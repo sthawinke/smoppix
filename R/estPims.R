@@ -19,7 +19,6 @@
 #' probabilistic indices be calculated?
 #' @param tabObs A table of observed gene frequencies
 #' @param verbose a boolean, should verbose output be printed?
-#' @param tmpFile A temporary file to store the big.matrix of distances
 #'
 #' @return Data frames with estimated quantities per gene and/or gene pair
 #' @importFrom stats ecdf dist
@@ -30,7 +29,7 @@
 #' @importFrom Rfast rowSort rowMins rowAny
 #' @importFrom extraDistr pnhyper
 estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 1e4,
-    nPointsAllWin = 4e2, features = NULL, allowManyGenePairs = FALSE,
+    nPointsAllWin = 2e2, features = NULL, allowManyGenePairs = FALSE,
     manyPairs = 1e+06, verbose = FALSE, owins = NULL, centroids = NULL) {
     if (is.null(features)) {
         features <- names(tabObs)
@@ -81,18 +80,13 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 1e4,
             })
             names(ecdfsCell) <- names(owins)
         }
-        # if (any(pis %in% c("nn", "allDist", "nnPair", "allDistPair")) &&
-        #     null == "background") {
-        #     # Prepare some null distances, either with CSR or background
-        #     pSubLeft <- subSampleP(p, nPointsAll)
-        #     # Subsample for memory reasons
-        #     # cd <- crossdistWrapper(as.matrix(coords(p)), as.matrix(coords(pSubLeft)),
-        #     #         returnBigMatrix = TRUE, tmpFile = tmpFile)
-        #     baa = lapply(seq_len(npoints(p)), function(i){
-        #              ecdf(crossdist(p[i,], pSubLeft))
-        #     })
-        #     # For background, condition on point locations
-        # }
+         if (any(pis %in% c("nn", "allDist", "nnPair", "allDistPair")) && null == "background") {
+        # # Prepare some null distances, either with CSR or background
+        pSubLeft <- subSampleP(p, nPointsAll)
+        ## Subsample for memory reasons
+        cd <- crossdistWrapper(as.matrix(coords(p)), as.matrix(coords(pSubLeft)),
+                               returnBigMatrix = TRUE, tmpFile = tmpFile)
+        }
     }
     # Univariate patterns
     piPair <- grepl(pis, pattern = "Pair")
@@ -106,15 +100,12 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 1e4,
                   ecdfAll, manyPairs, verbose, allowManyGenePairs, ecdfsCell,
                   nPointsAll = nPointsAll)
     }
+    gc()#Release memory from bigmemory package
     list(uniPIs = uniPIs, biPIs = biPIs)
 }
 #' Estimate pims on a hyperframe
 #' @export
 #' @param hypFrame the hyperframe
-#' @param bigMatrixToFile A boolean, should the bigmemory package write the
-#' distance matrix to a file on the hard drive. This reduces RAM usages but
-#' increases computation time. A few Gb of free space are useful in this case;
-#' all files fill be removed afterwards.
 #' @param ... additional arguments, passed on to estPimsSingle
 #' @inheritParams estPimsSingle
 #' @return A list of estimated pims
@@ -144,7 +135,7 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 1e4,
 estPims <- function(hypFrame, pis = c("nn", "allDist", "nnPair", "allDistPair",
     "edge", "midpoint", "nnCell", "allDistCell", "nnPairCell",
     "allDistPairCell"), verbose = TRUE, null = c("background", "CSR"),
-    features = getFeatures(hypFrame), bigMatrixToFile = TRUE,...) {
+    features = getFeatures(hypFrame),...) {
     pis <- match.arg(pis, several.ok = TRUE)
     null <- match.arg(null)
     if (any(pis %in% c("edge", "midpoint", "nnCell", "allDistCell")) &&
