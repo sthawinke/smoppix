@@ -28,8 +28,8 @@
 #' @importFrom Rdpack reprompt
 #' @importFrom Rfast rowSort rowMins rowAny
 #' @importFrom extraDistr pnhyper
-estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 5e2,
-    nPointsAllWin = 200, features = NULL, allowManyGenePairs = FALSE,
+estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 1e4,
+    nPointsAllWin = 4e2, features = NULL, allowManyGenePairs = FALSE,
     manyPairs = 1e+06, verbose = FALSE, owins = NULL, centroids = NULL) {
     if (is.null(features)) {
         features <- names(tabObs)
@@ -85,7 +85,8 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 5e2,
             # Prepare some null distances, either with CSR or background
             pSubLeft <- subSampleP(p, nPointsAll)
             # Subsample for memory reasons
-            cd <- crossdistWrapper(as.matrix(coords(p)), as.matrix(coords(pSubLeft)))
+            cd <- crossdistWrapper(as.matrix(coords(p)), as.matrix(coords(pSubLeft)),
+                    returnBigMatrix = TRUE)
             # For background, condition on point locations
         }
     }

@@ -4,10 +4,13 @@
 \alias{findOverlap}
 \title{Try to find overlap between list of windows, and throw error when found}
 \usage{
-findOverlap(owins)
+findOverlap(owins, returnIds = FALSE)
 }
 \arguments{
 \item{owins}{the list of windows}
+
+\item{returnIds}{A boolean, should the indices of the overlap be returned?
+If FALSE an error is thrown at the first overlap}
 }
 \value{
 Throws an error when overlap found, otherwise returns invisible
