@@ -19,6 +19,7 @@ Throws an error when overlap found, otherwise returns invisible
 Try to find overlap between list of windows, and throw error when found
 }
 \examples{
+library(spatstat.geom)
 owins = lapply(integer(10), owin)
 findOverlap(owins)
 idOverlap = findOverlap(owins, returnIds = TRUE)
