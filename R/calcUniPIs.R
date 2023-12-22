@@ -10,7 +10,8 @@
 #' @return PIs for every feature
 #' @importFrom spatstat.geom marks
 #' @importFrom BiocParallel bpparam
-calcUniPIs <- function(p, pis, verbose, ecdfsCell, owins, tabObs, null, cd, nPointsAll, nSub, ecdfAll, features, centroids) {
+calcUniPIs <- function(p, pis, verbose, ecdfsCell, owins, tabObs, null, cd,
+                       nPointsAll, nSub, ecdfAll, features, centroids) {
     if (verbose) {
         message("Calculating univariate probabilistic indices...")
     }
@@ -18,14 +19,24 @@ calcUniPIs <- function(p, pis, verbose, ecdfsCell, owins, tabObs, null, cd, nPoi
     uniPIs <- unsplit(f = splitFac, bplapply(split(nams, f = splitFac), function(ss){
         lapply(ss, function(feat) {
             pSub <- p[id <- which(marks(p, drop = FALSE)$gene == feat), ]
-            pLeft <- p[-id, ]
-            NP <- npoints(pSub)
-            cd = crossdistWrapper(pSub, subSampleP(pLeft, nPointsAll),
-                                  returnBigMatrix = prod(NP, nPointsAll) > 1e4)
+            NP <- length(id)
+            idLeft = if(noSubSam <- (nPointsAll >= (NPtot <- npoints(p)))){
+                seq_len(NPtot)
+            } else {
+                sample(NPtot, nPointsAll)
+            }
+            obsDistNN2 = nndist(pSub)^2
+            subCoords = getCoordsMat(pSub);
+            leftCoords = getCoordsMat(if(noSubSam) p else p[idLeft])
+            approxRanks = vapply(seq_along(id), FUN.VALUE = integer(1), function(i){
+                findRanksDist(subCoords[i, ], leftCoords[idLeft != i,],
+                              obsDistNN2[i])
+            })
+            ## TO DO: from here, calculate nnPI and alldistPI. No distance matrix needs to be stored
             # Avoid zero distances by removing observations of gene itself
             NNdistPI <- if (any(pis == "nn")) {
                 if (NP == 1)
-                  NA else calcNNPI(pSub, null, cd = cd, n = nSub, ecdfAll = ecdfAll)
+                  NA else calcNNPI(null, p = p, ecdfAll = ecdfAll, id = id)
             }
             # Also here room for improvement
             allDistPI <- if (any(pis == "allDist")) {

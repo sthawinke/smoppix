@@ -10,11 +10,12 @@
 #' @importFrom Rfast rowMins colMins
 #' @importFrom extraDistr pnhyper
 #' @return The estimated probabilistic index
-calcNNPI <- function(pSub, null, cd, n, ecdfAll) {
-    obsDistNN <- nndist(pSub)
-    NP <- npoints(pSub)
+calcNNPI <- function(null, id, p, ecdfAll) {
+    NP <- length(id)
     if(NP <= 1 ){
         return(NA)
+    } else {
+        obsDistNN <- nndist(p[id,])
     }
     if (null == "background") {
         nFac = n/ncol(cd)
