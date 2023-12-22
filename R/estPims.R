@@ -82,10 +82,10 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 1e4,
         }
          if (any(pis %in% c("nn", "allDist", "nnPair", "allDistPair")) && null == "background") {
         # # Prepare some null distances, either with CSR or background
-        pSubLeft <- subSampleP(p, nPointsAll)
-        ## Subsample for memory reasons
-        cd <- crossdistWrapper(as.matrix(coords(p)), as.matrix(coords(pSubLeft)),
-                               returnBigMatrix = TRUE, tmpFile = tmpFile)
+        # pSubLeft <- subSampleP(p, nPointsAll)
+        # ## Subsample for memory reasons
+        # cd <- crossdistWrapper(as.matrix(coords(p)), as.matrix(coords(pSubLeft)),
+        #                        returnBigMatrix = TRUE)
         }
     }
     # Univariate patterns

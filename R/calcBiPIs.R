@@ -25,22 +25,28 @@ calcBiPIs <- function(p, pis, null, cd, nSub, ecdfAll, features, manyPairs, verb
             feat2 <- genePairsMat[2, i]
             pSub1 <- p[id1 <- which(marks(p, drop = FALSE)$gene == feat1), ]
             pSub2 <- p[id2 <- which(marks(p, drop = FALSE)$gene == feat2), ]
-            # cd = crossdistWrapper(p[c(id1, id2),], subSampleP(p[-c(id1, id2),], nPointsAll),
-            #      returnBigMatrix = prod(length(id1) + length(id2), nPointsAll) > 1e4)
+            cd = try(silent = TRUE, crossdistWrapper(p[c(id1, id2),], subSampleP(p[-c(id1, id2),], nPointsAll),
+                 returnBigMatrix = prod(length(id1) + length(id2), nPointsAll) > 1e4))
+            if(is(cd, "try-error")){
+                gc()
+                cd = crossdistWrapper(p[c(id1, id2),], subSampleP(p[-c(id1, id2),], nPointsAll),
+                                  returnBigMatrix = prod(length(id1) + length(id2), nPointsAll) > 1e4)
+            }
             # Reorder and subset if needed
             NNdistPI <- if (any(pis == "nnPair")) {
                 calcNNPIpair(obsDistNN = c(nncross(pSub1, pSub2, what = "dist"),
                                            nncross(pSub2, pSub1, what = "dist")),
                              id1 = id1, id2 = id2, null = null,
-                             cd = cd[c(id1, id2),], ecdfAll = ecdfAll, n = nSub)
+                             cd = cd, ecdfAll = ecdfAll, n = nSub)#[c(id1, id2),]
             }
             allDistPI <- if (any(pis == "allDistPair")) {
                 s1 = subSampleP(pSub1, maxNum, returnId = TRUE)
                 s2 = subSampleP(pSub2, maxNum, returnId = TRUE)
                 cdSub <- crossdistWrapper(s1$Pout, s2$Pout)
                 calcAllDistPIpair(id1 = s1$id, id2 = s2$id, ecdfAll = ecdfAll,
-                null = null, cd = cd[c(s1$id, s2$id),], crossDistSub = cdSub)
+                null = null, cd = cd, crossDistSub = cdSub)#[c(s1$id, s2$id),]
             }
+            rm(cd)
             nnCellPI <- if (any(pis == "nnPairCell")) {
                 calcWindowPairPI(pSub1, pSub2, ecdfAll = ecdfsCell, ecdfs = ecdfsCell, pi = "nnPairCell", null = null,
                   feat1 = feat1, feat2 = feat2, cellAndGene = marks(p, drop = FALSE)[, c("gene", "cell")])
