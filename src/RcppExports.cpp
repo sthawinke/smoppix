@@ -35,6 +35,19 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
+// findRanksDist
+int findRanksDist(NumericVector m1, NumericMatrix m2, double squaredDist);
+RcppExport SEXP _spatrans_findRanksDist(SEXP m1SEXP, SEXP m2SEXP, SEXP squaredDistSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type m1(m1SEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type m2(m2SEXP);
+    Rcpp::traits::input_parameter< double >::type squaredDist(squaredDistSEXP);
+    rcpp_result_gen = Rcpp::wrap(findRanksDist(m1, m2, squaredDist));
+    return rcpp_result_gen;
+END_RCPP
+}
 // rowSumsLarger
 IntegerVector rowSumsLarger(NumericVector m1, SEXP pInBigMat);
 RcppExport SEXP _spatrans_rowSumsLarger(SEXP m1SEXP, SEXP pInBigMatSEXP) {
@@ -51,6 +64,7 @@ END_RCPP
 static const R_CallMethodDef CallEntries[] = {
     {"_spatrans_crossdistFastLocal", (DL_FUNC) &_spatrans_crossdistFastLocal, 2},
     {"_spatrans_crossdistFast", (DL_FUNC) &_spatrans_crossdistFast, 3},
+    {"_spatrans_findRanksDist", (DL_FUNC) &_spatrans_findRanksDist, 3},
     {"_spatrans_rowSumsLarger", (DL_FUNC) &_spatrans_rowSumsLarger, 2},
     {NULL, NULL, 0}
 };

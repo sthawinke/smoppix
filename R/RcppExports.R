@@ -9,6 +9,10 @@ crossdistFast <- function(m1, m2, pOutBigMat) {
     invisible(.Call(`_spatrans_crossdistFast`, m1, m2, pOutBigMat))
 }
 
+findRanksDist <- function(m1, m2, squaredDist) {
+    .Call(`_spatrans_findRanksDist`, m1, m2, squaredDist)
+}
+
 rowSumsLarger <- function(m1, pInBigMat) {
     .Call(`_spatrans_rowSumsLarger`, m1, pInBigMat)
 }
