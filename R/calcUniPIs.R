@@ -19,9 +19,10 @@ calcUniPIs <- function(p, pis, verbose, ecdfsCell, owins, tabObs, null, cd, nPoi
         lapply(ss, function(feat) {
             pSub <- p[id <- which(marks(p, drop = FALSE)$gene == feat), ]
             pLeft <- p[-id, ]
-            cd = crossdistWrapper(pSub, subSampleP(pLeft, nPointsAll),
-                                  returnBigMatrix = prod(npoints(pSub), nPointsAll) > 1e3)
             NP <- npoints(pSub)
+            cd = crossdistWrapper(pSub, subSampleP(pLeft, nPointsAll),
+                                  returnBigMatrix = prod(NP, nPointsAll) > 1e5)
+
             # Avoid zero distances by removing observations of gene itself
             NNdistPI <- if (any(pis == "nn")) {
                 if (NP == 1)

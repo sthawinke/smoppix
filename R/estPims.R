@@ -31,8 +31,7 @@
 #' @importFrom extraDistr pnhyper
 estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 1e4,
     nPointsAllWin = 4e2, features = NULL, allowManyGenePairs = FALSE,
-    manyPairs = 1e+06, verbose = FALSE, owins = NULL, centroids = NULL,
-    tmpFile = NULL) {
+    manyPairs = 1e+06, verbose = FALSE, owins = NULL, centroids = NULL) {
     if (is.null(features)) {
         features <- names(tabObs)
     } else {
@@ -165,13 +164,7 @@ estPims <- function(hypFrame, pis = c("nn", "allDist", "nnPair", "allDistPair",
        out <- estPimsSingle(hypFrame[[x, "ppp"]],
                       owins = hypFrame[x, "owins", drop = TRUE], pis = pis,
                       null = null, tabObs = hypFrame[[x,"tabObs"]],
-                      centroids = hypFrame[x, "centroids", drop = TRUE],
-        tmpFile = if(bigMatrixToFile) fileName <- paste0("tmp", x) else NULL,
-            ...)
-       if(bigMatrixToFile && null == "background"){
-           file.remove(fileName);file.remove(paste0(fileName, ".desc"))
-           #Clean up temporary files
-       }
+                      centroids = hypFrame[x, "centroids", drop = TRUE], ...)
        return(out)
     })
     list(hypFrame = hypFrame, null = null, pis = pis, features = features)
