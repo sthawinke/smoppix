@@ -144,7 +144,7 @@ getApproxRanks <- function(ecdf, obs, n = getN(ecdf)) {
 #'@param x,y the matrices or point patterns between which to calculate the
 #'cross distances
 #'@return a matrix of cross distances
-#'@inportFrom bigmemory big.matrix
+#'@importFrom bigmemory big.matrix
 crossdistWrapper = function(x, y, returnBigMatrix = FALSE){
     if(returnBigMatrix){
         x = getCoordsMat(x);y = getCoordsMat(y)

@@ -11,7 +11,7 @@ getApproxRanks(ecdf, obs, n = getN(ecdf))
 
 \item{obs}{A vector of observations}
 
-\item{The}{total number of observations in the point pattern}
+\item{n}{The total number of observations in the point pattern}
 }
 \value{
 The approximate ranks

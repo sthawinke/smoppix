@@ -35,22 +35,10 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
-// BigArmaEuc
-void BigArmaEuc(SEXP pInBigMat, SEXP pOutBigMat);
-RcppExport SEXP _spatrans_BigArmaEuc(SEXP pInBigMatSEXP, SEXP pOutBigMatSEXP) {
-BEGIN_RCPP
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< SEXP >::type pInBigMat(pInBigMatSEXP);
-    Rcpp::traits::input_parameter< SEXP >::type pOutBigMat(pOutBigMatSEXP);
-    BigArmaEuc(pInBigMat, pOutBigMat);
-    return R_NilValue;
-END_RCPP
-}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_spatrans_crossdistFastLocal", (DL_FUNC) &_spatrans_crossdistFastLocal, 2},
     {"_spatrans_crossdistFast", (DL_FUNC) &_spatrans_crossdistFast, 3},
-    {"_spatrans_BigArmaEuc", (DL_FUNC) &_spatrans_BigArmaEuc, 2},
     {NULL, NULL, 0}
 };
 

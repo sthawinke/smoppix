@@ -9,7 +9,3 @@ crossdistFast <- function(m1, m2, pOutBigMat) {
     invisible(.Call(`_spatrans_crossdistFast`, m1, m2, pOutBigMat))
 }
 
-BigArmaEuc <- function(pInBigMat, pOutBigMat) {
-    invisible(.Call(`_spatrans_BigArmaEuc`, pInBigMat, pOutBigMat))
-}
-
