@@ -9,3 +9,7 @@ crossdistFast <- function(m1, m2, pOutBigMat) {
     invisible(.Call(`_spatrans_crossdistFast`, m1, m2, pOutBigMat))
 }
 
+rowSumsLarger <- function(m1, pInBigMat) {
+    invisible(.Call(`_spatrans_rowSumsLarger`, m1, pInBigMat))
+}
+

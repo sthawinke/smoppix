@@ -28,6 +28,11 @@ defined. See details.}
 \item{features}{A character vector, for which features should the
 probabilistic indices be calculated?}
 
+\item{bigMatrixToFile}{A boolean, should the bigmemory package write the
+distance matrix to a file on the hard drive. This reduces RAM usages but
+increases computation time. A few Gb of free space are useful in this case;
+all files fill be removed afterwards.}
+
 \item{...}{additional arguments, passed on to estPimsSingle}
 }
 \value{

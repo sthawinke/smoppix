@@ -44,7 +44,5 @@ void crossdistFast(NumericMatrix m1, NumericMatrix m2, SEXP pOutBigMat) {
 /*** R
 a <- matrix(rnorm(16), ncol = 2)
 b <- matrix(rnorm(18), ncol = 2)
-
-# Call new euclidean function
 bm_out <- spatrans:::crossdistWrapper(a, b, returnBigMatrix = TRUE)
 */

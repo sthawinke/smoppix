@@ -35,10 +35,22 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
+// rowSumsLarger
+void rowSumsLarger(NumericVector m1, SEXP pInBigMat);
+RcppExport SEXP _spatrans_rowSumsLarger(SEXP m1SEXP, SEXP pInBigMatSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type m1(m1SEXP);
+    Rcpp::traits::input_parameter< SEXP >::type pInBigMat(pInBigMatSEXP);
+    rowSumsLarger(m1, pInBigMat);
+    return R_NilValue;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_spatrans_crossdistFastLocal", (DL_FUNC) &_spatrans_crossdistFastLocal, 2},
     {"_spatrans_crossdistFast", (DL_FUNC) &_spatrans_crossdistFast, 3},
+    {"_spatrans_rowSumsLarger", (DL_FUNC) &_spatrans_rowSumsLarger, 2},
     {NULL, NULL, 0}
 };
 
