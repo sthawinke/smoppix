@@ -36,14 +36,15 @@ BEGIN_RCPP
 END_RCPP
 }
 // rowSumsLarger
-void rowSumsLarger(NumericVector m1, SEXP pInBigMat);
+IntegerVector rowSumsLarger(NumericVector m1, SEXP pInBigMat);
 RcppExport SEXP _spatrans_rowSumsLarger(SEXP m1SEXP, SEXP pInBigMatSEXP) {
 BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type m1(m1SEXP);
     Rcpp::traits::input_parameter< SEXP >::type pInBigMat(pInBigMatSEXP);
-    rowSumsLarger(m1, pInBigMat);
-    return R_NilValue;
+    rcpp_result_gen = Rcpp::wrap(rowSumsLarger(m1, pInBigMat));
+    return rcpp_result_gen;
 END_RCPP
 }
 

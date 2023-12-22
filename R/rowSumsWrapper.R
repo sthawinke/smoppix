@@ -6,7 +6,7 @@
 #'@importFrom bigmemory is.big.matrix
 rowSumsWrapper = function(x, y){
     if(is.big.matrix(x)){
-        rowSumsLarger(x@address, y)
+        rowSumsLarger(y, x@address)
     } else {
         rowSums(x < y)
     }
