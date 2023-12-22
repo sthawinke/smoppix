@@ -137,25 +137,6 @@ getApproxRanks <- function(ecdf, obs, n = getN(ecdf)) {
     ranks[ranks == 0] <- 1
     ranks
 }
-#' A wrapper for C-functions calculating cross-distance matrix fast and with
-#' low memory usage. Big matrices are also supported
-#'@param returnBigMatrix a boolean, should the result be returned as
-#'a big matrix (low RAM use) or a regular r-matrix (faster)
-#'@param x,y the matrices or point patterns between which to calculate the
-#'cross distances
-#'@return a matrix of cross distances
-#'@importFrom bigmemory big.matrix
-crossdistWrapper = function(x, y, returnBigMatrix = FALSE){
-    if(returnBigMatrix){
-        x = getCoordsMat(x);y = getCoordsMat(y)
-        bigMat = big.matrix(nrow = nrow(x), ncol = nrow(y), type = "double")
-        crossdistFast(x, y, bigMat@address)
-        return(bigMat)
-    } else {
-        crossdistFastLocal(getCoordsMat(x), getCoordsMat(y))
-    }
-
-}
 #' Extract coordinates from a point pattern or data frame
 #' @param x the point pattern, dataframe or matrix
 #' @return the matrix of coordinates

@@ -19,6 +19,7 @@
 #' probabilistic indices be calculated?
 #' @param tabObs A table of observed gene frequencies
 #' @param verbose a boolean, should verbose output be printed?
+#' @param tmpFile A temporary file to store the big.matrix of distances
 #'
 #' @return Data frames with estimated quantities per gene and/or gene pair
 #' @importFrom stats ecdf dist
@@ -30,7 +31,8 @@
 #' @importFrom extraDistr pnhyper
 estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 1e4,
     nPointsAllWin = 4e2, features = NULL, allowManyGenePairs = FALSE,
-    manyPairs = 1e+06, verbose = FALSE, owins = NULL, centroids = NULL) {
+    manyPairs = 1e+06, verbose = FALSE, owins = NULL, centroids = NULL,
+    tmpFile = NULL) {
     if (is.null(features)) {
         features <- names(tabObs)
     } else {
@@ -86,7 +88,7 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 1e4,
             pSubLeft <- subSampleP(p, nPointsAll)
             # Subsample for memory reasons
             cd <- crossdistWrapper(as.matrix(coords(p)), as.matrix(coords(pSubLeft)),
-                    returnBigMatrix = TRUE)
+                    returnBigMatrix = TRUE, tmpFile = tmpFile)
             # For background, condition on point locations
         }
     }
@@ -107,6 +109,10 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 1e4,
 #' Estimate pims on a hyperframe
 #' @export
 #' @param hypFrame the hyperframe
+#' @param bigMatrixToFile A boolean, should the bigmemory package write the
+#' distance matrix to a file on the hard drive. This reduces RAM usages but
+#' increases computation time. A few Gb of free space are useful in this case;
+#' all files fill be removed afterwards.
 #' @param ... additional arguments, passed on to estPimsSingle
 #' @inheritParams estPimsSingle
 #' @return A list of estimated pims
@@ -136,7 +142,7 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 1e4,
 estPims <- function(hypFrame, pis = c("nn", "allDist", "nnPair", "allDistPair",
     "edge", "midpoint", "nnCell", "allDistCell", "nnPairCell",
     "allDistPairCell"), verbose = TRUE, null = c("background", "CSR"),
-    features = getFeatures(hypFrame), ...) {
+    features = getFeatures(hypFrame), bigMatrixToFile = TRUE,...) {
     pis <- match.arg(pis, several.ok = TRUE)
     null <- match.arg(null)
     if (any(pis %in% c("edge", "midpoint", "nnCell", "allDistCell")) &&
@@ -153,10 +159,18 @@ estPims <- function(hypFrame, pis = c("nn", "allDist", "nnPair", "allDistPair",
         if (verbose) {
             message(x, " of ", nrow(hypFrame), "  ")
         }
-        estPimsSingle(hypFrame[[x, "ppp"]],
+
+       out <- estPimsSingle(hypFrame[[x, "ppp"]],
                       owins = hypFrame[x, "owins", drop = TRUE], pis = pis,
-                      null = null, tabObs = hypFrame[[x,
-            "tabObs"]], centroids = hypFrame[x, "centroids", drop = TRUE], ...)
+                      null = null, tabObs = hypFrame[[x,"tabObs"]],
+                      centroids = hypFrame[x, "centroids", drop = TRUE],
+        tmpFile = if(bigMatrixToFile) fileName <- paste0("tmp", x) else NULL,
+            ...)
+       if(bigMatrixToFile && null == "background"){
+           file.remove(fileName);file.remove(paste0(fileName, ".desc"))
+           #Clean up temporary files
+       }
+       return(out)
     })
     list(hypFrame = hypFrame, null = null, pis = pis, features = features)
 }

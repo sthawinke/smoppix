@@ -11,6 +11,7 @@ estPims(
   verbose = TRUE,
   null = c("background", "CSR"),
   features = getFeatures(hypFrame),
+  bigMatrixToFile = TRUE,
   ...
 )
 }

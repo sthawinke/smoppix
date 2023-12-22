@@ -16,7 +16,8 @@ estPimsSingle(
   manyPairs = 1e+06,
   verbose = FALSE,
   owins = NULL,
-  centroids = NULL
+  centroids = NULL,
+  tmpFile = NULL
 )
 }
 \arguments{
@@ -48,6 +49,8 @@ warning messages for large numbers of gene pairs}
 
 \item{owins, centroids}{The list of windows corresponding to cells,
 and their centroids}
+
+\item{tmpFile}{A temporary file to store the big.matrix of distances}
 }
 \value{
 Data frames with estimated quantities per gene and/or gene pair
