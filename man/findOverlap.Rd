@@ -18,3 +18,8 @@ Throws an error when overlap found, otherwise returns invisible
 \description{
 Try to find overlap between list of windows, and throw error when found
 }
+\examples{
+owins = lapply(integer(10), owin)
+findOverlap(owins)
+idOverlap = findOverlap(owins, returnIds = TRUE)
+}
