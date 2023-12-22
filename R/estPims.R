@@ -87,8 +87,11 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 1e4,
             # Prepare some null distances, either with CSR or background
             pSubLeft <- subSampleP(p, nPointsAll)
             # Subsample for memory reasons
-            cd <- crossdistWrapper(as.matrix(coords(p)), as.matrix(coords(pSubLeft)),
-                    returnBigMatrix = TRUE, tmpFile = tmpFile)
+            # cd <- crossdistWrapper(as.matrix(coords(p)), as.matrix(coords(pSubLeft)),
+            #         returnBigMatrix = TRUE, tmpFile = tmpFile)
+            baa = lapply(seq_len(npoints(p)), function(i){
+                     ecdf(crossdist(p[i,], pSubLeft))
+            })
             # For background, condition on point locations
         }
     }
@@ -159,7 +162,6 @@ estPims <- function(hypFrame, pis = c("nn", "allDist", "nnPair", "allDistPair",
         if (verbose) {
             message(x, " of ", nrow(hypFrame), "  ")
         }
-
        out <- estPimsSingle(hypFrame[[x, "ppp"]],
                       owins = hypFrame[x, "owins", drop = TRUE], pis = pis,
                       null = null, tabObs = hypFrame[[x,"tabObs"]],
