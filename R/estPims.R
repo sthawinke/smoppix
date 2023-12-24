@@ -85,7 +85,6 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 1e4,
         pSubLeft <- subSampleP(p, nPointsAll, returnId = TRUE)
         # ## Subsample for memory reasons
         pSplit = split.ppp(p, f = "gene")
-        Fac = npoints(p)/npoints(pSubLeft$Pout)
         splitFac <- rep(seq_len(bpparam()$workers), length.out = length(nams <- names(tabObs[features])))
         nnPIs <- unsplit(f = splitFac, bplapply(split(nams, f = splitFac), function(ss){
             featPIs = lapply(ss, function(feat) {
@@ -99,11 +98,16 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 1e4,
                 })
                 approxRanks = findRanksDist(getCoordsMat(pSub), getCoordsMat(pSubLeft$Pout),
                                         distMat^2)
-                inSample <- as.integer(pSubLeft$id %in% which(marks(p, drop = FALSE)$gene == feat))
-                PiEsts = round(Fac*(t(approxRanks) - inSample)/(npoints(pSubLeft$Pout)-inSample))
+                #Correct for self distances
+                inSample <- which(marks(p, drop = FALSE)$gene == feat) %in% pSubLeft$id
+                approxRanks[inSample, 1] = approxRanks[inSample, 1] - 1
+                PiEsts = round(npoints(p)*approxRanks/(npoints(pSubLeft$Pout)-inSample))
                 #Correct for self distances
                 #And then rearrange to get to the PIs
             })
+            names(featPIs) = ss
+            # Wrong, introduce negative hypergeometric here
+            # TO DO: nnCell recycling code
             nnPis = if("nn" %in% pis){
                 vapply(featPIs[names(tabObs[tabObs>1])], FUN.VALUE = double(1), function(x){
                     mean(x[, 1])
