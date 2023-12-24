@@ -36,15 +36,15 @@ BEGIN_RCPP
 END_RCPP
 }
 // findRanksDist
-int findRanksDist(NumericVector m1, NumericMatrix m2, double squaredDist);
-RcppExport SEXP _spatrans_findRanksDist(SEXP m1SEXP, SEXP m2SEXP, SEXP squaredDistSEXP) {
+IntegerMatrix findRanksDist(NumericMatrix coords, NumericMatrix coordsLeft, NumericMatrix squaredNNDist);
+RcppExport SEXP _spatrans_findRanksDist(SEXP coordsSEXP, SEXP coordsLeftSEXP, SEXP squaredNNDistSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector >::type m1(m1SEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type m2(m2SEXP);
-    Rcpp::traits::input_parameter< double >::type squaredDist(squaredDistSEXP);
-    rcpp_result_gen = Rcpp::wrap(findRanksDist(m1, m2, squaredDist));
+    Rcpp::traits::input_parameter< NumericMatrix >::type coords(coordsSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type coordsLeft(coordsLeftSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type squaredNNDist(squaredNNDistSEXP);
+    rcpp_result_gen = Rcpp::wrap(findRanksDist(coords, coordsLeft, squaredNNDist));
     return rcpp_result_gen;
 END_RCPP
 }

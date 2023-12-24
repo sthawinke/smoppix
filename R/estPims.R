@@ -24,7 +24,7 @@
 #' @importFrom stats ecdf dist
 #' @importFrom spatstat.random runifpoint
 #' @importFrom utils combn
-#' @importFrom spatstat.geom nncross crossdist coords
+#' @importFrom spatstat.geom nncross crossdist coords npoints
 #' @importFrom Rdpack reprompt
 #' @importFrom Rfast rowSort rowMins rowAny
 #' @importFrom extraDistr pnhyper
@@ -83,23 +83,46 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 1e4,
          if (any(pis %in% c("nn", "nnPair")) && null == "background") {
         # # Prepare some null distances, either with CSR or background
         pSubLeft <- subSampleP(p, nPointsAll, returnId = TRUE)
-        pSplit = split.ppp(p, f = "gene")
         # ## Subsample for memory reasons
-        lapply(ss, function(feat) {
-            pSub <- pSplit[[feat]]
-            NP <- length(id)
-            distMat = cbind(if(Np> 1 && ("nn" %in% pis)){nndist(pSub)},
-                    if("nnPair" %in% pis){
-                matrix(unlist(lapply(pSplit[!(names(pSplit) %in% feat)],
-                    function(y){ncross(pSub, y, what = "dist")
-                })), nrow = NP)
+        pSplit = split.ppp(p, f = "gene")
+        Fac = npoints(p)/npoints(pSubLeft$Pout)
+        splitFac <- rep(seq_len(bpparam()$workers), length.out = length(nams <- names(tabObs[features])))
+        nnPIs <- unsplit(f = splitFac, bplapply(split(nams, f = splitFac), function(ss){
+            featPIs = lapply(ss, function(feat) {
+                pSub <- pSplit[[feat]]
+                NP <- npoints(pSub)
+                distMat = cbind(if(NP> 1 && ("nn" %in% pis)){nndist(pSub)},
+                        if("nnPair" %in% pis){
+                    matrix(unlist(lapply(pSplit[!(names(pSplit) %in% feat)],
+                        function(y){nncross(pSub, y, what = "dist")
+                    })), nrow = NP)
+                })
+                approxRanks = findRanksDist(getCoordsMat(pSub), getCoordsMat(pSubLeft$Pout),
+                                        distMat^2)
+                inSample <- as.integer(pSubLeft$id %in% which(marks(p, drop = FALSE)$gene == feat))
+                PiEsts = round(Fac*(t(approxRanks) - inSample)/(npoints(pSubLeft$Pout)-inSample))
+                #Correct for self distances
+                #And then rearrange to get to the PIs
             })
-            approxRanks = findRanksDist(getCoordsMat(p), getCoordsMat(pSubLeft),
-                                    distMat^2)
-        })
+            nnPis = if("nn" %in% pis){
+                vapply(featPIs[names(tabObs[tabObs>1])], FUN.VALUE = double(1), function(x){
+                    mean(x[, 1])
+                })
+            }
+            genePairsMat <- combn(features, 2)
+            nnPairPis = if("nnPair" %in% pis){
+                vapply(seq_len(ncol(genePairsMat)), FUN.VALUE = double(1), function(i){
+                    feat1 <- genePairsMat[1, i]
+                    feat2 <- genePairsMat[2, i]
+                    mean(featPIs[[feat1]][, feat2], featPIs[[feat2]][, feat1])
+                })
+            }
+            list("nn" = nnPis, "nnPair" = nnPairPis)
+        }))
 
 
-        }
+         }
+        pointDists = c(nn = NNdistPI, allDist = allDistPI)
     }
     # Univariate patterns
     piPair <- grepl(pis, pattern = "Pair")

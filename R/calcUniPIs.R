@@ -20,30 +20,6 @@ calcUniPIs <- function(p, pis, verbose, ecdfsCell, owins, tabObs, null, cd,
         lapply(ss, function(feat) {
             pSub <- p[id <- which(marks(p, drop = FALSE)$gene == feat), ]
             NP <- length(id)
-            idLeft = if(noSubSam <- (nPointsAll >= (NPtot <- npoints(p)))){
-                seq_len(NPtot)
-            } else {
-                sample(NPtot, nPointsAll)
-            }
-            obsDistNN2 = nndist(pSub)^2
-            subCoords = getCoordsMat(pSub);
-            leftCoords = getCoordsMat(if(noSubSam) p else p[idLeft])
-            approxRanks = vapply(seq_along(id), FUN.VALUE = integer(1), function(i){
-                findRanksDist(subCoords[i, ], leftCoords[idLeft != i,],
-                              obsDistNN2[i])
-            })
-            ## TO DO: from here, calculate nnPI and alldistPI. No distance matrix needs to be stored
-            # Avoid zero distances by removing observations of gene itself
-            NNdistPI <- if (any(pis == "nn")) {
-                if (NP == 1)
-                  NA else calcNNPI(null, p = p, ecdfAll = ecdfAll, id = id)
-            }
-            # Also here room for improvement
-            allDistPI <- if (any(pis == "allDist")) {
-                if (NP == 1)
-                  NA else calcAllDistPI(pSub, ecdfAll = ecdfAll, null = null, cd = cd)
-            }
-            rm(cd)
             edgeDistPI <- if (any(pis == "edge")) {
                 calcWindowDistPI(pSub, owins, ecdfAll = ecdfsCell, pi = "edge")
             }
@@ -58,7 +34,7 @@ calcUniPIs <- function(p, pis, verbose, ecdfsCell, owins, tabObs, null, cd,
                 calcWindowDistPI(pSub, owins, ecdfAll = ecdfsCell, feat = feat, cellAndGene = marks(p, drop = FALSE)[,
                   c("gene", "cell")], pi = "allDistCell", null = null, ecdfs = ecdfsCell)
             }
-            list(pointDists = c(nn = NNdistPI, allDist = allDistPI), windowDists = list(edge = edgeDistPI, nnCell = nnCellPI,
+            list(windowDists = list(edge = edgeDistPI, nnCell = nnCellPI,
                 allDistCell = allDistCellPI, midpoint = midPointDistPI))
         })
     }))
