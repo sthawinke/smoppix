@@ -2,23 +2,34 @@
 using namespace Rcpp;
 
 // [[Rcpp::export]]
-int findRanksDist(NumericVector m1, NumericMatrix m2, double squaredDist) {
-    int nrow2 = m2.nrow();
+IntegerMatrix findRanksDist(NumericMatrix coords, NumericMatrix coordsLeft, NumericMatrix squaredNNDist) {
+    int nrow = coords.nrow();
+    int nrowLeft = coordsLeft.nrow();
+    int nDist = squaredNNDist.ncol();
 
-    int out = 0;
-    for (int r2 = 0; r2 < nrow2; r2++) {
-       double dist = pow(m1(0) - m2(r2, 0), 2) + pow(m1(1) - m2(r2, 1), 2);
-        if(dist < squaredDist){
-            out ++;
+    IntegerMatrix out(nrow, nDist);
+    for (int r1 = 0; r1 < nrow; r1++) {//# Loop over events
+        for (int r2 = 0; r2 < nrowLeft; r2++) {//# Loop over randomly drawn events
+            double dist = pow(coords(r1, 0) - coordsLeft(r2, 0), 2) +
+                pow(coords(r1,1) - coordsLeft(r2, 1), 2);
+            for (int r3 = 0; r3 < nDist; r3++) {//# Loop over distances
+                if(squaredNNDist(r1, r3) > dist){
+                    out(r1, r3)++;
+                }
+            }
         }
     }
     return out;
 }
 /*** R
-a = matrix(rnorm(400), ncol = 2)
-vec = rnorm(2)
-dist = rnorm(1)
+coordsMat = matrix(rnorm(400), ncol = 2)
+coordsMatLeft = matrix(rnorm(600), ncol = 2)
+distMat = matrix(rnorm(1200), 200, 6)
 # Call new function
-findRanksDist(vec, a, dist^2)
-#sum(colSums((t(a)-vec)^2) < dist^2)
+out = findRanksDist(coordsMat, coordsMatLeft, distMat^2)
+library(proxy)
+tmp = proxy::dist(coordsMat, coordsMatLeft)^2
+out2 = vapply(seq_len(ncol(distMat)), FUN.VALUE = double(nrow(distMat)), function(x){
+    rowSums(distMat[,x]^2 > tmp)
+})
 */

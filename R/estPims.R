@@ -80,12 +80,25 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 1e4,
             })
             names(ecdfsCell) <- names(owins)
         }
-         if (any(pis %in% c("nn", "allDist", "nnPair", "allDistPair")) && null == "background") {
+         if (any(pis %in% c("nn", "nnPair")) && null == "background") {
         # # Prepare some null distances, either with CSR or background
-        # pSubLeft <- subSampleP(p, nPointsAll)
+        pSubLeft <- subSampleP(p, nPointsAll, returnId = TRUE)
+        pSplit = split.ppp(p, f = "gene")
         # ## Subsample for memory reasons
-        # cd <- crossdistWrapper(as.matrix(coords(p)), as.matrix(coords(pSubLeft)),
-        #                        returnBigMatrix = TRUE)
+        lapply(ss, function(feat) {
+            pSub <- pSplit[[feat]]
+            NP <- length(id)
+            distMat = cbind(if(Np> 1 && ("nn" %in% pis)){nndist(pSub)},
+                    if("nnPair" %in% pis){
+                matrix(unlist(lapply(pSplit[!(names(pSplit) %in% feat)],
+                    function(y){ncross(pSub, y, what = "dist")
+                })), nrow = NP)
+            })
+            approxRanks = findRanksDist(getCoordsMat(p), getCoordsMat(pSubLeft),
+                                    distMat^2)
+        })
+
+
         }
     }
     # Univariate patterns
