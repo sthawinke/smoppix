@@ -60,9 +60,9 @@ register(SerialParam())
 #register(MulticoreParam(nCores))
 pis <- c("nn",  "nnPair",  "edge", "midpoint", "nnCell", "nnPairCell")
 piEstsBG <- estPims(hypFrame2, pis = pis, null = "background", verbose = FALSE)
-piEstsCSR <- estPims(hypFrame2, pis = pis, null = "CSR", verbose = FALSE, nPointsAll = 1e2)
+piEstsCSR <- estPims(hypFrame2, pis = pis, null = "CSR", verbose = FALSE)
 piEstsBG2 <- estPims(hypFrame2[, c("ppp", "image", "tabObs")], pis = "nn",
-                     null = "background", verbose = FALSE, nPointsAll = 1e2)
+                     null = "background", verbose = FALSE)
 #No replication
 # Already add weight functions
 objBG <- addWeightFunction(piEstsBG, designVars = "condition")
@@ -74,7 +74,7 @@ hypYang <- buildHyperFrame(Yang,
     imageVars = c("day", "root", "section")
 )
 yangPims <- estPims(hypYang, features = getFeatures(hypYang)[seq_len(10)],
-    pis = c("nn", "nnPair"), verbose = FALSE,
+    pis = c("nn", "nnPair"), verbose = FALSE, nPointsAll = 1e3,
 )
 yangPims <- addWeightFunction(yangPims, lowestLevelVar = "section")
 test_check("spatrans")

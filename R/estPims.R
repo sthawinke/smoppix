@@ -29,7 +29,7 @@
 #' @importFrom Rfast rowSort rowMins rowAny
 #' @importFrom extraDistr pnhyper
 estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 1e4,
-    nPointsAllWin = 2e2, features = NULL, allowManyGenePairs = FALSE,
+    nPointsAllWin = 2e3, features = NULL, allowManyGenePairs = FALSE,
     manyPairs = 1e+06, verbose = FALSE, owins = NULL, centroids = NULL) {
     if (is.null(features)) {
         features <- names(tabObs)
@@ -62,7 +62,7 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 1e4,
         names(ecdfsCell) <- names(owins)
     }
         NPall = npoints(p)
-        pSplit = split.ppp(p, f = "gene")
+        pSplit = split.ppp(p, f = factor(marks(p, drop = FALSE)$gene))
         splitFac <- rep(seq_len(bpparam()$workers), length.out = length(nams <- names(tabObs[features])))
         #Divide the work over the available workers
         piList <- unsplit(f = splitFac, bplapply(split(nams, f = splitFac), function(ss){
@@ -79,18 +79,22 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 1e4,
                     })), nrow = NP, dimnames = list(NULL, names(pSplit)[id]))
                             #Cross-distances
                 })
-                approxRanksTmp = switch(null,
-                    "background" = findRanksDist(getCoordsMat(pSub),
-                        getCoordsMat(pSubLeft$Pout), distMat^2),
-                    "CSR" = matrix(ecdfAll(distMat), nrow = nrow(distMat))
-                )
-                approxRanks = round(NPall*approxRanksTmp/(switch(null,
-                    "background" = (npoints(pSubLeft$Pout)-
-                                        which(marks(p, drop = FALSE)$gene == feat) %in% pSubLeft$id),
-                    #Correct for self distances
-                    "null" = 1)))
-                approxRanks[approxRanks==0] = 1
-                colnames(approxRanks) = colnames(distMat)
+                if(is.matrix(distMat)){
+                    approxRanksTmp = switch(null,
+                        "background" = findRanksDist(getCoordsMat(pSub),
+                            getCoordsMat(pSubLeft$Pout), distMat^2),
+                        "CSR" = matrix(ecdfAll(distMat), nrow = nrow(distMat))
+                    )
+                    approxRanks = round(NPall*approxRanksTmp/(switch(null,
+                        "background" = (npoints(pSubLeft$Pout)-
+                             which(marks(p, drop = FALSE)$gene == feat) %in% pSubLeft$id),
+                        #Correct for self distances by subtracting one.
+                        #The C++ function only counts distances larger so self distances
+                        #will be ignored in the numerator
+                        "CSR" = 1)))
+                    approxRanks[approxRanks==0] = 1
+                    colnames(approxRanks) = colnames(distMat)
+                }
                 #Names may get lost in C++ function
                 #And then rearrange to get to the PIs
                 nnPI = if(calcNNsingle){
@@ -124,15 +128,15 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 1e4,
             })
         }
         genePairsMat <- combn(features, 2)
-        nnPairPis = if("nnPair" %in% pis){
-            vapply(seq_len(ncol(genePairsMat)), FUN.VALUE = double(1), function(i){
+        if("nnPair" %in% pis){
+            nnPairPis = vapply(seq_len(ncol(genePairsMat)), FUN.VALUE = double(1), function(i){
                 feat1 <- genePairsMat[1, i]
                 feat2 <- genePairsMat[2, i]
                 mean(c(getElement(piList[[feat1]]$pointDists$nnPair, feat2),
                        getElement(piList[[feat2]]$pointDists$nnPair, feat1)))
             })
-        }
-        names(nnPairPis) = apply(genePairsMat, 2, paste, collapse = "--")
+            names(nnPairPis) = apply(genePairsMat, 2, paste, collapse = "--")
+        } else nnPairPis = NULL
         pointDists = list("nn" = nnPis, "nnPair" = nnPairPis)
         # Window pis
         windowDists = lapply(piList, function(x) x$windowDists)

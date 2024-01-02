@@ -10,7 +10,7 @@ estPimsSingle(
   null,
   tabObs,
   nPointsAll = 10000,
-  nPointsAllWin = 200,
+  nPointsAllWin = 2000,
   features = NULL,
   allowManyGenePairs = FALSE,
   manyPairs = 1e+06,
