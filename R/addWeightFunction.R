@@ -84,8 +84,7 @@ addWeightFunction <- function(resList, pis = resList$pis, designVars, lowestLeve
         designVec <- integer(nrow(resList$hypFrame))
         designVars <- NULL
     }
-    pis <- match.arg(pis, choices = c("nn", "nnPair", "allDist", "allDistPair", "nnCell", "allDistCell", "nnPairCell",
-        "allDistPairCell"), several.ok = TRUE)
+    pis <- match.arg(pis, choices = c("nn", "nnPair", "nnCell", "nnPairCell"), several.ok = TRUE)
     if (is.null(resList$pis)) {
         stop("No pims found in the hyperframe.", "First estimate them using the estPims() function.")
     }

@@ -32,8 +32,8 @@
 #' @seealso \link{buildDfMM},\link{getResults}
 fitLMMsSingle <- function(obj, pi, fixedVars = NULL, randomVars = NULL, verbose = TRUE, returnModels = FALSE, Formula = NULL,
     randomNested = TRUE, features = getFeatures(obj)) {
-    pi <- match.arg(pi, choices = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint", "nnCell", "allDistCell",
-        "nnPairCell", "allDistPairCell"))
+    pi <- match.arg(pi, choices = c("nn", "nnPair", "edge", "midpoint", "nnCell",
+        "nnPairCell"))
     noWeight <- pi %in% c("edge", "midpoint")
     # For independent distances, no weights are needed
     randomVarsSplit <- if (!is.null(randomVars))

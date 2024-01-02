@@ -30,8 +30,8 @@
 #' )
 #' summary(mixedMod)
 #' # Evidence for aggregation
-buildDfMM <- function(obj, gene, pi = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint", "nnCell", "allDistCell",
-    "nnPairCell", "allDistPairCell")) {
+buildDfMM <- function(obj, gene, pi = c("nn", "nnPair", "edge", "midpoint", "nnCell",
+    "nnPairCell")) {
     pi <- match.arg(pi)
     stopifnot((lg <- length(gene)) %in% c(1, 2))
     if (is.null(obj$Wfs)) {
@@ -66,7 +66,7 @@ buildDfMM <- function(obj, gene, pi = c("nn", "allDist", "nnPair", "allDistPair"
     out
 }
 buildDfMMUni <- function(obj, gene, pi) {
-    piListNameInner <- if (winId <- any(pi == c("edge", "midpoint", "nnCell", "allDistCell")))
+    piListNameInner <- if (winId <- any(pi == c("edge", "midpoint", "nnCell")))
         "windowDists" else "pointDists"
     # winId: is a window involved?
     fixedId <- any(pi == c("edge", "midpoint"))

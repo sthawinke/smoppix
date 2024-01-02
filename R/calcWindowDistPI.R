@@ -30,14 +30,7 @@ calcWindowDistPI <- function(pSub, owins, centroids, ecdfAll, pi, null, ecdfs, c
                 return(NA)
             }
             id <- which(cellAndGene$gene[cellAndGene$cell == x] == feat)
-            if (pi == "allDistCell") {
-                switch(null, CSR = mean(ecdfAll[[x]]$allDistCell(Dist)), background = {
-                  Dist <- as.matrix(Dist)
-                  mean(vapply(seq_len(ncol(Dist)), FUN.VALUE = double(ncol(Dist) - 1), function(i) {
-                    ecdfs[[x]]$allDistCell[[id[i]]](Dist[i, -i])
-                  }))
-                })
-            } else if (pi == "nnCell") {
+             if (pi == "nnCell") {
                 approxRanks <- switch(null, CSR = getApproxRanks(ecdfAll[[x]]$allDistCell, Dist), background = vapply(seq_along(Dist),
                   FUN.VALUE = double(1), function(i) {
                     getApproxRanks(ecdfs[[x]]$allDistCell[[i]], Dist[i])
@@ -62,17 +55,7 @@ calcWindowPairPI <- function(pSub1, pSub2, feat1, feat2, cellAndGene, ecdfAll, p
             id1 <- which(cellAndGene$gene[cellAndGene$cell == x] == feat1)
             id2 <- which(cellAndGene$gene[cellAndGene$cell == x] == feat2)
         }
-        if (pi == "allDistPairCell") {
-            switch(null, CSR = mean(ecdfAll[[x]]$allDistCell(cd)), background = {
-                pi1 <- vapply(seq_len(NP1 <- npoints(splitPPP1[[x]])), FUN.VALUE = double(ncol(cd)), function(i) {
-                  ecdfs[[x]]$allDistCell[[id1[i]]](cd[i, ])
-                })
-                pi2 <- vapply(seq_len(npoints(splitPPP2[[x]])), FUN.VALUE = double(nrow(cd)), function(i) {
-                  ecdfs[[x]]$allDistCell[[id2[i]]](cd[, i])
-                })
-                mean(c(pi1, pi2))
-            })
-        } else if (pi == "nnPairCell") {
+    if (pi == "nnPairCell") {
             nnDist <- c(rowMins(cd, value = TRUE), colMins(cd, value = TRUE))
             np1 <- npoints(splitPPP1[[x]])
             np2 <- npoints(splitPPP2[[x]])

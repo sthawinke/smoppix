@@ -30,12 +30,8 @@ calcUniPIs <- function(p, pis, verbose, ecdfsCell, owins, tabObs, null, cd,
                 calcWindowDistPI(pSub, owins, ecdfAll = ecdfsCell, feat = feat, cellAndGene = marks(p, drop = FALSE)[,
                   c("gene", "cell")], pi = "nnCell", null = null, ecdfs = ecdfsCell)
             }
-            allDistCellPI <- if (any(pis == "allDistCell")) {
-                calcWindowDistPI(pSub, owins, ecdfAll = ecdfsCell, feat = feat, cellAndGene = marks(p, drop = FALSE)[,
-                  c("gene", "cell")], pi = "allDistCell", null = null, ecdfs = ecdfsCell)
-            }
             list(windowDists = list(edge = edgeDistPI, nnCell = nnCellPI,
-                allDistCell = allDistCellPI, midpoint = midPointDistPI))
+               midpoint = midPointDistPI))
         })
     }))
     names(uniPIs) <- nams

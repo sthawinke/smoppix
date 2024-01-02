@@ -39,24 +39,11 @@ calcBiPIs <- function(p, pis, null, cd, nSub, ecdfAll, features, manyPairs, verb
                              id1 = id1, id2 = id2, null = null,
                              cd = cd, ecdfAll = ecdfAll, n = nSub)#[c(id1, id2),]
             }
-            allDistPI <- if (any(pis == "allDistPair")) {
-                s1 = subSampleP(pSub1, maxNum, returnId = TRUE)
-                s2 = subSampleP(pSub2, maxNum, returnId = TRUE)
-                cdSub <- crossdistWrapper(s1$Pout, s2$Pout)
-                calcAllDistPIpair(id1 = s1$id, id2 = s2$id, ecdfAll = ecdfAll,
-                null = null, cd = cd, crossDistSub = cdSub)#[c(s1$id, s2$id),]
-            }
-            rm(cd)
             nnCellPI <- if (any(pis == "nnPairCell")) {
                 calcWindowPairPI(pSub1, pSub2, ecdfAll = ecdfsCell, ecdfs = ecdfsCell, pi = "nnPairCell", null = null,
                   feat1 = feat1, feat2 = feat2, cellAndGene = marks(p, drop = FALSE)[, c("gene", "cell")])
             }
-            allDistCellPI <- if (any(pis == "allDistPairCell")) {
-                calcWindowPairPI(pSub1, pSub2, null = null, feat1 = feat1, feat2 = feat2, cellAndGene = marks(p, drop = FALSE)[,
-                  c("gene", "cell")], ecdfAll = ecdfsCell, pi = "allDistPairCell", ecdfs = ecdfsCell)
-            }
-            list(pointDists = c(nnPair = NNdistPI, allDistPair = allDistPI), windowDists = list(allDistPairCell = allDistCellPI,
-                nnPairCell = nnCellPI))
+            list(pointDists = c(nnPair = NNdistPI), windowDists = list(nnPairCell = nnCellPI))
         })
     }))
     names(tmp) <- apply(genePairsMat, 2, paste, collapse = "--")

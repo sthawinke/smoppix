@@ -37,12 +37,12 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 1e4,
         features <- intersect(features, names(tabObs))
     }
     if (null == "CSR") {
-        if (any(pis %in% c("allDist", "allDistPair", "nn", "nnPair"))) {
+        if (any(pis %in% c("nn", "nnPair"))) {
             pSim <- runifpoint(nPointsAll, win = p$window)
             ecdfAll <- ecdf(stats::dist(coords(pSim)))
         }
-        if (any(pis %in% c("edge", "midpoint", "nnCell", "allDistCell",
-                           "nnPairCell", "allDistPairCell"))) {
+        if (any(pis %in% c("edge", "midpoint", "nnCell",
+                           "nnPairCell"))) {
             ecdfsCell <- lapply(names(owins), function(nam) {
                 pSub <- runifpoint(nPointsAllWin, win = owins[[nam]])
                 edge <- if (any(pis == "edge")) {
@@ -51,8 +51,7 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 1e4,
                 midpoint <- if (any(pis == "midpoint")) {
                   ecdf(crossdist(pSub, centroids[[nam]]))
                 }
-                allDistCell <- if (any(pis %in% c("nnCell", "allDistCell",
-                                        "nnPairCell", "allDistPairCell"))) {
+                allDistCell <- if (any(pis %in% c("nnCell", "nnPairCell"))) {
                   ecdf(stats::dist(coords(pSub)))
                 }
                 list("edge" = edge, "midpoint" = midpoint,
@@ -71,8 +70,7 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 1e4,
                 midpoint <- if (any(pis == "midpoint")) {
                   ecdf(crossdist(pSub, centroids[[nam]]))
                 }
-                allDistCell <- if (any(pis %in% c("nnCell", "allDistCell",
-                                        "nnPairCell", "allDistPairCell"))) {
+                allDistCell <- if (any(pis %in% c("nnCell", "nnPairCell"))) {
                   apply(rowSort(getCrossDist(pCell, pSub, null)), 1, ecdfPreSort)
                 }
                 list("edge" = edge, "midpoint" = midpoint,
@@ -125,7 +123,7 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 1e4,
 
 
          }
-        pointDists = c(nn = NNdistPI, allDist = allDistPI)
+        pointDists = c(nn = NNdistPI)
     }
     # Univariate patterns
     piPair <- grepl(pis, pattern = "Pair")
@@ -171,13 +169,13 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 1e4,
 #' 'edge' and 'midpoint' calculate the distance to the edge respectively
 #'  the midpoint of the windows added using the addCell() function.
 #' The suffix 'Cell' indicates distances are being calculated within cells only.
-estPims <- function(hypFrame, pis = c("nn", "allDist", "nnPair", "allDistPair",
-    "edge", "midpoint", "nnCell", "allDistCell", "nnPairCell",
-    "allDistPairCell"), verbose = TRUE, null = c("background", "CSR"),
+estPims <- function(hypFrame, pis = c("nn", "nnPair",
+    "edge", "midpoint", "nnCell", "nnPairCell"), verbose = TRUE,
+    null = c("background", "CSR"),
     features = getFeatures(hypFrame),...) {
     pis <- match.arg(pis, several.ok = TRUE)
     null <- match.arg(null)
-    if (any(pis %in% c("edge", "midpoint", "nnCell", "allDistCell")) &&
+    if (any(pis %in% c("edge", "midpoint", "nnCell")) &&
         is.null(hypFrame$owins)) {
         stop("No window provided for distance to edge or midpoint calculation. "
              , "Add it using the addCell() function")
