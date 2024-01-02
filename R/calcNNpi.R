@@ -1,7 +1,9 @@
 #' Estimate the PI for the nearest neighbour distances
 #'
 #' @inheritParams estPimsSingle
-#' @inheritParams calcAllDistPI
+#' @param pSub The subset point pattern with only one feature
+#' @param ecdfAll The empirical cumulative distribution function of
+#' all distances under the null
 #' @param n the number of subsampled distances
 #'
 #' @importFrom spatstat.geom nndist crossdist npoints area

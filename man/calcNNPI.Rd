@@ -12,6 +12,11 @@ defined. See details.}
 
 \item{p}{The point pattern}
 
+\item{ecdfAll}{The empirical cumulative distribution function of
+all distances under the null}
+
+\item{pSub}{The subset point pattern with only one feature}
+
 \item{n}{the number of subsampled distances}
 }
 \value{
