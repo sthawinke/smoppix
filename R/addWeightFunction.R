@@ -69,15 +69,8 @@ addWeightFunction <- function(resList, pis = resList$pis, designVars, lowestLeve
     Wfs <- bplapply(pis, function(pi) {
         windowId <- pi %in% c("edge", "midpoint")
         cellId <- any(grepl("Cell", pi))
-        piListName <- if (windowId){
-            "windowDists"
-        } else if(cellId){
-            "withinCellDists"
-        } else {
-            "pointDists"
-        }
-        features <- getFeatures(resList)
-        if (pairId) {
+         features <- getFeatures(resList)
+        if (pairId <- grepl("Pair", pi)) {
             features <- makePairs(features)
         }
         if (cellId || !isNested) {
@@ -87,31 +80,37 @@ addWeightFunction <- function(resList, pis = resList$pis, designVars, lowestLeve
             ordDesign <- order(designVec) # Ensure correct ordering for tapply
         }
         varEls <- lapply(features, function(gene) {
-            geneSplit <- if (pairId) {
+            geneSplit <- if (pairId){
                 sund(gene)
             } else {
                 gene
             }
-            if(windowId){
-
-            } else if (cellId) {
+            if (cellId) {
+                piSub = sub("Cell", "", pi)
+                piList <- lapply(resList$hypFrame$pimRes, function(x) {
+                    lapply(x[["withinCellDists"]], function(y) {
+                        if(gene %in% names(y[[piSub]]))
+                            y[[piSub]][[gene]]
+                        })
+                })
                 # If cellId, there is no tapply, cells are the lowest level anyway
                 tmp <- lapply(ordDesign, function(x) {
-                  if (!all((if (pairId) gene else geneSplit) %in% names(piList[[x]]))) {
-                    return(NULL)
+                  tab <- table(marks(resList$hypFrame$ppp[[x]])$cell, marks(resList$hypFrame$ppp[[x]])$gene)
+                  if(!all(geneSplit %in% colnames(tab))){
+                      return(NULL)
                   }
-                  CellGene <- table(marks(resList$hypFrame$ppp[[x]])$cell, marks(resList$hypFrame$ppp[[x]])$gene)[,
-                    geneSplit, drop = FALSE]
-                  deps <- vapply(piList[[x]][if (pairId)
-                    gene else geneSplit], FUN.VALUE = double(sum(id <- rowAll(CellGene > 0))), function(y) {
-                    xx <- unlist(y)
-                    if (sum(!is.na(xx)) >= 2) {
+                  lenOut = sum(id <- rowAll((CellGene <- tab[,geneSplit, drop = FALSE]) > (1 - pairId)))
+                  if(!lenOut){
+                      return(NULL)
+                  } else {
+                    xx <- unlist(piList[[x]])
+                    deps <- if (sum(!is.na(xx)) >= 2) {
                       (xx - mean(xx, na.rm = TRUE))^2
                     } else {
-                      rep_len(NA, length(xx))
+                      rep_len(NA, lenOut)
                     }
-                  })
-                  cbind(quadDeps = deps, rowSort(CellGene[id, , drop = FALSE]))
+                    cbind(quadDeps = matrix(deps, nrow = lenOut), rowSort(CellGene[id, , drop = FALSE]))
+                  }
                 })
                 if (all(vapply(tmp, FUN.VALUE = logical(1), is.null))) {
                   return(NULL)
@@ -120,7 +119,7 @@ addWeightFunction <- function(resList, pis = resList$pis, designVars, lowestLeve
                 }
             } else {#Points with nn
                 piList <- lapply(resList$hypFrame$pimRes, function(x) {
-                        x[[piListName]][[pi]]
+                        x[["pointDists"]][[pi]]
                 })
                 tmp <- vapply(piList[ordDesign], FUN.VALUE = double(1), function(x) {
                   if (is.null(baa <- getGp(x, gene)))
