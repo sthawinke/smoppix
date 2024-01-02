@@ -2,26 +2,26 @@
 % Please edit documentation in R/calcNNpi.R
 \name{calcNNPI}
 \alias{calcNNPI}
-\title{Estimate the PI for the nearest neighbour distances}
+\title{Estimate the PI for the nearest neighbour distances, given a set of ranks}
 \usage{
-calcNNPI(null, id, p, ecdfAll)
+calcNNPI(Ranks, n, m, r = 1)
 }
 \arguments{
-\item{null}{A character vector, indicating how the null distribution is
-defined. See details.}
+\item{Ranks}{The (approximate) ranks}
 
-\item{p}{The point pattern}
+\item{n}{the total number of observed distances minus the number of distances
+under consideration (the number of black balls in the urn)}
 
-\item{ecdfAll}{The empirical cumulative distribution function of
-all distances under the null}
+\item{m}{the number of observed distances (white balls in the urn)}
 
-\item{pSub}{The subset point pattern with only one feature}
-
-\item{n}{the number of subsampled distances}
+\item{r}{The rank of distances considered, r=1 is nearest neighbour distance}
 }
 \value{
 The estimated probabilistic index
 }
 \description{
-Estimate the PI for the nearest neighbour distances
+Estimate the PI for the nearest neighbour distances, given a set of ranks
+}
+\seealso{
+\link{pnhyper}
 }
