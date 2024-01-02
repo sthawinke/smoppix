@@ -9,14 +9,12 @@ estPimsSingle(
   pis,
   null,
   tabObs,
-  nPointsAll = 10000,
+  nPointsAll = switch(null, background = 10000, CSR = 1000),
   nPointsAllWin = 2000,
   features = NULL,
-  allowManyGenePairs = FALSE,
-  manyPairs = 1e+06,
-  verbose = FALSE,
   owins = NULL,
-  centroids = NULL
+  centroids = NULL,
+  window = p$window
 )
 }
 \arguments{
@@ -39,15 +37,15 @@ to calculate distance to cell edge or midpoint distribution}
 \item{features}{A character vector, for which features should the
 probabilistic indices be calculated?}
 
+\item{owins, centroids}{The list of windows corresponding to cells,
+and their centroids}
+
 \item{allowManyGenePairs}{A boolean, set to true to suppress
 warning messages for large numbers of gene pairs}
 
 \item{manyPairs}{An integer, what are considered many gene pairs}
 
 \item{verbose}{a boolean, should verbose output be printed?}
-
-\item{owins, centroids}{The list of windows corresponding to cells,
-and their centroids}
 }
 \value{
 Data frames with estimated quantities per gene and/or gene pair

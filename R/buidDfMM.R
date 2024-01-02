@@ -66,8 +66,8 @@ buildDfMM <- function(obj, gene, pi = c("nn", "nnPair", "edge", "midpoint", "nnC
     out
 }
 buildDfMMUni <- function(obj, gene, pi) {
-    piListNameInner <- if (winId <- any(pi == c("edge", "midpoint", "nnCell")))
-        "windowDists" else "pointDists"
+    windowId <- pi %in% c("edge", "midpoint")
+    cellId <- any(grepl("Cell", pi))
     # winId: is a window involved?
     fixedId <- any(pi == c("edge", "midpoint"))
     # fixedId: Is the distance to a fixed point? So no weighting needed

@@ -91,6 +91,7 @@ named.contr.sum <- function(x, ...) {
 #' @param hypFrame The hyperframe
 #'
 #' @return The hyperframe with tabObs added
+#' @importFrom spatstat.geom marks
 addTabObs <- function(hypFrame) {
     hypFrame$tabObs <- lapply(hypFrame$ppp, function(x) {
         table(marks(x, drop = FALSE)$gene)
