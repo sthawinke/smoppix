@@ -111,20 +111,6 @@ nestRandom <- function(df, randomVars) {
     }
     df
 }
-#' A faster way to find the first element in a vector larger than a fixed value,
-#'  by stopping early. This function is only faster than which.max is the match
-#'  indeed comes early, as for nearest neighbour in a set of all distances.
-#'
-#' @param x An ordered vector
-#' @param a A value to be queried
-#'
-#' @return The index
-which.max.early <- function(x, a) {
-    for (i in seq_along(x)) {
-        if (a < x[i])
-            return(i)
-    }
-}
 #' Approximate the ranks given and ecdf
 #'
 #' @param ecdf An empirical density function
@@ -147,5 +133,18 @@ getCoordsMat = function(x){
         as.matrix(x)
     } else if(is.matrix(x)){
         x
+    }
+}
+#' Extract en element from a matrix or vector
+#'
+#' @param x the matrix or vector
+#' @param e The column or element name
+#'
+#' @return The desired element
+getElement = function(x, e){
+    if(is.matrix(x)){
+        x[, e]
+    } else {
+        x[e]
     }
 }

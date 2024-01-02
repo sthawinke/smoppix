@@ -55,12 +55,11 @@ cellTypesDf <- data.frame(
 names(wList) <- names(wList2) <- rownames(hypFrame)
 hypFrame2 <- addCell(hypFrame, wList, cellTypes = cellTypesDf)
 # Register the parallel backend
-# register(SerialParam())
-nCores <- 2
-register(MulticoreParam(nCores))
-pis <- c("nn", "allDist", "nnPair", "allDistPair", "edge",
-    "midpoint", "nnCell", "allDistCell", "nnPairCell", "allDistPairCell")
-piEstsBG <- estPims(hypFrame2, pis = pis, null = "background", verbose = FALSE, nPointsAll = 1e2)
+register(SerialParam())
+#nCores <- 2
+#register(MulticoreParam(nCores))
+pis <- c("nn",  "nnPair",  "edge", "midpoint", "nnCell", "nnPairCell")
+piEstsBG <- estPims(hypFrame2, pis = pis, null = "background", verbose = FALSE)
 piEstsCSR <- estPims(hypFrame2, pis = pis, null = "CSR", verbose = FALSE, nPointsAll = 1e2)
 piEstsBG2 <- estPims(hypFrame2[, c("ppp", "image", "tabObs")], pis = "nn",
                      null = "background", verbose = FALSE, nPointsAll = 1e2)
