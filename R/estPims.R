@@ -24,9 +24,9 @@
 #' @importFrom stats ecdf dist
 #' @importFrom Rdpack reprompt
 #' @importFrom Rfast rowSort rowMins rowAny
-estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 1e4,
-    nPointsAllWin = 2e3, features = NULL, allowManyGenePairs = FALSE,
-    manyPairs = 1e+06, verbose = FALSE, owins = NULL, centroids = NULL) {
+estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = switch(null, "background" = 1e4, "CSR" = 1e3),
+    nPointsAllWin = 2e3, features = NULL,
+    owins = NULL, centroids = NULL, window = p$window) {
     if (is.null(features)) {
         features <- names(tabObs)
     } else {
@@ -37,7 +37,7 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 1e4,
             # Subset some background points
             pSubLeft <- subSampleP(p, nPointsAll, returnId = TRUE)
         } else if (null == "CSR") {
-            pSim <- runifpoint(nPointsAll, win = p$window)
+            pSim <- runifpoint(nPointsAll, win = window)
             ecdfAll <- ecdf(stats::dist(coords(pSim)))
         }
     }
@@ -68,7 +68,21 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 1e4,
     # Window pis
     windowDists = if(any(pis %in% c("edge", "midpoint"))){
         lapply(piList, function(x) x$windowDists)}
-    list("pointDists" = pointDists, "windowDists" = windowDists)
+    #Within cell: recurse into estPimsSingle but now per cell
+    withinCellDists = if(any(grepl("Cell", pis))){
+        splitCell = split.ppp(p, f = "cell")
+        cellDists = lapply(names(owins), function(nam){
+            estPimsSingle(pis = gsub("Cell", "", grep(value = TRUE, "Cell", pis)),
+                  p = splitCell[[nam]], null = null,
+                  nPointsAll = switch(null, "background" = 1e4, "CSR" = 2e2),
+                  window = owins[[nam]], features = features,
+                  tabObs = table(marks(splitCell[[nam]], drop = FALSE)$gene))$pointDists
+        })
+        names(cellDists) = names(owins)
+        cellDists
+    }
+    list("pointDists" = pointDists, "windowDists" = windowDists,
+         "withinCellDists" = withinCellDists)
 }
 #' Estimate pims on a hyperframe
 #' @export
