@@ -96,12 +96,11 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 1e4,
                         function(y){nncross(pSub, y, what = "dist")
                     })), nrow = NP)
                 })
-                approxRanks = findRanksDist(getCoordsMat(pSub), getCoordsMat(pSubLeft$Pout),
+                approxRanksTmp = findRanksDist(getCoordsMat(pSub), getCoordsMat(pSubLeft$Pout),
                                         distMat^2)
                 #Correct for self distances
                 inSample <- which(marks(p, drop = FALSE)$gene == feat) %in% pSubLeft$id
-                approxRanks[inSample, 1] = approxRanks[inSample, 1] - 1
-                PiEsts = round(npoints(p)*approxRanks/(npoints(pSubLeft$Pout)-inSample))
+                approxRanks = round(npoints(p)*approxRanksTmp/(npoints(pSubLeft$Pout)-inSample))
                 #Correct for self distances
                 #And then rearrange to get to the PIs
             })
