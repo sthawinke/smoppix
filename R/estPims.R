@@ -22,12 +22,8 @@
 #'
 #' @return Data frames with estimated quantities per gene and/or gene pair
 #' @importFrom stats ecdf dist
-#' @importFrom spatstat.random runifpoint
-#' @importFrom utils combn
-#' @importFrom spatstat.geom nncross crossdist coords npoints
 #' @importFrom Rdpack reprompt
 #' @importFrom Rfast rowSort rowMins rowAny
-#' @importFrom extraDistr pnhyper
 estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 1e4,
     nPointsAllWin = 2e3, features = NULL, allowManyGenePairs = FALSE,
     manyPairs = 1e+06, verbose = FALSE, owins = NULL, centroids = NULL) {
@@ -46,101 +42,33 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 1e4,
         }
     }
     if (any(pis %in% c("edge", "midpoint"))) {
-        ecdfsCell <- lapply(names(owins), function(nam) {
-            pSub <- switch(null,
-                           "CSR" = runifpoint(nPointsAllWin, win = owins[[nam]]),
-                           "background" = subSampleP(pCell <- p[marks(p, drop = FALSE)$cell == nam, ], nPointsAllWin)
-            )
-            edge <- if (any(pis == "edge")) {
-                ecdf(nncross(pSub, edges(owins[[nam]]), what = "dist"))
-            }
-            midpoint <- if (any(pis == "midpoint")) {
-                ecdf(crossdist(pSub, centroids[[nam]]))
-            }
-            list("edge" = edge, "midpoint" = midpoint)
-        })
-        names(ecdfsCell) <- names(owins)
+        ecdfsCell <- findEcdfsCell(p = p, owins = owins, centroids = centroids,
+                                   nPointsAllWin = nPointsAllWin, null = null)
     }
-        NPall = npoints(p)
-        pSplit = split.ppp(p, f = factor(marks(p, drop = FALSE)$gene))
-        splitFac <- rep(seq_len(bpparam()$workers), length.out = length(nams <- names(tabObs[features])))
-        #Divide the work over the available workers
-        piList <- unsplit(f = splitFac, bplapply(split(nams, f = splitFac), function(ss){
-            featPIs = lapply(ss, function(feat) {
-                pSub <- pSplit[[feat]]
-                NP <- npoints(pSub)
-                distMat = cbind(
-                    "self" = if(calcNNsingle <- (NP> 1 && ("nn" %in% pis))){
-                        nndist(pSub)}, #Self distances
-                        if("nnPair" %in% pis){
-                            id = !(names(pSplit) %in% feat)
-                    matrix(unlist(lapply(pSplit[id],
-                        function(y){nncross(pSub, y, what = "dist")
-                    })), nrow = NP, dimnames = list(NULL, names(pSplit)[id]))
-                            #Cross-distances
-                })
-                if(is.matrix(distMat)){
-                    approxRanksTmp = switch(null,
-                        "background" = findRanksDist(getCoordsMat(pSub),
-                            getCoordsMat(pSubLeft$Pout), distMat^2),
-                        "CSR" = matrix(ecdfAll(distMat), nrow = nrow(distMat))
-                    )
-                    approxRanks = round(NPall*approxRanksTmp/(switch(null,
-                        "background" = (npoints(pSubLeft$Pout)-
-                             which(marks(p, drop = FALSE)$gene == feat) %in% pSubLeft$id),
-                        #Correct for self distances by subtracting one.
-                        #The C++ function only counts distances larger so self distances
-                        #will be ignored in the numerator
-                        "CSR" = 1)))
-                    approxRanks[approxRanks==0] = 1
-                    colnames(approxRanks) = colnames(distMat)
-                }
-                #Names may get lost in C++ function
-                #And then rearrange to get to the PIs
-                nnPI = if(calcNNsingle){
-                     mean(calcNNPI(approxRanks[, "self"], NPall - (NP - 1),
-                             m = NP - 1, r = 1))
-                } else NA
-                nnPIpair = if("nnPair" %in% pis){
-                    apply(approxRanks[, colnames(approxRanks) != "self", drop = FALSE], 2,
-                        calcNNPI, n = NPall - NP, m = NP, r = 1)
-                }
-                ## Window related distances
-                edgeDistPI <- if (any(pis == "edge")) {
-                    calcWindowDistPI(pSub, owins = owins, ecdfAll = ecdfsCell, pi = "edge")
-                }
-                midPointDistPI <- if (any(pis == "midpoint")) {
-                    calcWindowDistPI(pSub, centroids = centroids,
-                                     ecdfAll = ecdfsCell, pi = "midpoint")
-                }
-                list("windowDists" = list("edge" = edgeDistPI,
-                                        "midpoint" = midPointDistPI),
-                    "pointDists" = list("nn" = nnPI, "nnPair" = nnPIpair))
-            })
-            names(featPIs) = ss
-            # TO DO: nnCell recycling code
-            return(featPIs)
-        }))
-        names(piList) = nams
-        nnPis = if("nn" %in% pis){
-            vapply(piList[names(tabObs[tabObs>1])], FUN.VALUE = double(1), function(x){
-                x$pointDists$nn
-            })
-        }
-        genePairsMat <- combn(features, 2)
-        if("nnPair" %in% pis){
-            nnPairPis = vapply(seq_len(ncol(genePairsMat)), FUN.VALUE = double(1), function(i){
-                feat1 <- genePairsMat[1, i]
-                feat2 <- genePairsMat[2, i]
-                mean(c(getElement(piList[[feat1]]$pointDists$nnPair, feat2),
-                       getElement(piList[[feat2]]$pointDists$nnPair, feat1)))
-            })
-            names(nnPairPis) = apply(genePairsMat, 2, paste, collapse = "--")
-        } else nnPairPis = NULL
-        pointDists = list("nn" = nnPis, "nnPair" = nnPairPis)
-        # Window pis
-        windowDists = lapply(piList, function(x) x$windowDists)
-        list("pointDists" = pointDists, "windowDists" = windowDists)
+    piList = calcIndividualPIs(p = p, pSubLeft = pSubLeft, pis = pis,
+                               null = null, tabObs = tabObs, owins = owins,
+                               centroids = centroids, features = features,
+                               ecdfAll = ecdfAll, ecdfsCell = ecdfsCell)
+    nnPis = if("nn" %in% pis){
+        vapply(piList[names(tabObs[tabObs>1])], FUN.VALUE = double(1), function(x){
+            x$pointDists$nn
+        })
+    }
+    genePairsMat <- combn(features, 2)
+    if("nnPair" %in% pis){
+        nnPairPis = vapply(seq_len(ncol(genePairsMat)), FUN.VALUE = double(1), function(i){
+            feat1 <- genePairsMat[1, i]
+            feat2 <- genePairsMat[2, i]
+            mean(c(getElement(piList[[feat1]]$pointDists$nnPair, feat2),
+                   getElement(piList[[feat2]]$pointDists$nnPair, feat1)))
+        })
+        names(nnPairPis) = apply(genePairsMat, 2, paste, collapse = "--")
+    } else nnPairPis = NULL
+    pointDists = list("nn" = nnPis, "nnPair" = nnPairPis)
+    # Window pis
+    windowDists = if(any(pis %in% c("edge", "midpoint"))){
+        lapply(piList, function(x) x$windowDists)}
+    list("pointDists" = pointDists, "windowDists" = windowDists)
 }
 #' Estimate pims on a hyperframe
 #' @export
