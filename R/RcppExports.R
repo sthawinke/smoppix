@@ -5,15 +5,7 @@ crossdistFastLocal <- function(m1, m2) {
     .Call(`_spatrans_crossdistFastLocal`, m1, m2)
 }
 
-crossdistFast <- function(m1, m2, pOutBigMat) {
-    invisible(.Call(`_spatrans_crossdistFast`, m1, m2, pOutBigMat))
-}
-
 findRanksDist <- function(coords, coordsLeft, squaredNNDist) {
     .Call(`_spatrans_findRanksDist`, coords, coordsLeft, squaredNNDist)
-}
-
-rowSumsLarger <- function(m1, pInBigMat) {
-    .Call(`_spatrans_rowSumsLarger`, m1, pInBigMat)
 }
 

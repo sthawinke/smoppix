@@ -2,22 +2,17 @@
 % Please edit documentation in R/crossdistWrapper.R
 \name{crossdistWrapper}
 \alias{crossdistWrapper}
-\title{A wrapper for C-functions calculating cross-distance matrix fast and with
-low memory usage. Big matrices are also supported}
+\title{A wrapper for C-functions calculating cross-distance matrix fast}
 \usage{
-crossdistWrapper(x, y, returnBigMatrix = FALSE, tmpFile = NULL)
+crossdistWrapper(x, y)
 }
 \arguments{
 \item{x, y}{the matrices or point patterns between which to calculate the
 cross distances}
-
-\item{returnBigMatrix}{a boolean, should the result be returned as
-a big matrix (low RAM use) or a regular r-matrix (faster)}
 }
 \value{
 a matrix of cross distances
 }
 \description{
-A wrapper for C-functions calculating cross-distance matrix fast and with
-low memory usage. Big matrices are also supported
+A wrapper for C-functions calculating cross-distance matrix fast
 }

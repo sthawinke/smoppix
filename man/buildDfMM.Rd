@@ -8,8 +8,7 @@ for mixed model building}
 buildDfMM(
   obj,
   gene,
-  pi = c("nn", "allDist", "nnPair", "allDistPair", "edge", "midpoint", "nnCell",
-    "allDistCell", "nnPairCell", "allDistPairCell")
+  pi = c("nn", "nnPair", "edge", "midpoint", "nnCell", "nnPairCell")
 )
 }
 \arguments{
