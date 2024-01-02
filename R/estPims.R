@@ -78,52 +78,63 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = 1e4,
             })
             names(ecdfsCell) <- names(owins)
         }
-         if (any(pis %in% c("nn", "nnPair")) && null == "background") {
+         if (any(pis %in% c("nn", "nnPair"))) {
         # # Prepare some null distances, either with CSR or background
         pSubLeft <- subSampleP(p, nPointsAll, returnId = TRUE)
+        NPall = npoints(p)
         # ## Subsample for memory reasons
         pSplit = split.ppp(p, f = "gene")
         splitFac <- rep(seq_len(bpparam()$workers), length.out = length(nams <- names(tabObs[features])))
-        nnPIs <- unsplit(f = splitFac, bplapply(split(nams, f = splitFac), function(ss){
+        #Divide the work over the available workers
+        piList <- unsplit(f = splitFac, bplapply(split(nams, f = splitFac), function(ss){
             featPIs = lapply(ss, function(feat) {
                 pSub <- pSplit[[feat]]
                 NP <- npoints(pSub)
-                distMat = cbind(if(NP> 1 && ("nn" %in% pis)){nndist(pSub)},
+                distMat = cbind(
+                    "self" = if(NP> 1 && ("nn" %in% pis)){nndist(pSub)}, #Self distances
                         if("nnPair" %in% pis){
                     matrix(unlist(lapply(pSplit[!(names(pSplit) %in% feat)],
                         function(y){nncross(pSub, y, what = "dist")
                     })), nrow = NP)
+                            #Cross-distances
                 })
                 approxRanksTmp = findRanksDist(getCoordsMat(pSub), getCoordsMat(pSubLeft$Pout),
                                         distMat^2)
                 #Correct for self distances
                 inSample <- which(marks(p, drop = FALSE)$gene == feat) %in% pSubLeft$id
-                approxRanks = round(npoints(p)*approxRanksTmp/(npoints(pSubLeft$Pout)-inSample))
-                #Correct for self distances
+                approxRanks = round(NPall*approxRanksTmp/(npoints(pSubLeft$Pout)-inSample))
                 #And then rearrange to get to the PIs
+                nnPI = if("nn" %in% pis){
+                    mean(calcNNPI(approxRanks[, "self"], NPall - (NP - 1),
+                             m = NP - 1, r = 1))
+                }
+                nnPIpair = if("nnPair" %in% pis){
+                    apply(approxRanks[, colnames(approxRanks) != "self"], 2,
+                        calcNNPI, n = NPall - NP, m = NP, r = 1)
+                }
+                list("nnPI" = nnPI, "nnPIpair" = nnPIpair)
+
             })
             names(featPIs) = ss
-            # Wrong, introduce negative hypergeometric here
             # TO DO: nnCell recycling code
-            nnPis = if("nn" %in% pis){
-                vapply(featPIs[names(tabObs[tabObs>1])], FUN.VALUE = double(1), function(x){
-                    mean(x[, 1])
-                })
-            }
-            genePairsMat <- combn(features, 2)
-            nnPairPis = if("nnPair" %in% pis){
-                vapply(seq_len(ncol(genePairsMat)), FUN.VALUE = double(1), function(i){
-                    feat1 <- genePairsMat[1, i]
-                    feat2 <- genePairsMat[2, i]
-                    mean(featPIs[[feat1]][, feat2], featPIs[[feat2]][, feat1])
-                })
-            }
-            list("nn" = nnPis, "nnPair" = nnPairPis)
+            return(featPIs)
         }))
-
-
+        nnPis = if("nn" %in% pis){
+            vapply(piList[names(tabObs[tabObs>1])], FUN.VALUE = double(1), function(x){
+                x$nnPI
+            })
+        }
+        genePairsMat <- combn(features, 2)
+        nnPairPis = if("nnPair" %in% pis){
+            vapply(seq_len(ncol(genePairsMat)), FUN.VALUE = double(1), function(i){
+                feat1 <- genePairsMat[1, i]
+                feat2 <- genePairsMat[2, i]
+                mean(c(piList[[feat1]][, feat2], piList[[feat2]][, feat1]))
+            })
+        }
+        names(nnPairPis) = apply(genePairsMat, 2, paste, collapse = "--")
+        pointDists = list("nn" = nnPis, "nnPair" = nnPairPis)
          }
-        pointDists = c(nn = NNdistPI)
     }
     # Univariate patterns
     piPair <- grepl(pis, pattern = "Pair")
