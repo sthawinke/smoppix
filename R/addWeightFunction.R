@@ -48,65 +48,43 @@
 #' )
 addWeightFunction <- function(resList, pis = resList$pis, designVars, lowestLevelVar, maxObs = 1e+05, maxFeatures = 500,
     ...) {
+    if (is.null(resList$pis)) {
+        stop("No pims found in the hyperframe.", "First estimate them using the estPims() function.")
+    }
     if (all(pis %in% c("edge", "midpoint"))) {
-        stop("Calculating weight matrices for distances to fixed points is ", "unnecessary as they are independent.
+        stop("Calculating weight matrices for distances to fixed points is ",
+        "unnecessary as they are independent.
              Simply proceed with fitting the model on the",
             " individual evaluations of the B-function.")
     }
+    pis <- match.arg(pis, choices = c("nn", "nnPair", "nnCell", "nnPairCell"), several.ok = TRUE)
     isNested = length(getPPPvars(resList)) >= 1 #Is there a nested structure in the design
     allCell <- all(grepl("Cell", pis))
     if(isNested){
-        if (missing(designVars) && missing(lowestLevelVar) && !allCell) {
-            stop("Provide either designVars or lowestLevelVar for measures ", "not on cell level!")
-        }
-        if (!missing(designVars) && !missing(lowestLevelVar)) {
-            stop("Provide either designVars or lowestLevelVar, both not both!")
-        }
-        allVars <- getDesignVars(resList)
-        if (missing(designVars)) {
-            if (allCell) {
-                lowestLevelVar <- "cell"
-            }
-            if (length(lowestLevelVar) != 1) {
-                stop("lowestLevelVar must have length 1")
-            }
-            if (!(lowestLevelVar %in% allVars)) {
-                stop("lowestLevelVar must be part of the design,
-                see getFeatures(resList)")
-            }
-            designVars <- setdiff(getPPPvars(resList), lowestLevelVar)
-            # If missing take everything but the ones that are obviously no design variables
-        }
-        if (any(idMissing <- !(designVars %in% allVars))) {
-            stop("Design variables\n", designVars[idMissing], "\nnot found in hypFrame object")
-        }
+        designVars = constructDesignVars(designVars, lowestLevelVar, allCell, allVars <- getDesignVars(resList))
     } else { #Only check design if there is nesting
         designVec <- integer(nrow(resList$hypFrame))
         designVars <- NULL
     }
-    pis <- match.arg(pis, choices = c("nn", "nnPair", "nnCell", "nnPairCell"), several.ok = TRUE)
-    if (is.null(resList$pis)) {
-        stop("No pims found in the hyperframe.", "First estimate them using the estPims() function.")
-    }
     Wfs <- bplapply(pis, function(pi) {
-        piListName <- if (pairId <- grepl("Pair", pi))
-            "biPIs" else "uniPIs"
-        subListName <- if (cellId <- grepl("Cell", pi))
-            "windowDists" else "pointDists"
+        windowId <- pi %in% c("edge", "midpoint")
+        cellId <- any(grepl("Cell", pi))
+        piListName <- if (windowId){
+            "windowDists"
+        } else if(cellId){
+            "withinCellDists"
+        } else {
+            "pointDists"
+        }
         features <- getFeatures(resList)
-        piList <- lapply(resList$hypFrame$pimRes, function(x) {
-            lapply(x[[piListName]], function(y) {
-                y[[subListName]][[pi]]
-            })
-        })
         if (pairId) {
-            features <- apply(combn(features, 2), 2, paste, collapse = "--")
+            features <- makePairs(features)
         }
         if (cellId || !isNested) {
             ordDesign <- seq_len(nrow(resList$hypFrame))
         } else {
             designVec <- apply(as.data.frame(resList$hypFrame[, designVars, drop = FALSE]), 1, paste, collapse = "_")
-            ordDesign <- order(designVec)  # Ensure correct ordering for tapply
+            ordDesign <- order(designVec) # Ensure correct ordering for tapply
         }
         varEls <- lapply(features, function(gene) {
             geneSplit <- if (pairId) {
@@ -114,7 +92,9 @@ addWeightFunction <- function(resList, pis = resList$pis, designVars, lowestLeve
             } else {
                 gene
             }
-            if (cellId) {
+            if(windowId){
+
+            } else if (cellId) {
                 # If cellId, there is no tapply, cells are the lowest level anyway
                 tmp <- lapply(ordDesign, function(x) {
                   if (!all((if (pairId) gene else geneSplit) %in% names(piList[[x]]))) {
@@ -138,7 +118,10 @@ addWeightFunction <- function(resList, pis = resList$pis, designVars, lowestLeve
                 } else {
                   out <- t(Reduce(tmp, f = rbind))
                 }
-            } else {
+            } else {#Points with nn
+                piList <- lapply(resList$hypFrame$pimRes, function(x) {
+                        x[[piListName]][[pi]]
+                })
                 tmp <- vapply(piList[ordDesign], FUN.VALUE = double(1), function(x) {
                   if (is.null(baa <- getGp(x, gene)))
                     NA else baa
