@@ -3,10 +3,12 @@
 #' @param designVars The initial design variables
 #' @param lowestLevelVar Variable indicating the lowest level of nesting
 #' @param allCell A boolean, are all PIs cell-related?
-#' @param allVars The collection of all variables of the hyperframe
+#' @param resList The results list
 #'
 #' @return A vector of design variables
-constructDesignVars = function(designVars, lowestLevelVar, allCell, allVars){
+constructDesignVars = function(designVars, lowestLevelVar, allCell,
+                               resList){
+    allVars = getDesignVars(resList)
     if (missing(designVars) && missing(lowestLevelVar) && !allCell) {
         stop("Provide either designVars or lowestLevelVar for measures ", "not on cell level!")
     }

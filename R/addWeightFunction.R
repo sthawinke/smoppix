@@ -61,7 +61,8 @@ addWeightFunction <- function(resList, pis = resList$pis, designVars, lowestLeve
     isNested = length(getPPPvars(resList)) >= 1 #Is there a nested structure in the design
     allCell <- all(grepl("Cell", pis))
     if(isNested){
-        designVars = constructDesignVars(designVars, lowestLevelVar, allCell, allVars <- getDesignVars(resList))
+        designVars = constructDesignVars(designVars, lowestLevelVar, allCell,
+                                         resList = resList)
     } else { #Only check design if there is nesting
         designVec <- integer(nrow(resList$hypFrame))
         designVars <- NULL
