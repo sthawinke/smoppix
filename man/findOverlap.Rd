@@ -20,7 +20,10 @@ Try to find overlap between list of windows, and throw error when found
 }
 \examples{
 library(spatstat.geom)
-owins = lapply(integer(10), owin)
+owins = replicate(10, owin(xrange = runif(1)+c(0,0.2),
+yrange = runif(1)+c(0,0.1)), simplify = FALSE)
+\dontrun{
 findOverlap(owins)
+}
 idOverlap = findOverlap(owins, returnIds = TRUE)
 }

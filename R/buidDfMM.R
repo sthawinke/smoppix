@@ -71,9 +71,9 @@ buildDfMM <- function(obj, gene, pi = c("nn", "nnPair", "edge", "midpoint", "nnC
                 "cell" = rep(names(piEst),
                         times = vapply(piEst, FUN.VALUE = double(1), length)))
         } else if (cellId) {
-            piEst = vapply(x[[piListNameInner]], FUN.VALUE = double(1), function(y) {
+            piEst = vapply(x[[piListNameInner]], FUN.VALUE = double(1), function(y){
                 if(gene %in% names(y[[piSub]])) y[[piSub]][[gene]] else NA
-                })
+            })
             cellCovars <- marks(obj$hypFrame$ppp[[n]], drop = FALSE)[,
                                             getEventVars(obj), drop = FALSE]
             cellCovars = cellCovars[match(names(piEst), cellCovars$cell),
@@ -84,7 +84,7 @@ buildDfMM <- function(obj, gene, pi = c("nn", "nnPair", "edge", "midpoint", "nnC
                 tabCell[geneSplit, match(names(piEst), colnames(tabCell)), drop = FALSE]
             } else matrix(NA, nrow = if(pairId) 2 else 1, ncol = length(piEst))
             rownames(npVec) = if(pairId) c("minP", "maxP") else "NP"
-            data.frame(pi = piEst, cellCovars, t(npVec))
+            data.frame("pi" = piEst, cellCovars, t(npVec))
         } else {
             piEst = if(gene %in% names(x[[piListNameInner]][[pi]]))
                 x[[piListNameInner]][[pi]][[gene]] else NA
@@ -92,9 +92,9 @@ buildDfMM <- function(obj, gene, pi = c("nn", "nnPair", "edge", "midpoint", "nnC
                 obj$hypFrame[n, "tabObs", drop = TRUE][geneSplit]
             } else NA
             if(pairId){
-                data.frame(piEst, "minP" = min(npVec), "maxP" = max(npVec))
+                data.frame("pi" = piEst, "minP" = min(npVec), "maxP" = max(npVec))
             } else {
-                data.frame(piEst, "NP" = npVec)
+                data.frame("pi" = piEst, "NP" = npVec)
             }
 
         }
@@ -110,5 +110,6 @@ buildDfMM <- function(obj, gene, pi = c("nn", "nnPair", "edge", "midpoint", "nnC
         weight <- weight/sum(weight, na.rm = TRUE)
         piMat <- cbind(piMat, "weight" = weight)
     }
+    rownames(piMat) = design
     return(piMat)
 }

@@ -11,20 +11,22 @@
 #' @export
 #' @examples
 #' library(spatstat.geom)
-#' owins = lapply(integer(10), owin)
+#' owins = replicate(10, owin(xrange = runif(1)+c(0,0.2),
+#' yrange = runif(1)+c(0,0.1)), simplify = FALSE)
+#' \dontrun{
 #' findOverlap(owins)
+#' }
 #' idOverlap = findOverlap(owins, returnIds = TRUE)
 findOverlap <- function(owins, returnIds = FALSE) {
     stopifnot(all(vapply(owins, is.owin, FUN.VALUE = TRUE)))
     combs <- combn(length(owins), 2)
     Ids = bplapply(seq_len(ncol(combs)), function(i) {
-        if(Overlap <- overlap.owin(owins[[combs[1, i]]], owins[[combs[2, i]]]) > 0){
-            if (returnIds) {
-                return(Overlap)
-            } else {
+        Overlap <- overlap.owin(owins[[combs[1, i]]], owins[[combs[2, i]]]) >0
+        if(returnIds){
+            return(Overlap)
+        } else if(Overlap){
                 stop("Overlap detected between windows ", combs[1, i], " and ",
                      combs[2, i], "!\nWindows must be non-overlapping.")
-            }
         }
     })
     return( if (returnIds) {combs[, unlist(Ids)]} else {invisible()})
