@@ -22,7 +22,7 @@ Try to find overlap between list of windows, and throw error when found
 library(spatstat.geom)
 owins = replicate(10, owin(xrange = runif(1)+c(0,0.2),
 yrange = runif(1)+c(0,0.1)), simplify = FALSE)
-\dontrun{
+\donttest{
 findOverlap(owins)
 }
 idOverlap = findOverlap(owins, returnIds = TRUE)

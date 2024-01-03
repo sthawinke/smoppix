@@ -20,9 +20,8 @@
 #' @importFrom stats ecdf dist
 #' @importFrom Rdpack reprompt
 #' @importFrom Rfast rowSort rowMins rowAny
-estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = switch(null, "background" = 1e4, "CSR" = 1e3),
-    nPointsAllWin = 2e3, features = NULL,
-    owins = NULL, centroids = NULL, window = p$window) {
+estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = switch(null, background = 10000, CSR = 1000), nPointsAllWin = 2000,
+    features = NULL, owins = NULL, centroids = NULL, window = p$window) {
     if (is.null(features)) {
         features <- names(tabObs)
     } else {
@@ -38,53 +37,49 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = switch(null, "backg
         }
     }
     if (any(pis %in% c("edge", "midpoint"))) {
-        ecdfsCell <- findEcdfsCell(p = p, owins = owins, centroids = centroids,
-                                   nPointsAllWin = nPointsAllWin, null = null,
-                                   pis = pis)
+        ecdfsCell <- findEcdfsCell(p = p, owins = owins, centroids = centroids, nPointsAllWin = nPointsAllWin, null = null,
+            pis = pis)
     }
-    piList = calcIndividualPIs(p = p, pSubLeft = pSubLeft, pis = pis,
-                               null = null, tabObs = tabObs, owins = owins,
-                               centroids = centroids, features = features,
-                               ecdfAll = ecdfAll, ecdfsCell = ecdfsCell)
-    nnPis = if("nn" %in% pis){
-        vapply(piList[names(tabObs[tabObs>1])], FUN.VALUE = double(1), function(x){
+    piList <- calcIndividualPIs(p = p, pSubLeft = pSubLeft, pis = pis, null = null, tabObs = tabObs, owins = owins,
+        centroids = centroids, features = features, ecdfAll = ecdfAll, ecdfsCell = ecdfsCell)
+    nnPis <- if ("nn" %in% pis) {
+        vapply(piList[names(tabObs[tabObs > 1])], FUN.VALUE = double(1), function(x) {
             x$pointDists$nn
         })
     }
     genePairsMat <- combn(features, 2)
-    if("nnPair" %in% pis){
-        nnPairPis = vapply(seq_len(ncol(genePairsMat)), FUN.VALUE = double(1), function(i){
+    if ("nnPair" %in% pis) {
+        nnPairPis <- vapply(seq_len(ncol(genePairsMat)), FUN.VALUE = double(1), function(i) {
             feat1 <- genePairsMat[1, i]
             feat2 <- genePairsMat[2, i]
-            mean(c(getElement(piList[[feat1]]$pointDists$nnPair, feat2),
-                   getElement(piList[[feat2]]$pointDists$nnPair, feat1)))
+            mean(c(getElement(piList[[feat1]]$pointDists$nnPair, feat2), getElement(piList[[feat2]]$pointDists$nnPair,
+                feat1)))
         })
-        names(nnPairPis) = apply(genePairsMat, 2, paste, collapse = "--")
-    } else nnPairPis = NULL
-    pointDists = list("nn" = nnPis, "nnPair" = nnPairPis)
+        names(nnPairPis) <- apply(genePairsMat, 2, paste, collapse = "--")
+    } else nnPairPis <- NULL
+    pointDists <- list(nn = nnPis, nnPair = nnPairPis)
     # Window pis
-    windowDists = if(any(pis %in% c("edge", "midpoint"))){
-        lapply(piList, function(x) x$windowDists)}
-    #Within cell: recurse into estPimsSingle but now per cell
-    withinCellDists = if(any(grepl("Cell", pis))){
-        splitCell = split.ppp(p, f = "cell")
-        cellDists = lapply(names(owins), function(nam){
-            estPimsSingle(pis = gsub("Cell", "", grep(value = TRUE, "Cell", pis)),
-                  p = splitCell[[nam]], null = null,
-                  nPointsAll = switch(null, "background" = 1e4, "CSR" = 2e2),
-                  window = owins[[nam]], features = features,
-                  tabObs = table(marks(splitCell[[nam]], drop = FALSE)$gene))$pointDists
+    windowDists <- if (any(pis %in% c("edge", "midpoint"))) {
+        lapply(piList, function(x) x$windowDists)
+    }
+    # Within cell: recurse into estPimsSingle but now per cell
+    withinCellDists <- if (any(grepl("Cell", pis))) {
+        splitCell <- split.ppp(p, f = "cell")
+        cellDists <- lapply(names(owins), function(nam) {
+            estPimsSingle(pis = gsub("Cell", "", grep(value = TRUE, "Cell", pis)), p = splitCell[[nam]], null = null,
+                nPointsAll = switch(null, background = 10000, CSR = 200), window = owins[[nam]], features = features,
+                tabObs = table(marks(splitCell[[nam]], drop = FALSE)$gene))$pointDists
         })
-        names(cellDists) = names(owins)
+        names(cellDists) <- names(owins)
         cellDists
     }
-    list("pointDists" = pointDists, "windowDists" = windowDists,
-         "withinCellDists" = withinCellDists)
+    list(pointDists = pointDists, windowDists = windowDists, withinCellDists = withinCellDists)
 }
 #' Estimate pims on a hyperframe
 #' @export
 #' @param hypFrame the hyperframe
 #' @param ... additional arguments, passed on to estPimsSingle
+#' @param verbose a boolean, whether to report on progress of fitting
 #' @inheritParams estPimsSingle
 #' @return A list of estimated pims
 #' @importFrom BiocParallel bplapply
@@ -110,16 +105,12 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = switch(null, "backg
 #' 'edge' and 'midpoint' calculate the distance to the edge respectively
 #'  the midpoint of the windows added using the addCell() function.
 #' The suffix 'Cell' indicates distances are being calculated within cells only.
-estPims <- function(hypFrame, pis = c("nn", "nnPair",
-    "edge", "midpoint", "nnCell", "nnPairCell"), verbose = TRUE,
-    null = c("background", "CSR"),
-    features = getFeatures(hypFrame),...) {
+estPims <- function(hypFrame, pis = c("nn", "nnPair", "edge", "midpoint", "nnCell", "nnPairCell"), verbose = TRUE, null = c("background",
+    "CSR"), features = getFeatures(hypFrame), ...) {
     pis <- match.arg(pis, several.ok = TRUE)
     null <- match.arg(null)
-    if (any(pis %in% c("edge", "midpoint", "nnCell")) &&
-        is.null(hypFrame$owins)) {
-        stop("No window provided for distance to edge or midpoint calculation. "
-             , "Add it using the addCell() function")
+    if (any(pis %in% c("edge", "midpoint", "nnCell")) && is.null(hypFrame$owins)) {
+        stop("No window provided for distance to edge or midpoint calculation. ", "Add it using the addCell() function")
     }
     if (any(id <- !(features %in% getFeatures(hypFrame)))) {
         stop("Features ", features[id], " not found in hyperframe")
@@ -130,11 +121,9 @@ estPims <- function(hypFrame, pis = c("nn", "nnPair",
         if (verbose) {
             message(x, " of ", nrow(hypFrame), "  ")
         }
-       out <- estPimsSingle(hypFrame[[x, "ppp"]],
-                      owins = hypFrame[x, "owins", drop = TRUE], pis = pis,
-                      null = null, tabObs = hypFrame[[x,"tabObs"]],
-                      centroids = hypFrame[x, "centroids", drop = TRUE], ...)
-       return(out)
+        out <- estPimsSingle(hypFrame[[x, "ppp"]], owins = hypFrame[x, "owins", drop = TRUE], pis = pis, null = null,
+            tabObs = hypFrame[[x, "tabObs"]], centroids = hypFrame[x, "centroids", drop = TRUE], ...)
+        return(out)
     })
     list(hypFrame = hypFrame, null = null, pis = pis, features = features)
 }

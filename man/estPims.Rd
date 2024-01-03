@@ -18,6 +18,8 @@ estPims(
 
 \item{pis}{The probabilistic indices to be estimated}
 
+\item{verbose}{a boolean, whether to report on progress of fitting}
+
 \item{null}{A character vector, indicating how the null distribution is
 defined. See details.}
 

@@ -40,13 +40,13 @@ getN <- function(ecdf) {
 #'
 #' @return A point pattern, subsample if necessary
 subSampleP <- function(p, nSims, returnId = FALSE) {
-    Pout = if (tooBig <- (NP <- npoints(p)) > nSims)
+    Pout <- if (tooBig <- (NP <- npoints(p)) > nSims)
         p[id <- sample(NP, nSims), ] else p
-    if(!tooBig && returnId)
-        id = seq_len(npoints(p))
-    if(returnId){
-        return(list("Pout" = Pout, "id" = id))
-    } else{
+    if (!tooBig && returnId)
+        id <- seq_len(npoints(p))
+    if (returnId) {
+        return(list(Pout = Pout, id = id))
+    } else {
         return(Pout)
     }
 }
@@ -127,12 +127,12 @@ getApproxRanks <- function(ecdf, obs, n = getN(ecdf)) {
 #' Extract coordinates from a point pattern or data frame
 #' @param x the point pattern, dataframe or matrix
 #' @return the matrix of coordinates
-getCoordsMat = function(x){
-    if(is.ppp(x)){
+getCoordsMat <- function(x) {
+    if (is.ppp(x)) {
         as.matrix(coords(x))
-    } else if(is.data.frame(x)){
+    } else if (is.data.frame(x)) {
         as.matrix(x)
-    } else if(is.matrix(x)){
+    } else if (is.matrix(x)) {
         x
     }
 }
@@ -142,8 +142,8 @@ getCoordsMat = function(x){
 #' @param e The column or element name
 #'
 #' @return The desired element
-getElement = function(x, e){
-    if(is.matrix(x)){
+getElement <- function(x, e) {
+    if (is.matrix(x)) {
         x[, e]
     } else {
         x[e]

@@ -29,7 +29,7 @@ hypYang <- buildHyperFrame(Yang,
 )
 # Fit a subset of features to limit computation time
 yangPims <- estPims(hypYang[c(seq_len(5), seq(25, 29)),],
-pis = c('nn', 'nnPair'), features = getFeatures(hypYang)[seq_len(10)])
+pis = c('nn', 'nnPair'), features = getFeatures(hypYang)[seq_len(5)])
 # First build the weighting function
 yangPims <- addWeightFunction(yangPims, designVars = c('day', 'root'))
 lmmModels <- fitLMMs(yangPims, fixedVars = 'day', randomVars = 'root')

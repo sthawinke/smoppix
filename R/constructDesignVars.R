@@ -6,9 +6,8 @@
 #' @param resList The results list
 #'
 #' @return A vector of design variables
-constructDesignVars = function(designVars, lowestLevelVar, allCell,
-                               resList){
-    allVars = getDesignVars(resList)
+constructDesignVars <- function(designVars, lowestLevelVar, allCell, resList) {
+    allVars <- getDesignVars(resList)
     if (missing(designVars) && missing(lowestLevelVar) && !allCell) {
         stop("Provide either designVars or lowestLevelVar for measures ", "not on cell level!")
     }

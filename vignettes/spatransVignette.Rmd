@@ -156,8 +156,8 @@ allModsNN <- fitLMMs(nnObj, fixedVars = "day", randomVars = "root", pi = "nn")
 Various errors may occur while fitting, e.g. insufficient non-missing observations. The function finishes silently but returns the error messages in the output. The results can now be viewed as follows
 
 ```{r}
-head(getResults(allModsNN, "Intercept"))
-head(getResults(allModsNN, "day"))
+head(getResults(allModsNN$nn, "Intercept"))
+head(getResults(allModsNN$nn, "day"))
 ```
 
 ## Bivariate tests
@@ -191,7 +191,7 @@ We find a significant positive intercept `r summary(lmeModNN)$coef["(Intercept)"
 
 ```{r fitlmmPair}
 allModsNNpair <- fitLMMs(nnObj, fixedVars = "day", randomVars = "root", pi = "nnPair")
-head(getResults(allModsNNpair, "Intercept"))
+head(getResults(allModsNNpair$nnPair, "Intercept"))
 ```
 
 # Eng2019: Mouse brain cells
