@@ -58,6 +58,9 @@ addWeightFunction <- function(resList, pis = resList$pis, designVars, lowestLeve
              Simply proceed with fitting the model on the",
             " individual evaluations of the B-function.")
     }
+    if(!is.null(resList$Wfs)){
+        warning("Overwriting pre-existing weight function!")
+    }
     pis <- match.arg(pis, choices = c("nn", "nnPair", "nnCell", "nnPairCell"), several.ok = TRUE)
     isNested <- length(getPPPvars(resList)) >= 1  #Is there a nested structure in the design
     allCell <- all(grepl("Cell", pis))
@@ -154,7 +157,7 @@ addWeightFunction <- function(resList, pis = resList$pis, designVars, lowestLeve
             varElMat <- varElMat[sample(nrow(varElMat), maxObs), ]
         }
         scamForm <- formula(paste("log(quadDeps) ~", if (pairId) {
-            "s(log(minP), bs = 'mpd') + s(log(maxP), bs = 'mpd')"
+            "s(minP, bs = 'mpd') + s(maxP, bs = 'mpd')"
         } else {
             "s(log(NP), bs = 'mpd')"
         }))
@@ -163,5 +166,7 @@ addWeightFunction <- function(resList, pis = resList$pis, designVars, lowestLeve
         return(scamMod)
     })
     names(Wfs) <- pis
-    return(c(resList, list(Wfs = Wfs, designVars = designVars)))
+    return(c(resList[setdiff(names(resList), c("Wfs", "designVars"))],
+             list(Wfs = Wfs, designVars = designVars)))
+    #Overwrite preexisting Wfs
 }

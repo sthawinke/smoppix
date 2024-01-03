@@ -30,7 +30,7 @@ plotWf <- function(obj, pi = obj$pis[1]) {
     }
     wf <- obj$Wfs[[pi]]
     if (grepl("Pair", pi)) {
-        tmp <- wf$model[, c("log(maxP)", "log(minP)")]
+        tmp <- wf$model[, c("maxP", "minP")]
         colnames(tmp) <- c("maxP", "minP")
         tmp <- tmp[tmp[, "maxP"] > 0 & tmp[, "minP"] > 0, ]
         df <- cbind(Weight = evalWeightFunction(wf, newdata = tmp), exp(tmp))

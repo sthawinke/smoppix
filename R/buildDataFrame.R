@@ -50,7 +50,7 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "midpoint",
             gene <- paste(gene, collapse = "--")
         } else if (!grepl("--", gene)) {
             stop("Provide gene pair as character vector of length 2",
-                 "or separated by '--'.")
+                 " or separated by '--'.")
         }
     } else {
         if (lg != 1) {
