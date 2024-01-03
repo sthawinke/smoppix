@@ -100,9 +100,7 @@ buildDfMMUni <- function(obj, gene, pi) {
     design <- rep(rownames(obj$hypFrame), times = Times)
     piMat <- data.frame(Reduce(piEsts, f = rbind), obj$hypFrame[design, getPPPvars(obj)])
     if (!windowId) {#Add weights
-        weight <- evalWeightFunction(obj$Wfs[[pi]], newdata = piMat[, "NP", drop = FALSE])
-        weight <- weight/sum(weight, na.rm = TRUE)
-        piMat <- cbind(piMat, weight)
+        piMat = addWeights(piMat, pi, ibj)
     }
     return(piMat)
 }
