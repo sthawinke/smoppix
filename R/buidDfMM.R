@@ -68,53 +68,38 @@ buildDfMM <- function(obj, gene, pi = c("nn", "nnPair", "edge", "midpoint", "nnC
 buildDfMMUni <- function(obj, gene, pi) {
     windowId <- pi %in% c("edge", "midpoint")
     cellId <- any(grepl("Cell", pi))
-    # winId: is a window involved?
-    fixedId <- any(pi == c("edge", "midpoint"))
-    # fixedId: Is the distance to a fixed point? So no weighting needed
-    piEsts <- lapply(seq_along(obj$hypFrame$pimRes), function(n) {
+    if(cellId){piSub <- sub("Cell", "", pi)}
+    piListNameInner = if(windowId) "windowDists" else if(cellId) "withinCellDists" else "pointDists"
+    piDfs <- lapply(seq_along(obj$hypFrame$pimRes), function(n) {
         x <- obj$hypFrame$pimRes[[n]]
-        if (idNull <- is.null(vec <- x[["uniPIs"]][[gene]][[piListNameInner]][pi])) {
-            return(NULL)
-        }
-        piOut <- if (winId) {
-            if (idNull) {
-                NULL
-            } else {
-                Cell <- rep(names(vec[[pi]]), times = vapply(vec[[pi]], FUN.VALUE = integer(1), length))
-                cellCovars <- marks(obj$hypFrame$ppp[[n]], drop = FALSE)[, getEventVars(obj), drop = FALSE]
-                data.frame(pi = unlist(vec), cellCovars[match(Cell, cellCovars$cell), ])
-            }
-        } else if (fixedId) {
-            cbind(pi = if (idNull)
-                vec else vec[[pi]])
+        #Extract pi, and add counts and covariates
+        df = if (windowId) {
+            piEst = if(gene %in% names(x[[piListNameInner]])) x[[piListNameInner]][[gene]][[pi]] else NA
+            data.frame("pi" = unlist(piEst),
+                "cell" = rep(names(piEst),
+                        times = vapply(piEst, FUN.VALUE = double(1), length)))
+        } else if (cellId) {
+            piEst = vapply(x[[piListNameInner]], FUN.VALUE = double(1), function(y) {
+                if(gene %in% names(y[[piSub]])) y[[piSub]][[gene]] else NA
+                })
+            cellCovars <- marks(obj$hypFrame$ppp[[n]], drop = FALSE)[, getEventVars(obj), drop = FALSE]
+            cellCovars = cellCovars[match(names(piEst), cellCovars$cell),
+                       setdiff(colnames(cellCovars), "gene")]
+            tabCell <- table(marks(obj$hypFrame$ppp[[n]], drop = FALSE)$gene, marks(obj$hypFrame$ppp[[n]], drop = FALSE)$cell)
+            npVec <- tabCell[gene, match(names(piEst), colnames(tabCell))]
+            data.frame(pi = piEst, cellCovars, "NP" = npVec[cellCovars$cell])
         } else {
-            c(pi = unname(vec))
-        }
-        if (!fixedId) {
-            # If not fixed, provide counts to allow weighting
-            if (winId) {
-                tabCell <- table(marks(obj$hypFrame$ppp[[n]], drop = FALSE)$gene, marks(obj$hypFrame$ppp[[n]], drop = FALSE)$cell)
-                npVec <- tabCell[gene, match(piOut[, "cell"], colnames(tabCell))]
-                return(cbind(piOut, NP = npVec))
-            } else {
-                npVec <- obj$hypFrame[n, "tabObs", drop = TRUE][gene]
-                names(npVec) <- "NP"
-                return(c(piOut, npVec))
-            }
-        } else {
-            return(piOut)
+            piEst = if(gene %in% names(x[[piListNameInner]][[pi]])) x[[piListNameInner]][[pi]] else NA
+            npVec <- obj$hypFrame[n, "tabObs", drop = TRUE][gene]
+            data.frame(piEst, "NP" = npVec)
         }
     })
-    design <- if (winId) {
-        rep(rownames(obj$hypFrame), times = vapply(piEsts, FUN.VALUE = integer(1), NROW))
-    } else {
-        rownames(obj$hypFrame)[id <- vapply(piEsts, FUN.VALUE = TRUE, function(x) !is.null(x))]
-    }
-    piMat <- data.frame(Reduce(piEsts, f = rbind), design = design)
-    if (is.null(piMat)) {
+    if (all((Times <- vapply(piEsts, FUN.VALUE = integer(1), NROW))==0)){
         stop("Gene  not found!\n")
     }
-    if (!fixedId) {
+    design <- rep(rownames(obj$hypFrame), times = Times)
+    piMat <- data.frame(Reduce(piEsts, f = rbind), obj$hypFrame[design, getPPPvars(obj)])
+    if (!windowId) {#Add weights
         weight <- evalWeightFunction(obj$Wfs[[pi]], newdata = piMat[, "NP", drop = FALSE])
         weight <- weight/sum(weight, na.rm = TRUE)
         piMat <- cbind(piMat, weight)
