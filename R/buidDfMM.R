@@ -103,7 +103,8 @@ buildDfMM <- function(obj, gene, pi = c("nn", "nnPair", "edge", "midpoint", "nnC
         stop("Gene not found!\n")
     }
     design <- rep(rownames(obj$hypFrame), times = Times)
-    piMat <- data.frame(Reduce(piDfs, f = rbind), obj$hypFrame[design, getPPPvars(obj)])
+    piMat <- data.frame(Reduce(piDfs, f = rbind), obj$hypFrame[design, getPPPvars(obj)],
+                        "design" = design)
     if (!windowId) {#Add weights
         weight <- evalWeightFunction(obj$Wfs[[pi]],
                                      newdata = piMat[, if(grepl("Pair", pi)) c("minP", "maxP") else "NP", drop = FALSE])
