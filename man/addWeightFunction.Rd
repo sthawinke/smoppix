@@ -70,5 +70,5 @@ yangObj2 <- addWeightFunction(yangPims, lowestLevelVar = 'section',
 )
 }
 \seealso{
-\link{buildDfMM}
+\link{buildDataFrame}
 }

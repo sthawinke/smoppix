@@ -2,7 +2,7 @@
 
 export(addCell)
 export(addWeightFunction)
-export(buildDfMM)
+export(buildDataFrame)
 export(buildHyperFrame)
 export(estPims)
 export(evalWeightFunction)

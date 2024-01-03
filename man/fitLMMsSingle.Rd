@@ -59,5 +59,5 @@ It is by default assumed that random effects are nested within the point
  'randomNested' to FALSE to override this behaviour.
 }
 \seealso{
-\link{buildDfMM},\link{getResults}
+\link{buildDataFrame},\link{getResults}
 }
