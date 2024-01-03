@@ -21,7 +21,7 @@
 #' # First build the weighting function
 #' yangPims <- addWeightFunction(yangPims, designVars = c('day', 'root'))
 #' # Now build the data frame for mixed model analysis
-#' dfUniNN <- buildDfMM(yangPims, gene = 'SmVND2', pi = 'nn')
+#' dfUniNN <- buildDataFrame(yangPims, gene = 'SmVND2', pi = 'nn')
 #' # Example analysis with linear mixed model
 #' library(lmerTest)
 #' # Use sum coding for day to maintain interpretability of the intercept
@@ -31,7 +31,7 @@
 #' )
 #' summary(mixedMod)
 #' # Evidence for aggregation
-buildDfMM <- function(obj, gene, pi = c("nn", "nnPair", "edge", "midpoint", "nnCell", "nnPairCell")) {
+buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "midpoint", "nnCell", "nnPairCell")) {
     pi <- match.arg(pi)
     stopifnot((lg <- length(gene)) %in% c(1, 2))
     foo <- checkPi(obj, pi)
