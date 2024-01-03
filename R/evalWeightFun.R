@@ -18,15 +18,4 @@
 evalWeightFunction <- function(wf, newdata) {
     1/exp(predict.scam(wf, newdata = newdata))
 }
-#' Add weights to PI matrix
-#'
-#' @param piMat The exisitng matrix with PI and design variables
-#' @inheritParams buildDfMM
-#'
-#' @return The matrix with the weights column added
-addWeights = function(piMat, pi, obj){
-    weight <- evalWeightFunction(obj$Wfs[[pi]],
-                                 newdata = piMat[, if(grepl("Pair", pi)) c("minP", "maxP") else "NP", drop = FALSE])
-    weight <- weight/sum(weight, na.rm = TRUE)
-    piMat <- cbind(piMat, weight)
-}
+
