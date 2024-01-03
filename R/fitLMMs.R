@@ -30,7 +30,8 @@
 #' @importFrom BiocParallel bplapply
 #' @importFrom methods is
 #' @seealso \link{buildDfMM},\link{getResults}
-fitLMMsSingle <- function(obj, pi, fixedVars = NULL, randomVars = NULL, verbose = TRUE, returnModels = FALSE, Formula = NULL,
+fitLMMsSingle <- function(obj, pi, fixedVars = NULL, randomVars = NULL,
+                          verbose = TRUE, returnModels = FALSE, Formula = NULL,
     randomNested = TRUE, features = getFeatures(obj)) {
     pi <- match.arg(pi, choices = c("nn", "nnPair", "edge", "midpoint", "nnCell",
         "nnPairCell"))
@@ -83,7 +84,8 @@ fitLMMsSingle <- function(obj, pi, fixedVars = NULL, randomVars = NULL, verbose 
         feats[featIds]
     } else {
         # First check if gene is present at all
-        featIds <- colSums(vapply(features, FUN.VALUE = double(nrow(obj$hypFrame)), function(gene) {
+        featIds <- colSums(vapply(features,
+                    FUN.VALUE = double(nrow(obj$hypFrame)), function(gene) {
             vapply(obj$hypFrame$tabObs, FUN.VALUE = double(1),
                    function(x) x[gene])
         }) > 1, na.rm = TRUE) >= 1

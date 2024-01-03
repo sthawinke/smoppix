@@ -9,16 +9,12 @@
 #' This parameter is a strong driver of memory and cpu usage.
 #' @param nPointsAllWin How many points to subsample or simulate
 #' to calculate distance to cell edge or midpoint distribution
-#' @param allowManyGenePairs A boolean, set to true to suppress
-#' warning messages for large numbers of gene pairs
-#' @param manyPairs An integer, what are considered many gene pairs
-#' @param verbose Should verbose output be printed?
 #' @param owins,centroids The list of windows corresponding to cells,
 #' and their centroids
 #' @param features A character vector, for which features should the
 #' probabilistic indices be calculated?
 #' @param tabObs A table of observed gene frequencies
-#' @param verbose a boolean, should verbose output be printed?
+#' @param window An window of class owin, in which events can occur
 #'
 #' @return Data frames with estimated quantities per gene and/or gene pair
 #' @importFrom stats ecdf dist
@@ -43,7 +39,8 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = switch(null, "backg
     }
     if (any(pis %in% c("edge", "midpoint"))) {
         ecdfsCell <- findEcdfsCell(p = p, owins = owins, centroids = centroids,
-                                   nPointsAllWin = nPointsAllWin, null = null)
+                                   nPointsAllWin = nPointsAllWin, null = null,
+                                   pis = pis)
     }
     piList = calcIndividualPIs(p = p, pSubLeft = pSubLeft, pis = pis,
                                null = null, tabObs = tabObs, owins = owins,

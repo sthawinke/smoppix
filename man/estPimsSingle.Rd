@@ -40,12 +40,7 @@ probabilistic indices be calculated?}
 \item{owins, centroids}{The list of windows corresponding to cells,
 and their centroids}
 
-\item{allowManyGenePairs}{A boolean, set to true to suppress
-warning messages for large numbers of gene pairs}
-
-\item{manyPairs}{An integer, what are considered many gene pairs}
-
-\item{verbose}{a boolean, should verbose output be printed?}
+\item{window}{An window of class owin, in which events can occur}
 }
 \value{
 Data frames with estimated quantities per gene and/or gene pair

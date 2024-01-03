@@ -1,6 +1,8 @@
 #' Calculate individual PI entries
 #'
 #' @param pSubLeft The subsampled overall point pattern
+#' @param ecdfAll,ecdfsCell Empirical cumulative distribution functions of all
+#' events and of cells within the cell, under the null
 #' @inheritParams estPimsSingle
 #'
 #' @return A list over the features with all PI entries

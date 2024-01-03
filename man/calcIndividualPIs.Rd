@@ -34,6 +34,9 @@ defined. See details.}
 
 \item{features}{A character vector, for which features should the
 probabilistic indices be calculated?}
+
+\item{ecdfAll, ecdfsCell}{Empirical cumulative distribution functions of all
+events and of cells within the cell, under the null}
 }
 \value{
 A list over the features with all PI entries

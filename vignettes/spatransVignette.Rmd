@@ -196,7 +196,7 @@ head(getResults(allModsNNpair, "Intercept"))
 
 # Eng2019: Mouse brain cells
 
-## Tests for vicinity to cell wall or fixed point: distances to fixed objects
+## Tests for vicinity to cell wall or centroid: distances to fixed objects
  
 # Session info
 

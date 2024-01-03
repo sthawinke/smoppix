@@ -4,7 +4,7 @@
 \alias{findEcdfsCell}
 \title{Construct ecdfs for cellwise measures, such as distance to edge or centroid}
 \usage{
-findEcdfsCell(p, owins, nPointsAllWin, centroids, null)
+findEcdfsCell(p, owins, nPointsAllWin, centroids, null, pis)
 }
 \arguments{
 \item{p}{The point pattern}
@@ -17,6 +17,8 @@ to calculate distance to cell edge or midpoint distribution}
 
 \item{null}{A character vector, indicating how the null distribution is
 defined. See details.}
+
+\item{pis}{The probabilistic indices to be estimated}
 }
 \value{
 The list of ecdf functions

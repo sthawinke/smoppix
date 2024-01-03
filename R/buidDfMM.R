@@ -80,13 +80,17 @@ buildDfMM <- function(obj, gene, pi = c("nn", "nnPair", "edge", "midpoint", "nnC
                        setdiff(colnames(cellCovars), "gene")]
             tabCell <- table(marks(obj$hypFrame$ppp[[n]], drop = FALSE)$gene,
                              marks(obj$hypFrame$ppp[[n]], drop = FALSE)$cell)
-            npVec <- tabCell[geneSplit, match(names(piEst), colnames(tabCell)), drop = FALSE]
+            npVec <- if(all(geneSplit %in% rownames(tabCell))){
+                tabCell[geneSplit, match(names(piEst), colnames(tabCell)), drop = FALSE]
+            } else matrix(NA, nrow = if(pairId) 2 else 1, ncol = length(piEst))
             rownames(npVec) = if(pairId) c("minP", "maxP") else "NP"
             data.frame(pi = piEst, cellCovars, t(npVec))
         } else {
             piEst = if(gene %in% names(x[[piListNameInner]][[pi]]))
                 x[[piListNameInner]][[pi]][[gene]] else NA
-            npVec <- obj$hypFrame[n, "tabObs", drop = TRUE][geneSplit]
+            npVec <- if(all(geneSplit %in% names(obj$hypFrame[n, "tabObs", drop = TRUE]))){
+                obj$hypFrame[n, "tabObs", drop = TRUE][geneSplit]
+            } else NA
             if(pairId){
                 data.frame(piEst, "minP" = min(npVec), "maxP" = max(npVec))
             } else {

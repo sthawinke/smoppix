@@ -3,7 +3,7 @@
 #' @inheritParams estPimsSingle
 #'
 #' @return The list of ecdf functions
-findEcdfsCell = function(p, owins, nPointsAllWin, centroids, null){
+findEcdfsCell = function(p, owins, nPointsAllWin, centroids, null, pis){
     ecdfsCell <- lapply(names(owins), function(nam) {
         pSub <- switch(null,
                        "CSR" = runifpoint(nPointsAllWin, win = owins[[nam]]),
