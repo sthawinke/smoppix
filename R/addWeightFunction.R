@@ -49,10 +49,12 @@
 addWeightFunction <- function(resList, pis = resList$pis, designVars, lowestLevelVar, maxObs = 1e+05, maxFeatures = 500,
     ...) {
     if (is.null(resList$pis)) {
-        stop("No pims found in the hyperframe.", "First estimate them using the estPims() function.")
+        stop("No pims found in the hyperframe.",
+             "First estimate them using the estPims() function.")
     }
     if (all(pis %in% c("edge", "midpoint"))) {
-        stop("Calculating weight matrices for distances to fixed points is ", "unnecessary as they are independent.
+        stop("Calculating weight matrices for distances to fixed points is ",
+        "unnecessary as they are independent.
              Simply proceed with fitting the model on the",
             " individual evaluations of the B-function.")
     }
@@ -80,11 +82,7 @@ addWeightFunction <- function(resList, pis = resList$pis, designVars, lowestLeve
             ordDesign <- order(designVec)  # Ensure correct ordering for tapply
         }
         varEls <- lapply(features, function(gene) {
-            geneSplit <- if (pairId) {
-                sund(gene)
-            } else {
-                gene
-            }
+            geneSplit <- if (pairId) {sund(gene)} else {gene}
             if (cellId) {
                 piSub <- sub("Cell", "", pi)
                 piList <- lapply(resList$hypFrame$pimRes, function(x) {
