@@ -1,6 +1,6 @@
 #' Fit linear mixed nodels for all features of a pimRes object
 #'
-#' @inheritParams buildDfMM
+#' @inheritParams buildDataFrame
 #' @param fixedVars Names of fixed effects
 #' @param randomVars Names of random variables, possibly in a single vector to
 #' reflect nesting structure, see details.
@@ -29,7 +29,7 @@
 #' @importFrom lme4 lmerControl .makeCC isSingular
 #' @importFrom BiocParallel bplapply
 #' @importFrom methods is
-#' @seealso \link{buildDfMM},\link{getResults}
+#' @seealso \link{buildDataFrame},\link{getResults}
 fitLMMsSingle <- function(obj, pi, fixedVars = NULL, randomVars = NULL, verbose = TRUE, returnModels = FALSE, Formula = NULL,
     randomNested = TRUE, features = getFeatures(obj)) {
     pi <- match.arg(pi, choices = c("nn", "nnPair", "edge", "midpoint", "nnCell", "nnPairCell"))
@@ -84,7 +84,7 @@ fitLMMsSingle <- function(obj, pi, fixedVars = NULL, randomVars = NULL, verbose 
         # Leave out barely expressed genes
     }
     models <- bplapply(Features, function(gene) {
-        df <- buildDfMM(obj, gene = gene, pi = pi)
+        df <- buildDataFrame(obj, gene = gene, pi = pi)
         if (randomNested) {
             df <- nestRandom(df, randomVarsSplit)
         }

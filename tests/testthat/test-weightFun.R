@@ -21,18 +21,18 @@ test_that("Adding the weight function works", {
     ))
     # With information sharing across features
     expect_s3_class(
-        dfBG1 <- buildDfMM(objBG, gene = "gene1", pi = "nn"),
+        dfBG1 <- buildDataFrame(objBG, gene = "gene1", pi = "nn"),
         "data.frame"
     )
     expect_s3_class(
-        dfBG2 <- buildDfMM(objBG, gene = "gene1--gene2", pi = "nnPair"),
+        dfBG2 <- buildDataFrame(objBG, gene = "gene1--gene2", pi = "nnPair"),
         "data.frame"
     )
 })
 test_that("Weight function application throws errors where appropriate", {
-    expect_error(buildDfMM(piEstsBG, gene = "gene101", pi = "nn"))
-    expect_error(buildDfMM(piEstsBG, gene = "gene1--gene2", pi = "nnPair"))
-    expect_error(buildDfMM(piEstsBG, gene = "gene1", pi = "nn"))
+    expect_error(buildDataFrame(piEstsBG, gene = "gene101", pi = "nn"))
+    expect_error(buildDataFrame(piEstsBG, gene = "gene1--gene2", pi = "nnPair"))
+    expect_error(buildDataFrame(piEstsBG, gene = "gene1", pi = "nn"))
     expect_error(addWeightFunction(piEstsCSR,
         designVars = "condition",
         lowestLevelVar = "fov"

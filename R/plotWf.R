@@ -1,6 +1,6 @@
 #' Plot the weighting function: The observation weigth as a function of the number of observations
 #'
-#' @inheritParams buildDfMM
+#' @inheritParams buildDataFrame
 #' @param pi The PI for which to plot the weighting function
 #'
 #' @return For univariate PI, returns a line plot; for bivariate PI a ggplot object

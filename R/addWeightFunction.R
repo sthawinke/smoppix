@@ -29,7 +29,7 @@
 #' @importFrom BiocParallel bplapply
 #' @importFrom Rfast rowAll
 #' @export
-#' @seealso \link{buildDfMM}
+#' @seealso \link{buildDataFrame}
 #' @examples
 #' data(Yang)
 #' hypYang <- buildHyperFrame(Yang,
