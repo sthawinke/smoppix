@@ -137,35 +137,29 @@ addWeightFunction <- function(resList, pis = resList$pis, designVars,
                   }
                 }))  # The quadratic departures from the conditional mean
                 tabEntries <- vapply(resList$hypFrame$tabObs[ordDesign],
-                                     FUN.VALUE = double(if (pairId) 2 else 1),
+                                     FUN.VALUE = double(1),
                                      function(x) {
                   if (pairId) {
                     if (all(geneSplit %in% names(x)))
-                      sort(x[geneSplit]) else rep(NA, 2)
+                      sum(x[geneSplit]) else NA #Number of NN distances
                   } else {
                     x[geneSplit]
                   }
                 })
                 out <- rbind(quadDeps = quadDeps, tabEntries)
             }
-            rownames(out)[-1] <- if (pairId)
-                c("minP", "maxP") else "NP"
+            rownames(out)[-1] <- "NP"
             out
         })
-        varElMat <- matrix(unlist(varEls), ncol = if (pairId)
-            3 else 2, byrow = TRUE, dimnames = list(NULL,
-            c("quadDeps", if (pairId) c("minP", "maxP") else "NP")))
+        varElMat <- matrix(unlist(varEls), ncol = 2, byrow = TRUE,
+                           dimnames = list(NULL, c("quadDeps", "NP")))
         # Faster than cbind
         varElMat <- varElMat[!is.na(varElMat[, "quadDeps"]) &
                                  varElMat[, "quadDeps"] != 0, ]
         if (nrow(varElMat) > maxObs) {
             varElMat <- varElMat[sample(nrow(varElMat), maxObs), ]
         }
-        scamForm <- formula(paste("log(quadDeps) ~", if (pairId) {
-            "s(log(minP), bs = 'mpd') + s(log(maxP), bs = 'mpd')"
-        } else {
-            "s(log(NP), bs = 'mpd')"
-        }))
+        scamForm <- formula("log(quadDeps) ~ s(log(NP), bs = 'mpd')")
         scamMod <- scam(scamForm, data = data.frame(varElMat), ...)
         attr(scamMod, "pis") <- pi
         return(scamMod)
