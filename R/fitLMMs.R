@@ -27,7 +27,6 @@
 #' @importFrom lmerTest lmer
 #' @importFrom stats formula na.omit anova lm
 #' @importFrom lme4 lmerControl .makeCC isSingular
-#' @importFrom BiocParallel bplapply
 #' @importFrom methods is
 #' @seealso \link{buildDataFrame},\link{getResults}
 fitLMMsSingle <- function(obj, pi, fixedVars = NULL, randomVars = NULL, verbose = TRUE, returnModels = FALSE, Formula = NULL,
@@ -83,7 +82,7 @@ fitLMMsSingle <- function(obj, pi, fixedVars = NULL, randomVars = NULL, verbose 
         features[featIds]
         # Leave out barely expressed genes
     }
-    models <- bplapply(Features, function(gene) {
+    models <- lapply(Features, function(gene) {
         df <- buildDataFrame(obj, gene = gene, pi = pi)
         if (randomNested) {
             df <- nestRandom(df, randomVarsSplit)

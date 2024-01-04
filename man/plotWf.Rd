@@ -27,7 +27,7 @@ yangPims <- estPims(hypYang[c(seq_len(5), seq(25, 29)),],
     pis = c('nn', 'nnPair')
 )
 # First Build the weighting function
-yangObj <- addWeightFunction(yangPims, designVars = c('day', 'root'))
-plotWf(yangObj, 'nn')
-plotWf(yangObj, 'nnPair')
+yangPims <- addWeightFunction(yangPims, designVars = c('day', 'root'))
+plotWf(yangPims, 'nn')
+plotWf(yangPims, 'nnPair')
 }

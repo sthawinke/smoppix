@@ -11,6 +11,7 @@ addWeightFunction(
   lowestLevelVar,
   maxObs = 1e+05,
   maxFeatures = 500,
+  minNumVar = 3,
   ...
 )
 }
