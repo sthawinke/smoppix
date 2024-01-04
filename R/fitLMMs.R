@@ -29,9 +29,11 @@
 #' @importFrom lme4 lmerControl .makeCC isSingular
 #' @importFrom methods is
 #' @seealso \link{buildDataFrame},\link{getResults}
-fitLMMsSingle <- function(obj, pi, fixedVars = NULL, randomVars = NULL, verbose = TRUE, returnModels = FALSE, Formula = NULL,
+fitLMMsSingle <- function(obj, pi, fixedVars = NULL, randomVars = NULL,
+                          verbose = TRUE, returnModels = FALSE, Formula = NULL,
     randomNested = TRUE, features = getFeatures(obj)) {
-    pi <- match.arg(pi, choices = c("nn", "nnPair", "edge", "midpoint", "nnCell", "nnPairCell"))
+    pi <- match.arg(pi, choices = c("nn", "nnPair", "edge", "midpoint",
+                                    "nnCell", "nnPairCell"))
     noWeight <- pi %in% c("edge", "midpoint")
     # For independent distances, no weights are needed
     randomVarsSplit <- if (!is.null(randomVars))
@@ -92,17 +94,17 @@ fitLMMsSingle <- function(obj, pi, fixedVars = NULL, randomVars = NULL, verbose 
         }
         if (MM) {
             mod <- try(lmerTest::lmer(Formula, data = df, na.action = na.omit, weights = if (noWeight)
-                NULL else weight, contrasts = contrasts, control = Control), silent = TRUE)
+                NULL else df$weight, contrasts = contrasts, control = Control), silent = TRUE)
         }
         # If no random variables or fit failed, go for linear model
         if (!MM || is(mod, "try-error")) {
             mod <- try(lm(formula(fixedPart), data = df, na.action = na.omit, weights = if (noWeight)
-                NULL else weight, contrasts = contrasts), silent = TRUE)
+                NULL else df$weight, contrasts = contrasts), silent = TRUE)
         }
         # If still fails, drop fixed effects
         if (is(mod, "try-error")) {
             mod <- lm(formula("pi - 0.5 ~ 1"), data = df, na.action = na.omit, weights = if (noWeight)
-                NULL else weight)
+                NULL else df$weight)
         }
         return(mod)
     })

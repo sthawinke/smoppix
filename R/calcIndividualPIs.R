@@ -33,10 +33,11 @@ calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null, 
             if (is.matrix(distMat)) {
                 approxRanksTmp <- switch(null, background = findRanksDist(getCoordsMat(pSub), getCoordsMat(pSubLeft$Pout),
                   distMat^2), CSR = matrix(ecdfAll(distMat), nrow = nrow(distMat)))
-                approxRanks <- round(NPall * approxRanksTmp/(switch(null, background = (npoints(pSubLeft$Pout) - which(marks(p,
-                  drop = FALSE)$gene == feat) %in% pSubLeft$id), CSR = 1)))
+                approxRanks <- round((approxRanksTmp/(switch(null, background = (npoints(pSubLeft$Pout) - which(marks(p,
+                  drop = FALSE)$gene == feat) %in% pSubLeft$id), CSR = 1)))*NPall)
                 # Correct for self distances by subtracting one. The C++ function only counts distances larger so
                 # self distances will be ignored in the numerator
+                #Get the order right to prevent integer overflow: first divide, then multiply
                 approxRanks[approxRanks == 0] <- 1
                 colnames(approxRanks) <- colnames(distMat)
             }

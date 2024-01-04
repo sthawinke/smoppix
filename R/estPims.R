@@ -4,9 +4,10 @@
 #' @param pis The probabilistic indices to be estimated
 #' @param null A character vector, indicating how the null distribution is
 #'  defined. See details.
-#' @param nPointsAll How many points to subsample or simulate to calculate
+#' @param nPointsAll,nPointsAllWithinCell How many points to subsample or simulate to calculate
 #' overall interpoint distance and distance to point.
-#' This parameter is a strong driver of memory and cpu usage.
+#' This parameter is a strong driver of computation time.
+#'The second argument applies to within cell calculations.
 #' @param nPointsAllWin How many points to subsample or simulate
 #' to calculate distance to cell edge or midpoint distribution
 #' @param owins,centroids The list of windows corresponding to cells,
@@ -20,13 +21,10 @@
 #' @importFrom stats ecdf dist
 #' @importFrom Rdpack reprompt
 #' @importFrom Rfast rowSort rowMins rowAny
-estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = switch(null, background = 10000, CSR = 1000), nPointsAllWin = 2000,
+estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = switch(null, background = 1e5, CSR = 1e3),
+                          nPointsAllWithinCell = switch(null, background = 1e4, CSR = 2e2),nPointsAllWin = 2e3,
     features = NULL, owins = NULL, centroids = NULL, window = p$window) {
-    if (is.null(features)) {
-        features <- names(tabObs)
-    } else {
-        features <- intersect(features, names(tabObs))
-    }
+    features <- intersect(features, names(tabObs))
     if (any(pis %in% c("nn", "nnPair"))) {
         if (null == "background") {
             # Subset some background points
@@ -67,7 +65,7 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = switch(null, backgr
         splitCell <- split.ppp(p, f = "cell")
         cellDists <- lapply(names(owins), function(nam) {
             estPimsSingle(pis = gsub("Cell", "", grep(value = TRUE, "Cell", pis)), p = splitCell[[nam]], null = null,
-                nPointsAll = switch(null, background = 10000, CSR = 200), window = owins[[nam]], features = features,
+                nPointsAll = nPointsAllWithinCell, window = owins[[nam]], features = features,
                 tabObs = table(marks(splitCell[[nam]], drop = FALSE)$gene))$pointDists
         })
         names(cellDists) <- names(owins)
@@ -122,7 +120,7 @@ estPims <- function(hypFrame, pis = c("nn", "nnPair", "edge", "midpoint", "nnCel
             message(x, " of ", nrow(hypFrame), "  ")
         }
         out <- estPimsSingle(hypFrame[[x, "ppp"]], owins = hypFrame[x, "owins", drop = TRUE], pis = pis, null = null,
-            tabObs = hypFrame[[x, "tabObs"]], centroids = hypFrame[x, "centroids", drop = TRUE], ...)
+            tabObs = hypFrame[[x, "tabObs"]], centroids = hypFrame[x, "centroids", drop = TRUE], features = features,...)
         return(out)
     })
     list(hypFrame = hypFrame, null = null, pis = pis, features = features)

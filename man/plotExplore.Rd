@@ -4,7 +4,13 @@
 \alias{plotExplore}
 \title{Plot the hyperframe for exploratory purposes}
 \usage{
-plotExplore(hypFrame, features = getFeatures(hypFrame), ppps, maxPlot = 1e+05)
+plotExplore(
+  hypFrame,
+  features = getFeatures(hypFrame),
+  ppps,
+  maxPlot = 1e+05,
+  Cex = 1
+)
 }
 \arguments{
 \item{hypFrame}{The hyperframa}
@@ -15,6 +21,8 @@ plotExplore(hypFrame, features = getFeatures(hypFrame), ppps, maxPlot = 1e+05)
 Defaults to the first 8.}
 
 \item{maxPlot}{The maximum number of events plotted per point pattern}
+
+\item{Cex}{Point amplification factor}
 }
 \value{
 Plots a facet of point patterns to output
