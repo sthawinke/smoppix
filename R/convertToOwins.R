@@ -14,26 +14,27 @@ convertToOwins = function(windows, coords){
         if(require(polyCub)){
             lapply(windows, function(spdf){
                 p <- slot(spdf, "polygons")
-                lapply(p, as.owin.SpatialPolygons)
+                lapply(p, polyCub::as.owin.SpatialPolygons)
             })
         } else {
             stop("Install polyCub package first")
         }
     } else if(allClass(windows, function(x) {is.data.frame(x) || is.matrix(x)})){
         lapply(windows, function(df){
-            foo = try(silent = TRUE, owin(poly = list(x = roisText[i, "X"],
-                                                      y = roisText[i, "Y"])))
+            i = seq_len(nrow(df))
+            foo = try(silent = TRUE, owin(poly = list(x = df[, coords[1]],
+                                                      y = df[, coords[2]])))
             if(is(foo, "try-error")){
-                foo = try(silent = TRUE, owin(poly = list(x = roisText[rev(i), "X"],
-                                                          y = roisText[i, "Y"])))
+                foo = try(silent = TRUE, owin(poly = list(x = df[rev(i), coords[1]],
+                                                          y = df[, coords[2]])))
             }
             if(is(foo, "try-error")){
-                foo = try(silent = TRUE, owin(poly = list(x = roisText[i, "X"],
-                                                          y = roisText[rev(i), "Y"])))
+                foo = try(silent = TRUE, owin(poly = list(x = df[, coords[1]],
+                                                          y = df[rev(i), coords[2]])))
             }
             if(is(foo, "try-error")){
-                foo = try(silent = TRUE, owin(poly = list(x = roisText[rev(i), "X"],
-                                                          y = roisText[rev(i), "Y"])))
+                foo = try(silent = TRUE, owin(poly = list(x = df[rev(i), coords[1]],
+                                                          y = df[rev(i), coords[2]])))
             }
             foo
         })

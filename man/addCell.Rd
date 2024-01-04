@@ -19,7 +19,7 @@ addCell(
 
 \item{owins}{the list containing a list of owins per point pattern.
 The length of the list must match the length of the hyperframe, and the names must match.
-Also lists of geojson objects or rois are accepted}
+Also lists of geojson objects, coordinate matrices or rois are accepted}
 
 \item{cellTypes}{A dataframe of cell types and other cell-associated covariates.
 If supplied, it must contain a variable 'cell' that is matched with the names of the owins}

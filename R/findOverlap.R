@@ -19,18 +19,20 @@ findOverlap <- function(owins, returnIds = FALSE) {
     combs <- combn(length(owins), 2)
     splitFac <- rep(seq_len(bpparam()$workers), length.out = ncol(combs))
     Ids <- unsplit(f = splitFac, bplapply(split(seq_len(ncol(combs)), f = splitFac), function(ss) {
-        vapply(ss, FUN.VALUE = TRUE, function(i) {
-        Overlap <- overlap.owin(owins[[combs[1, i]]], owins[[combs[2, i]]]) > 0
-        if (returnIds) {
-            return(Overlap)
-        } else if (Overlap) {
-            stop("Overlap detected between windows ", combs[1, i], " and ", combs[2, i], "!\nWindows must be non-overlapping.")
-        }
-    })
+            vapply(ss, FUN.VALUE = TRUE, function(i) {
+            Overlap <- overlap.owin(owins[[combs[1, i]]], owins[[combs[2, i]]]) > 0
+            if (returnIds) {
+                return(Overlap)
+            } else if (Overlap) {
+                stop("Overlap detected between windows ", combs[1, i], " and ",
+                     combs[2, i], "!\nWindows must be non-overlapping.")
+            }
+        })
+    }))
     return(if (returnIds) {
         combs[, unlist(Ids)]
     } else {
         invisible()
     })
-    }))
+
 }

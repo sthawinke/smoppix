@@ -4,7 +4,7 @@
 #' @param hypFrame The hyperframe
 #' @param owins the list containing a list of owins per point pattern.
 #' The length of the list must match the length of the hyperframe, and the names must match.
-#' Also lists of geojson objects or rois are accepted
+#' Also lists of geojson objects, coordinate matrices or rois are accepted
 #' @param cellTypes A dataframe of cell types and other cell-associated covariates.
 #' If supplied, it must contain a variable 'cell' that is matched with the names of the owins
 #' @param checkOverlap a boolean, should windows be checked for overlap?
@@ -90,8 +90,8 @@ addCell <- function(hypFrame, owins, cellTypes = NULL, checkOverlap = FALSE,
             warning(nOut, " points lie outside all windows for point pattern ",
                     nn, " and were not assigned to a cell.\n")
         }
-        if(anyDuplicated(ul)){
-            warning("Some points lie in several overlapping cells! See findOverlap()")
+        if(numDup <- length(which(duplicated(ul)))){
+            warning(numDup, "points lie in several overlapping cells! See findOverlap()")
         }
         cellOut <- rep("NA", NP)
         for(i in names(idWindow)){
