@@ -81,7 +81,7 @@ addCell <- function(hypFrame, owins, cellTypes = NULL, checkOverlap = FALSE, war
         idWindow <- lapply(owins[[nn]], function(rr) {
             which(inside.owin(ppp, w = rr))
         })
-        if (!any(lll <- vapply(idWindow, FUN.VALUE = double(1), length))) {
+        if (!any((lll <- vapply(idWindow, FUN.VALUE = double(1), length))>0)) {
             stop("All points lie outside all windows for point pattern ", nn, " check your input!")
         }
         if (((nOut <- (NP- length(ul <- unlist(idWindow)))) > 0) && warnOut) {
@@ -92,10 +92,9 @@ addCell <- function(hypFrame, owins, cellTypes = NULL, checkOverlap = FALSE, war
             warning("Some points lie in several overlapping cells! See findOverlap()")
         }
         cellOut <- rep("NA", NP)
-        idIn = unique(ul)
-        cumLengths = cumsum(lll)
-        foo = vapply(match(idIn, ul), FUN.VALUE = 0L, function(x) which.max(x > cumLengths))
-        cellOut[idIn] <- names(idWindow)[foo]
+        for(i in names(idWindow)){
+            cellOut[idWindow[[i]]] = i
+        }
         hypFrame[[nn, "ppp"]] <- setmarks(hypFrame[[nn, "ppp"]], {
             m <- cbind(marks(hypFrame[[nn, "ppp"]], drop = FALSE), cell = cellOut)
             if (ct) {
