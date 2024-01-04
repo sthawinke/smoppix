@@ -10,9 +10,10 @@
 #' @param checkOverlap a boolean, should windows be checked for overlap?
 #' @param warnOut a boolean, should warning be issued when points are not
 #' contained in window
+#' @param coords The names of the coordinates, if the windows are given as sets of coordinates
 #' @return the modified hyperframe
 #' @importFrom Rfast rowAny
-#' @importFrom spatstat.geom is.owin inside.owin setmarks centroid.owin
+#' @importFrom spatstat.geom inside.owin setmarks centroid.owin
 #' @export
 #' @seealso \link{buildHyperFrame}
 #' @details First the different cells are checked for overlap per point pattern.
@@ -56,12 +57,13 @@
 #' names(wList) <- rownames(hypFrame) # Matching names is necessary
 #' hypFrame2 <- addCell(hypFrame, wList)
 #' # TO DO: accept coordinate matrices, rois geojson
-addCell <- function(hypFrame, owins, cellTypes = NULL, checkOverlap = FALSE, warnOut = TRUE) {
+addCell <- function(hypFrame, owins, cellTypes = NULL, checkOverlap = FALSE,
+                    warnOut = TRUE, coords = c("x", "y")) {
     stopifnot(nrow(hypFrame) == length(owins),
               all(rownames(hypFrame) %in% names(owins)),
               is.hyperframe(hypFrame),
               is.null(cellTypes) || is.data.frame(cellTypes))
-    owins = lapply(owins, convertToOwins)
+    owins = lapply(owins, convertToOwins, coords = coords)
     if (ct <- is.data.frame(cellTypes)) {
         if (!("cell" %in% names(cellTypes))) {
             stop("Variable names 'cell' must be contained in cell types dataframe")

@@ -5,13 +5,21 @@
 \title{Check in which cell each event lies and add a cell marker,
 plus include the list of regions}
 \usage{
-addCell(hypFrame, owins, cellTypes = NULL, checkOverlap = TRUE, warnOut = TRUE)
+addCell(
+  hypFrame,
+  owins,
+  cellTypes = NULL,
+  checkOverlap = FALSE,
+  warnOut = TRUE,
+  coords = c("x", "y")
+)
 }
 \arguments{
 \item{hypFrame}{The hyperframe}
 
 \item{owins}{the list containing a list of owins per point pattern.
-The length of the list must match the length of the hyperframe, and the names must match.}
+The length of the list must match the length of the hyperframe, and the names must match.
+Also lists of geojson objects or rois are accepted}
 
 \item{cellTypes}{A dataframe of cell types and other cell-associated covariates.
 If supplied, it must contain a variable 'cell' that is matched with the names of the owins}
@@ -20,6 +28,8 @@ If supplied, it must contain a variable 'cell' that is matched with the names of
 
 \item{warnOut}{a boolean, should warning be issued when points are not
 contained in window}
+
+\item{coords}{The names of the coordinates, if the windows are given as sets of coordinates}
 }
 \value{
 the modified hyperframe
