@@ -2,12 +2,9 @@
 #'
 #' @param windows The list of windows
 #'
-#' @return
-#' @export
-#'
-#' @examples
+#' @return A list of owins
 convertToOwins = function(windows){
-    if(all(vapply(windows, FUN.VALUE = TRUE, is.owin))){
+    out = if(all(vapply(windows, FUN.VALUE = TRUE, is.owin))){
         return(windows)
     }
 }

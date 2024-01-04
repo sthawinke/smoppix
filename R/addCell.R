@@ -61,7 +61,7 @@ addCell <- function(hypFrame, owins, cellTypes = NULL, checkOverlap = FALSE, war
               all(rownames(hypFrame) %in% names(owins)),
               is.hyperframe(hypFrame),
               is.null(cellTypes) || is.data.frame(cellTypes))
-    owins = convertToOwins(owins)
+    owins = lapply(owins, convertToOwins)
     if (ct <- is.data.frame(cellTypes)) {
         if (!("cell" %in% names(cellTypes))) {
             stop("Variable names 'cell' must be contained in cell types dataframe")
@@ -93,7 +93,8 @@ addCell <- function(hypFrame, owins, cellTypes = NULL, checkOverlap = FALSE, war
         }
         cellOut <- rep("NA", NP)
         for(i in names(idWindow)){
-            cellOut[idWindow[[i]]] = i
+            cellOut[idWindow[[i]]][cellOut[idWindow[[i]]] == "NA"] = i
+            #Don't overwrite, stick to first match
         }
         hypFrame[[nn, "ppp"]] <- setmarks(hypFrame[[nn, "ppp"]], {
             m <- cbind(marks(hypFrame[[nn, "ppp"]], drop = FALSE), cell = cellOut)
