@@ -5,7 +5,8 @@
 #' @return The list of ecdf functions
 findEcdfsCell <- function(p, owins, nPointsAllWin, centroids, null, pis) {
     ecdfsCell <- lapply(names(owins), function(nam) {
-        pSub <- switch(null, CSR = runifpoint(nPointsAllWin, win = owins[[nam]]), background = subSampleP(pCell <- p[marks(p,
+        pSub <- switch(null, "CSR" = runifpoint(nPointsAllWin, win = owins[[nam]]),
+                       "background" = subSampleP(pCell <- p[marks(p,
             drop = FALSE)$cell == nam, ], nPointsAllWin))
         edge <- if (any(pis == "edge")) {
             ecdf(nncross(pSub, edges(owins[[nam]]), what = "dist"))

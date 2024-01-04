@@ -46,8 +46,9 @@
 #' yangObj2 <- addWeightFunction(yangPims, lowestLevelVar = 'section',
 #'     pi = 'nn'
 #' )
-addWeightFunction <- function(resList, pis = resList$pis, designVars, lowestLevelVar, maxObs = 1e+05, maxFeatures = 500,
-    ...) {
+addWeightFunction <- function(resList, pis = resList$pis, designVars,
+                              lowestLevelVar, maxObs = 1e+05, maxFeatures = 500,
+                              minNumVar = 3, ...) {
     if (is.null(resList$pis)) {
         stop("No pims found in the hyperframe.",
              "First estimate them using the estPims() function.")
@@ -96,21 +97,24 @@ addWeightFunction <- function(resList, pis = resList$pis, designVars, lowestLeve
                 })
                 # If cellId, there is no tapply, cells are the lowest level anyway
                 tmp <- lapply(ordDesign, function(x) {
-                  tab <- table(marks(resList$hypFrame$ppp[[x]])$cell, marks(resList$hypFrame$ppp[[x]])$gene)
+                  tab <- table(marks(resList$hypFrame$ppp[[x]])$cell,
+                               marks(resList$hypFrame$ppp[[x]])$gene)
                   if (!all(geneSplit %in% colnames(tab))) {
                     return(NULL)
                   }
-                  lenOut <- sum(id <- rowAll((CellGene <- tab[, geneSplit, drop = FALSE]) > (1 - pairId)))
+                  lenOut <- sum(id <- rowAll((CellGene <- tab[,
+                                    geneSplit, drop = FALSE]) > (1 - pairId)))
                   if (!lenOut) {
                     return(NULL)
                   } else {
                     xx <- unlist(piList[[x]])
-                    deps <- if (sum(!is.na(xx)) >= 2) {
+                    deps <- if (sum(!is.na(xx)) >= minNumVar) {
                       (xx - mean(xx, na.rm = TRUE))^2
                     } else {
                       rep_len(NA, lenOut)
                     }
-                    cbind(quadDeps = matrix(deps, nrow = lenOut), rowSort(CellGene[id, , drop = FALSE]))
+                    cbind(quadDeps = matrix(deps, nrow = lenOut),
+                          rowSort(CellGene[id, , drop = FALSE]))
                   }
                 })
                 if (all(vapply(tmp, FUN.VALUE = logical(1), is.null))) {
@@ -120,22 +124,21 @@ addWeightFunction <- function(resList, pis = resList$pis, designVars, lowestLeve
                 }
             } else {
                 # Points with nn
-                piList <- lapply(resList$hypFrame$pimRes, function(x) {
-                  x[["pointDists"]][[pi]]
+                piList <- vapply(resList$hypFrame$pimRes[ordDesign],
+                                 FUN.VALUE = double(1), function(x) {
+                    if (is.null(baa <- getGp(x[["pointDists"]][[pi]], gene)))
+                        NA else baa
                 })
-                tmp <- vapply(piList[ordDesign], FUN.VALUE = double(1), function(x) {
-                  if (is.null(baa <- getGp(x, gene)))
-                    NA else baa
-                })
-                quadDeps <- unlist(tapply(tmp, designVec, function(x) {
-                  if (sum(!is.na(x)) >= 2) {
+                quadDeps <- unlist(tapply(piList, designVec, function(x) {
+                  if (sum(!is.na(x)) >= minNumVar) {
                     (x - mean(x, na.rm = TRUE))^2
                   } else {
                     rep_len(NA, length(x))
                   }
                 }))  # The quadratic departures from the conditional mean
-                tabEntries <- vapply(resList$hypFrame$tabObs[ordDesign], FUN.VALUE = double(if (pairId)
-                  2 else 1), function(x) {
+                tabEntries <- vapply(resList$hypFrame$tabObs[ordDesign],
+                                     FUN.VALUE = double(if (pairId) 2 else 1),
+                                     function(x) {
                   if (pairId) {
                     if (all(geneSplit %in% names(x)))
                       sort(x[geneSplit]) else rep(NA, 2)
@@ -150,14 +153,16 @@ addWeightFunction <- function(resList, pis = resList$pis, designVars, lowestLeve
             out
         })
         varElMat <- matrix(unlist(varEls), ncol = if (pairId)
-            3 else 2, byrow = TRUE, dimnames = list(NULL, c("quadDeps", if (pairId) c("minP", "maxP") else "NP")))
+            3 else 2, byrow = TRUE, dimnames = list(NULL,
+            c("quadDeps", if (pairId) c("minP", "maxP") else "NP")))
         # Faster than cbind
-        varElMat <- varElMat[!is.na(varElMat[, "quadDeps"]) & varElMat[, "quadDeps"] != 0, ]
+        varElMat <- varElMat[!is.na(varElMat[, "quadDeps"]) &
+                                 varElMat[, "quadDeps"] != 0, ]
         if (nrow(varElMat) > maxObs) {
             varElMat <- varElMat[sample(nrow(varElMat), maxObs), ]
         }
         scamForm <- formula(paste("log(quadDeps) ~", if (pairId) {
-            "s(minP, bs = 'mpd') + s(maxP, bs = 'mpd')"
+            "s(log(minP), bs = 'mpd') + s(log(maxP), bs = 'mpd')"
         } else {
             "s(log(NP), bs = 'mpd')"
         }))
