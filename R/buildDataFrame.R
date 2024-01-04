@@ -8,7 +8,6 @@
 #' @return A dataframe
 #' @export
 #' @importFrom scam predict.scam
-#' @importFrom Rfast colSort
 #' @examples
 #' data(Yang)
 #' hypYang <- buildHyperFrame(Yang,
@@ -85,22 +84,16 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "midpoint",
                              marks(obj$hypFrame$ppp[[n]], drop = FALSE)$cell)
             npVec <- if (all(geneSplit %in% rownames(tabCell))) {
                 tmp <- tabCell[geneSplit, match(names(piEst), colnames(tabCell)), drop = FALSE]
-                t(matrix(tmp, ncol = ncol(tmp), dimnames = dimnames(tmp)))
-            } else matrix(NA, ncol = if (pairId) 2 else 1, nrow = length(piEst))
-            colnames(npVec) <- if (pairId)
-                c("minP", "maxP") else "NP"
-            data.frame(pi = piEst, cellCovars, npVec)
+                colSums(tmp)
+            } else rep(NA,nrow = length(piEst))
+            data.frame(pi = piEst, cellCovars, "NP" = npVec)
         } else {
             piEst <- if(is.null(vec <- getGp(x[[piListNameInner]][[pi]], gene)))
                 NA else vec
             npVec <- if (all(geneSplit %in% names(obj$hypFrame[n, "tabObs", drop = TRUE]))){
-                obj$hypFrame[n, "tabObs", drop = TRUE][geneSplit]
+                sum(obj$hypFrame[n, "tabObs", drop = TRUE][geneSplit])
             } else NA
-            if (pairId) {
-                data.frame(pi = piEst, minP = min(npVec), maxP = max(npVec))
-            } else {
-                data.frame(pi = piEst, NP = npVec)
-            }
+            data.frame(pi = piEst, NP = npVec)
         }
     })
     if (all((Times <- vapply(piDfs, FUN.VALUE = integer(1), NROW)) == 0)) {
@@ -112,8 +105,7 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "midpoint",
     if (!windowId) {
         # Add weights
         weight <- evalWeightFunction(obj$Wfs[[pi]],
-                                     newdata = piMat[, if (grepl("Pair", pi))
-            c("minP", "maxP") else "NP", drop = FALSE])
+                                     newdata = piMat[, "NP", drop = FALSE])
         weight <- weight/sum(weight, na.rm = TRUE)
         piMat <- cbind(piMat, weight = weight)
     }
