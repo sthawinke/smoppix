@@ -37,4 +37,5 @@ hypYang <- buildHyperFrame(Yang,
     imageVars = c('day', 'root', 'section')
 )
 plotExplore(hypYang)
+plotExplore(hypYang, features = c("SmRBRb", "SmTMO5b", "SmWER--SmAHK4f"))
 }

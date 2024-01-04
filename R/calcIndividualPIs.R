@@ -15,9 +15,9 @@
 calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null, features, ecdfAll, ecdfsCell) {
     NPall <- npoints(p)
     pSplit <- split.ppp(p, f = factor(marks(p, drop = FALSE)$gene))
-    splitFac <- rep(seq_len(bpparam()$workers), length.out = length(nams <- names(tabObs[features])))
+    splitFac <- rep(seq_len(bpparam()$workers), length.out = length(features))
     # Divide the work over the available workers
-    piList <- unsplit(f = splitFac, bplapply(split(nams, f = splitFac), function(ss) {
+    piList <- unsplit(f = splitFac, bplapply(split(features, f = splitFac), function(ss) {
         featPIs <- lapply(ss, function(feat) {
             pSub <- pSplit[[feat]]
             NP <- npoints(pSub)
@@ -62,6 +62,6 @@ calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null, 
         # TO DO: nnCell recycling code
         return(featPIs)
     }))
-    names(piList) <- nams
+    names(piList) <- features
     return(piList)
 }

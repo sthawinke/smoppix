@@ -7,7 +7,7 @@
 #' @return Throws an error when overlap found, otherwise returns invisible
 #' @importFrom utils combn
 #' @importFrom spatstat.geom overlap.owin is.owin
-#' @importFrom BiocParallel bplapply
+#' @importFrom BiocParallel bplapply bpparam
 #' @export
 #' @examples
 #' library(spatstat.geom)
@@ -17,7 +17,9 @@
 findOverlap <- function(owins, returnIds = FALSE) {
     stopifnot(all(vapply(owins, is.owin, FUN.VALUE = TRUE)))
     combs <- combn(length(owins), 2)
-    Ids <- bplapply(seq_len(ncol(combs)), function(i) {
+    splitFac <- rep(seq_len(bpparam()$workers), length.out = ncol(combs))
+    Ids <- unsplit(f = splitFac, bplapply(split(seq_len(ncol(combs)), f = splitFac), function(ss) {
+        vapply(ss, FUN.VALUE = TRUE, function(i) {
         Overlap <- overlap.owin(owins[[combs[1, i]]], owins[[combs[2, i]]]) > 0
         if (returnIds) {
             return(Overlap)
@@ -30,4 +32,5 @@ findOverlap <- function(owins, returnIds = FALSE) {
     } else {
         invisible()
     })
+    }))
 }

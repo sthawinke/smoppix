@@ -24,7 +24,8 @@
 estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = switch(null, background = 1e5, CSR = 1e3),
                           nPointsAllWithinCell = switch(null, background = 1e4, CSR = 2e2),nPointsAllWin = 2e3,
     features = NULL, owins = NULL, centroids = NULL, window = p$window) {
-    features <- intersect(features, names(tabObs))
+    features <- sample(intersect(features, names(tabObs)))
+    #Scramble to ensure equal calculation times in multithreading
     if (any(pis %in% c("nn", "nnPair"))) {
         if (null == "background") {
             # Subset some background points
@@ -41,7 +42,7 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = switch(null, backgr
     piList <- calcIndividualPIs(p = p, pSubLeft = pSubLeft, pis = pis, null = null, tabObs = tabObs, owins = owins,
         centroids = centroids, features = features, ecdfAll = ecdfAll, ecdfsCell = ecdfsCell)
     nnPis <- if ("nn" %in% pis) {
-        vapply(piList[names(tabObs[tabObs > 1])], FUN.VALUE = double(1), function(x) {
+        vapply(piList[intersect(features, names(tabObs[tabObs > 1]))], FUN.VALUE = double(1), function(x) {
             x$pointDists$nn
         })
     }

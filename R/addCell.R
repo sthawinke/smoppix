@@ -4,6 +4,7 @@
 #' @param hypFrame The hyperframe
 #' @param owins the list containing a list of owins per point pattern.
 #' The length of the list must match the length of the hyperframe, and the names must match.
+#' Also lists of geojson objects or rois are accepted
 #' @param cellTypes A dataframe of cell types and other cell-associated covariates.
 #' If supplied, it must contain a variable 'cell' that is matched with the names of the owins
 #' @param checkOverlap a boolean, should windows be checked for overlap?
@@ -55,10 +56,12 @@
 #' names(wList) <- rownames(hypFrame) # Matching names is necessary
 #' hypFrame2 <- addCell(hypFrame, wList)
 #' # TO DO: accept coordinate matrices, rois geojson
-addCell <- function(hypFrame, owins, cellTypes = NULL, checkOverlap = TRUE, warnOut = TRUE) {
-    stopifnot(nrow(hypFrame) == length(owins), all(unlist(lapply(owins, function(x) {
-        vapply(x, FUN.VALUE = FALSE, is.owin)
-    }))), all(rownames(hypFrame) %in% names(owins)), is.hyperframe(hypFrame), is.null(cellTypes) || is.data.frame(cellTypes))
+addCell <- function(hypFrame, owins, cellTypes = NULL, checkOverlap = FALSE, warnOut = TRUE) {
+    stopifnot(nrow(hypFrame) == length(owins),
+              all(rownames(hypFrame) %in% names(owins)),
+              is.hyperframe(hypFrame),
+              is.null(cellTypes) || is.data.frame(cellTypes))
+    owins = convertToOwins(owins)
     if (ct <- is.data.frame(cellTypes)) {
         if (!("cell" %in% names(cellTypes))) {
             stop("Variable names 'cell' must be contained in cell types dataframe")
@@ -68,24 +71,31 @@ addCell <- function(hypFrame, owins, cellTypes = NULL, checkOverlap = TRUE, warn
     }
     for (nn in rownames(hypFrame)) {
         ppp <- hypFrame[[nn, "ppp"]]
+        NP <- npoints(ppp)
         if (any("cell" == names(marks(ppp, drop = FALSE)))) {
             stop("Cell markers already present in point pattern ", nn)
         }
         if (checkOverlap) {
             foo <- findOverlap(owins[[nn]])
         }
-        idWindow <- vapply(owins[[nn]], FUN.VALUE = logical(NP <- npoints(ppp)), function(rr) {
-            inside.owin(ppp, w = rr)
+        idWindow <- lapply(owins[[nn]], function(rr) {
+            which(inside.owin(ppp, w = rr))
         })
-        idIn <- rowAny(idWindow)
-        if (all(!idIn)) {
+        if (!any(lll <- vapply(idWindow, FUN.VALUE = double(1), length))) {
             stop("All points lie outside all windows for point pattern ", nn, " check your input!")
         }
-        if (warnOut && (LL <- sum(!idIn))) {
-            warning(LL, " points lie outside all windows for point pattern ", nn, " and were not assigned to a cell.\n")
+        if (((nOut <- (NP- length(ul <- unlist(idWindow)))) > 0) && warnOut) {
+            warning(nOut, " points lie outside all windows for point pattern ",
+                    nn, " and were not assigned to a cell.\n")
+        }
+        if(anyDuplicated(ul)){
+            warning("Some points lie in several overlapping cells! See findOverlap()")
         }
         cellOut <- rep("NA", NP)
-        cellOut[idIn] <- rownames(which(t(idWindow[idIn, ]), arr.ind = TRUE))
+        idIn = unique(ul)
+        cumLengths = cumsum(lll)
+        foo = vapply(match(idIn, ul), FUN.VALUE = 0L, function(x) which.max(x > cumLengths))
+        cellOut[idIn] <- names(idWindow)[foo]
         hypFrame[[nn, "ppp"]] <- setmarks(hypFrame[[nn, "ppp"]], {
             m <- cbind(marks(hypFrame[[nn, "ppp"]], drop = FALSE), cell = cellOut)
             if (ct) {

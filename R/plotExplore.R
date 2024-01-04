@@ -20,9 +20,14 @@
 #'     imageVars = c('day', 'root', 'section')
 #' )
 #' plotExplore(hypYang)
+#' plotExplore(hypYang, features = c("SmRBRb", "SmTMO5b", "SmWER--SmAHK4f"))
 plotExplore <- function(hypFrame, features = getFeatures(hypFrame), ppps,
                         maxPlot = 1e+05, Cex = 1) {
+    if(!is.hyperframe(hypFrame)){
+        hypFrame = hypFrame$hypFrame
+    }
     stopifnot(is.hyperframe(hypFrame), is.character(features), is.numeric(maxPlot))
+    features = unique(unlist(lapply(features, sund)))
     npp <- nrow(hypFrame)
     if (missing(ppps)) {
         ppps <- seq_len(min(8, npp))
