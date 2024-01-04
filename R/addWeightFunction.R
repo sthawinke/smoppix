@@ -10,6 +10,8 @@
 #' @param lowestLevelVar The design variable at the lowest level of nesting,
 #' often separating technical replicates. The conditional variance is calculated
 #' within the groups of PIs defined by this variable
+#' @param minNumVar The minimum number of observations needed to calculate a
+#' variance
 #' @details For computational and memory reasons,
 #'  for large datasets the trend fitting
 #' is restricted to a subset of the data through the maxObs and maxFeatures
