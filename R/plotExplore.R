@@ -26,7 +26,7 @@ plotExplore <- function(hypFrame, features = getFeatures(hypFrame), ppps, maxPlo
         ppps <- seq_len(min(8, npp))
     }
     Cols <- palette()
-    Cols <- c(Cols, rep("grey", length(features) - length(Cols)))
+    Cols <- c(Cols, rep("grey", max(0, length(features) - length(Cols))))
     names(Cols) <- features
     old.par <- par(no.readonly = TRUE)
     on.exit(par(old.par))

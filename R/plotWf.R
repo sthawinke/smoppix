@@ -43,7 +43,8 @@ plotWf <- function(obj, pi = obj$pis[1]) {
     #         ylab("Log10 number of events for most expressed gene") +
     #     ggtitle(paste("Weighting function for probabilistic indices of type", pi))
     # } else {
-        tmp <- data.frame(NP = wf$model[, "log(NP)"])
+        tmp <- data.frame("NP" = wf$model[, "log(NP)"])
+        tmp <- tmp[tmp[, "NP"] > 0, , drop = FALSE]
         df <- cbind(Weight = evalWeightFunction(wf, newdata = tmp), exp(tmp))
         df[, "Weight"] <- df[, "Weight"]/max(df[, "Weight"])
         plot(Weight ~ NP, data = df[order(df$NP), ], type = "l",

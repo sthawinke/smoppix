@@ -52,7 +52,7 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "midpoint",
                  " or separated by '--'.")
         }
     } else {
-        if (lg != 1) {
+        if (lg != 1 || grepl("--", gene)) {
             stop("Provide a single gene for univariate PIs!")
         }
     }

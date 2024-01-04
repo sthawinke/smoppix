@@ -30,6 +30,9 @@ within the groups of PIs defined by this variable}
 \item{maxObs, maxFeatures}{The maximum number of observations respectively
 features for fitting the weighting function. See details}
 
+\item{minNumVar}{The minimum number of observations needed to calculate a
+variance}
+
 \item{...}{Additional arguments passed on to the scam::scam function}
 }
 \value{
