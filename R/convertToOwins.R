@@ -18,19 +18,19 @@ convertToOwins = function(windows, coords, ...){
         return(windows)
     } else if(allClass(windows, function(x) {is.data.frame(x) || is.matrix(x)})){
         lapply(windows, function(df){
-            i = seq_len(nrow(df))
-            foo = try(silent = TRUE, owin(poly = list(x = df[, coords[1]],
+            i <- seq_len(nrow(df))
+            foo <- try(silent = TRUE, owin(poly = list(x = df[, coords[1]],
                                                       y = df[, coords[2]]), ...))
             if(is(foo, "try-error")){
-                foo = try(silent = TRUE, owin(poly = list(x = df[rev(i), coords[1]],
+                foo <- try(silent = TRUE, owin(poly = list(x = df[rev(i), coords[1]],
                                                           y = df[, coords[2]]), ...))
             }
             if(is(foo, "try-error")){
-                foo = try(silent = TRUE, owin(poly = list(x = df[, coords[1]],
+                foo <- try(silent = TRUE, owin(poly = list(x = df[, coords[1]],
                                                           y = df[rev(i), coords[2]]), ...))
             }
             if(is(foo, "try-error")){
-                foo = try(silent = TRUE, owin(poly = list(x = df[rev(i), coords[1]],
+                foo <- try(silent = TRUE, owin(poly = list(x = df[rev(i), coords[1]],
                                                           y = df[rev(i), coords[2]]), ...))
             }
             foo
@@ -38,9 +38,9 @@ convertToOwins = function(windows, coords, ...){
     } else if((allRoi <- allClass(windows, is, "ijroi")) || is(windows, "ijzip")){
         if(requireNamespace("RImageJROI")){
             if(allRoi){
-                windows = lapply(windows, RImageJROI::ij2spatstat, ...)
+                windows <- lapply(windows, RImageJROI::ij2spatstat, ...)
             } else {
-                windows = RImageJROI::ij2spatstat(windows)
+                windows <- RImageJROI::ij2spatstat(windows)
             }
         } else stop("Install RImageJROI package first")
     }

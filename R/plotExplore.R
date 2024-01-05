@@ -24,17 +24,17 @@
 plotExplore <- function(hypFrame, features = getFeatures(hypFrame), ppps,
                         maxPlot = 1e+05, Cex = 1) {
     if(!is.hyperframe(hypFrame)){
-        hypFrame = hypFrame$hypFrame
+        hypFrame <- hypFrame$hypFrame
     }
     stopifnot(is.hyperframe(hypFrame), is.character(features), is.numeric(maxPlot))
-    features = unique(unlist(lapply(features, sund)))
+    features <- unique(unlist(lapply(features, sund)))
     npp <- nrow(hypFrame)
     if (missing(ppps)) {
         ppps <- seq_len(min(8, npp))
     }
     Cols <- palette()
     if(length(Cols) > length(features)){
-        Cols = Cols[seq_along(features)]
+        Cols <- Cols[seq_along(features)]
     } else if (length(Cols) < length(features)){
         Cols <- c(Cols, rep("grey", length(features) - length(Cols)))
     }

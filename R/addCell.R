@@ -57,14 +57,13 @@
 #' })
 #' names(wList) <- rownames(hypFrame) # Matching names is necessary
 #' hypFrame2 <- addCell(hypFrame, wList)
-#' # TO DO: accept coordinate matrices, rois geojson
 addCell <- function(hypFrame, owins, cellTypes = NULL, checkOverlap = FALSE,
                     warnOut = TRUE, coords = c("x", "y"), returnDuplicated = FALSE, ...) {
     stopifnot(nrow(hypFrame) == length(owins),
               all(rownames(hypFrame) %in% names(owins)),
               is.hyperframe(hypFrame),
               is.null(cellTypes) || is.data.frame(cellTypes))
-    owins = lapply(owins, convertToOwins, coords = coords, ...)
+    owins <- lapply(owins, convertToOwins, coords = coords, ...)
     if (ct <- is.data.frame(cellTypes)) {
         if (!("cell" %in% names(cellTypes))) {
             stop("Variable names 'cell' must be contained in cell types dataframe")
@@ -72,7 +71,7 @@ addCell <- function(hypFrame, owins, cellTypes = NULL, checkOverlap = FALSE,
         otherCellNames <- names(cellTypes)[names(cellTypes) != "cell"]
         # Names of the other covariates
     }
-    hypFrame$duplicated = lapply(rownames(hypFrame), function(i) integer())
+    hypFrame$duplicated <- lapply(rownames(hypFrame), function(i) integer())
     for (nn in rownames(hypFrame)) {
         ppp <- hypFrame[[nn, "ppp"]]
         NP <- npoints(ppp)
@@ -94,17 +93,17 @@ addCell <- function(hypFrame, owins, cellTypes = NULL, checkOverlap = FALSE,
         }
         cellOut <- rep("NA", NP)
         for(i in names(idWindow)){
-            cellOut[idWindow[[i]]][cellOut[idWindow[[i]]] == "NA"] = i
+            cellOut[idWindow[[i]]][cellOut[idWindow[[i]]] == "NA"] <- i
             #Don't overwrite, stick to first match
         }
         newmarks <- cbind(marks(hypFrame[[nn, "ppp"]], drop = FALSE), cell = cellOut)
         if (ct) {
             newmarks <- cbind(newmarks, cellTypes[match(cellOut, cellTypes$cell), otherCellNames, drop = FALSE])
         }
-        marks(hypFrame[[nn, "ppp"]]) = newmarks
+        marks(hypFrame[[nn, "ppp"]]) <- newmarks
         WDup <- which(duplicated(ul))
         if(length(tmp <- unique(unlist(lapply(idWindow, function(x) which(x %in% ul[WDup])))))){
-            hypFrame[[nn, "duplicated"]] = tmp
+            hypFrame[[nn, "duplicated"]] <- tmp
         }
         #Store duplicated entries
         if(numDup <- length(hypFrame[[nn, "duplicated"]])){
