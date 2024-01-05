@@ -71,7 +71,7 @@ addCell <- function(hypFrame, owins, cellTypes = NULL, checkOverlap = FALSE,
         otherCellNames <- names(cellTypes)[names(cellTypes) != "cell"]
         # Names of the other covariates
     }
-    hypFrame$duplicated <- lapply(rownames(hypFrame), function(i) integer())
+    hypFrame$duplicated <- lapply(rownames(hypFrame), function(i) c())
     for (nn in rownames(hypFrame)) {
         ppp <- hypFrame[[nn, "ppp"]]
         NP <- npoints(ppp)
@@ -96,11 +96,11 @@ addCell <- function(hypFrame, owins, cellTypes = NULL, checkOverlap = FALSE,
             cellOut[idWindow[[i]]][cellOut[idWindow[[i]]] == "NA"] <- i
             #Don't overwrite, stick to first match
         }
-        newmarks <- cbind(marks(hypFrame[[nn, "ppp"]], drop = FALSE), cell = cellOut)
+        newmarks <- cbind(marks(ppp, drop = FALSE), cell = cellOut)
         if (ct) {
             newmarks <- cbind(newmarks, cellTypes[match(cellOut, cellTypes$cell), otherCellNames, drop = FALSE])
         }
-        marks(hypFrame[[nn, "ppp"]]) <- newmarks
+        marks(ppp) <- newmarks
         WDup <- which(duplicated(ul))
         if(length(tmp <- unique(unlist(lapply(idWindow, function(x) which(x %in% ul[WDup])))))){
             hypFrame[[nn, "duplicated"]] <- tmp
@@ -110,6 +110,7 @@ addCell <- function(hypFrame, owins, cellTypes = NULL, checkOverlap = FALSE,
             warning(numDup, " points lie in several overlapping cells in point pattern ",
                     nn, "! See findOverlap()")
         }
+        hypFrame[[nn, "ppp"]] = ppp
     }
     hypFrame$owins <- owins
     hypFrame$centroids <- lapply(hypFrame$owins, function(x) {
