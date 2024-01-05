@@ -103,7 +103,9 @@ addCell <- function(hypFrame, owins, cellTypes = NULL, checkOverlap = FALSE,
         }
         marks(hypFrame[[nn, "ppp"]]) = newmarks
         WDup <- which(duplicated(ul))
-        hypFrame[[nn, "duplicated"]] = unique(unlist(lapply(idWindow, function(x) which(x %in% ul[WDup]))))
+        if(length(tmp <- unique(unlist(lapply(idWindow, function(x) which(x %in% ul[WDup])))))){
+            hypFrame[[nn, "duplicated"]] = tmp
+        }
         #Store duplicated entries
         if(numDup <- length(hypFrame[[nn, "duplicated"]])){
             warning(numDup, " points lie in several overlapping cells in point pattern ",
