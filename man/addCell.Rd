@@ -12,7 +12,8 @@ addCell(
   checkOverlap = FALSE,
   warnOut = TRUE,
   coords = c("x", "y"),
-  returnDuplicated = FALSE
+  returnDuplicated = FALSE,
+  ...
 )
 }
 \arguments{
@@ -33,6 +34,8 @@ contained in window}
 \item{coords}{The names of the coordinates, if the windows are given as sets of coordinates}
 
 \item{returnDuplicated}{A boolean, should points in several}
+
+\item{...}{Further arguments passed onto read functions}
 }
 \value{
 the modified hyperframe

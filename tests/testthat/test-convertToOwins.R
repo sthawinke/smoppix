@@ -1,9 +1,9 @@
 context("Test conversion to owins")
 if(requireNamespace("RImageJROI")){
     path <- file.path(system.file(package = "RImageJROI"), "extdata", "ijroi")
-    rect <- read.ijroi(file.path(path, "rect.roi"))
-    poly <- read.ijroi(file.path(path, "polygon.roi"))
-    oval <- read.ijroi(file.path(path, "oval.roi"))
+    rect <- RImageJROI::read.ijroi(file.path(path, "rect.roi"))
+    poly <- RImageJROI::read.ijroi(file.path(path, "polygon.roi"))
+    oval <- RImageJROI::read.ijroi(file.path(path, "oval.roi"))
     wListRoi <- lapply(seq_len(nDesignFactors), function(x) {
         Li <- list("w1" = rect, "w2" = poly, "w3" = oval)
         names(Li) <- paste0(names(Li), "_", x)

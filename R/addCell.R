@@ -14,7 +14,7 @@
 #' @param returnDuplicated A boolean, should points in several
 #' @param ... Further arguments passed onto read functions
 #' @return the modified hyperframe
-#' @importFrom spatstat.geom inside.owin marks centroid.owin
+#' @importFrom spatstat.geom inside.owin marks centroid.owin marks<-
 #' @export
 #' @seealso \link{buildHyperFrame}
 #' @details First the different cells are checked for overlap per point pattern.
@@ -72,7 +72,7 @@ addCell <- function(hypFrame, owins, cellTypes = NULL, checkOverlap = FALSE,
         otherCellNames <- names(cellTypes)[names(cellTypes) != "cell"]
         # Names of the other covariates
     }
-    hypFrame$duplicated = lapply(rownames(hypFrame), function(i) list())
+    hypFrame$duplicated = lapply(rownames(hypFrame), function(i) integer())
     for (nn in rownames(hypFrame)) {
         ppp <- hypFrame[[nn, "ppp"]]
         NP <- npoints(ppp)
@@ -97,16 +97,18 @@ addCell <- function(hypFrame, owins, cellTypes = NULL, checkOverlap = FALSE,
             cellOut[idWindow[[i]]][cellOut[idWindow[[i]]] == "NA"] = i
             #Don't overwrite, stick to first match
         }
-        if(numDup <- length(Dup <- which(duplicated(ul)))){
-                warning(numDup, " points lie in several overlapping cells! See findOverlap()")
-        }
         newmarks <- cbind(marks(hypFrame[[nn, "ppp"]], drop = FALSE), cell = cellOut)
         if (ct) {
             newmarks <- cbind(newmarks, cellTypes[match(cellOut, cellTypes$cell), otherCellNames, drop = FALSE])
         }
         marks(hypFrame[[nn, "ppp"]]) = newmarks
-        hypFrame[[nn, "duplicated"]] = lapply(idWindow, function(x) which(x %in% Dup))
+        WDup <- which(duplicated(ul))
+        hypFrame[[nn, "duplicated"]] = unique(unlist(lapply(idWindow, function(x) which(x %in% ul[WDup]))))
         #Store duplicated entries
+        if(numDup <- length(hypFrame[[nn, "duplicated"]])){
+            warning(numDup, " points lie in several overlapping cells in point pattern ",
+                    nn, "! See findOverlap()")
+        }
     }
     hypFrame$owins <- owins
     hypFrame$centroids <- lapply(hypFrame$owins, function(x) {
