@@ -72,7 +72,7 @@ addCell <- function(hypFrame, owins, cellTypes = NULL, checkOverlap = FALSE,
         otherCellNames <- names(cellTypes)[names(cellTypes) != "cell"]
         # Names of the other covariates
     }
-    hypFrame$inSeveralCells <- lapply(rownames(hypFrame), function(i) list())
+    hypFrame$inSeveralCells <- lapply(rownames(hypFrame), function(i) integer())
     for (nn in rownames(hypFrame)) {
         ppp <- hypFrame[[nn, "ppp"]]
         NP <- npoints(ppp)
@@ -104,7 +104,7 @@ addCell <- function(hypFrame, owins, cellTypes = NULL, checkOverlap = FALSE,
         marks(ppp) <- newmarks
         WDup <- which(duplicated(ul))
         if(numDup <- length(tmp <- unique(unlist(lapply(idWindow, function(x) which(x %in% ul[WDup])))))){
-            hypFrame[[nn, "inSeveralCells"]] <- list(tmp)
+            hypFrame[nn, "inSeveralCells"] <- tmp
             warning(numDup, " points lie in several overlapping cells in point pattern ",
                     nn, "! See findOverlap()")
         }
