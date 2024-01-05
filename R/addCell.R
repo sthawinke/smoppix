@@ -91,7 +91,7 @@ addCell <- function(hypFrame, owins, cellTypes = NULL, checkOverlap = FALSE,
                     nn, " and were not assigned to a cell.\n")
         }
         if(numDup <- length(which(duplicated(ul)))){
-            warning(numDup, "points lie in several overlapping cells! See findOverlap()")
+            warning(numDup, " points lie in several overlapping cells! See findOverlap()")
         }
         cellOut <- rep("NA", NP)
         for(i in names(idWindow)){

@@ -35,7 +35,7 @@ test_that("Adding regions of interest works", {
     expect_s3_class(hypFrame5 <- addCell(hypFrame, wList), "hyperframe")
     expect_s3_class(hypFrame6 <- addCell(hypFrame, wList,
                                          cellTypes = cellTypesDf), "hyperframe")
-    expect_error(addCell(hypFrame, wList2)) # Detect overlap
+    expect_warning(addCell(hypFrame, wList2)) # Detect overlap
     expect_type(marks(hypFrame5[[1, "ppp"]])$cell, "character")
     expect_type(marks(hypFrame6[[1, "ppp"]])$cellType, "character")
 })

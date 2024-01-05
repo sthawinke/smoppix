@@ -5,7 +5,6 @@
 #'
 #' @return A list of owins
 #' @importFrom spatstat.geom is.owin owin
-#' @importFrom polyCub as.owin.SpatialPolygons
 #' @importFrom methods slot is
 convertToOwins = function(windows, coords){
     if(allClass(windows, is.owin)){
