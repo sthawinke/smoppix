@@ -4,12 +4,14 @@
 \alias{convertToOwins}
 \title{Converta list of differently formatted windows to owins}
 \usage{
-convertToOwins(windows, coords)
+convertToOwins(windows, coords, ...)
 }
 \arguments{
 \item{windows}{The list of windows}
 
 \item{coords}{The names of the coordinates, if the windows are given as sets of coordinates}
+
+\item{...}{Further arguments passed onto read functions}
 }
 \value{
 A list of owins
