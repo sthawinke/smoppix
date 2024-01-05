@@ -25,9 +25,11 @@ calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null, 
                 nndist(pSub)
             }, if ("nnPair" %in% pis) {
                 id <- !(names(pSplit) %in% feat)
-                matrix(unlist(lapply(pSplit[id], function(y) {
+                if(any(id)){
+                    matrix(unlist(lapply(pSplit[id], function(y) {
                   nncross(pSub, y, what = "dist")
-                })), nrow = NP, dimnames = list(NULL, names(pSplit)[id]))
+                    })), nrow = NP, dimnames = list(NULL, names(pSplit)[id]))
+                    }
                 # Cross-distances
             })
             if (is.matrix(distMat)) {
