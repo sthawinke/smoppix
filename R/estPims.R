@@ -22,7 +22,7 @@
 #' @importFrom Rdpack reprompt
 #' @importFrom Rfast rowSort rowMins rowAny
 estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = switch(null, background = 1e5, CSR = 1e3),
-                          nPointsAllWithinCell = switch(null, background = 1e4, CSR = 2e2),nPointsAllWin = 2e3,
+                          nPointsAllWithinCell = switch(null, background = 1e4, CSR = 1e3),nPointsAllWin = 2e3,
     features = NULL, owins = NULL, centroids = NULL, window = p$window) {
     features <- sample(intersect(features, names(tabObs)))
     #Scramble to ensure equal calculation times in multithreading
@@ -46,8 +46,8 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = switch(null, backgr
             x$pointDists$nn
         })
     }
-    genePairsMat <- combn(features, 2)
-    if ("nnPair" %in% pis) {
+    if ("nnPair" %in% pis && length(features) > 1 ) {
+        genePairsMat <- combn(features, 2)
         nnPairPis <- vapply(seq_len(ncol(genePairsMat)), FUN.VALUE = double(1), function(i) {
             feat1 <- genePairsMat[1, i]
             feat2 <- genePairsMat[2, i]
