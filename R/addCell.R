@@ -11,6 +11,7 @@
 #' @param warnOut a boolean, should warning be issued when points are not
 #' contained in window
 #' @param coords The names of the coordinates, if the windows are given as sets of coordinates
+#' @param returnDuplicated A boolean, should points in several
 #' @return the modified hyperframe
 #' @importFrom Rfast rowAny
 #' @importFrom spatstat.geom inside.owin setmarks centroid.owin
@@ -58,7 +59,7 @@
 #' hypFrame2 <- addCell(hypFrame, wList)
 #' # TO DO: accept coordinate matrices, rois geojson
 addCell <- function(hypFrame, owins, cellTypes = NULL, checkOverlap = FALSE,
-                    warnOut = TRUE, coords = c("x", "y")) {
+                    warnOut = TRUE, coords = c("x", "y"), returnDuplicated = FALSE) {
     stopifnot(nrow(hypFrame) == length(owins),
               all(rownames(hypFrame) %in% names(owins)),
               is.hyperframe(hypFrame),
@@ -90,21 +91,23 @@ addCell <- function(hypFrame, owins, cellTypes = NULL, checkOverlap = FALSE,
             warning(nOut, " points lie outside all windows for point pattern ",
                     nn, " and were not assigned to a cell.\n")
         }
-        if(numDup <- length(which(duplicated(ul)))){
-            warning(numDup, " points lie in several overlapping cells! See findOverlap()")
-        }
         cellOut <- rep("NA", NP)
         for(i in names(idWindow)){
             cellOut[idWindow[[i]]][cellOut[idWindow[[i]]] == "NA"] = i
             #Don't overwrite, stick to first match
         }
-        hypFrame[[nn, "ppp"]] <- setmarks(hypFrame[[nn, "ppp"]], {
-            m <- cbind(marks(hypFrame[[nn, "ppp"]], drop = FALSE), cell = cellOut)
-            if (ct) {
-                m <- cbind(m, cellTypes[match(cellOut, cellTypes$cell), otherCellNames, drop = FALSE])
+        if(numDup <- length(which(duplicated(ul)))){
+            if(returnDuplicated){
+                return(wDup)
+            } else {
+                warning(numDup, " points lie in several overlapping cells! See findOverlap()")
             }
-            m
-        })
+        }
+        newmarks <- cbind(marks(hypFrame[[nn, "ppp"]], drop = FALSE), cell = cellOut)
+        if (ct) {
+            newmarks <- cbind(newmarks, cellTypes[match(cellOut, cellTypes$cell), otherCellNames, drop = FALSE])
+        }
+        marks(hypFrame[[nn, "ppp"]]) = newmarks
     }
     hypFrame$owins <- owins
     hypFrame$centroids <- lapply(hypFrame$owins, function(x) {
