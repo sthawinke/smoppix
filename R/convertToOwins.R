@@ -1,24 +1,21 @@
 #' Converta list of differently formatted windows to owins
 #'
 #' @param windows The list of windows
-#' @param ... Further arguments passed onto read functions
 #' @inheritParams addCell
 #'
 #' @return A list of owins
-#' @importFrom spatstat.geom is.owin owin
+#' @importFrom spatstat.geom is.owin owin as.owin
 #' @importFrom methods slot is
 convertToOwins = function(windows, coords, ...){
-    if(allClass(windows, is.owin)){
-        return(windows)
-    } else if(allClass(windows, is, "SpatialPolygonsDataFrame")){
+    if(is(windows, "SpatialPolygonsDataFrame")){
         if(requireNamespace("polyCub")){
-            lapply(windows, function(spdf){
-                p <- slot(spdf, "polygons")
-                lapply(p, polyCub::as.owin.SpatialPolygons, ...)
-            })
+            p <- slot(windows, "polygons")
+            lapply(p, as.owin, ...)
         } else {
             stop("Install polyCub package first")
         }
+    } else if(allClass(windows, is.owin)){
+        return(windows)
     } else if(allClass(windows, function(x) {is.data.frame(x) || is.matrix(x)})){
         lapply(windows, function(df){
             i = seq_len(nrow(df))
@@ -45,7 +42,7 @@ convertToOwins = function(windows, coords, ...){
             } else {
                 windows = RImageJROI::ij2spatstat(windows)
             }
-        }
+        } else stop("Install RImageJROI package first")
     }
 }
 allClass  = function(x, checkFun, ...){

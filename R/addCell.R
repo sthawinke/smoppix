@@ -12,9 +12,9 @@
 #' contained in window
 #' @param coords The names of the coordinates, if the windows are given as sets of coordinates
 #' @param returnDuplicated A boolean, should points in several
+#' @param ... Further arguments passed onto read functions
 #' @return the modified hyperframe
-#' @importFrom Rfast rowAny
-#' @importFrom spatstat.geom inside.owin setmarks centroid.owin
+#' @importFrom spatstat.geom inside.owin marks centroid.owin
 #' @export
 #' @seealso \link{buildHyperFrame}
 #' @details First the different cells are checked for overlap per point pattern.
@@ -59,12 +59,12 @@
 #' hypFrame2 <- addCell(hypFrame, wList)
 #' # TO DO: accept coordinate matrices, rois geojson
 addCell <- function(hypFrame, owins, cellTypes = NULL, checkOverlap = FALSE,
-                    warnOut = TRUE, coords = c("x", "y"), returnDuplicated = FALSE) {
+                    warnOut = TRUE, coords = c("x", "y"), returnDuplicated = FALSE, ...) {
     stopifnot(nrow(hypFrame) == length(owins),
               all(rownames(hypFrame) %in% names(owins)),
               is.hyperframe(hypFrame),
               is.null(cellTypes) || is.data.frame(cellTypes))
-    owins = lapply(owins, convertToOwins, coords = coords)
+    owins = lapply(owins, convertToOwins, coords = coords, ...)
     if (ct <- is.data.frame(cellTypes)) {
         if (!("cell" %in% names(cellTypes))) {
             stop("Variable names 'cell' must be contained in cell types dataframe")
@@ -72,6 +72,7 @@ addCell <- function(hypFrame, owins, cellTypes = NULL, checkOverlap = FALSE,
         otherCellNames <- names(cellTypes)[names(cellTypes) != "cell"]
         # Names of the other covariates
     }
+    hypFrame$duplicated = lapply(rownames(hypFrame), function(i) list())
     for (nn in rownames(hypFrame)) {
         ppp <- hypFrame[[nn, "ppp"]]
         NP <- npoints(ppp)
@@ -96,23 +97,22 @@ addCell <- function(hypFrame, owins, cellTypes = NULL, checkOverlap = FALSE,
             cellOut[idWindow[[i]]][cellOut[idWindow[[i]]] == "NA"] = i
             #Don't overwrite, stick to first match
         }
-        if(numDup <- length(which(duplicated(ul)))){
-            if(returnDuplicated){
-                return(wDup)
-            } else {
+        if(numDup <- length(Dup <- which(duplicated(ul)))){
                 warning(numDup, " points lie in several overlapping cells! See findOverlap()")
-            }
         }
         newmarks <- cbind(marks(hypFrame[[nn, "ppp"]], drop = FALSE), cell = cellOut)
         if (ct) {
             newmarks <- cbind(newmarks, cellTypes[match(cellOut, cellTypes$cell), otherCellNames, drop = FALSE])
         }
         marks(hypFrame[[nn, "ppp"]]) = newmarks
+        hypFrame[[nn, "duplicated"]] = lapply(idWindow, function(x) which(x %in% Dup))
+        #Store duplicated entries
     }
     hypFrame$owins <- owins
     hypFrame$centroids <- lapply(hypFrame$owins, function(x) {
         lapply(x, function(y) centroid.owin(y, as.ppp = TRUE))
     })
     # Add centroids for all windows
+
     return(hypFrame)
 }
