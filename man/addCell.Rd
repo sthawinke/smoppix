@@ -12,7 +12,6 @@ addCell(
   checkOverlap = FALSE,
   warnOut = TRUE,
   coords = c("x", "y"),
-  returnDuplicated = FALSE,
   ...
 )
 }
@@ -32,8 +31,6 @@ If supplied, it must contain a variable 'cell' that is matched with the names of
 contained in window}
 
 \item{coords}{The names of the coordinates, if the windows are given as sets of coordinates}
-
-\item{returnDuplicated}{A boolean, should points in several}
 
 \item{...}{Further arguments passed onto read functions}
 }
@@ -86,7 +83,6 @@ wList <- lapply(seq_len(nDesignFactors), function(x) {
 })
 names(wList) <- rownames(hypFrame) # Matching names is necessary
 hypFrame2 <- addCell(hypFrame, wList)
-# TO DO: accept coordinate matrices, rois geojson
 }
 \seealso{
 \link{buildHyperFrame}

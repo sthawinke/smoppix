@@ -11,7 +11,6 @@
 #' @param warnOut a boolean, should warning be issued when points are not
 #' contained in window
 #' @param coords The names of the coordinates, if the windows are given as sets of coordinates
-#' @param returnDuplicated A boolean, should points in several
 #' @param ... Further arguments passed onto read functions
 #' @return the modified hyperframe
 #' @importFrom spatstat.geom inside.owin marks centroid.owin marks<-
@@ -58,12 +57,14 @@
 #' names(wList) <- rownames(hypFrame) # Matching names is necessary
 #' hypFrame2 <- addCell(hypFrame, wList)
 addCell <- function(hypFrame, owins, cellTypes = NULL, checkOverlap = FALSE,
-                    warnOut = TRUE, coords = c("x", "y"), returnDuplicated = FALSE, ...) {
+                    warnOut = TRUE, coords = c("x", "y"), ...) {
     stopifnot(nrow(hypFrame) == length(owins),
               all(rownames(hypFrame) %in% names(owins)),
               is.hyperframe(hypFrame),
               is.null(cellTypes) || is.data.frame(cellTypes))
-    owins <- lapply(owins, convertToOwins, coords = coords, ...)
+    owins <- lapply(Nam <- names(owins), function(nam){
+        convertToOwins(owins[[nam]], coords = coords, namePPP = nam, ...)
+    });names(owins) <- Nam
     if (ct <- is.data.frame(cellTypes)) {
         if (!("cell" %in% names(cellTypes))) {
             stop("Variable names 'cell' must be contained in cell types dataframe")
@@ -71,7 +72,7 @@ addCell <- function(hypFrame, owins, cellTypes = NULL, checkOverlap = FALSE,
         otherCellNames <- names(cellTypes)[names(cellTypes) != "cell"]
         # Names of the other covariates
     }
-    hypFrame$duplicated <- lapply(rownames(hypFrame), function(i) c())
+    hypFrame$inSeveralCells <- lapply(rownames(hypFrame), function(i) list())
     for (nn in rownames(hypFrame)) {
         ppp <- hypFrame[[nn, "ppp"]]
         NP <- npoints(ppp)
@@ -102,21 +103,17 @@ addCell <- function(hypFrame, owins, cellTypes = NULL, checkOverlap = FALSE,
         }
         marks(ppp) <- newmarks
         WDup <- which(duplicated(ul))
-        if(length(tmp <- unique(unlist(lapply(idWindow, function(x) which(x %in% ul[WDup])))))){
-            hypFrame[[nn, "duplicated"]] <- tmp
-        }
-        #Store duplicated entries
-        if(numDup <- length(hypFrame[[nn, "duplicated"]])){
+        if(numDup <- length(tmp <- unique(unlist(lapply(idWindow, function(x) which(x %in% ul[WDup])))))){
+            hypFrame[[nn, "inSeveralCells"]] <- list(tmp)
             warning(numDup, " points lie in several overlapping cells in point pattern ",
                     nn, "! See findOverlap()")
         }
-        hypFrame[[nn, "ppp"]] = ppp
+        hypFrame[nn, "ppp"] = ppp
     }
     hypFrame$owins <- owins
     hypFrame$centroids <- lapply(hypFrame$owins, function(x) {
         lapply(x, function(y) centroid.owin(y, as.ppp = TRUE))
     })
     # Add centroids for all windows
-
     return(hypFrame)
 }

@@ -1,23 +1,24 @@
 #' Converta list of differently formatted windows to owins
 #'
 #' @param windows The list of windows
+#' @param namePPP the name of the point pattern, will be added to the cell names
 #' @inheritParams addCell
 #'
 #' @return A list of owins
 #' @importFrom spatstat.geom is.owin owin as.owin
 #' @importFrom methods slot is
-convertToOwins = function(windows, coords, ...){
+convertToOwins = function(windows, namePPP, coords, ...){
     if(is(windows, "SpatialPolygonsDataFrame")){
         if(requireNamespace("polyCub")){
             p <- slot(windows, "polygons")
-            lapply(p, as.owin, ...)
+            winOut <- lapply(p, as.owin, ...)
         } else {
             stop("Install polyCub package first")
         }
     } else if(allClass(windows, is.owin)){
-        return(windows)
+        winOut <- windows
     } else if(allClass(windows, function(x) {is.data.frame(x) || is.matrix(x)})){
-        lapply(windows, function(df){
+        winOut <- lapply(windows, function(df){
             i <- seq_len(nrow(df))
             foo <- try(silent = TRUE, owin(poly = list(x = df[, coords[1]],
                                                       y = df[, coords[2]]), ...))
@@ -37,13 +38,19 @@ convertToOwins = function(windows, coords, ...){
         })
     } else if((allRoi <- allClass(windows, is, "ijroi")) || is(windows, "ijzip")){
         if(requireNamespace("RImageJROI")){
-            if(allRoi){
-                windows <- lapply(windows, RImageJROI::ij2spatstat, ...)
+            winOut <= if(allRoi){
+                lapply(windows, RImageJROI::ij2spatstat, ...)
             } else {
-                windows <- RImageJROI::ij2spatstat(windows)
+                RImageJROI::ij2spatstat(windows)
             }
         } else stop("Install RImageJROI package first")
+    } else {
+        stop("Input type unknown")
     }
+    if(is.null(names(winOut))){
+        names(winOut) = paste0("Cell", seq_along(winOut))
+    }
+    return(winOut)
 }
 allClass  = function(x, checkFun, ...){
     all(vapply(x, FUN.VALUE = TRUE, checkFun, ...))

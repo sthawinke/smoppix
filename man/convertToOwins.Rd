@@ -4,10 +4,12 @@
 \alias{convertToOwins}
 \title{Converta list of differently formatted windows to owins}
 \usage{
-convertToOwins(windows, coords, ...)
+convertToOwins(windows, namePPP, coords, ...)
 }
 \arguments{
 \item{windows}{The list of windows}
+
+\item{namePPP}{the name of the point pattern, will be added to the cell names}
 
 \item{coords}{The names of the coordinates, if the windows are given as sets of coordinates}
 
