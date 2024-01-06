@@ -10,12 +10,13 @@ estPimsSingle(
   null,
   tabObs,
   nPointsAll = switch(null, background = 1e+05, CSR = 1000),
-  nPointsAllWithinCell = switch(null, background = 10000, CSR = 200),
+  nPointsAllWithinCell = switch(null, background = 10000, CSR = 1000),
   nPointsAllWin = 2000,
   features = NULL,
   owins = NULL,
   centroids = NULL,
-  window = p$window
+  window = p$window,
+  loopFun = "bplapply"
 )
 }
 \arguments{

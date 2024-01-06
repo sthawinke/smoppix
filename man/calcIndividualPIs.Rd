@@ -14,7 +14,8 @@ calcIndividualPIs(
   null,
   features,
   ecdfAll,
-  ecdfsCell
+  ecdfsCell,
+  loopFun
 )
 }
 \arguments{

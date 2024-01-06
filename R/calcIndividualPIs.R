@@ -12,12 +12,13 @@
 #' @importFrom utils combn
 #' @importFrom spatstat.geom nncross crossdist coords npoints
 #' @importFrom BiocParallel bpparam bplapply
-calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null, features, ecdfAll, ecdfsCell) {
+calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null, features, ecdfAll, ecdfsCell, loopFun) {
     NPall <- npoints(p)
+    loopFun <- match.fun(loopFun)
     pSplit <- split.ppp(p, f = factor(marks(p, drop = FALSE)$gene))
     splitFac <- rep(seq_len(bpparam()$workers), length.out = length(features))
     # Divide the work over the available workers
-    piList <- unsplit(f = splitFac, bplapply(split(features, f = splitFac), function(ss) {
+    piList <- unsplit(f = splitFac, loopFun(split(features, f = splitFac), function(ss) {
         featPIs <- lapply(ss, function(feat) {
             pSub <- pSplit[[feat]]
             NP <- npoints(pSub)
@@ -32,7 +33,7 @@ calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null, 
                     }
                 # Cross-distances
             })
-            if (is.matrix(distMat)) {
+            if (isMat <- is.matrix(distMat)) {
                 approxRanksTmp <- switch(null, background = findRanksDist(getCoordsMat(pSub), getCoordsMat(pSubLeft$Pout),
                   distMat^2), CSR = matrix(ecdfAll(distMat), nrow = nrow(distMat)))
                 approxRanks <- round((approxRanksTmp/(switch(null, background = (npoints(pSubLeft$Pout) - which(marks(p,
@@ -44,10 +45,10 @@ calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null, 
                 colnames(approxRanks) <- colnames(distMat)
             }
             # Names may get lost in C++ function And then rearrange to get to the PIs
-            nnPI <- if (calcNNsingle) {
+            nnPI <- if (calcNNsingle && isMat) {
                 mean(calcNNPI(approxRanks[, "self"], NPall - (NP - 1), m = NP - 1, r = 1))
             } else NA
-            nnPIpair <- if ("nnPair" %in% pis) {
+            nnPIpair <- if ("nnPair" %in% pis && isMat) {
                 apply(approxRanks[, colnames(approxRanks) != "self", drop = FALSE], 2, calcNNPI, n = NPall - NP, m = NP,
                   r = 1)
             }

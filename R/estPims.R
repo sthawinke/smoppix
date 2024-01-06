@@ -23,7 +23,7 @@
 #' @importFrom Rfast rowSort rowMins rowAny
 estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = switch(null, background = 1e5, CSR = 1e3),
                           nPointsAllWithinCell = switch(null, background = 1e4, CSR = 1e3),nPointsAllWin = 2e3,
-    features = NULL, owins = NULL, centroids = NULL, window = p$window) {
+    features = NULL, owins = NULL, centroids = NULL, window = p$window, loopFun = "bplapply") {
     features <- sample(intersect(features, names(tabObs)))
     #Scramble to ensure equal calculation times in multithreading
     if (any(pis %in% c("nn", "nnPair"))) {
@@ -40,7 +40,7 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = switch(null, backgr
             pis = pis)
     }
     piList <- calcIndividualPIs(p = p, pSubLeft = pSubLeft, pis = pis, null = null, tabObs = tabObs, owins = owins,
-        centroids = centroids, features = features, ecdfAll = ecdfAll, ecdfsCell = ecdfsCell)
+        centroids = centroids, features = features, ecdfAll = ecdfAll, ecdfsCell = ecdfsCell, loopFun = loopFun)
     nnPis <- if ("nn" %in% pis) {
         vapply(piList[intersect(features, names(tabObs[tabObs > 1]))], FUN.VALUE = double(1), function(x) {
             x$pointDists$nn
@@ -67,7 +67,8 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = switch(null, backgr
         cellDists <- lapply(names(splitCell), function(nam) {
             estPimsSingle(pis = gsub("Cell", "", grep(value = TRUE, "Cell", pis)), p = splitCell[[nam]], null = null,
                 nPointsAll = nPointsAllWithinCell, window = owins[[nam]], features = features,
-                tabObs = table(marks(splitCell[[nam]], drop = FALSE)$gene))$pointDists
+                tabObs = table(marks(splitCell[[nam]], drop = FALSE)$gene),
+                loopFun = "lapply")$pointDists
         })
         names(cellDists) <- names(splitCell)
         cellDists

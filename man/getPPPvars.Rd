@@ -6,7 +6,7 @@
 \usage{
 getPPPvars(
   x,
-  exclude = c("tabObs", "centroids", "owins", "ppp", "pimRes", "image", "duplicated")
+  exclude = c("tabObs", "centroids", "owins", "ppp", "pimRes", "image", "inSeveralCells")
 )
 }
 \arguments{
