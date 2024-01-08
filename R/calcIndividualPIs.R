@@ -49,8 +49,12 @@ calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null, 
                 mean(calcNNPI(approxRanks[, "self"], NPall - (NP - 1), m = NP - 1, r = 1))
             } else NA
             nnPIpair <- if ("nnPair" %in% pis && isMat) {
-                apply(approxRanks[, colnames(approxRanks) != "self", drop = FALSE], 2, calcNNPI, n = NPall - NP, m = NP,
-                  r = 1)
+                # apply(approxRanks[, colnames(approxRanks) != "self", drop = FALSE], 2, calcNNPI, n = NPall - NP, m = NP,
+                #   r = 1)
+                vapply(setdiff(colnames(approxRanks),  "self"), FUN.VALUE = double(NP), function(g){
+                    NP = tabObs[g]
+                    calcNNPI(approxRanks[,g], n = NPall - NP, m = NP, r = 1)
+                })
             }
             ## Window related distances
             edgeDistPI <- if (any(pis == "edge")) {

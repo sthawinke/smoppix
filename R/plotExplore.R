@@ -23,7 +23,7 @@
 #' )
 #' plotExplore(hypYang)
 #' plotExplore(hypYang, features = c("SmRBRb", "SmTMO5b", "SmWER--SmAHK4f"))
-plotExplore <- function(hypFrame, features = getFeatures(hypFrame), ppps,
+plotExplore <- function(hypFrame, features = getFeatures(hypFrame)[seq_len(6)], ppps,
                         maxPlot = 1e+05, Cex = 1) {
     if(!is.hyperframe(hypFrame)){
         hypFrame <- hypFrame$hypFrame
@@ -32,31 +32,31 @@ plotExplore <- function(hypFrame, features = getFeatures(hypFrame), ppps,
     features <- unique(unlist(lapply(features, sund)))
     npp <- nrow(hypFrame)
     if (missing(ppps)) {
-        ppps <- seq_len(min(8, npp))
+        ppps <- seq_len(min(29, npp))
     }
     Cols <- palette()
     if(length(Cols) > length(features)){
         Cols <- Cols[seq_along(features)]
-    } else if (length(Cols) < length(features)){
-        Cols <- c(Cols, rep("grey", length(features) - length(Cols)))
     }
-    names(Cols) <- features
+    names(Cols) = features
+    allFeats = getFeatures(hypFrame)
+    if (length(Cols) < (lf <- length(allFeats))){
+        Cols <- c(Cols, rep("grey", lf - length(Cols)))
+        names(Cols)[Cols == "grey"] <- setdiff(allFeats, features)
+    }
     old.par <- par(no.readonly = TRUE)
     on.exit(par(old.par))
     par(mfrow = if ((LL <- length(ppps)) <= 3)
-        c(2, 2) else c(3, 3), mar = c(3, 3, 3, 3))
+        c(2, 2) else if(LL <=8) c(3, 3) else if(LL <=15)
+            c(4, 4) else if(LL <= 24) c(5, 5) else if(LL <= 29)
+                c(5, 6) else if(LL <= 35) c(6,6) else c(6,7), mar = c(3, 3, 3, 3))
     baa <- lapply(ppps, function(i) {
-        id <- marks(hypFrame$ppp[[i]], drop = FALSE)$gene %in% features
-        if (any(id)) {
-            if (length(id) > maxPlot)
-                id <- sample(id, maxPlot)
-            colVec <- Cols[marks(hypFrame$ppp[[i]], drop = FALSE)$gene[id]]
-            cordMat <- coords(hypFrame$ppp[[i]][id, ])
+            colVec <- Cols[marks(hypFrame$ppp[[i]], drop = FALSE)$gene]
+            cordMat <- coords(hypFrame$ppp[[i]])
             ordVec <- order(colVec != "grey")
             # Plot grey background first and coloured dots on top
             plot(cordMat[ordVec, ], main = hypFrame$image[ppps[i]], pch = ".",
                  asp = 1, col = colVec[ordVec], cex = Cex)
-        }
     })
     plot(0, 0, type = "n", xlab = "", ylab = "", xaxt = "n", yaxt = "n")
     idCols <- which(Cols != "grey")
