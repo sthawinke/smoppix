@@ -71,8 +71,8 @@ fitLMMsSingle <- function(obj, pi, fixedVars = NULL, randomVars = NULL,
         contrasts <- lapply(fixedVars, function(x) named.contr.sum)
     }
     tmp <- if (grepl("Pair", pi)) {
-        feats <- makePairs(features)
-         vapply(feats, FUN.VALUE = double(nrow(obj$hypFrame)), function(gene) {
+        features <- makePairs(features)
+         vapply(features, FUN.VALUE = double(nrow(obj$hypFrame)), function(gene) {
             vapply(obj$hypFrame$tabObs, FUN.VALUE = double(1), function(x) all(x[sund(gene)] >= 1))
         })
     } else {
@@ -82,7 +82,7 @@ fitLMMsSingle <- function(obj, pi, fixedVars = NULL, randomVars = NULL,
         })
     }
     featIds <- (if(is.matrix(tmp)) colSums(tmp>1, na.rm = TRUE) else tmp) >= 1
-    Features <- feats[featIds]
+    Features <- features[featIds]
     models <- lapply(Features, function(gene) {
         df <- buildDataFrame(obj, gene = gene, pi = pi)
         if (randomNested) {

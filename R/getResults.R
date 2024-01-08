@@ -1,11 +1,12 @@
-#' Extract results for a certain parameter
+#' Extract test results from the linear model
+#' @description Extract effect size estimates and p-values for a certain parameter
+#' from a linear model.
 #'
 #' @param obj The result object
 #' @param parameter The desired parameter
 #'
 #' @return The matrix with result, with p-values in ascending order
 #' @export
-#'
 #' @examples
 #' data(Yang)
 #' hypYang <- buildHyperFrame(Yang,

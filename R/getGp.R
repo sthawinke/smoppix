@@ -7,6 +7,8 @@
 #'
 #' @return The element sought
 getGp <- function(x, gp, drop = TRUE, Collapse = "--") {
+    if(!length(x))
+        return(NULL)
     if (isVec <- (is.vector(x) || is.list(x))) {
         Names <- names(x)
     } else if (isMat <- is.matrix(x)) {

@@ -2,7 +2,7 @@
 % Please edit documentation in R/getResults.R
 \name{getResults}
 \alias{getResults}
-\title{Extract results for a certain parameter}
+\title{Extract test results from the linear model}
 \usage{
 getResults(obj, parameter)
 }
@@ -15,7 +15,8 @@ getResults(obj, parameter)
 The matrix with result, with p-values in ascending order
 }
 \description{
-Extract results for a certain parameter
+Extract effect size estimates and p-values for a certain parameter
+from a linear model.
 }
 \examples{
 data(Yang)
