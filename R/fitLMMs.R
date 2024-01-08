@@ -81,7 +81,7 @@ fitLMMsSingle <- function(obj, pi, fixedVars = NULL, randomVars = NULL,
             vapply(obj$hypFrame$tabObs, FUN.VALUE = double(1), function(x) x[gene])
         })
     }
-    featIds <- (if(is.matrix(tmp)) colSums(tmp>1, na.rm = TRUE) else tmp) >= 1
+    featIds <- (if(is.matrix(tmp)) colSums(tmp, na.rm = TRUE) else tmp) >= 1
     Features <- features[featIds]
     models <- lapply(Features, function(gene) {
         df <- buildDataFrame(obj, gene = gene, pi = pi)

@@ -29,7 +29,6 @@
 #'  function of the number of observations
 #' @importFrom scam scam
 #' @importFrom stats formula
-#' @importFrom BiocParallel bplapply
 #' @importFrom Rfast rowAll
 #' @export
 #' @seealso \link{buildDataFrame}
@@ -75,7 +74,7 @@ addWeightFunction <- function(resList, pis = resList$pis, designVars,
         designVec <- integer(nrow(resList$hypFrame))
         designVars <- NULL
     }
-    Wfs <- bplapply(pis, function(pi) {
+    Wfs <- lapply(pis, function(pi) {
         windowId <- pi %in% c("edge", "midpoint")
         cellId <- any(grepl("Cell", pi))
         features <- getFeatures(resList)
