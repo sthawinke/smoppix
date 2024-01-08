@@ -16,6 +16,8 @@
 #' probabilistic indices be calculated?
 #' @param tabObs A table of observed gene frequencies
 #' @param window An window of class owin, in which events can occur
+#' @param loopFun The function to use to loop over the features.
+#' Defaults to bplapply except when looping over features within cells
 #'
 #' @return Data frames with estimated quantities per gene and/or gene pair
 #' @importFrom stats ecdf dist

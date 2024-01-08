@@ -44,6 +44,9 @@ probabilistic indices be calculated?}
 and their centroids}
 
 \item{window}{An window of class owin, in which events can occur}
+
+\item{loopFun}{The function to use to loop over the features.
+Defaults to bplapply except when looping over features within cells}
 }
 \value{
 Data frames with estimated quantities per gene and/or gene pair

@@ -38,6 +38,9 @@ probabilistic indices be calculated?}
 
 \item{ecdfAll, ecdfsCell}{Empirical cumulative distribution functions of all
 events and of cells within the cell, under the null}
+
+\item{loopFun}{The function to use to loop over the features.
+Defaults to bplapply except when looping over features within cells}
 }
 \value{
 A list over the features with all PI entries

@@ -62,7 +62,6 @@ calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null, 
             list(windowDists = list(edge = edgeDistPI, midpoint = midPointDistPI), pointDists = list(nn = nnPI, nnPair = nnPIpair))
         })
         names(featPIs) <- ss
-        # TO DO: nnCell recycling code
         return(featPIs)
     }))
     names(piList) <- features
