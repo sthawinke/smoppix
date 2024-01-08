@@ -19,5 +19,6 @@ convertToOwins(windows, namePPP, coords, ...)
 A list of owins
 }
 \description{
-Convert windows in different formats to spatstat owin format
+Convert a list of differently formatted windows to owins, for
+addition to a hyperframe
 }

@@ -1,5 +1,5 @@
 #' Convert windows in different formats to spatstat owin format
-#' @Descrption Convert a list of differently formatted windows to owins, for
+#' @description Convert a list of differently formatted windows to owins, for
 #' addition to a hyperframe
 #'
 #' @param windows The list of windows
