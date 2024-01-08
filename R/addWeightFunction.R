@@ -139,29 +139,30 @@ addWeightFunction <- function(resList, pis = resList$pis, designVars,
                   }
                 }))  # The quadratic departures from the conditional mean
                 tabEntries <- vapply(resList$hypFrame$tabObs[ordDesign],
-                                     FUN.VALUE = double(1),
+                                     FUN.VALUE = double(if(pairId) 2 else 1),
                                      function(x) {
-                  if (pairId) {
-                    if (all(geneSplit %in% names(x)))
-                      sum(x[geneSplit]) else NA #Number of NN distances
+                    if (all(geneSplit %in% names(x))){
+                      sort(x[geneSplit]) #Number of NN distances
                   } else {
-                    x[geneSplit]
+                    rep(NA, if(pairId) 2 else 1)
                   }
                 })
-                out <- rbind(quadDeps = quadDeps, tabEntries)
+                out <- rbind("quadDeps" = quadDeps, tabEntries)
             }
-            rownames(out)[-1] <- "NP"
+            rownames(out)[-1] <- if(pairId) c("minP", "maxP") else "NP"
             out
         })
-        varElMat <- matrix(unlist(varEls), ncol = 2, byrow = TRUE,
-                           dimnames = list(NULL, c("quadDeps", "NP")))
+        varElMat <- matrix(unlist(varEls), ncol = if(pairId) 3 else 2, byrow = TRUE,
+                           dimnames = list(NULL, c("quadDeps", if(pairId) c("minP", "maxP") else "NP")))
         # Faster than cbind
         varElMat <- varElMat[!is.na(varElMat[, "quadDeps"]) &
                                  varElMat[, "quadDeps"] != 0, ]
         if (nrow(varElMat) > maxObs) {
             varElMat <- varElMat[sample(nrow(varElMat), maxObs), ]
         }
-        scamForm <- formula("log(quadDeps) ~ s(log(NP), bs = 'mpd')")
+        scamForm <- formula(paste("log(quadDeps) ~", if (pairId) {
+            "s(log(minP), bs = 'mpd') + s(log(maxP), bs = 'mpd')"
+        } else {"s(log(NP), bs = 'mpd')"}))
         scamMod <- scam(scamForm, data = data.frame(varElMat), ...)
         attr(scamMod, "pis") <- pi
         return(scamMod)

@@ -83,16 +83,23 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "midpoint",
             tabCell <- table(marks(obj$hypFrame$ppp[[n]], drop = FALSE)$gene,
                              marks(obj$hypFrame$ppp[[n]], drop = FALSE)$cell)
             npVec <- if (all(geneSplit %in% rownames(tabCell))) {
-                tmp <- tabCell[geneSplit, match(names(piEst), colnames(tabCell)), drop = FALSE]
-                colSums(tmp)
-            } else rep(NA,nrow = length(piEst))
-            data.frame(pi = piEst, cellCovars, "NP" = npVec)
+            tmp <- tabCell[geneSplit, match(names(piEst), colnames(tabCell)), drop = FALSE]
+                t(matrix(tmp, ncol = ncol(tmp), dimnames = dimnames(tmp)))
+                    } else matrix(NA, ncol = if (pairId) 2 else 1, nrow = length(piEst))
+             colnames(npVec) <- if (pairId)
+                       c("minP", "maxP") else "NP"
+            data.frame(pi = piEst, cellCovars, npVec)
         } else {
             piEst <- if(is.null(vec <- getGp(x[[piListNameInner]][[pi]], gene)))
                 NA else vec
             npVec <- if (all(geneSplit %in% names(obj$hypFrame[n, "tabObs", drop = TRUE]))){
-                sum(obj$hypFrame[n, "tabObs", drop = TRUE][geneSplit])
+                obj$hypFrame[n, "tabObs", drop = TRUE][geneSplit]
             } else NA
+            if (pairId) {
+                data.frame(pi = piEst, minP = min(npVec), maxP = max(npVec))
+            } else {
+                data.frame(pi = piEst, NP = npVec)
+            }
             data.frame(pi = piEst, NP = npVec)
         }
     })
@@ -105,7 +112,8 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "midpoint",
     if (!windowId) {
         # Add weights
         weight <- evalWeightFunction(obj$Wfs[[pi]],
-                                     newdata = piMat[, "NP", drop = FALSE])
+            newdata = piMat[, if(grepl("Pair", pi)) c("minP", "maxP") else "NP",
+                            drop = FALSE])
         weight <- weight/sum(weight, na.rm = TRUE)
         piMat <- cbind(piMat, weight = weight)
     }
