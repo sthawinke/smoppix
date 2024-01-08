@@ -2,7 +2,8 @@
 % Please edit documentation in R/plotWf.R
 \name{plotWf}
 \alias{plotWf}
-\title{Plot the weighting function: The observation weigth as a function of the number of observations}
+\title{Plot the variance weighting function
+The observation weight as a function of the number of observations}
 \usage{
 plotWf(obj, pi = obj$pis[1])
 }
@@ -15,7 +16,8 @@ plotWf(obj, pi = obj$pis[1])
 For univariate PI, returns a line plot; for bivariate PI a ggplot object
 }
 \description{
-Plot the weighting function: The observation weigth as a function of the number of observations
+Plot the variance weighting function
+The observation weight as a function of the number of observations
 }
 \examples{
 data(Yang)

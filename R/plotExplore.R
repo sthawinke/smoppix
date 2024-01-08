@@ -1,6 +1,8 @@
 #' Plot the hyperframe for exploratory purposes
+#' @description A subset of 8 point patterns is plotted. This function is mainly
+#' meant for exploratory purposes and confirming correct data read-in.
 #'
-#' @param hypFrame The hyperframa
+#' @param hypFrame The hyperframe
 #' @param features A small number of features to be fitted. Defaults to the first 5
 #' @param ppps The rownames or indices of the point patterns to be plotted.
 #' Defaults to the first 8.

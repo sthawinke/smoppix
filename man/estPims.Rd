@@ -2,7 +2,7 @@
 % Please edit documentation in R/estPims.R
 \name{estPims}
 \alias{estPims}
-\title{Estimate pims on a hyperframe}
+\title{Estimate probabilistic indices for (co)localization on a hyperframe}
 \usage{
 estPims(
   hypFrame,
@@ -29,10 +29,11 @@ probabilistic indices be calculated?}
 \item{...}{additional arguments, passed on to estPimsSingle}
 }
 \value{
-A list of estimated pims
+The hyperframe with the estimated PIMs present in it
 }
 \description{
-Estimate pims on a hyperframe
+Estimate different probabilistic indices for (co)localization
+on  a hyperframe, and integrate the results in the same hyperframe
 }
 \details{
 The null distribution used to calculate the PIs. Can be either 'background',

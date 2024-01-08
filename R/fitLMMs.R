@@ -116,7 +116,9 @@ fitLMMsSingle <- function(obj, pi, fixedVars = NULL, randomVars = NULL,
         return(list(results = results, obj = obj, models = models))
     }
 }
-#' A wrapper function for linear mixed model fitting for all PIs
+#' Fit linear (mixed) models fitting for all probabilistic indices (PIs)
+#' @description The PI is used as outcome variable in a linear (mixed) model,
+#' with design variables as regressors.
 #'
 #' @param obj The result object
 #' @param pis Optional, the pis required. Defaults to all pis in the object

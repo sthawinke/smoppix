@@ -1,4 +1,5 @@
-#' Plot the weighting function: The observation weigth as a function of the number of observations
+#' Plot the variance weighting function
+#' The observation weight as a function of the number of observations
 #'
 #' @inheritParams buildDataFrame
 #' @param pi The PI for which to plot the weighting function

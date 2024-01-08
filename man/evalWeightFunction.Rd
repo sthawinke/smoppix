@@ -2,7 +2,7 @@
 % Please edit documentation in R/evalWeightFun.R
 \name{evalWeightFunction}
 \alias{evalWeightFunction}
-\title{Evaluate the weighting function and return (unnormalized) weights}
+\title{Evaluate a variance weighting function}
 \usage{
 evalWeightFunction(wf, newdata)
 }
@@ -15,7 +15,7 @@ evalWeightFunction(wf, newdata)
 A vector of predictions
 }
 \description{
-Evaluate the weighting function and return (unnormalized) weights
+Evaluate the variance weighting function to  return unnormalized weights
 }
 \examples{
 data(Yang)

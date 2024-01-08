@@ -1,4 +1,6 @@
-#' Evaluate the weighting function and return (unnormalized) weights
+#' Evaluate a variance weighting function
+#' @description
+#' Evaluate the variance weighting function to  return unnormalized weights
 #'
 #' @param wf The weighting function
 #' @param newdata Optional, a data frame with new data

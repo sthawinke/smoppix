@@ -2,7 +2,7 @@
 % Please edit documentation in R/fitLMMs.R
 \name{fitLMMs}
 \alias{fitLMMs}
-\title{A wrapper function for linear mixed model fitting for all PIs}
+\title{Fit linear (mixed) models fitting for all probabilistic indices (PIs)}
 \usage{
 fitLMMs(obj, pis = obj$pis, verbose = TRUE, ...)
 }
@@ -19,7 +19,8 @@ fitLMMs(obj, pis = obj$pis, verbose = TRUE, ...)
 A list of fitted objects
 }
 \description{
-A wrapper function for linear mixed model fitting for all PIs
+The PI is used as outcome variable in a linear (mixed) model,
+with design variables as regressors.
 }
 \examples{
 data(Yang)

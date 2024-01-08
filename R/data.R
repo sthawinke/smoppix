@@ -1,4 +1,4 @@
-#' Spatial transcriptomics data of Selaginella
+#' Spatial transcriptomics data of Selaginella moellendorffii
 #'
 #' Single-molecule spatial transcriptomics smFISH data of Selaginella moellendorffii roots of a
 #' replicated experiment by \insertCite{Yang2023}{spatrans}. Molecule locations, gene identity and design

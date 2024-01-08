@@ -2,7 +2,7 @@
 % Please edit documentation in R/findOverlap.R
 \name{findOverlap}
 \alias{findOverlap}
-\title{Try to find overlap between list of windows, and throw error when found}
+\title{Find overlap between list of windows}
 \usage{
 findOverlap(owins, returnIds = FALSE)
 }
@@ -13,10 +13,12 @@ findOverlap(owins, returnIds = FALSE)
 If FALSE an error is thrown at the first overlap}
 }
 \value{
-Throws an error when overlap found, otherwise returns invisible
+Throws an error when overlap found, otherwise returns invisible.
+When returnIds=TRUE, the indices of overlapping windows are returned.
 }
 \description{
-Try to find overlap between list of windows, and throw error when found
+The function seeks overlap between the list of windows supplied,
+and throws an error when found or returns the id's when found.
 }
 \examples{
 library(spatstat.geom)

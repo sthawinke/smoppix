@@ -1,10 +1,13 @@
-#' Try to find overlap between list of windows, and throw error when found
+#' Find overlap between list of windows
+#' @description The function seeks overlap between the list of windows supplied,
+#' and throws an error when found or returns the id's when found.
 #'
 #' @param owins the list of windows
 #' @param returnIds A boolean, should the indices of the overlap be returned?
 #' If FALSE an error is thrown at the first overlap
 #'
-#' @return Throws an error when overlap found, otherwise returns invisible
+#' @return Throws an error when overlap found, otherwise returns invisible.
+#' When returnIds=TRUE, the indices of overlapping windows are returned.
 #' @importFrom utils combn
 #' @importFrom spatstat.geom overlap.owin is.owin
 #' @importFrom BiocParallel bplapply bpparam

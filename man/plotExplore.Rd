@@ -13,7 +13,7 @@ plotExplore(
 )
 }
 \arguments{
-\item{hypFrame}{The hyperframa}
+\item{hypFrame}{The hyperframe}
 
 \item{features}{A small number of features to be fitted. Defaults to the first 5}
 
@@ -28,7 +28,8 @@ Defaults to the first 8.}
 Plots a facet of point patterns to output
 }
 \description{
-Plot the hyperframe for exploratory purposes
+A subset of 8 point patterns is plotted. This function is mainly
+meant for exploratory purposes and confirming correct data read-in.
 }
 \examples{
 data(Yang)

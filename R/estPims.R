@@ -23,6 +23,7 @@
 #' @importFrom stats ecdf dist
 #' @importFrom Rdpack reprompt
 #' @importFrom Rfast rowSort rowMins rowAny
+#' @importFrom BiocParallel bplapply
 estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = switch(null, background = 1e5, CSR = 1e3),
                           nPointsAllWithinCell = switch(null, background = 1e4, CSR = 1e3),nPointsAllWin = 2e3,
     features = NULL, owins = NULL, centroids = NULL, window = p$window, loopFun = "bplapply") {
@@ -66,7 +67,7 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = switch(null, backgr
     # Within cell: recurse into estPimsSingle but now per cell
     withinCellDists <- if (any(grepl("Cell", pis))) {
         splitCell <- split.ppp(p, f = "cell")
-        cellDists <- lapply(names(splitCell)[names(splitCell)!= "NA"], function(nam) {
+        cellDists <- bplapply(names(splitCell)[names(splitCell)!= "NA"], function(nam) {
             estPimsSingle(pis = gsub("Cell", "", grep(value = TRUE, "Cell", pis)), p = splitCell[[nam]], null = null,
                 nPointsAll = nPointsAllWithinCell, window = owins[[nam]], features = features,
                 tabObs = table(marks(splitCell[[nam]], drop = FALSE)$gene),
@@ -77,13 +78,15 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = switch(null, backgr
     }
     list(pointDists = pointDists, windowDists = windowDists, withinCellDists = withinCellDists)
 }
-#' Estimate pims on a hyperframe
+#' Estimate probabilistic indices for (co)localization on a hyperframe
+#' @description Estimate different probabilistic indices for (co)localization
+#' on  a hyperframe, and integrate the results in the same hyperframe
 #' @export
 #' @param hypFrame the hyperframe
 #' @param ... additional arguments, passed on to estPimsSingle
 #' @param verbose a boolean, whether to report on progress of fitting
 #' @inheritParams estPimsSingle
-#' @return A list of estimated pims
+#' @return The hyperframe with the estimated PIMs present in it
 #' @importFrom BiocParallel bplapply
 #' @examples
 #' data(Yang)
