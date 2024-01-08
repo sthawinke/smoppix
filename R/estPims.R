@@ -22,7 +22,6 @@
 #' @return Data frames with estimated quantities per gene and/or gene pair
 #' @importFrom stats ecdf dist
 #' @importFrom Rdpack reprompt
-#' @importFrom Rfast rowSort rowMins rowAny
 #' @importFrom BiocParallel bplapply
 estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = switch(null, background = 1e5, CSR = 1e3),
                           nPointsAllWithinCell = switch(null, background = 1e4, CSR = 1e3),nPointsAllWin = 2e3,
@@ -66,14 +65,16 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = switch(null, backgr
     }
     # Within cell: recurse into estPimsSingle but now per cell
     withinCellDists <- if (any(grepl("Cell", pis))) {
-        splitCell <- split.ppp(p, f = "cell")
-        cellDists <- bplapply(names(splitCell)[names(splitCell)!= "NA"], function(nam) {
-            estPimsSingle(pis = gsub("Cell", "", grep(value = TRUE, "Cell", pis)), p = splitCell[[nam]], null = null,
+        unCells <- setdiff(unique(marks(p, drop = FALSE)$cell), "NA")
+        cellDists <- bplapply(unCells, function(nam) {
+            pSub = p[marks(p, drop = FALSE)$cell == nam,]
+            estPimsSingle(pis = gsub("Cell", "", grep(value = TRUE, "Cell", pis)),
+                          p = pSub, null = null,
                 nPointsAll = nPointsAllWithinCell, window = owins[[nam]], features = features,
-                tabObs = table(marks(splitCell[[nam]], drop = FALSE)$gene),
+                tabObs = table(marks(pSub, drop = FALSE)$gene),
                 loopFun = "lapply")$pointDists
         })
-        names(cellDists) <- names(splitCell)
+        names(cellDists) <- unCells
         cellDists
     }
     list(pointDists = pointDists, windowDists = windowDists, withinCellDists = withinCellDists)
