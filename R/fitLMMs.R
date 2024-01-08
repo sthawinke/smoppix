@@ -70,20 +70,19 @@ fitLMMsSingle <- function(obj, pi, fixedVars = NULL, randomVars = NULL,
         names(fixedVars) <- fixedVars
         contrasts <- lapply(fixedVars, function(x) named.contr.sum)
     }
-    Features <- if (grepl("Pair", pi)) {
+    tmp <- if (grepl("Pair", pi)) {
         feats <- makePairs(features)
-        featIds <- colSums(vapply(feats, FUN.VALUE = double(nrow(obj$hypFrame)), function(gene) {
+         vapply(feats, FUN.VALUE = double(nrow(obj$hypFrame)), function(gene) {
             vapply(obj$hypFrame$tabObs, FUN.VALUE = double(1), function(x) all(x[sund(gene)] >= 1))
-        }), na.rm = TRUE) >= 1
-        feats[featIds]
+        })
     } else {
         # First check if gene is present at all
-        featIds <- colSums(vapply(features, FUN.VALUE = double(nrow(obj$hypFrame)), function(gene) {
+         vapply(features, FUN.VALUE = double(nrow(obj$hypFrame)), function(gene) {
             vapply(obj$hypFrame$tabObs, FUN.VALUE = double(1), function(x) x[gene])
-        }) > 1, na.rm = TRUE) >= 1
-        features[featIds]
-        # Leave out barely expressed genes
+        })
     }
+    featIds <- (if(is.matrix(tmp)) colSums(tmp>1, na.rm = TRUE) else tmp) >= 1
+    Features <- feats[featIds]
     models <- lapply(Features, function(gene) {
         df <- buildDataFrame(obj, gene = gene, pi = pi)
         if (randomNested) {
