@@ -13,7 +13,7 @@ A data matrix
 }
 }
 \source{
-\url{https://doi.org/10.1016/j.cub.2023.08.030}
+\doi{10.1016/j.cub.2023.08.030}
 }
 \usage{
 data(Yang)

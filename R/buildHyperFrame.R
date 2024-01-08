@@ -1,6 +1,7 @@
-#' Built the hyperframe containing all separate point patterns that will
-#'  be used throughout the analysis. Matrices, dataframe, lists and
-#'  SpatialExperiment inputs are accepted.
+#' Build a hyperframe containing all separate point patterns.
+#' @description
+#' Build a spatstat hyperframe with point patterns and metadata.
+#'  Matrices, dataframe, lists and  SpatialExperiment inputs are accepted.
 #' @rdname buildHyperFrame
 #' @importFrom spatstat.geom ppp hyperframe
 #' @importFrom methods setGeneric setMethod
@@ -30,13 +31,11 @@ setMethod("buildHyperFrame", "data.frame", function(x, coordVars, imageVars, coV
         ...)
 })
 #' @param matrix The input matrix
-#' @param image A set of design variable whose unique combination distinguishes
-#' the different point patterns
 #'
 #' @rdname buildHyperFrame
 #' @export
-setMethod("buildHyperFrame", "matrix", function(x, image, covariates, ...) {
-    if (length(intersect(names(image), names(covariates)))) {
+setMethod("buildHyperFrame", "matrix", function(x, imageVars, covariates, ...) {
+    if (length(intersect(names(imageVars), names(covariates)))) {
         stop("Overlap detected between 'imageVars' and 'coVars'.
         The combination of the first separates the images,
              wheras the second defines point-specific data such as
@@ -45,13 +44,13 @@ setMethod("buildHyperFrame", "matrix", function(x, image, covariates, ...) {
     if (ncol(x) != 2) {
         stop("Coordinates must be 2 dimensional")
     }
-    if (nrow(x) != NROW(image)) {
-        stop("Number of rows of image and coordinate matrix must match")
+    if (nrow(x) != NROW(imageVars)) {
+        stop("Number of rows of imageVars and coordinate matrix must match")
     }
-    designVec <- if (NCOL(image) != 1) {
-        apply(image, 1, paste, collapse = "_")
+    designVec <- if (NCOL(imageVars) != 1) {
+        apply(imageVars, 1, paste, collapse = "_")
     } else {
-        image
+        imageVars
     }
 
     if (!any("gene" == colnames(covariates))) {
@@ -62,15 +61,17 @@ setMethod("buildHyperFrame", "matrix", function(x, image, covariates, ...) {
     stopifnot(is.null(covariates) || nrow(x) == NROW(covariates))
     message("Found ", length(unDesignFactors <- unique(designVec)), " unique images")
     ppps <- tapply(seq_len(nrow(x)), designVec, simplify = FALSE, function(i) {
-        spatstat.geom::ppp(x = x[i, 1], y = x[i, 2], marks = covariates[i, , drop = FALSE], xrange = range(x[i, 1]),
+        spatstat.geom::ppp(x = x[i, 1], y = x[i, 2], marks = covariates[i, , drop = FALSE],
+                           xrange = range(x[i, 1]),
             yrange = range(x[i, 2]), drop = FALSE)
     })
     # Replace underscore in gene names => Used to build pairs
     hypFrame <- spatstat.geom::hyperframe(ppp = ppps, image = names(ppps))
     rownames(hypFrame) <- hypFrame$image
-    desMat <- matrix(simplify2array(strsplit(names(ppps), "_")), nrow = nrow(hypFrame), byrow = TRUE)
-    colnames(desMat) <- names(image)
-    for (i in names(image)) {
+    desMat <- matrix(simplify2array(strsplit(names(ppps), "_")),
+                     nrow = nrow(hypFrame), byrow = TRUE)
+    colnames(desMat) <- names(imageVars)
+    for (i in names(imageVars)) {
         hypFrame[, i] <- desMat[, i]
     }
     hypFrame <- addTabObs(hypFrame)
@@ -84,13 +85,16 @@ setMethod("buildHyperFrame", "matrix", function(x, image, covariates, ...) {
 #' @rdname buildHyperFrame
 #' @export
 #' @importFrom spatstat.geom is.ppp
-setMethod("buildHyperFrame", "list", function(x, coordVars = c("x", "y"), covariatesDf = NULL, idVar = NULL, ...) {
-    stopifnot(is.null(covariatesDf) || (nrow(covariatesDf) == length(x)), is.null(idVar) || idVar %in% names(covariatesDf))
+setMethod("buildHyperFrame", "list", function(x, coordVars = c("x", "y"),
+                                    covariatesDf = NULL, idVar = NULL, ...) {
+    stopifnot(is.null(covariatesDf) || (nrow(covariatesDf) == length(x)),
+              is.null(idVar) || idVar %in% names(covariatesDf))
     if (!is.null(names(x)) && !is.null(idVar)) {
         covariatesDf <- covariatesDf[match(names(x), covariatesDf[, idVar]), ]
         # Match the ranking
     } else if (!is.null(covariatesDf)) {
-        message("No matching information supplied, matching point patterns ", "and covariates based on order.")
+        message("No matching information supplied, matching point patterns ",
+                "and covariates based on order.")
     }
 
     if (all(vapply(x, is.ppp, FUN.VALUE = TRUE))) {

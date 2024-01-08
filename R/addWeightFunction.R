@@ -1,4 +1,5 @@
-#' Build a weighting function based on the data
+#' Add a variance weighting function
+#' @description Build a weighting function based on the data, and attach it to the object
 #'
 #' @param resList A results list, from a call to estPims()
 #' @param designVars A character vector containing all design factors

@@ -10,7 +10,7 @@
 #'   \item{gene}{Character vector with gene identities}
 #'  \item{root,section,day}{Design variables}
 #' }
-#' @source \url{https://doi.org/10.1016/j.cub.2023.08.030}
+#' @source \doi{10.1016/j.cub.2023.08.030}
 #' @references
 #' \insertAllCited{}
 #' @usage data(Yang)

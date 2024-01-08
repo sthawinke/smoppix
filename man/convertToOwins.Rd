@@ -2,7 +2,7 @@
 % Please edit documentation in R/convertToOwins.R
 \name{convertToOwins}
 \alias{convertToOwins}
-\title{Converta list of differently formatted windows to owins}
+\title{Convert windows in different formats to spatstat owin format}
 \usage{
 convertToOwins(windows, namePPP, coords, ...)
 }
@@ -19,5 +19,5 @@ convertToOwins(windows, namePPP, coords, ...)
 A list of owins
 }
 \description{
-Converta list of differently formatted windows to owins
+Convert windows in different formats to spatstat owin format
 }

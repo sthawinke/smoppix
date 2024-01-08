@@ -2,8 +2,7 @@
 % Please edit documentation in R/addCell.R
 \name{addCell}
 \alias{addCell}
-\title{Check in which cell each event lies and add a cell marker,
-plus include the list of regions}
+\title{Add cell variables to a hyperframe}
 \usage{
 addCell(
   hypFrame,

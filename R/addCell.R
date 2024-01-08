@@ -1,4 +1,5 @@
-#' Check in which cell each event lies and add a cell marker,
+#' Add cell variables to a hyperframe
+#' @description Check in which cell each event lies and add a cell marker,
 #' plus include the list of regions
 #'
 #' @param hypFrame The hyperframe

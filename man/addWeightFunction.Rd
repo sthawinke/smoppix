@@ -2,7 +2,7 @@
 % Please edit documentation in R/addWeightFunction.R
 \name{addWeightFunction}
 \alias{addWeightFunction}
-\title{Build a weighting function based on the data}
+\title{Add a variance weighting function}
 \usage{
 addWeightFunction(
   resList,
@@ -39,7 +39,7 @@ variance}
 A fitted scam object, which can be used to
 }
 \description{
-Build a weighting function based on the data
+Build a weighting function based on the data, and attach it to the object
 }
 \details{
 For computational and memory reasons,
