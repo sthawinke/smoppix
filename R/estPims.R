@@ -66,7 +66,7 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = switch(null, backgr
     # Within cell: recurse into estPimsSingle but now per cell
     withinCellDists <- if (any(grepl("Cell", pis))) {
         splitCell <- split.ppp(p, f = "cell")
-        cellDists <- lapply(names(splitCell), function(nam) {
+        cellDists <- lapply(names(splitCell)[names(splitCell)!= "NA"], function(nam) {
             estPimsSingle(pis = gsub("Cell", "", grep(value = TRUE, "Cell", pis)), p = splitCell[[nam]], null = null,
                 nPointsAll = nPointsAllWithinCell, window = owins[[nam]], features = features,
                 tabObs = table(marks(splitCell[[nam]], drop = FALSE)$gene),
