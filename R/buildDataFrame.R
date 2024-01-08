@@ -100,7 +100,6 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "midpoint",
             } else {
                 data.frame(pi = piEst, NP = npVec)
             }
-            data.frame(pi = piEst, NP = npVec)
         }
     })
     if (all((Times <- vapply(piDfs, FUN.VALUE = integer(1), NROW)) == 0)) {
