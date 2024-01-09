@@ -4,12 +4,14 @@
 #' here, but the spatial location of the cells is lost
 #'
 #' @param obj A hyperframe, or an object containing one
-#' @param feature The feature to be plotted, a character string
+#' @param features The features to be plotted, a character vector
 #' @param nCells An integer, the number of cells to be plotted
+#' @param Cex The point expansion factor
 #'
 #' @return Plots to the plotting window, returns invisible
 #' @export
 #' @importFrom spatstat.geom plot.owin subset.ppp
+#' @importFrom graphics points text
 #'
 #' @examples
 #' example(addCell, "spatrans")
@@ -18,26 +20,27 @@ plotCells = function(obj, features = getFeatures(obj)[seq_len(3)], nCells = 1e2,
     if(!is.hyperframe(obj)){
         obj = obj$hypFrame
     }
-    Cols <- makeCols(features, hypFrame)
+    Cols <- makeCols(features, obj)
     stopifnot(is.hyperframe(obj), !is.null(obj$owins),
               length(nCells) == 1)
     tablesCell = lapply(obj$ppp, function(p){
         table(marks(p[marks(p, drop = FALSE)$gene %in% features, ], drop = FALSE)$cell)
     })
+    names(tablesCell) = rownames(obj)
     nCells = min(nCells - 1, length(ul <- unlist(tablesCell)))
     nthcell = sort(ul, decreasing = TRUE)[nCells]
     tablesCell = lapply(tablesCell, function(x){
-        x[x >= nthcell]
+        x[x >= nthcell & names(x) != "NA"]
     })
-    counter = 0L;limVec = c(0, 1 + (Ceil <- ceiling(sqrt(nCells))))
+    counter = 0L;limVec = c(0, 1 + (Ceil <- ceiling(sqrt(nCells+1))))
     plot(type = "n", x = limVec, y = limVec, xlab = "", ylab = "", xaxt = "n",
          yaxt = "n", frame.plot = FALSE)
     for(i in seq_along(tablesCell)){
         nam = names(tablesCell)[i]
-        ppp = subset.ppp(obj$ppp[[nam]], gene %in% features)
+        ppp = subset.ppp(obj[[nam, "ppp"]], gene %in% features)
         for(j in seq_along(tablesCell[[nam]])){
             namIn = names(tablesCell[[nam]])[j]
-            shifted = toUnitSquare(obj$owins[[nam]][[namIn]], ppp = subset.ppp(ppp, cell == namIn),
+            shifted = toUnitSquare(obj[[nam, "owins"]][[namIn]], ppp = subset.ppp(ppp, cell == namIn),
                                        Shift = Shift <- c(counter %% Ceil, counter %/% Ceil))
             plot.owin(shifted$owin, add = TRUE)
             #text(x = Shift[1], y = Shift[2], labels = paste0("Point pattern ", nam, "\nCell", namIn))

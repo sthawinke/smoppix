@@ -9,9 +9,11 @@ plotCells(obj, features = getFeatures(obj)[seq_len(3)], nCells = 100, Cex = 1)
 \arguments{
 \item{obj}{A hyperframe, or an object containing one}
 
+\item{features}{The features to be plotted, a character vector}
+
 \item{nCells}{An integer, the number of cells to be plotted}
 
-\item{feature}{The feature to be plotted, a character string}
+\item{Cex}{The point expansion factor}
 }
 \value{
 Plots to the plotting window, returns invisible
