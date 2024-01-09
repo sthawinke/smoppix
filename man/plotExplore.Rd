@@ -9,7 +9,8 @@ plotExplore(
   features = getFeatures(hypFrame)[seq_len(6)],
   ppps,
   maxPlot = 1e+05,
-  Cex = 1
+  Cex = 1,
+  plotWindows = !is.null(hypFrame$owins)
 )
 }
 \arguments{
@@ -23,6 +24,8 @@ Defaults to the first 8.}
 \item{maxPlot}{The maximum number of events plotted per point pattern}
 
 \item{Cex}{Point amplification factor}
+
+\item{plotWindows}{A boolean, should windows be plotted too?}
 }
 \value{
 Plots a facet of point patterns to output

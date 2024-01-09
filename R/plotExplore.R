@@ -8,6 +8,7 @@
 #' Defaults to the first 8.
 #' @param maxPlot The maximum number of events plotted per point pattern
 #' @param Cex Point amplification factor
+#' @param plotWindows A boolean, should windows be plotted too?
 #'
 #' @return Plots a facet of point patterns to output
 #' @importFrom spatstat.geom is.hyperframe coords
@@ -24,10 +25,11 @@
 #' plotExplore(hypYang)
 #' plotExplore(hypYang, features = c("SmRBRb", "SmTMO5b", "SmWER--SmAHK4f"))
 plotExplore <- function(hypFrame, features = getFeatures(hypFrame)[seq_len(6)], ppps,
-                        maxPlot = 1e+05, Cex = 1) {
+                        maxPlot = 1e+05, Cex = 1, plotWindows = !is.null(hypFrame$owins)) {
     if(!is.hyperframe(hypFrame)){
         hypFrame <- hypFrame$hypFrame
     }
+    plotWindows <- plotWindows && !is.null(hypFrame$owins)
     stopifnot(is.hyperframe(hypFrame), is.character(features), is.numeric(maxPlot))
     features <- unique(unlist(lapply(features, sund)))
     npp <- nrow(hypFrame)
@@ -46,7 +48,7 @@ plotExplore <- function(hypFrame, features = getFeatures(hypFrame)[seq_len(6)], 
     }
     old.par <- par(no.readonly = TRUE)
     on.exit(par(old.par))
-    par(mfrow = if ((LL <- length(ppps)) <= 3)
+    par(mfrow = if ((LL <- length(ppps)) == 1) c(1,2) else if ((LL <- length(ppps)) <= 3)
         c(2, 2) else if(LL <=8) c(3, 3) else if(LL <=15)
             c(4, 4) else if(LL <= 24) c(5, 5) else if(LL <= 29)
                 c(5, 6) else if(LL <= 35) c(6,6) else c(6,7), mar = c(3, 3, 3, 3))
@@ -57,6 +59,8 @@ plotExplore <- function(hypFrame, features = getFeatures(hypFrame)[seq_len(6)], 
             # Plot grey background first and coloured dots on top
             plot(cordMat[ordVec, ], main = hypFrame$image[ppps[i]], pch = ".",
                  asp = 1, col = colVec[ordVec], cex = Cex)
+            if(plotWindows)
+                plot(hypFrame$owins[[i]], add = TRUE)
     })
     plot(0, 0, type = "n", xlab = "", ylab = "", xaxt = "n", yaxt = "n")
     idCols <- which(Cols != "grey")

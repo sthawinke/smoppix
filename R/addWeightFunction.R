@@ -102,6 +102,7 @@ addWeightFunction <- function(resList, pis = resList$pis, designVars,
                 tmp <- lapply(ordDesign, function(x) {
                   tab <- table(marks(resList$hypFrame$ppp[[x]])$cell,
                                marks(resList$hypFrame$ppp[[x]])$gene)
+                  tab <- tab[setdiff(rownames(tab), "NA"),]
                   if (!all(geneSplit %in% colnames(tab))) {
                     return(NULL)
                   }
