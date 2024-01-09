@@ -29,7 +29,7 @@
 #'  function of the number of observations
 #' @importFrom scam scam
 #' @importFrom stats formula
-#' @importFrom Rfast rowAll
+#' @importFrom Rfast rowAll rowSort
 #' @export
 #' @seealso \link{buildDataFrame}
 #' @examples

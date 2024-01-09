@@ -6,7 +6,7 @@
 \usage{
 plotExplore(
   hypFrame,
-  features = getFeatures(hypFrame),
+  features = getFeatures(hypFrame)[seq_len(6)],
   ppps,
   maxPlot = 1e+05,
   Cex = 1
