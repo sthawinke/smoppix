@@ -25,7 +25,8 @@
 #' plotExplore(hypYang)
 #' plotExplore(hypYang, features = c("SmRBRb", "SmTMO5b", "SmWER--SmAHK4f"))
 plotExplore <- function(hypFrame, features = getFeatures(hypFrame)[seq_len(6)], ppps,
-                        maxPlot = 1e+05, Cex = 1, plotWindows = !is.null(hypFrame$owins)) {
+                        maxPlot = 1e+05, Cex = 1, plotWindows = !is.null(hypFrame$owins),
+                        Xlim = NULL, Ylim = NULL) {
     if(!is.hyperframe(hypFrame)){
         hypFrame <- hypFrame$hypFrame
     }
@@ -60,7 +61,7 @@ plotExplore <- function(hypFrame, features = getFeatures(hypFrame)[seq_len(6)], 
             ordVec <- order(colVec != "grey")
             # Plot grey background first and coloured dots on top
             plot(cordMat[ordVec, ], main = hypFrame$image[ppps[i]], pch = ".",
-                 asp = 1, col = colVec[ordVec], cex = Cex)
+                 asp = 1, col = colVec[ordVec], cex = Cex, xlim = Xlim, ylim = Ylim)
             if(plotWindows)
                 foo <- lapply(hypFrame$owins[[i]], plot.owin, add = TRUE)
     })
