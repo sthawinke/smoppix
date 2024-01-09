@@ -8,9 +8,10 @@ addCell(
   hypFrame,
   owins,
   cellTypes = NULL,
-  checkOverlap = FALSE,
+  findOVerlappingOwins = FALSE,
   warnOut = TRUE,
   coords = c("x", "y"),
+  verbose = TRUE,
   ...
 )
 }
@@ -24,12 +25,14 @@ Also lists of geojson objects, coordinate matrices or rois are accepted}
 \item{cellTypes}{A dataframe of cell types and other cell-associated covariates.
 If supplied, it must contain a variable 'cell' that is matched with the names of the owins}
 
-\item{checkOverlap}{a boolean, should windows be checked for overlap?}
+\item{findOVerlappingOwins}{a boolean, should windows be checked for overlap?}
 
 \item{warnOut}{a boolean, should warning be issued when points are not
 contained in window}
 
 \item{coords}{The names of the coordinates, if the windows are given as sets of coordinates}
+
+\item{verbose}{A boolean, shoudl verbose output be printed?}
 
 \item{...}{Further arguments passed onto read functions}
 }
@@ -44,7 +47,11 @@ plus include the list of regions
 First the different cells are checked for overlap per point pattern.
 If no overlap is found, each event is assigned the cell that it falls into.
 Events not belonging to any cell will trigger a warning and be assigned 'NA'.
-Cell types and other variables are added to the marks if applicable
+Cell types and other variables are added to the marks if applicable.
+This function employs multithreading through the BiocParallel package for
+converting windows to owins as well as to check if events are inside an owin.
+If this leads to excessive memory usage and crashes, try serial processing by
+setting register(SerialParam()).
 }
 \examples{
 library(spatstat.random)

@@ -8,19 +8,25 @@
 #' Also lists of geojson objects, coordinate matrices or rois are accepted
 #' @param cellTypes A dataframe of cell types and other cell-associated covariates.
 #' If supplied, it must contain a variable 'cell' that is matched with the names of the owins
-#' @param checkOverlap a boolean, should windows be checked for overlap?
+#' @param findOVerlappingOwins a boolean, should windows be checked for overlap?
 #' @param warnOut a boolean, should warning be issued when points are not
 #' contained in window
 #' @param coords The names of the coordinates, if the windows are given as sets of coordinates
+#' @param verbose A boolean, shoudl verbose output be printed?
 #' @param ... Further arguments passed onto read functions
 #' @return the modified hyperframe
 #' @importFrom spatstat.geom inside.owin marks centroid.owin marks<-
+#' @importFrom BiocParallel bplapply
 #' @export
 #' @seealso \link{buildHyperFrame}
 #' @details First the different cells are checked for overlap per point pattern.
 #' If no overlap is found, each event is assigned the cell that it falls into.
 #' Events not belonging to any cell will trigger a warning and be assigned 'NA'.
-#' Cell types and other variables are added to the marks if applicable
+#' Cell types and other variables are added to the marks if applicable.
+#' This function employs multithreading through the BiocParallel package for
+#' converting windows to owins as well as to check if events are inside an owin.
+#' If this leads to excessive memory usage and crashes, try serial processing by
+#' setting register(SerialParam()).
 #' @examples
 #' library(spatstat.random)
 #' n <- 1e3 # number of molecules
@@ -57,13 +63,15 @@
 #' })
 #' names(wList) <- rownames(hypFrame) # Matching names is necessary
 #' hypFrame2 <- addCell(hypFrame, wList)
-addCell <- function(hypFrame, owins, cellTypes = NULL, checkOverlap = FALSE,
-                    warnOut = TRUE, coords = c("x", "y"), ...) {
+addCell <- function(hypFrame, owins, cellTypes = NULL, findOVerlappingOwins = FALSE,
+                    warnOut = TRUE, coords = c("x", "y"), verbose = TRUE, ...) {
     stopifnot(nrow(hypFrame) == length(owins),
               all(rownames(hypFrame) %in% names(owins)),
               is.hyperframe(hypFrame),
               is.null(cellTypes) || is.data.frame(cellTypes))
-    owins <- lapply(Nam <- names(owins), function(nam){
+    if(verbose)
+        message("Converting windows to spatstat owins")
+    owins <- bplapply(Nam <- names(owins), function(nam){
         convertToOwins(owins[[nam]], coords = coords, namePPP = nam, ...)
     });names(owins) <- Nam
     if (ct <- is.data.frame(cellTypes)) {
@@ -74,16 +82,20 @@ addCell <- function(hypFrame, owins, cellTypes = NULL, checkOverlap = FALSE,
         # Names of the other covariates
     }
     hypFrame$inSeveralCells <- lapply(rownames(hypFrame), function(i) integer())
+    if(verbose)
+        message("Adding cell names for point pattern")
     for (nn in rownames(hypFrame)) {
+        if(verbose)
+            message(match(nn, rownames(hypFrame)), " out of ", nrow(hypFrame))
         ppp <- hypFrame[[nn, "ppp"]]
         NP <- npoints(ppp)
         if (any("cell" == names(marks(ppp, drop = FALSE)))) {
             stop("Cell markers already present in point pattern ", nn)
         }
-        if (checkOverlap) {
+        if (findOVerlappingOwins) {
             foo <- findOverlap(owins[[nn]])
         }
-        idWindow <- lapply(owins[[nn]], function(rr) {
+        idWindow <- bplapply(owins[[nn]], function(rr) {
             which(inside.owin(ppp, w = rr))
         })
         if (!any((lll <- vapply(idWindow, FUN.VALUE = double(1), length))>0)) {

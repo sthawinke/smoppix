@@ -4,20 +4,24 @@
 \alias{plotCells}
 \title{Plot the n cells with highest abundance of a feature}
 \usage{
-plotCells(obj, feature, nCells = 100)
+plotCells(obj, features = getFeatures(obj)[seq_len(3)], nCells = 100, Cex = 1)
 }
 \arguments{
 \item{obj}{A hyperframe, or an object containing one}
 
-\item{feature}{The feature to be plotted, a character string}
-
 \item{nCells}{An integer, the number of cells to be plotted}
+
+\item{feature}{The feature to be plotted, a character string}
 }
 \value{
 Plots to the plotting window, returns invisible
 }
 \description{
 After testing for within-cell patterns, it may be useful to
-look at the cells with the most events for a certain gene. These are plotted
+look at the cells with the most events for certain genes. These are plotted
 here, but the spatial location of the cells is lost
+}
+\examples{
+example(addCell, "spatrans")
+plotCells(hypFrame2, "gene1")
 }

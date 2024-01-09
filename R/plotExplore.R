@@ -41,16 +41,7 @@ plotExplore <- function(hypFrame, features = getFeatures(hypFrame)[seq_len(6)], 
     if (missing(ppps)) {
         ppps <- seq_len(min(29, npp))
     }
-    Cols <- setdiff(palette(), "black")
-    if(length(Cols) > length(features)){
-        Cols <- Cols[seq_along(features)]
-    }
-    names(Cols) = features
-    allFeats = getFeatures(hypFrame)
-    if (length(Cols) < (lf <- length(allFeats))){
-        Cols <- c(Cols, rep("grey", lf - length(Cols)))
-        names(Cols)[Cols == "grey"] <- setdiff(allFeats, features)
-    }
+    Cols <- makeCols(features, hypFrame)
     old.par <- par(no.readonly = TRUE)
     on.exit(par(old.par))
     par(mfrow = if ((LL <- length(ppps)) == 1) c(1,2) else if ((LL <- length(ppps)) <= 3)
@@ -68,7 +59,24 @@ plotExplore <- function(hypFrame, features = getFeatures(hypFrame)[seq_len(6)], 
                 foo <- lapply(hypFrame$owins[[i]], plot.owin, add = TRUE)
     })
     plot(c(0, 1), c(0, 1), type = "n", xlab = "", ylab = "", xaxt = "n", yaxt = "n")
+    addLegend(Cols)
+}
+addLegend = function(Cols, Shift = c(0,0)){
     idCols <- which(Cols != "grey");li <- length(idCols)
-    points(x = rep(0.1, li), SeqY <- seq(0.95, 0.05, length.out = li), pch = 20, col = Cols[idCols])
-    text(x = rep(0.3, li), SeqY, names(Cols)[idCols])
+    points(x = rep(0.1, li) + Shift[1], SeqY <- seq(0.95, 0.05, length.out = li)+ Shift[2], pch = 20,
+           col = Cols[idCols])
+    text(x = rep(0.4, li)+ Shift[1], SeqY, names(Cols)[idCols])
+}
+makeCols = function(features, hypFrame){
+    Cols <- setdiff(palette(), "black")
+    if(length(Cols) > length(features)){
+        Cols <- Cols[seq_along(features)]
+    }
+    names(Cols) = features
+    allFeats = getFeatures(hypFrame)
+    if (length(Cols) < (lf <- length(allFeats))){
+        Cols <- c(Cols, rep("grey", lf - length(Cols)))
+        names(Cols)[Cols == "grey"] <- setdiff(allFeats, features)
+    }
+    return(Cols)
 }
