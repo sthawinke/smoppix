@@ -118,6 +118,7 @@ setMethod("buildHyperFrame", "list", function(x, coordVars = c("x", "y"),
         hypFrame[, i] <- covariatesDf[, i]
     }
     hypFrame <- addTabObs(hypFrame)
+    rownames(hypFrame) <- hypFrame$image
     return(hypFrame)
 })
 #' @rdname buildHyperFrame

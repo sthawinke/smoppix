@@ -1,7 +1,8 @@
 #' Plot the hyperframe for exploratory purposes
 #' @description A subset of 8 point patterns is plotted. This function is mainly
 #' meant for exploratory purposes and confirming correct data read-in.
-#'
+#' @details The colour palette is taken from the output of palette(),
+#' so set that one to change the colour scheme
 #' @param hypFrame The hyperframe
 #' @param features A small number of features to be fitted. Defaults to the first 5
 #' @param ppps The rownames or indices of the point patterns to be plotted.
@@ -9,6 +10,7 @@
 #' @param maxPlot The maximum number of events plotted per point pattern
 #' @param Cex Point amplification factor
 #' @param plotWindows A boolean, should windows be plotted too?
+#' @param Xlim,Ylim Vectors of length 2 with plotting limits
 #'
 #' @return Plots a facet of point patterns to output
 #' @importFrom spatstat.geom is.hyperframe coords plot.owin
@@ -68,5 +70,5 @@ plotExplore <- function(hypFrame, features = getFeatures(hypFrame)[seq_len(6)], 
     plot(c(0, 1), c(0, 1), type = "n", xlab = "", ylab = "", xaxt = "n", yaxt = "n")
     idCols <- which(Cols != "grey");li <- length(idCols)
     points(x = rep(0.1, li), SeqY <- seq(0.95, 0.05, length.out = li), pch = 20, col = Cols[idCols])
-    text(x = rep(0.2, li), SeqY, names(Cols)[idCols])
+    text(x = rep(0.3, li), SeqY, names(Cols)[idCols])
 }
