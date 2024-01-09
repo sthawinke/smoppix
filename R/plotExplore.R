@@ -11,7 +11,7 @@
 #' @param plotWindows A boolean, should windows be plotted too?
 #'
 #' @return Plots a facet of point patterns to output
-#' @importFrom spatstat.geom is.hyperframe coords
+#' @importFrom spatstat.geom is.hyperframe coords plot.owin
 #' @importFrom grDevices palette
 #' @importFrom graphics par legend
 #' @export
@@ -29,7 +29,9 @@ plotExplore <- function(hypFrame, features = getFeatures(hypFrame)[seq_len(6)], 
     if(!is.hyperframe(hypFrame)){
         hypFrame <- hypFrame$hypFrame
     }
-    plotWindows <- plotWindows && !is.null(hypFrame$owins)
+    if(plotWindows && is.null(hypFrame$owins)){
+        warning("No windows present in hyperframe object")
+    }
     stopifnot(is.hyperframe(hypFrame), is.character(features), is.numeric(maxPlot))
     features <- unique(unlist(lapply(features, sund)))
     npp <- nrow(hypFrame)
@@ -49,7 +51,7 @@ plotExplore <- function(hypFrame, features = getFeatures(hypFrame)[seq_len(6)], 
     old.par <- par(no.readonly = TRUE)
     on.exit(par(old.par))
     par(mfrow = if ((LL <- length(ppps)) == 1) c(1,2) else if ((LL <- length(ppps)) <= 3)
-        c(2, 2) else if(LL <=8) c(3, 3) else if(LL <=15)
+        c(2, 2) else if(LL <=8) c(3, 3) else if(LL <=11) c(3,4) else if(LL <=15)
             c(4, 4) else if(LL <= 24) c(5, 5) else if(LL <= 29)
                 c(5, 6) else if(LL <= 35) c(6,6) else c(6,7), mar = c(3, 3, 3, 3))
     baa <- lapply(ppps, function(i) {
@@ -60,7 +62,7 @@ plotExplore <- function(hypFrame, features = getFeatures(hypFrame)[seq_len(6)], 
             plot(cordMat[ordVec, ], main = hypFrame$image[ppps[i]], pch = ".",
                  asp = 1, col = colVec[ordVec], cex = Cex)
             if(plotWindows)
-                plot(hypFrame$owins[[i]], add = TRUE)
+                foo <- lapply(hypFrame$owins[[i]], plot.owin, add = TRUE)
     })
     plot(0, 0, type = "n", xlab = "", ylab = "", xaxt = "n", yaxt = "n")
     idCols <- which(Cols != "grey")
