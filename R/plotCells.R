@@ -9,8 +9,11 @@
 #'
 #' @return Plots to the plotting window, returns invisible
 #' @export
+#' @importFrom spatstat.geom plot.owin
 #'
 #' @examples
+#' example(addCell, "spatrans")
+#' plotCells(hypFrame2, "gene1")
 plotCells = function(obj, feature, nCells = 1e2){
     if(!is.hyperframe(obj)){
         obj = obj$hypFrame
@@ -22,15 +25,24 @@ plotCells = function(obj, feature, nCells = 1e2){
     })
     nthcell = sort(unlist(tablesCell), decreasing = TRUE)[nCells]
     tablesCell = lapply(tablesCell, function(x){
-        x[x>=nthcell]
+        x[x >= nthcell]
     })
-    on.exit(par(par(no.readonly = TRUE)))
-    nrowAndCol = ceiling(sqrt(nCells))
-    par(mfrow = rep(nrowAndCol, 2))
-    foo = lapply(names(tablesCell), function(nam){
-        lapply(names(obj$owins[[nam]]), function(namIn){
-            plot(obj$owins[[nam]][[namIn]], main = paste0("Point pattern ", nam, "\nCell", namIn))
-        })
-    })
+    counter = 0L;limVec = c(0, ceiling(sqrt(nCells)))
+    plot(type = "n", x = limVec, y = limVec, xlab = "", ylab = "", xaxt = "n", yaxt = "n")
+    for(i in seq_along(tablesCell)){
+        nam = names(tablesCell)[i]
+        for(j in seq_along(obj$owins[[nam]])){
+            namIn = names(obj$owins[[nam]])[j]
+            shiftedOwin = owinToUnitSquare(obj$owins[[nam]][[namIn]], Shift = c(counter %% nCells, counter %/% nCells))
+            plot.owin(shiftedOwin, main = paste0("Point pattern ", nam, "\nCell", namIn), add = TRUE)
+            counter = counter + 1
+        }
+    }
     invisible()
+}
+#' @importFrom spatstat.geom affine.owin
+owinToUnitSquare = function(owin, Shift){
+    vec = -c(owin$xrange[1], owin$yrange[1]) + Shift
+    shrink = 1/rep(max(diff(owin$xrange), diff(owin$yrange)), 2)
+    affine.owin(owin, diag(shrink), vec*shrink)
 }

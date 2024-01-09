@@ -10,7 +10,9 @@ plotExplore(
   ppps,
   maxPlot = 1e+05,
   Cex = 1,
-  plotWindows = !is.null(hypFrame$owins)
+  plotWindows = !is.null(hypFrame$owins),
+  Xlim = NULL,
+  Ylim = NULL
 )
 }
 \arguments{
@@ -26,6 +28,8 @@ Defaults to the first 8.}
 \item{Cex}{Point amplification factor}
 
 \item{plotWindows}{A boolean, should windows be plotted too?}
+
+\item{Xlim, Ylim}{Vectors of length 2 with plotting limits}
 }
 \value{
 Plots a facet of point patterns to output
@@ -33,6 +37,10 @@ Plots a facet of point patterns to output
 \description{
 A subset of 8 point patterns is plotted. This function is mainly
 meant for exploratory purposes and confirming correct data read-in.
+}
+\details{
+The colour palette is taken from the output of palette(),
+so set that one to change the colour scheme
 }
 \examples{
 data(Yang)
