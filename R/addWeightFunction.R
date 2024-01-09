@@ -93,8 +93,9 @@ addWeightFunction <- function(resList, pis = resList$pis, designVars,
                 piSub <- sub("Cell", "", pi)
                 piList <- lapply(resList$hypFrame$pimRes, function(x) {
                   lapply(x[["withinCellDists"]], function(y) {
-                    if (gene %in% names(y[[piSub]]))
-                      y[[piSub]][[gene]]
+                    if(!is.null(vec <- getGp(y[[piSub]], gene))){
+                        vec
+                    } else NULL
                   })
                 })
                 # If cellId, there is no tapply, cells are the lowest level anyway
