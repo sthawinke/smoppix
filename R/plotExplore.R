@@ -38,7 +38,7 @@ plotExplore <- function(hypFrame, features = getFeatures(hypFrame)[seq_len(6)], 
     if (missing(ppps)) {
         ppps <- seq_len(min(29, npp))
     }
-    Cols <- palette()
+    Cols <- setdiff(palette(), "black")
     if(length(Cols) > length(features)){
         Cols <- Cols[seq_along(features)]
     }
@@ -64,7 +64,8 @@ plotExplore <- function(hypFrame, features = getFeatures(hypFrame)[seq_len(6)], 
             if(plotWindows)
                 foo <- lapply(hypFrame$owins[[i]], plot.owin, add = TRUE)
     })
-    plot(0, 0, type = "n", xlab = "", ylab = "", xaxt = "n", yaxt = "n")
-    idCols <- which(Cols != "grey")
-    legend("center", legend = names(Cols)[idCols], pch = 20, col = Cols[idCols], ncol = 2)
+    plot(c(0, 1), c(0, 1), type = "n", xlab = "", ylab = "", xaxt = "n", yaxt = "n")
+    idCols <- which(Cols != "grey");li <- length(idCols)
+    points(x = rep(0.1, li), SeqY <- seq(0.95, 0.05, length.out = li), pch = 20, col = Cols[idCols])
+    text(x = rep(0.2, li), SeqY, names(Cols)[idCols])
 }
