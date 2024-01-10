@@ -104,7 +104,7 @@ addCell <- function(hypFrame, owins, cellTypes = NULL, findOVerlappingOwins = FA
             idIn = which(inside.owin(ppp[idLeft, ], w = owins[[nn]][[i]]))
             cellOut[idLeft[idIn]] <- i
             #Don't overwrite, stick to first match, and do not detect overlap
-            idLeft = idLeft[-idIn]
+            idLeft <- idLeft[-idIn]
         }
         if (NP == (nOut <- length(idLeft))) {
             stop("All points lie outside all windows for point pattern ", nn,
@@ -112,7 +112,7 @@ addCell <- function(hypFrame, owins, cellTypes = NULL, findOVerlappingOwins = FA
         }
         if ((nOut > 0) && warnOut) {
             warning(nOut, " points lie outside all windows for point pattern ",
-                    nn, " and were not assigned to a cell.\n")
+                    nn, " and were not assigned to a cell.\n", immediate. = TRUE)
         }
         newmarks <- cbind(marks(ppp, drop = FALSE), cell = cellOut)
         if (ct) {

@@ -49,9 +49,15 @@ If no overlap is found, each event is assigned the cell that it falls into.
 Events not belonging to any cell will trigger a warning and be assigned 'NA'.
 Cell types and other variables are added to the marks if applicable.
 This function employs multithreading through the BiocParallel package for
-converting windows to owins as well as to check if events are inside an owin.
+converting windows to owins as well as for finding overlap between the windows
+in the findOverlap() function when checkOverlap is TRUE.
 If this leads to excessive memory usage and crashes, try serial processing by
 setting register(SerialParam()).
+}
+\note{
+By default, there is no checking for overlap between windows.
+Events are assigned to the first window in which they fall
+Do check your input or set checkOverlap to TRUE, even when this make take time.
 }
 \examples{
 library(spatstat.random)
