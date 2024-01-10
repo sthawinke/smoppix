@@ -8,7 +8,7 @@
 #' Also lists of geojson objects, coordinate matrices or rois are accepted
 #' @param cellTypes A dataframe of cell types and other cell-associated covariates.
 #' If supplied, it must contain a variable 'cell' that is matched with the names of the owins
-#' @param findOVerlappingOwins a boolean, should windows be checked for overlap?
+#' @param findOverlappingOwins a boolean, should windows be checked for overlap?
 #' @param warnOut a boolean, should warning be issued when points are not
 #' contained in window
 #' @param coords The names of the coordinates, if the windows are given as sets of coordinates
@@ -67,7 +67,7 @@
 #' })
 #' names(wList) <- rownames(hypFrame) # Matching names is necessary
 #' hypFrame2 <- addCell(hypFrame, wList)
-addCell <- function(hypFrame, owins, cellTypes = NULL, findOVerlappingOwins = FALSE,
+addCell <- function(hypFrame, owins, cellTypes = NULL, findOverlappingOwins = FALSE,
                     warnOut = TRUE, coords = c("x", "y"), verbose = TRUE, ...) {
     stopifnot(nrow(hypFrame) == length(owins),
               all(rownames(hypFrame) %in% names(owins)),
@@ -96,7 +96,7 @@ addCell <- function(hypFrame, owins, cellTypes = NULL, findOVerlappingOwins = FA
         if (any("cell" == names(marks(ppp, drop = FALSE)))) {
             stop("Cell markers already present in point pattern ", nn)
         }
-        if (findOVerlappingOwins) {
+        if (findOverlappingOwins) {
             foo <- findOverlap(owins[[nn]])
         }
         cellOut <- rep("NA", NP);idLeft = seq_len(NP)

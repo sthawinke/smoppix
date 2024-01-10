@@ -18,6 +18,8 @@
 #' @param window An window of class owin, in which events can occur
 #' @param loopFun The function to use to loop over the features.
 #' Defaults to bplapply except when looping over features within cells
+#' @param minDiff An integer, the minimum number of events from other genes
+#'  needed for calculation of background PIs
 #'
 #' @return Data frames with estimated quantities per gene and/or gene pair
 #' @importFrom stats ecdf dist
@@ -25,7 +27,10 @@
 #' @importFrom BiocParallel bplapply
 estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = switch(null, background = 1e5, CSR = 1e3),
                           nPointsAllWithinCell = switch(null, background = 1e4, CSR = 1e3),nPointsAllWin = 2e3,
-    features = NULL, owins = NULL, centroids = NULL, window = p$window, loopFun = "bplapply") {
+    features = NULL, owins = NULL, centroids = NULL, window = p$window, loopFun = "bplapply", minDiff = 2e1) {
+    if(!length(features)){
+        return(list(pointDists = NULL, windowDists = NULL, withinCellDists = NULL))
+    }
     features <- sample(intersect(features, names(tabObs)))
     #Scramble to ensure equal calculation times in multithreading
     if (any(pis %in% c("nn", "nnPair"))) {
@@ -42,7 +47,7 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = switch(null, backgr
             pis = pis)
     }
     piList <- calcIndividualPIs(p = p, pSubLeft = pSubLeft, pis = pis, null = null, tabObs = tabObs, owins = owins,
-        centroids = centroids, features = features, ecdfAll = ecdfAll, ecdfsCell = ecdfsCell, loopFun = loopFun)
+        centroids = centroids, features = features, ecdfAll = ecdfAll, ecdfsCell = ecdfsCell, loopFun = loopFun, minDiff = minDiff)
     nnPis <- if ("nn" %in% pis) {
         vapply(piList[intersect(features, names(tabObs[tabObs > 1]))], FUN.VALUE = double(1), function(x) {
             x$pointDists$nn
