@@ -11,7 +11,7 @@
 #' @importFrom spatstat.geom nncross coords npoints
 #' @importFrom BiocParallel bpparam bplapply
 calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null, features, ecdfAll, ecdfsCell, loopFun, minDiff) {
-    NPall <- switch(null, "CSR" = getN(ecdfAll), "background" = npoints(p))
+    NPall <- npoints(p)
     loopFun <- match.fun(loopFun)
     pSplit <- split.ppp(p, f = factor(marks(p, drop = FALSE)$gene))
     splitFac <- rep(seq_len(bpparam()$workers), length.out = length(features))
@@ -21,7 +21,7 @@ calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null, 
             pSub <- pSplit[[feat]]
             NP <- npoints(pSub)
             if(null == "background" && ((NPall - NP) < minDiff)){
-                distMat = NULL
+                distMat = NULL;calcNNsingle = FALSE
                 #If insufficient other events, do not calculate nn PIs for background
             } else {
                 distMat <- cbind(self = if (calcNNsingle <- (NP > 1 && ("nn" %in% pis))) {
@@ -37,7 +37,8 @@ calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null, 
                 })
             }
             if(null == "CSR"){
-                NPall = max(NPall, 10*NP) #NPall is arbitrary for CSR, make sure it is large enough
+                NPall = 4*NP #NPall is arbitrary for CSR, make sure it is large enough,
+                #while limitng computation time
             }
             if (isMat <- is.matrix(distMat)) {
                 approxRanksTmp <- switch(null, "background" = findRanksDist(getCoordsMat(pSub), getCoordsMat(pSubLeft$Pout),

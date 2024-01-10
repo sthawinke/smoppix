@@ -57,16 +57,7 @@ The scam functions fits a decreasing spline of the variance as a
  function of the number of observations
 }
 \examples{
-data(Yang)
-hypYang <- buildHyperFrame(Yang,
-    coordVars = c('x', 'y'),
-    imageVars = c('day', 'root', 'section')
-)
-# Fit a subset of features to limit computation time
-yangPims <- estPims(hypYang[c(seq_len(5), seq(25, 29)),], nPointsAll = 1e3,
-    pis = c('nn', 'nnPair'), features = getFeatures(hypYang)[1:10]
-)
-# Build the weighting function for all PIs present
+example(estPims, "spatrans")
 yangObj <- addWeightFunction(yangPims, designVars = c('day', 'root'))
 # Alternative formulation with 'lowestLevelVar'
 yangObj2 <- addWeightFunction(yangPims, lowestLevelVar = 'section',

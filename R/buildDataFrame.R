@@ -9,18 +9,8 @@
 #' @export
 #' @importFrom scam predict.scam
 #' @examples
-#' data(Yang)
-#' hypYang <- buildHyperFrame(Yang,
-#'     coordVars = c('x', 'y'),
-#'     imageVars = c('day', 'root', 'section')
-#' )
-#' # Fit a subset of features to limit computation time
-#' yangPims <- estPims(hypYang[c(seq_len(5), seq(25, 29)),], pis = 'nn',nPointsAll = 1e3,
-#' features = c('SmVND2', 'SmPINR'))
-#' # First build the weighting function
-#' yangPims <- addWeightFunction(yangPims, designVars = c('day', 'root'))
-#' # Now build the data frame for mixed model analysis
-#' dfUniNN <- buildDataFrame(yangPims, gene = 'SmVND2', pi = 'nn')
+#' example(addWeightFunction, "spatrans")
+#' dfUniNN <- buildDataFrame(yangObj, gene = 'SmVND2', pi = 'nn')
 #' # Example analysis with linear mixed model
 #' library(lmerTest)
 #' # Use sum coding for day to maintain interpretability of the intercept
