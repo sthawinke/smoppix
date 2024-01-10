@@ -24,9 +24,13 @@
 #' Events not belonging to any cell will trigger a warning and be assigned 'NA'.
 #' Cell types and other variables are added to the marks if applicable.
 #' This function employs multithreading through the BiocParallel package for
-#' converting windows to owins as well as to check if events are inside an owin.
+#' converting windows to owins as well as for finding overlap between the windows
+#' in the findOverlap() function when checkOverlap is TRUE.
 #' If this leads to excessive memory usage and crashes, try serial processing by
 #' setting register(SerialParam()).
+#' @note By default, there is no checking for overlap between windows.
+#' Events are assigned to the first window in which they fall
+#' Do check your input or set checkOverlap to TRUE, even when this make take time.
 #' @examples
 #' library(spatstat.random)
 #' n <- 1e3 # number of molecules
@@ -86,7 +90,7 @@ addCell <- function(hypFrame, owins, cellTypes = NULL, findOVerlappingOwins = FA
         message("Adding cell names for point pattern")
     for (nn in rownames(hypFrame)) {
         if(verbose)
-            message(match(nn, rownames(hypFrame)), " out of ", nrow(hypFrame))
+            message(match(nn, rownames(hypFrame)), " of ", nrow(hypFrame))
         ppp <- hypFrame[[nn, "ppp"]]
         NP <- npoints(ppp)
         if (any("cell" == names(marks(ppp, drop = FALSE)))) {
@@ -95,32 +99,26 @@ addCell <- function(hypFrame, owins, cellTypes = NULL, findOVerlappingOwins = FA
         if (findOVerlappingOwins) {
             foo <- findOverlap(owins[[nn]])
         }
-        idWindow <- bplapply(owins[[nn]], function(rr) {
-            which(inside.owin(ppp, w = rr))
-        })
-        if (!any((lll <- vapply(idWindow, FUN.VALUE = double(1), length))>0)) {
-            stop("All points lie outside all windows for point pattern ", nn, " check your input!")
+        cellOut <- rep("NA", NP);idLeft = seq_len(NP)
+        for(i in names(owins[[nn]])){
+            idIn = which(inside.owin(ppp[idLeft, ], w = owins[[nn]][[i]]))
+            cellOut[idLeft[idIn]] <- i
+            #Don't overwrite, stick to first match, and do not detect overlap
+            idLeft = idLeft[-idIn]
         }
-        if (((nOut <- (NP- length(ul <- unlist(idWindow)))) > 0) && warnOut) {
+        if (NP == (nOut <- length(idLeft))) {
+            stop("All points lie outside all windows for point pattern ", nn,
+                 " check your input!")
+        }
+        if ((nOut > 0) && warnOut) {
             warning(nOut, " points lie outside all windows for point pattern ",
                     nn, " and were not assigned to a cell.\n")
-        }
-        cellOut <- rep("NA", NP)
-        for(i in names(idWindow)){
-            cellOut[idWindow[[i]]][cellOut[idWindow[[i]]] == "NA"] <- i
-            #Don't overwrite, stick to first match
         }
         newmarks <- cbind(marks(ppp, drop = FALSE), cell = cellOut)
         if (ct) {
             newmarks <- cbind(newmarks, cellTypes[match(cellOut, cellTypes$cell), otherCellNames, drop = FALSE])
         }
         marks(ppp) <- newmarks
-        WDup <- which(duplicated(ul))
-        if(numDup <- length(tmp <- unique(unlist(lapply(idWindow, function(x) which(x %in% ul[WDup])))))){
-            hypFrame[nn, "inSeveralCells"] <- tmp
-            warning(numDup, " points lie in several overlapping cells in point pattern ",
-                    nn, "! See findOverlap()")
-        }
         hypFrame[nn, "ppp"] = ppp
     }
     hypFrame$owins <- owins
