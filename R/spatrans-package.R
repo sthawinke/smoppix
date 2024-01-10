@@ -3,4 +3,4 @@
 #' @docType package
 #' @name spatrans
 #' @keywords internal
-#'_PACKAGE
+"_PACKAGE"
