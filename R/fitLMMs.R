@@ -36,7 +36,7 @@ fitLMMsSingle <- function(obj, pi, fixedVars = NULL, randomVars = NULL,
                                     "nnCell", "nnPairCell"))
     noWeight <- pi %in% c("edge", "midpoint")
     if(noWeight && !("cell" %in% randomVars)){
-        randomVars = c(randomVars, "cell")
+        randomVars <- c(randomVars, "cell")
     }
     # For independent distances, no weights are needed
     randomVarsSplit <- if (!is.null(randomVars))
@@ -62,7 +62,7 @@ fitLMMsSingle <- function(obj, pi, fixedVars = NULL, randomVars = NULL,
     }
     MM <- any(grepl("\\|", formChar))
     if (verbose) {
-        message("Fitted formula:\n", formChar)
+        message("Fitted formula for pi ", pi, ":\n", formChar)
     }
     Control <- lmerControl(check.conv.grad = .makeCC("ignore", tol = 0.002, relTol = NULL), check.conv.singular = .makeCC(action = "ignore",
         tol = formals(isSingular)$tol), check.conv.hess = .makeCC(action = "ignore", tol = 1e-06))
@@ -145,7 +145,7 @@ fitLMMsSingle <- function(obj, pi, fixedVars = NULL, randomVars = NULL,
 #' lmmModels <- fitLMMs(yangPims, fixedVars = 'day', randomVars = 'root')
 fitLMMs <- function(obj, pis = obj$pis, verbose = TRUE, ...) {
     out <- lapply(pis, function(pi) {
-        fitLMMsSingle(obj, pi = pi, verbose = verbose && pi == pis[1], ...)
+        fitLMMsSingle(obj, pi = pi, verbose = verbose, ...)
     })
     names(out) <- pis
     return(out)
