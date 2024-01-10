@@ -23,6 +23,7 @@
 #'
 #' @return Data frames with estimated quantities per gene and/or gene pair
 #' @importFrom stats ecdf dist
+#' @importFrom spatstat.random runifpoint
 #' @importFrom Rdpack reprompt
 #' @importFrom BiocParallel bplapply
 estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = switch(null, background = 1e5, CSR = 1e3),

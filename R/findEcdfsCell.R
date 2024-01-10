@@ -2,6 +2,8 @@
 #'
 #' @inheritParams estPimsSingle
 #' @importFrom BiocParallel bplapply
+#' @importFrom spatstat.random runifpoint
+#' @importFrom spatstat.geom crossdist nncross
 #' @return The list of ecdf functions
 findEcdfsCell <- function(p, owins, nPointsAllWin, centroids, null, pis) {
     ecdfsCell <- bplapply(names(owins), function(nam) {
