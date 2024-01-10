@@ -27,7 +27,7 @@
 #' @importFrom Rdpack reprompt
 #' @importFrom BiocParallel bplapply
 estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = switch(null, background = 1e5, CSR = 1e3),
-                          nPointsAllWithinCell = switch(null, background = 1e4, CSR = 1e3),nPointsAllWin = 2e3,
+                          nPointsAllWithinCell = switch(null, background = 1e4, CSR = 5e2), nPointsAllWin = 1e3,
     features = NULL, owins = NULL, centroids = NULL, window = p$window, loopFun = "bplapply", minDiff = 2e1) {
     if(!length(features)){
         return(list(pointDists = NULL, windowDists = NULL, withinCellDists = NULL))
@@ -44,22 +44,27 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = switch(null, backgr
         }
     }
     if (any(pis %in% c("edge", "midpoint"))) {
-        ecdfsCell <- findEcdfsCell(p = p, owins = owins, centroids = centroids, nPointsAllWin = nPointsAllWin, null = null,
-            pis = pis)
+        ecdfsCell <- findEcdfsCell(p = p, owins = owins, centroids = centroids,
+                nPointsAllWin = nPointsAllWin, null = null, pis = pis)
     }
-    piList <- calcIndividualPIs(p = p, pSubLeft = pSubLeft, pis = pis, null = null, tabObs = tabObs, owins = owins,
-        centroids = centroids, features = features, ecdfAll = ecdfAll, ecdfsCell = ecdfsCell, loopFun = loopFun, minDiff = minDiff)
+    piList <- calcIndividualPIs(p = p, pSubLeft = pSubLeft, pis = pis,
+                                null = null, tabObs = tabObs, owins = owins,
+        centroids = centroids, features = features, ecdfAll = ecdfAll,
+        ecdfsCell = ecdfsCell, loopFun = loopFun, minDiff = minDiff)
     nnPis <- if ("nn" %in% pis) {
-        vapply(piList[intersect(features, names(tabObs[tabObs > 1]))], FUN.VALUE = double(1), function(x) {
+        vapply(piList[intersect(features, names(tabObs[tabObs > 1]))],
+               FUN.VALUE = double(1), function(x) {
             x$pointDists$nn
         })
     }
     if ("nnPair" %in% pis && length(features) > 1 ) {
         genePairsMat <- combn(features, 2)
-        nnPairPis <- vapply(seq_len(ncol(genePairsMat)), FUN.VALUE = double(1), function(i) {
+        nnPairPis <- vapply(seq_len(ncol(genePairsMat)), FUN.VALUE = double(1),
+                            function(i) {
             feat1 <- genePairsMat[1, i]
             feat2 <- genePairsMat[2, i]
-            mean(c(getElement(piList[[feat1]]$pointDists$nnPair, feat2), getElement(piList[[feat2]]$pointDists$nnPair,
+            mean(c(getElement(piList[[feat1]]$pointDists$nnPair, feat2),
+                   getElement(piList[[feat2]]$pointDists$nnPair,
                 feat1)))
         })
         names(nnPairPis) <- apply(genePairsMat, 2, paste, collapse = "--")
@@ -83,7 +88,8 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = switch(null, backgr
         names(cellDists) <- unCells
         cellDists
     }
-    list(pointDists = pointDists, windowDists = windowDists, withinCellDists = withinCellDists)
+    list(pointDists = pointDists, windowDists = windowDists,
+         withinCellDists = withinCellDists)
 }
 #' Estimate probabilistic indices for (co)localization on a hyperframe
 #' @description Estimate different probabilistic indices for (co)localization

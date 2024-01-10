@@ -5,7 +5,7 @@
 #' events and of cells within the cell, under the null
 #' @inheritParams estPimsSingle
 #'
-#' @return A list over the features with all PI entries
+#' @return A list containing PI entries per feature
 #' @details For the single-feature nearest neighbour distances, the average
 #' is already calculated
 #' @importFrom spatstat.geom nncross coords npoints

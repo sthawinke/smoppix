@@ -26,7 +26,7 @@ plotCells = function(obj, features = getFeatures(obj)[seq_len(3)], nCells = 1e2,
     stopifnot(is.hyperframe(obj), !is.null(obj$owins),
               length(nCells) == 1, all(features %in% getFeatures(obj)))
     tablesCell = lapply(obj$ppp, function(p){
-        sum(table(marks(p[marks(p, drop = FALSE)$gene %in% features, ], drop = FALSE)$cell))
+        table(marks(p[marks(p, drop = FALSE)$gene %in% features, ], drop = FALSE)$cell)
     })
     names(tablesCell) = rownames(obj)
     nCells = min(nCells - 1, length(ul <- unlist(tablesCell)))

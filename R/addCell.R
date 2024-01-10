@@ -85,7 +85,6 @@ addCell <- function(hypFrame, owins, cellTypes = NULL, findOverlappingOwins = FA
         otherCellNames <- names(cellTypes)[names(cellTypes) != "cell"]
         # Names of the other covariates
     }
-    hypFrame$inSeveralCells <- lapply(rownames(hypFrame), function(i) integer())
     if(verbose)
         message("Adding cell names for point pattern")
     for (nn in rownames(hypFrame)) {

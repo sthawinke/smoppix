@@ -9,7 +9,7 @@
 #' @param cellAndGene The marks dataframe with cell and gene, used to match the
 #' observations with the ecdfs
 #'
-#' @return The estimated probabilistic index
+#' @return A list of vectors of estimated probabilistic indeces per event
 #' @importFrom spatstat.geom nncross edges nndist coords split.ppp crossdist
 #' @importFrom stats dist
 #' @importFrom Rfast rowMins colMins
