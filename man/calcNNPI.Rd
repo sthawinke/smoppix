@@ -17,7 +17,8 @@ under consideration (the number of black balls in the urn)}
 \item{r}{The rank of distances considered, r=1 is nearest neighbour distance}
 }
 \value{
-The estimated probabilistic index
+A vector of evaluations of the negative hypergeometric distribution
+function
 }
 \description{
 Estimate the PI for the nearest neighbour distances, given a set of ranks

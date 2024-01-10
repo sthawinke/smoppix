@@ -10,7 +10,8 @@
 #' is already calculated
 #' @importFrom spatstat.geom nncross coords npoints
 #' @importFrom BiocParallel bpparam bplapply
-calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null, features, ecdfAll, ecdfsCell, loopFun, minDiff) {
+calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null,
+                              features, ecdfAll, ecdfsCell, loopFun, minDiff){
     NPall <- switch(null,
                     "CSR" = max(tabObs)*4,
         #NPall is arbitrary for CSR, make sure it is large enough,

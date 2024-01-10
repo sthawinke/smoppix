@@ -9,9 +9,9 @@ estPimsSingle(
   pis,
   null,
   tabObs,
-  nPointsAll = switch(null, background = 1e+05, CSR = 1000),
-  nPointsAllWithinCell = switch(null, background = 10000, CSR = 1000),
-  nPointsAllWin = 2000,
+  nPointsAll = switch(null, background = 10000, CSR = 1000),
+  nPointsAllWithinCell = switch(null, background = 10000, CSR = 500),
+  nPointsAllWin = 1000,
   features = NULL,
   owins = NULL,
   centroids = NULL,
@@ -53,7 +53,10 @@ Defaults to bplapply except when looping over features within cells}
 needed for calculation of background PIs}
 }
 \value{
-Data frames with estimated quantities per gene and/or gene pair
+A list of data frames with estimated PIs per gene and/or gene pair:
+\item{pointDists}{PIs for pointwise distances overall}
+\item{windowDists}{PIs for distances to cell wall or centroid}
+\item{withinCellDists}{PIs for pointwise distances within cell}
 }
 \description{
 A wrapper function for the different probabilistic indices (PIs)

@@ -47,7 +47,7 @@ Defaults to bplapply except when looping over features within cells}
 needed for calculation of background PIs}
 }
 \value{
-A list over the features with all PI entries
+A list containing PI entries per feature
 }
 \description{
 Calculate individual PI entries

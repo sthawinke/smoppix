@@ -36,7 +36,8 @@ variance}
 \item{...}{Additional arguments passed on to the scam::scam function}
 }
 \value{
-A fitted scam object, which can be used to
+The results object with a slot "Wfs" added containing the weighting
+functions
 }
 \description{
 Build a weighting function based on the data, and attach it to the object

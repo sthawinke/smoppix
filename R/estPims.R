@@ -21,12 +21,15 @@
 #' @param minDiff An integer, the minimum number of events from other genes
 #'  needed for calculation of background PIs
 #'
-#' @return Data frames with estimated quantities per gene and/or gene pair
+#' @return A list of data frames with estimated PIs per gene and/or gene pair:
+#' \item{pointDists}{PIs for pointwise distances overall}
+#' \item{windowDists}{PIs for distances to cell wall or centroid}
+#' \item{withinCellDists}{PIs for pointwise distances within cell}
 #' @importFrom stats ecdf dist
 #' @importFrom spatstat.random runifpoint
 #' @importFrom Rdpack reprompt
 #' @importFrom BiocParallel bplapply
-estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = switch(null, background = 1e5, CSR = 1e3),
+estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = switch(null, background = 1e4, CSR = 1e3),
                           nPointsAllWithinCell = switch(null, background = 1e4, CSR = 5e2), nPointsAllWin = 1e3,
     features = NULL, owins = NULL, centroids = NULL, window = p$window, loopFun = "bplapply", minDiff = 2e1) {
     if(!length(features)){

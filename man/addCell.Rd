@@ -37,7 +37,7 @@ contained in window}
 \item{...}{Further arguments passed onto read functions}
 }
 \value{
-the modified hyperframe
+The hyperframe with cell lables added in the marks of the point patterns
 }
 \description{
 Check in which cell each event lies and add a cell marker,

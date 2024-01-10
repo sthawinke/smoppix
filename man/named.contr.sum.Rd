@@ -17,3 +17,7 @@ The matrix of contrasts
 A version of contr.sum that retains names, a bit controversial but also
 clearer
 }
+\note{
+After
+https://stackoverflow.com/questions/24515892/r-how-to-contrast-code-factors-and-retain-meaningful-labels-in-output-summary
+}

@@ -14,7 +14,7 @@ subSampleP(p, nSims, returnId = FALSE)
 \item{returnId}{A boolean, should the id of the sampled elements be returned?}
 }
 \value{
-A point pattern, subsample if necessary
+A point pattern, subsampled if necessary
 }
 \description{
 Subsample a point pattern when it is too large

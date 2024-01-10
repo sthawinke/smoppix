@@ -4,7 +4,12 @@
 \alias{plotCells}
 \title{Plot the n cells with highest abundance of a feature}
 \usage{
-plotCells(obj, features = getFeatures(obj)[seq_len(3)], nCells = 100, Cex = 1)
+plotCells(
+  obj,
+  features = getFeatures(obj)[seq_len(3)],
+  nCells = 100,
+  Cex = 1.5
+)
 }
 \arguments{
 \item{obj}{A hyperframe, or an object containing one}

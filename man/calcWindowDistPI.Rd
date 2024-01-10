@@ -37,7 +37,7 @@ observations with the ecdfs}
 \item{feat}{The features}
 }
 \value{
-The estimated probabilistic index
+A list of vectors of estimated probabilistic indeces per event
 }
 \description{
 Estimate the PI for the distance to a fixed region of interest

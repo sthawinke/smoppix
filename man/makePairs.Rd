@@ -10,7 +10,7 @@ makePairs(genes)
 \item{genes}{The genes to be combined}
 }
 \value{
-A chcracter vector of gene pairs
+A character vector of gene pairs
 }
 \description{
 An aux function to build gene pairs

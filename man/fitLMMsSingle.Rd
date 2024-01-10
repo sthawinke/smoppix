@@ -42,7 +42,7 @@ point patterns. See details.}
 Defaults to all features in the object}
 }
 \value{
-A fitted linear mixed model of class 'lmerTest'
+A list of test results
 }
 \description{
 Fit linear mixed nodels for all features of a pimRes object
