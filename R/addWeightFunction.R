@@ -24,7 +24,8 @@
 #' The registered parallel backend will be used for fitting the trends of the
 #' different PIs.
 #'
-#' @return A fitted scam object, which can be used to
+#' @return The results object with a slot "Wfs" added containing the weighting
+#' functions
 #' @details The scam functions fits a decreasing spline of the variance as a
 #'  function of the number of observations
 #' @importFrom scam scam

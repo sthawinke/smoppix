@@ -7,7 +7,8 @@
 #' @param r The rank of distances considered, r=1 is nearest neighbour distance
 #'
 #' @importFrom extraDistr pnhyper
-#' @return The estimated probabilistic index
+#' @return A vector of evaluations of the negative hypergeometric distribution
+#' function
 #' @seealso \link{pnhyper}
 calcNNPI <- function(Ranks, n, m, r = 1) {
     pnhyper(Ranks, n = n, m = m, r = r)

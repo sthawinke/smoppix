@@ -14,7 +14,7 @@
 #' @param coords The names of the coordinates, if the windows are given as sets of coordinates
 #' @param verbose A boolean, shoudl verbose output be printed?
 #' @param ... Further arguments passed onto read functions
-#' @return the modified hyperframe
+#' @return The hyperframe with cell lables added in the marks of the point patterns
 #' @importFrom spatstat.geom inside.owin marks centroid.owin marks<-
 #' @importFrom BiocParallel bplapply
 #' @export

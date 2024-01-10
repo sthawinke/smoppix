@@ -16,15 +16,17 @@
 #' @examples
 #' example(addCell, "spatrans")
 #' plotCells(hypFrame2, "gene1")
-plotCells = function(obj, features = getFeatures(obj)[seq_len(3)], nCells = 1e2, Cex =1){
+plotCells = function(obj, features = getFeatures(obj)[seq_len(3)], nCells = 1e2,
+                     Cex = 1.5){
     if(!is.hyperframe(obj)){
         obj = obj$hypFrame
     }
+    features = unique(unlist(lapply(features, sund)))
     Cols <- makeCols(features, obj)
     stopifnot(is.hyperframe(obj), !is.null(obj$owins),
-              length(nCells) == 1)
+              length(nCells) == 1, all(features %in% getFeatures(obj)))
     tablesCell = lapply(obj$ppp, function(p){
-        table(marks(p[marks(p, drop = FALSE)$gene %in% features, ], drop = FALSE)$cell)
+        sum(table(marks(p[marks(p, drop = FALSE)$gene %in% features, ], drop = FALSE)$cell))
     })
     names(tablesCell) = rownames(obj)
     nCells = min(nCells - 1, length(ul <- unlist(tablesCell)))
@@ -40,8 +42,9 @@ plotCells = function(obj, features = getFeatures(obj)[seq_len(3)], nCells = 1e2,
         ppp = subset.ppp(obj[[nam, "ppp"]], gene %in% features)
         for(j in seq_along(tablesCell[[nam]])){
             namIn = names(tablesCell[[nam]])[j]
-            shifted = toUnitSquare(obj[[nam, "owins"]][[namIn]], ppp = subset.ppp(ppp, cell == namIn),
-                                       Shift = Shift <- c(counter %% Ceil, counter %/% Ceil))
+            shifted = toUnitSquare(obj[[nam, "owins"]][[namIn]],
+                                   ppp = subset.ppp(ppp, cell == namIn),
+                                   Shift = Shift <- c(counter %% Ceil, counter %/% Ceil))
             plot.owin(shifted$owin, add = TRUE)
             #text(x = Shift[1], y = Shift[2], labels = paste0("Point pattern ", nam, "\nCell", namIn))
             points(coords(shifted$ppp), col = Cols[marks(shifted$ppp, drop = FALSE)$gene], pch = ".", cex = Cex)

@@ -20,7 +20,7 @@ makeDesignVar <- function(x, designVars, sep = "_") {
 #'
 #' @param genes The genes to be combined
 #'
-#' @return A chcracter vector of gene pairs
+#' @return A character vector of gene pairs
 makePairs <- function(genes) {
     apply(combn(genes, 2), 2, paste, collapse = "--")
 }
@@ -38,7 +38,7 @@ getN <- function(ecdf) {
 #' @param nSims The maximum size
 #' @param returnId A boolean, should the id of the sampled elements be returned?
 #'
-#' @return A point pattern, subsample if necessary
+#' @return A point pattern, subsampled if necessary
 subSampleP <- function(p, nSims, returnId = FALSE) {
     Pout <- if (tooBig <- (NP <- npoints(p)) > nSims)
         p[id <- sample(NP, nSims), ] else p
@@ -74,7 +74,8 @@ dropDiagonal <- function(x) {
 }
 #' A version of contr.sum that retains names, a bit controversial but also
 #' clearer
-#'
+#'@note After
+#' https://stackoverflow.com/questions/24515892/r-how-to-contrast-code-factors-and-retain-meaningful-labels-in-output-summary
 #' @param x,... passed on to contr.sum
 #' @importFrom stats contr.sum
 #' @return The matrix of contrasts
@@ -84,8 +85,6 @@ named.contr.sum <- function(x, ...) {
     colnames(x) <- lev[-length(lev)]
     x
 }
-# After
-# https://stackoverflow.com/questions/24515892/r-how-to-contrast-code-factors-and-retain-meaningful-labels-in-output-summary
 #' Add tables with gene counts to the hyperframe
 #'
 #' @param hypFrame The hyperframe
@@ -111,18 +110,6 @@ nestRandom <- function(df, randomVars) {
         df[, i] <- apply(df[, c("design", i)], 1, paste, collapse = "_")
     }
     df
-}
-#' Approximate the ranks given and ecdf
-#'
-#' @param ecdf An empirical density function
-#' @param obs A vector of observations
-#' @param n The total number of observations in the point pattern
-#'
-#' @return The approximate ranks
-getApproxRanks <- function(ecdf, obs, n = getN(ecdf)) {
-    ranks <- round(ecdf(obs) * n)
-    ranks[ranks == 0] <- 1
-    ranks
 }
 #' Extract coordinates from a point pattern or data frame
 #' @param x the point pattern, dataframe or matrix
