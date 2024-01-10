@@ -1,3 +1,3 @@
 #' @useDynLib spatrans, .registration = TRUE
 #' @importFrom Rcpp sourceCpp
-NULL
+#'Analyze Spatial Transcriptomics and Other Spatial Omics Data on the Single Molecule Scale

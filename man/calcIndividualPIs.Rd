@@ -15,7 +15,8 @@ calcIndividualPIs(
   features,
   ecdfAll,
   ecdfsCell,
-  loopFun
+  loopFun,
+  minDiff
 )
 }
 \arguments{
@@ -41,6 +42,9 @@ events and of cells within the cell, under the null}
 
 \item{loopFun}{The function to use to loop over the features.
 Defaults to bplapply except when looping over features within cells}
+
+\item{minDiff}{An integer, the minimum number of events from other genes
+needed for calculation of background PIs}
 }
 \value{
 A list over the features with all PI entries

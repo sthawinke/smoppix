@@ -8,7 +8,7 @@ addCell(
   hypFrame,
   owins,
   cellTypes = NULL,
-  findOVerlappingOwins = FALSE,
+  findOverlappingOwins = FALSE,
   warnOut = TRUE,
   coords = c("x", "y"),
   verbose = TRUE,
@@ -25,7 +25,7 @@ Also lists of geojson objects, coordinate matrices or rois are accepted}
 \item{cellTypes}{A dataframe of cell types and other cell-associated covariates.
 If supplied, it must contain a variable 'cell' that is matched with the names of the owins}
 
-\item{findOVerlappingOwins}{a boolean, should windows be checked for overlap?}
+\item{findOverlappingOwins}{a boolean, should windows be checked for overlap?}
 
 \item{warnOut}{a boolean, should warning be issued when points are not
 contained in window}

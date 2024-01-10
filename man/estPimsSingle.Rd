@@ -16,7 +16,8 @@ estPimsSingle(
   owins = NULL,
   centroids = NULL,
   window = p$window,
-  loopFun = "bplapply"
+  loopFun = "bplapply",
+  minDiff = 20
 )
 }
 \arguments{
@@ -47,6 +48,9 @@ and their centroids}
 
 \item{loopFun}{The function to use to loop over the features.
 Defaults to bplapply except when looping over features within cells}
+
+\item{minDiff}{An integer, the minimum number of events from other genes
+needed for calculation of background PIs}
 }
 \value{
 Data frames with estimated quantities per gene and/or gene pair
