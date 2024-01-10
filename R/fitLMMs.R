@@ -35,6 +35,9 @@ fitLMMsSingle <- function(obj, pi, fixedVars = NULL, randomVars = NULL,
     pi <- match.arg(pi, choices = c("nn", "nnPair", "edge", "midpoint",
                                     "nnCell", "nnPairCell"))
     noWeight <- pi %in% c("edge", "midpoint")
+    if(noWeight && !("cell" %in% randomVars)){
+        randomVars = c(randomVars, "cell")
+    }
     # For independent distances, no weights are needed
     randomVarsSplit <- if (!is.null(randomVars))
         unlist(lapply(c("/", ":"), function(Split) {
