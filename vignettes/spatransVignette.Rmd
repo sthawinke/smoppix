@@ -198,6 +198,21 @@ head(getResults(allModsNNpair$nnPair, "Intercept"))
 # Eng2019: Mouse brain cells
 
 ## Tests for vicinity to cell wall or centroid: distances to fixed objects
+
+# Troubleshooting
+
+An error like 
+
+\begin{quote}
+Error in reducer$value.cache[[as.character(idx)]] <- values : 
+  wrong args for environment subassignment
+In addition: Warning message:
+In parallel::mccollect(wait = FALSE, timeout = 1) :
+  1 parallel job did not deliver a result
+\end{quote}
+
+indicates insufficient memory. Try reducing the number of cores required with MultiCoreParam(),
+or switch to serial processing with register(SerialParam()).
  
 # Session info
 
