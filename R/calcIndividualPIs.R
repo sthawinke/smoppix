@@ -11,7 +11,11 @@
 #' @importFrom spatstat.geom nncross coords npoints
 #' @importFrom BiocParallel bpparam bplapply
 calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null, features, ecdfAll, ecdfsCell, loopFun, minDiff) {
-    NPall <- npoints(p)
+    NPall <- switch(null,
+                    "CSR" = max(tabObs)*4,
+        #NPall is arbitrary for CSR, make sure it is large enough,
+        #while limiting computation time
+        "background" = npoints(p))
     loopFun <- match.fun(loopFun)
     pSplit <- split.ppp(p, f = factor(marks(p, drop = FALSE)$gene))
     splitFac <- rep(seq_len(bpparam()$workers), length.out = length(features))
@@ -36,10 +40,7 @@ calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null, 
                     # Cross-distances
                 })
             }
-            if(null == "CSR"){
-                NPall = 4*NP #NPall is arbitrary for CSR, make sure it is large enough,
-                #while limitng computation time
-            }
+
             if (isMat <- is.matrix(distMat)) {
                 approxRanksTmp <- switch(null, "background" = findRanksDist(getCoordsMat(pSub), getCoordsMat(pSubLeft$Pout),
                   distMat^2), "CSR" = matrix(ecdfAll(distMat), nrow = nrow(distMat)))

@@ -23,7 +23,7 @@
 #'  different point patterns are assigned to different random effects. Set
 #'  'randomNested' to FALSE to override this behaviour.
 #'
-#' @return A fitted linear mixed model of class 'lmerTest'
+#' @return A list of test results
 #' @importFrom lmerTest lmer
 #' @importFrom stats formula na.omit anova lm
 #' @importFrom lme4 lmerControl .makeCC isSingular
@@ -114,7 +114,7 @@ fitLMMsSingle <- function(obj, pi, fixedVars = NULL, randomVars = NULL,
     results <- extractResults(models, hypFrame = obj$hypFrame, fixedVars)
     # Effect size, standard error, p-value and adjusted p-value per mixed effect
     if (!returnModels) {
-        return(list(results = results, obj = obj))
+        return(list(results = results))
     } else {
         return(list(results = results, obj = obj, models = models))
     }
