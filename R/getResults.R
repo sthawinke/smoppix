@@ -5,7 +5,11 @@
 #' @param obj The result object
 #' @param parameter The desired parameter
 #'
-#' @return The matrix with result, with p-values in ascending order
+#' @return The matrix with results, with p-values in ascending order
+#' \item{Estimate}{The estimated PI}
+#' \item{se}{The corresponding standard error}
+#' \item{pVal}{The p-value}
+#' \item{pAdj}{The Benjamini-Hichberg adjusted p-value}
 #' @export
 #' @examples
 #' data(Yang)

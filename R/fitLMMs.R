@@ -23,7 +23,7 @@
 #'  different point patterns are assigned to different random effects. Set
 #'  'randomNested' to FALSE to override this behaviour.
 #'
-#' @return A list of test results
+#' @return A list of test results, if requested also the linear models are returned
 #' @importFrom lmerTest lmer
 #' @importFrom stats formula na.omit anova lm
 #' @importFrom lme4 lmerControl .makeCC isSingular
@@ -116,7 +116,7 @@ fitLMMsSingle <- function(obj, pi, fixedVars = NULL, randomVars = NULL,
     if (!returnModels) {
         return(list(results = results))
     } else {
-        return(list(results = results, obj = obj, models = models))
+        return(list(results = results, models = models))
     }
 }
 #' Fit linear (mixed) models fitting for all probabilistic indices (PIs)

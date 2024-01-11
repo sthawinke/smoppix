@@ -28,7 +28,7 @@
 #' plotExplore(hypYang, features = c("SmRBRb", "SmTMO5b", "SmWER--SmAHK4f"))
 plotExplore <- function(hypFrame, features = getFeatures(hypFrame)[seq_len(6)], ppps,
                         maxPlot = 1e+05, Cex = 1, plotWindows = !is.null(hypFrame$owins),
-                        Xlim = NULL, Ylim = NULL) {
+                        Xlim = NULL, Ylim = NULL, Cex.main = 0.8) {
     if(!is.hyperframe(hypFrame)){
         hypFrame <- hypFrame$hypFrame
     }
@@ -39,21 +39,21 @@ plotExplore <- function(hypFrame, features = getFeatures(hypFrame)[seq_len(6)], 
     features <- unique(unlist(lapply(features, sund)))
     npp <- nrow(hypFrame)
     if (missing(ppps)) {
-        ppps <- seq_len(min(29, npp))
+        ppps <- seq_len(min(49, npp))
     }
     Cols <- makeCols(features, hypFrame)
     old.par <- par(no.readonly = TRUE)
     on.exit(par(old.par))
-    par(mfrow = if ((LL <- length(ppps)) == 1) c(1,2) else if ((LL <- length(ppps)) <= 3)
-        c(2, 2) else if(LL <=8) c(3, 3) else if(LL <=11) c(3,4) else if(LL <=15)
-            c(4, 4) else if(LL <= 24) c(5, 5) else if(LL <= 29)
-                c(5, 6) else if(LL <= 35) c(6,6) else c(6,7), mar = c(3, 3, 3, 3))
+    LL <- length(ppps)
+    Nrow = ceiling(sqrt(LL));Ncol = (LL %/% Nrow) + 1
+    par(mfrow = c(Nrow, Ncol), mar = rep(2.5, 4))
     baa <- lapply(ppps, function(i) {
             colVec <- Cols[marks(hypFrame$ppp[[i]], drop = FALSE)$gene]
             cordMat <- coords(hypFrame$ppp[[i]])
             ordVec <- order(colVec != "grey")
             # Plot grey background first and coloured dots on top
             plot(cordMat[ordVec, ], main = hypFrame$image[ppps[i]], pch = ".",
+                 cex.main = Cex.main, xaxt = "n", yaxt = "n",
                  asp = 1, col = colVec[ordVec], cex = Cex, xlim = Xlim, ylim = Ylim)
             if(plotWindows)
                 foo <- lapply(hypFrame$owins[[i]], plot.owin, add = TRUE)

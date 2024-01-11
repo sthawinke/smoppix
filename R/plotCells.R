@@ -8,7 +8,7 @@
 #' @param nCells An integer, the number of cells to be plotted
 #' @param Cex The point expansion factor
 #'
-#' @return Plots to the plotting window, returns invisible
+#' @return Plots cells with highest expression to the plotting window, returns invisible
 #' @export
 #' @importFrom spatstat.geom plot.owin subset.ppp
 #' @importFrom graphics points text
