@@ -12,7 +12,8 @@ plotExplore(
   Cex = 1,
   plotWindows = !is.null(hypFrame$owins),
   Xlim = NULL,
-  Ylim = NULL
+  Ylim = NULL,
+  Cex.main = 0.8
 )
 }
 \arguments{
@@ -30,6 +31,8 @@ Defaults to the first 8.}
 \item{plotWindows}{A boolean, should windows be plotted too?}
 
 \item{Xlim, Ylim}{Vectors of length 2 with plotting limits}
+
+\item{Cex.main}{Expansion factor for the title}
 }
 \value{
 Plots a facet of point patterns to output

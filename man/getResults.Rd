@@ -12,7 +12,11 @@ getResults(obj, parameter)
 \item{parameter}{The desired parameter}
 }
 \value{
-The matrix with result, with p-values in ascending order
+The matrix with results, with p-values in ascending order
+\item{Estimate}{The estimated PI}
+\item{se}{The corresponding standard error}
+\item{pVal}{The p-value}
+\item{pAdj}{The Benjamini-Hichberg adjusted p-value}
 }
 \description{
 Extract effect size estimates and p-values for a certain parameter

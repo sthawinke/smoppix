@@ -11,6 +11,7 @@
 #' @param Cex Point amplification factor
 #' @param plotWindows A boolean, should windows be plotted too?
 #' @param Xlim,Ylim Vectors of length 2 with plotting limits
+#' @param Cex.main Expansion factor for the title
 #'
 #' @return Plots a facet of point patterns to output
 #' @importFrom spatstat.geom is.hyperframe coords plot.owin

@@ -42,7 +42,7 @@ point patterns. See details.}
 Defaults to all features in the object}
 }
 \value{
-A list of test results
+A list of test results, if requested also the linear models are returned
 }
 \description{
 Fit linear mixed nodels for all features of a pimRes object

@@ -21,7 +21,7 @@ plotCells(
 \item{Cex}{The point expansion factor}
 }
 \value{
-Plots to the plotting window, returns invisible
+Plots cells with highest expression to the plotting window, returns invisible
 }
 \description{
 After testing for within-cell patterns, it may be useful to
