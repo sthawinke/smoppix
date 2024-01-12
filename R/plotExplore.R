@@ -70,7 +70,7 @@ addLegend <- function(Cols, Shift = c(0, 0), Cex = 0.9) {
         x = rep(0.1, li) + Shift[1], SeqY <- seq(0.9, 0.1, length.out = li) + Shift[2], pch = 20,
         col = Cols[idCols]
     )
-    text(x = rep(0.4, li) + Shift[1], SeqY, names(Cols)[idCols], adj = 0, cex = Cex)
+    text(x = rep(0.25, li) + Shift[1], SeqY, names(Cols)[idCols], adj = 0, cex = Cex)
 }
 makeCols <- function(features, hypFrame) {
     Cols <- setdiff(palette(), "black")
