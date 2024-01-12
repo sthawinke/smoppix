@@ -27,6 +27,7 @@
 #' @importFrom lmerTest lmer
 #' @importFrom stats formula na.omit anova lm
 #' @importFrom lme4 lmerControl .makeCC isSingular
+#' @importFrom BiocParallel bplapply
 #' @importFrom methods is
 #' @seealso \link{buildDataFrame},\link{getResults}
 fitLMMsSingle <- function(obj, pi, fixedVars = NULL, randomVars = NULL,
@@ -92,7 +93,7 @@ fitLMMsSingle <- function(obj, pi, fixedVars = NULL, randomVars = NULL,
     }
     featIds <- (if (is.matrix(tmp)) colSums(tmp, na.rm = TRUE) else tmp) >= 1
     Features <- features[featIds]
-    models <- lapply(Features, function(gene) {
+    models <- bplapply(Features, function(gene) {
         df <- buildDataFrame(obj, gene = gene, pi = pi)
         if (is.null(df) || sum(!is.na(df$pi)) < 3) {
             return(NULL)
