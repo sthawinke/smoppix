@@ -51,7 +51,14 @@ convertToOwins <- function(windows, namePPP, coords, ...) {
     } else if ((allRoi <- allClass(windows, is, "ijroi")) || is(windows, "ijzip")) {
         if (requireNamespace("RImageJROI")) {
             winOut <- if (allRoi) {
-                lapply(windows, RImageJROI::ij2spatstat, ...)
+                lapply(windows, function(w){
+                    foo <- try(silent = TRUE, RImageJROI::ij2spatstat(w))
+                    if(is(foo, "try-error")){
+                        w$coords = w$coords[rev(seq_len(nrow(w$coords))),]
+                        foo <- try(silent = TRUE, RImageJROI::ij2spatstat(w))
+                    }
+                    return(foo)
+                    }, ...)
             } else {
                 RImageJROI::ij2spatstat(windows)
             }
