@@ -123,11 +123,11 @@ buildDataFrame <- function(obj, gene, pi = c(
     if (all((Times <- vapply(piDfs, FUN.VALUE = integer(1), NROW)) == 0)) {
         return(NULL)
     }
-    design <- rep(rownames(obj$hypFrame), times = Times)
+    image <- rep(rownames(obj$hypFrame), times = Times)
     piMat <- data.frame(Reduce(piDfs, f = rbind), obj$hypFrame[
-        design,
+        image,
         getPPPvars(obj)
-    ], design = design)
+    ], "image" = image)
     if (!windowId) {
         # Add weights
         weight <- evalWeightFunction(obj$Wfs[[pi]],
