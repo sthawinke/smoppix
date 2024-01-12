@@ -13,7 +13,8 @@ plotExplore(
   plotWindows = !is.null(hypFrame$owins),
   Xlim = NULL,
   Ylim = NULL,
-  Cex.main = 0.8
+  Cex.main = 0.8,
+  Mar = rep(2, 4)
 )
 }
 \arguments{
@@ -33,6 +34,8 @@ Defaults to the first 8.}
 \item{Xlim, Ylim}{Vectors of length 2 with plotting limits}
 
 \item{Cex.main}{Expansion factor for the title}
+
+\item{Mar}{the margins}
 }
 \value{
 Plots a facet of point patterns to output

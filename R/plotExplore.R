@@ -12,11 +12,12 @@
 #' @param plotWindows A boolean, should windows be plotted too?
 #' @param Xlim,Ylim Vectors of length 2 with plotting limits
 #' @param Cex.main Expansion factor for the title
+#' @param Mar the margins
 #'
 #' @return Plots a facet of point patterns to output
 #' @importFrom spatstat.geom is.hyperframe coords plot.owin
 #' @importFrom grDevices palette
-#' @importFrom graphics par legend
+#' @importFrom graphics par
 #' @export
 #'
 #' @examples
@@ -29,7 +30,7 @@
 #' plotExplore(hypYang, features = c("SmRBRb", "SmTMO5b", "SmWER--SmAHK4f"))
 plotExplore <- function(hypFrame, features = getFeatures(hypFrame)[seq_len(6)], ppps,
                         maxPlot = 1e+05, Cex = 1, plotWindows = !is.null(hypFrame$owins),
-                        Xlim = NULL, Ylim = NULL, Cex.main = 0.8) {
+                        Xlim = NULL, Ylim = NULL, Cex.main = 0.8, Mar = rep(2, 4)) {
     if(!is.hyperframe(hypFrame)){
         hypFrame <- hypFrame$hypFrame
     }
@@ -47,7 +48,7 @@ plotExplore <- function(hypFrame, features = getFeatures(hypFrame)[seq_len(6)], 
     on.exit(par(old.par))
     LL <- length(ppps)
     Nrow = ceiling(sqrt(LL));Ncol = (LL %/% Nrow) + 1
-    par(mfrow = c(Nrow, Ncol), mar = rep(2.5, 4))
+    par(mfrow = c(Nrow, Ncol), mar = rep(2, 4))
     baa <- lapply(ppps, function(i) {
             colVec <- Cols[marks(hypFrame$ppp[[i]], drop = FALSE)$gene]
             cordMat <- coords(hypFrame$ppp[[i]])

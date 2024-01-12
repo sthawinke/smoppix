@@ -41,7 +41,7 @@
 #'     pi = 'nn'
 #' )
 addWeightFunction <- function(resList, pis = resList$pis, designVars,
-                              lowestLevelVar, maxObs = 1e+05, maxFeatures = 500,
+                              lowestLevelVar, maxObs = 1e+05, maxFeatures = 1e3,
                               minNumVar = 3, ...) {
     if (is.null(resList$pis)) {
         stop("No pims found in the hyperframe.",
@@ -67,7 +67,6 @@ addWeightFunction <- function(resList, pis = resList$pis, designVars,
         designVars <- NULL
     }
     Wfs <- lapply(pis, function(pi) {
-        windowId <- pi %in% c("edge", "midpoint")
         cellId <- any(grepl("Cell", pi))
         features <- getFeatures(resList)
         if (pairId <- grepl("Pair", pi)) {

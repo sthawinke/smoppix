@@ -10,7 +10,7 @@ addWeightFunction(
   designVars,
   lowestLevelVar,
   maxObs = 1e+05,
-  maxFeatures = 500,
+  maxFeatures = 1000,
   minNumVar = 3,
   ...
 )
