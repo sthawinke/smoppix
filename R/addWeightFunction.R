@@ -73,6 +73,9 @@ addWeightFunction <- function(resList, pis = resList$pis, designVars,
         if (pairId <- grepl("Pair", pi)) {
             features <- makePairs(features)
         }
+        if(length(features) > maxFeatures){
+            features = sample(features, maxFeatures)
+        }
         if (cellId || !isNested) {
             ordDesign <- seq_len(nrow(resList$hypFrame))
         } else {
