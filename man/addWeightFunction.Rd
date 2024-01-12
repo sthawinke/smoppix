@@ -59,7 +59,7 @@ The scam functions fits a decreasing spline of the variance as a
 }
 \examples{
 example(estPims, "spatrans")
-yangObj <- addWeightFunction(yangPims, designVars = c('day', 'root'))
+yangPims <- addWeightFunction(yangPims, designVars = c('day', 'root'))
 # Alternative formulation with 'lowestLevelVar'
 yangObj2 <- addWeightFunction(yangPims, lowestLevelVar = 'section',
     pi = 'nn'

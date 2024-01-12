@@ -23,15 +23,6 @@ The PI is used as outcome variable in a linear (mixed) model,
 with design variables as regressors.
 }
 \examples{
-data(Yang)
-hypYang <- buildHyperFrame(Yang,
-    coordVars = c('x', 'y'),
-    imageVars = c('day', 'root', 'section')
-)
-# Fit a subset of features to limit computation time
-yangPims <- estPims(hypYang[c(seq_len(5), seq(25, 29)),],nPointsAll = 1e3,
-pis = c('nn', 'nnPair'), features = getFeatures(hypYang)[seq_len(5)])
-# First build the weighting function
-yangPims <- addWeightFunction(yangPims, designVars = c('day', 'root'))
+example(addWeightFunction, "spatrans")
 lmmModels <- fitLMMs(yangPims, fixedVars = 'day', randomVars = 'root')
 }

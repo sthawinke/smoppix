@@ -30,7 +30,7 @@
 #' plotExplore(hypYang, features = c("SmRBRb", "SmTMO5b", "SmWER--SmAHK4f"))
 plotExplore <- function(hypFrame, features = getFeatures(hypFrame)[seq_len(6)], ppps,
                         maxPlot = 1e+05, Cex = 1, plotWindows = !is.null(hypFrame$owins),
-                        Xlim = NULL, Ylim = NULL, Cex.main = 0.8, Mar = rep(2, 4)) {
+                        Xlim = NULL, Ylim = NULL, Cex.main = 0.8, Mar = rep(1, 4)) {
     if(!is.hyperframe(hypFrame)){
         hypFrame <- hypFrame$hypFrame
     }
@@ -41,7 +41,7 @@ plotExplore <- function(hypFrame, features = getFeatures(hypFrame)[seq_len(6)], 
     features <- unique(unlist(lapply(features, sund)))
     npp <- nrow(hypFrame)
     if (missing(ppps)) {
-        ppps <- seq_len(min(49, npp))
+        ppps <- seq_len(min(99, npp))
     }
     Cols <- makeCols(features, hypFrame)
     old.par <- par(no.readonly = TRUE)
@@ -63,11 +63,11 @@ plotExplore <- function(hypFrame, features = getFeatures(hypFrame)[seq_len(6)], 
     plot(c(0, 1), c(0, 1), type = "n", xlab = "", ylab = "", xaxt = "n", yaxt = "n")
     addLegend(Cols)
 }
-addLegend = function(Cols, Shift = c(0,0)){
+addLegend = function(Cols, Shift = c(0,0), Cex = 0.9){
     idCols <- which(Cols != "grey");li <- length(idCols)
-    points(x = rep(0.1, li) + Shift[1], SeqY <- seq(0.95, 0.05, length.out = li)+ Shift[2], pch = 20,
+    points(x = rep(0.1, li) + Shift[1], SeqY <- seq(0.9, 0.1, length.out = li)+ Shift[2], pch = 20,
            col = Cols[idCols])
-    text(x = rep(0.4, li) + Shift[1], SeqY, names(Cols)[idCols], adj = 0)
+    text(x = rep(0.4, li) + Shift[1], SeqY, names(Cols)[idCols], adj = 0, cex = Cex)
 }
 makeCols = function(features, hypFrame){
     Cols <- setdiff(palette(), "black")

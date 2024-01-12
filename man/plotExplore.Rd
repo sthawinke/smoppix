@@ -14,7 +14,7 @@ plotExplore(
   Xlim = NULL,
   Ylim = NULL,
   Cex.main = 0.8,
-  Mar = rep(2, 4)
+  Mar = rep(1, 4)
 )
 }
 \arguments{

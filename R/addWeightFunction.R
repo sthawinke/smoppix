@@ -53,7 +53,7 @@ addWeightFunction <- function(resList, pis = resList$pis, designVars,
              Simply proceed with fitting the model on the",
             " individual evaluations of the B-function.")
     }
-    if(!is.null(resList$Wfs)){
+    if(!all(vapply(resList$Wfs[pis], FUN.VALUE = TRUE, is.null))){
         warning("Overwriting pre-existing weight function!")
     }
     pis <- match.arg(pis, choices = c("nn", "nnPair", "nnCell", "nnPairCell"), several.ok = TRUE)
@@ -73,7 +73,7 @@ addWeightFunction <- function(resList, pis = resList$pis, designVars,
             features <- makePairs(features)
         }
         if(length(features) > maxFeatures){
-            features = sample(features, maxFeatures)
+            features <- sample(features, maxFeatures)
         }
         if (cellId || !isNested) {
             ordDesign <- seq_len(nrow(resList$hypFrame))
