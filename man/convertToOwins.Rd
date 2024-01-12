@@ -22,3 +22,7 @@ A list of owins
 Convert a list of differently formatted windows to owins, for
 addition to a hyperframe
 }
+\details{
+Order of traversion of polygons may differ between data types.
+Where applicable, different orders are tried before throwing an error.
+}

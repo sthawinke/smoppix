@@ -8,7 +8,8 @@ The observation weight as a function of the number of observations}
 plotWf(obj, pi = obj$pis[1])
 }
 \arguments{
-\item{obj}{The result of a call to buildWeightFunction()}
+\item{obj}{A results object, for nearest neighbour distances,
+the result of a call to addWeightFunction()}
 
 \item{pi}{The PI for which to plot the weighting function}
 }

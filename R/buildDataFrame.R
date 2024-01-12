@@ -1,7 +1,8 @@
 #' Build a data frame for a single gene and measure to prepare
 #' for mixed model building
 #'
-#' @param obj The result of a call to buildWeightFunction()
+#' @param obj A results object, for nearest neighbour distances,
+#' the result of a call to addWeightFunction()
 #' @param gene A character string indicating the desired gene or gene pair
 #' @param pi character string indicating the desired pim as outcome
 #'  in the linear mixed model
@@ -67,7 +68,7 @@ buildDataFrame <- function(obj, gene, pi = c(
         # Extract pi, and add counts and covariates
         df <- if (windowId) {
             piEst <- if (is.null(vec <- getGp(x[[piListNameInner]], gene)[[pi]])) {
-                NA
+                NULL
             } else {
                 vec
             }
@@ -120,7 +121,7 @@ buildDataFrame <- function(obj, gene, pi = c(
             }
         }
     })
-    if (all((Times <- vapply(piDfs, FUN.VALUE = integer(1), NROW)) == 0)) {
+    if (all((Times <- vapply(piDfs, FUN.VALUE = integer(1), NROW)) == 0)){
         return(NULL)
     }
     image <- rep(rownames(obj$hypFrame), times = Times)
@@ -131,11 +132,11 @@ buildDataFrame <- function(obj, gene, pi = c(
     if (!windowId) {
         # Add weights
         weight <- evalWeightFunction(obj$Wfs[[pi]],
-            newdata = piMat[, if (grepl("Pair", pi)) c("minP", "maxP") else "NP",
+            newdata = piMat[, if(grepl("Pair", pi)) c("minP", "maxP") else "NP",
                 drop = FALSE
             ]
         )
-        weight <- weight / sum(weight, na.rm = TRUE)
+        weight <- weight/sum(weight, na.rm = TRUE)
         piMat <- cbind(piMat, weight = weight)
     }
     rownames(piMat) <- NULL

@@ -94,11 +94,11 @@ fitLMMsSingle <- function(obj, pi, fixedVars = NULL, randomVars = NULL,
     Features <- features[featIds]
     models <- lapply(Features, function(gene) {
         df <- buildDataFrame(obj, gene = gene, pi = pi)
-        if (randomNested) {
-            df <- nestRandom(df, randomVarsSplit)
-        }
         if (is.null(df) || sum(!is.na(df$pi)) < 3) {
             return(NULL)
+        }
+        if (randomNested) {
+            df <- nestRandom(df, randomVarsSplit)
         }
         if (MM) {
             mod <- try(lmerTest::lmer(Formula, data = df, na.action = na.omit, weights = if (noWeight) {
@@ -148,7 +148,7 @@ fitLMMsSingle <- function(obj, pi, fixedVars = NULL, randomVars = NULL,
 #'
 #' @examples
 #' example(addWeightFunction, "spatrans")
-#' lmmModels <- fitLMMs(yangPims, fixedVars = "day", randomVars = "root")
+#' lmmModels <- fitLMMs(yangObj, fixedVars = "day", randomVars = "root")
 fitLMMs <- function(obj, pis = obj$pis, verbose = TRUE, ...) {
     out <- lapply(pis, function(pi) {
         fitLMMsSingle(obj, pi = pi, verbose = verbose, ...)

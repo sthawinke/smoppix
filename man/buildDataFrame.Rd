@@ -12,7 +12,8 @@ buildDataFrame(
 )
 }
 \arguments{
-\item{obj}{The result of a call to buildWeightFunction()}
+\item{obj}{A results object, for nearest neighbour distances,
+the result of a call to addWeightFunction()}
 
 \item{gene}{A character string indicating the desired gene or gene pair}
 

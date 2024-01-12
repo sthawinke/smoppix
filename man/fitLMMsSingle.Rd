@@ -17,7 +17,8 @@ fitLMMsSingle(
 )
 }
 \arguments{
-\item{obj}{The result of a call to buildWeightFunction()}
+\item{obj}{A results object, for nearest neighbour distances,
+the result of a call to addWeightFunction()}
 
 \item{pi}{character string indicating the desired pim as outcome
 in the linear mixed model}
