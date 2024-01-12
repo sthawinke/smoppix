@@ -63,7 +63,7 @@ Build a spatstat hyperframe with point patterns and metadata.
 \examples{
 data(Yang)
 hypYang <- buildHyperFrame(Yang,
-    coordVars = c('x', 'y'),
-    imageVars = c('day', 'root', 'section')
+    coordVars = c("x", "y"),
+    imageVars = c("day", "root", "section")
 )
 }

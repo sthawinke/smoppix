@@ -31,20 +31,24 @@
 #' @seealso \link{buildDataFrame},\link{getResults}
 fitLMMsSingle <- function(obj, pi, fixedVars = NULL, randomVars = NULL,
                           verbose = TRUE, returnModels = FALSE, Formula = NULL,
-    randomNested = TRUE, features = getFeatures(obj)) {
-    pi <- match.arg(pi, choices = c("nn", "nnPair", "edge", "midpoint",
-                                    "nnCell", "nnPairCell"))
+                          randomNested = TRUE, features = getFeatures(obj)) {
+    pi <- match.arg(pi, choices = c(
+        "nn", "nnPair", "edge", "midpoint",
+        "nnCell", "nnPairCell"
+    ))
     noWeight <- pi %in% c("edge", "midpoint")
-    if(noWeight && !("cell" %in% randomVars)){
+    if (noWeight && !("cell" %in% randomVars)) {
         randomVars <- c(randomVars, "cell")
     }
     # For independent distances, no weights are needed
-    randomVarsSplit <- if (!is.null(randomVars))
+    randomVarsSplit <- if (!is.null(randomVars)) {
         unlist(lapply(c("/", ":"), function(Split) {
             tmp <- strsplit(randomVars, Split)
-            if (length(tmp) > 2)
+            if (length(tmp) > 2) {
                 tmp
+            }
         }))
+    }
     designVars <- c(fixedVars, randomVarsSplit)
     if (any(id <- !(designVars %in% getDesignVars(obj)))) {
         stop("Design variables", designVars[id], "not found in object.")
@@ -64,8 +68,10 @@ fitLMMsSingle <- function(obj, pi, fixedVars = NULL, randomVars = NULL,
     if (verbose) {
         message("Fitted formula for pi ", pi, ":\n", formChar)
     }
-    Control <- lmerControl(check.conv.grad = .makeCC("ignore", tol = 0.002, relTol = NULL), check.conv.singular = .makeCC(action = "ignore",
-        tol = formals(isSingular)$tol), check.conv.hess = .makeCC(action = "ignore", tol = 1e-06))
+    Control <- lmerControl(check.conv.grad = .makeCC("ignore", tol = 0.002, relTol = NULL), check.conv.singular = .makeCC(
+        action = "ignore",
+        tol = formals(isSingular)$tol
+    ), check.conv.hess = .makeCC(action = "ignore", tol = 1e-06))
     # convergence checking options
     if (is.null(fixedVars)) {
         contrasts <- NULL
@@ -75,16 +81,16 @@ fitLMMsSingle <- function(obj, pi, fixedVars = NULL, randomVars = NULL,
     }
     tmp <- if (grepl("Pair", pi)) {
         features <- makePairs(features)
-         vapply(features, FUN.VALUE = double(nrow(obj$hypFrame)), function(gene) {
+        vapply(features, FUN.VALUE = double(nrow(obj$hypFrame)), function(gene) {
             vapply(obj$hypFrame$tabObs, FUN.VALUE = double(1), function(x) all(x[sund(gene)] >= 1))
         })
     } else {
         # First check if gene is present at all
-         vapply(features, FUN.VALUE = double(nrow(obj$hypFrame)), function(gene) {
+        vapply(features, FUN.VALUE = double(nrow(obj$hypFrame)), function(gene) {
             vapply(obj$hypFrame$tabObs, FUN.VALUE = double(1), function(x) x[gene])
         })
     }
-    featIds <- (if(is.matrix(tmp)) colSums(tmp, na.rm = TRUE) else tmp) >= 1
+    featIds <- (if (is.matrix(tmp)) colSums(tmp, na.rm = TRUE) else tmp) >= 1
     Features <- features[featIds]
     models <- lapply(Features, function(gene) {
         df <- buildDataFrame(obj, gene = gene, pi = pi)
@@ -95,18 +101,27 @@ fitLMMsSingle <- function(obj, pi, fixedVars = NULL, randomVars = NULL,
             return(NULL)
         }
         if (MM) {
-            mod <- try(lmerTest::lmer(Formula, data = df, na.action = na.omit, weights = if (noWeight)
-                NULL else df$weight, contrasts = contrasts, control = Control), silent = TRUE)
+            mod <- try(lmerTest::lmer(Formula, data = df, na.action = na.omit, weights = if (noWeight) {
+                NULL
+            } else {
+                df$weight
+            }, contrasts = contrasts, control = Control), silent = TRUE)
         }
         # If no random variables or fit failed, go for linear model
         if (!MM || is(mod, "try-error")) {
-            mod <- try(lm(formula(fixedPart), data = df, na.action = na.omit, weights = if (noWeight)
-                NULL else df$weight, contrasts = contrasts), silent = TRUE)
+            mod <- try(lm(formula(fixedPart), data = df, na.action = na.omit, weights = if (noWeight) {
+                NULL
+            } else {
+                df$weight
+            }, contrasts = contrasts), silent = TRUE)
         }
         # If still fails, drop fixed effects
         if (is(mod, "try-error")) {
-            mod <- lm(formula("pi - 0.5 ~ 1"), data = df, na.action = na.omit, weights = if (noWeight)
-                NULL else df$weight)
+            mod <- lm(formula("pi - 0.5 ~ 1"), data = df, na.action = na.omit, weights = if (noWeight) {
+                NULL
+            } else {
+                df$weight
+            })
         }
         return(mod)
     })
@@ -133,7 +148,7 @@ fitLMMsSingle <- function(obj, pi, fixedVars = NULL, randomVars = NULL,
 #'
 #' @examples
 #' example(addWeightFunction, "spatrans")
-#' lmmModels <- fitLMMs(yangPims, fixedVars = 'day', randomVars = 'root')
+#' lmmModels <- fitLMMs(yangPims, fixedVars = "day", randomVars = "root")
 fitLMMs <- function(obj, pis = obj$pis, verbose = TRUE, ...) {
     out <- lapply(pis, function(pi) {
         fitLMMsSingle(obj, pi = pi, verbose = verbose, ...)

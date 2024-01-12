@@ -1,7 +1,9 @@
 context("Test input spatrans package")
 test_that("Reading in data proceeds without errors", {
-    expect_message(buildHyperFrame(df, coordVars = c("x", "y"),
-                                   imageVars = "fov"))
+    expect_message(buildHyperFrame(df,
+        coordVars = c("x", "y"),
+        imageVars = "fov"
+    ))
     # Should work also with single image variable
     expect_message(hypFrame <- buildHyperFrame(df,
         coordVars = c("x", "y"),
@@ -17,24 +19,32 @@ test_that("Reading in data proceeds without errors", {
     ))
     expect_identical(hypFrame, hypFrame2)
     expect_silent(hypFrame3 <- buildHyperFrame(lapply(listPPP, identity)))
-    expect_message(hypFrame4 <- buildHyperFrame(split(df,
-        f = apply(df[, c("fov", "condition")], 1, paste, collapse = "_")),
-        covariatesDf = df[!duplicated(df[, c("fov", "condition")]),
-                          c("fov", "condition")]))
+    expect_message(hypFrame4 <- buildHyperFrame(
+        split(df,
+            f = apply(df[, c("fov", "condition")], 1, paste, collapse = "_")
+        ),
+        covariatesDf = df[
+            !duplicated(df[, c("fov", "condition")]),
+            c("fov", "condition")
+        ]
+    ))
 })
 # Read in spatial experiment
 library(SpatialExperiment)
 library(DropletUtils)
 example(read10xVisium)
 test_that("Reading in SpatialExperiment class proceeds without errors", {
-    expect_message(hypFrame4 <- buildHyperFrame(spe, imageVars = "sample_id",
-                                                coVars = "in_tissue"))
+    expect_message(hypFrame4 <- buildHyperFrame(spe,
+        imageVars = "sample_id",
+        coVars = "in_tissue"
+    ))
 })
 
 test_that("Adding regions of interest works", {
     expect_s3_class(hypFrame5 <- addCell(hypFrame, wList), "hyperframe")
     expect_s3_class(hypFrame6 <- addCell(hypFrame, wList,
-                                         cellTypes = cellTypesDf), "hyperframe")
+        cellTypes = cellTypesDf
+    ), "hyperframe")
     expect_error(addCell(hypFrame, wList2, findOverlappingOwins = TRUE)) # Detect overlap
     expect_type(marks(hypFrame5[[1, "ppp"]])$cell, "character")
     expect_type(marks(hypFrame6[[1, "ppp"]])$cellType, "character")

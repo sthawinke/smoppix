@@ -14,7 +14,7 @@ plotExplore(
   Xlim = NULL,
   Ylim = NULL,
   Cex.main = 0.8,
-  Mar = rep(1, 4)
+  Mar = c(0.35, 0.1, 0.75, 0.1)
 )
 }
 \arguments{
@@ -49,11 +49,7 @@ The colour palette is taken from the output of palette(),
 so set that one to change the colour scheme
 }
 \examples{
-data(Yang)
-hypYang <- buildHyperFrame(Yang,
-    coordVars = c('x', 'y'),
-    imageVars = c('day', 'root', 'section')
-)
+example(buildHyperFrame, "spatrans")
 plotExplore(hypYang)
 plotExplore(hypYang, features = c("SmRBRb", "SmTMO5b", "SmWER--SmAHK4f"))
 }

@@ -8,26 +8,35 @@
 #' @return The element sought
 #' @export
 #' @examples
-#' mat = t(cbind("gene1--gene2" = c(1,2),
-#' "gene1--gene3" = c(2,3)))
+#' mat <- t(cbind(
+#'     "gene1--gene2" = c(1, 2),
+#'     "gene1--gene3" = c(2, 3)
+#' ))
 #' getGp(mat, "gene3--gene1")
 getGp <- function(x, gp, drop = TRUE, Collapse = "--") {
-    if(!length(x))
+    if (!length(x)) {
         return(NULL)
+    }
     if (isVec <- (is.vector(x) || is.list(x))) {
         Names <- names(x)
     } else if (isMat <- is.matrix(x)) {
         Names <- rownames(x)
     }
     if (gp %in% Names) {
-        if (isVec)
-            x[[gp]] else x[gp, , drop = drop]
+        if (isVec) {
+            x[[gp]]
+        } else {
+            x[gp, , drop = drop]
+        }
     } else {
         geneSplit <- sund(gp)
         gp <- paste(rev(geneSplit), collapse = Collapse)
         if (gp %in% Names) {
-            if (isVec)
-                x[[gp]] else x[gp, , drop = drop]
+            if (isVec) {
+                x[[gp]]
+            } else {
+                x[gp, , drop = drop]
+            }
         } else {
             NULL
         }

@@ -40,10 +40,14 @@ getN <- function(ecdf) {
 #'
 #' @return A point pattern, subsampled if necessary
 subSampleP <- function(p, nSims, returnId = FALSE) {
-    Pout <- if (tooBig <- (NP <- npoints(p)) > nSims)
-        p[id <- sample(NP, nSims), ] else p
-    if (!tooBig && returnId)
+    Pout <- if (tooBig <- (NP <- npoints(p)) > nSims) {
+        p[id <- sample(NP, nSims), ]
+    } else {
+        p
+    }
+    if (!tooBig && returnId) {
         id <- seq_len(npoints(p))
+    }
     if (returnId) {
         return(list(Pout = Pout, id = id))
     } else {
@@ -57,7 +61,7 @@ subSampleP <- function(p, nSims, returnId = FALSE) {
 #' @details See documentation of the stats::dist function
 #' @return The required distances
 getElDist <- function(distMat, i, j) {
-    id <- outer(attr(distMat, "Size") * (i - 1) - i * (i - 1)/2 - i, j, FUN = "+")
+    id <- outer(attr(distMat, "Size") * (i - 1) - i * (i - 1) / 2 - i, j, FUN = "+")
     # Following dist help
     distMat[c(id)]
 }
@@ -74,7 +78,7 @@ dropDiagonal <- function(x) {
 }
 #' A version of contr.sum that retains names, a bit controversial but also
 #' clearer
-#'@note After
+#' @note After
 #' https://stackoverflow.com/questions/24515892/r-how-to-contrast-code-factors-and-retain-meaningful-labels-in-output-summary
 #' @param x,... passed on to contr.sum
 #' @importFrom stats contr.sum

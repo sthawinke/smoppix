@@ -20,14 +20,16 @@
 #' \insertAllCited{}
 calcWindowDistPI <- function(pSub, owins, centroids, ecdfAll, pi, null, ecdfs, cellAndGene, feat) {
     splitPPP <- split.ppp(pSub, f = "cell")
-    splitPPP = splitPPP[names(splitPPP) != "NA"]
+    splitPPP <- splitPPP[names(splitPPP) != "NA"]
     obsDistEdge <- lapply(names(splitPPP), function(x) {
-        Dist <- switch(pi, "midpoint" = crossdist(splitPPP[[x]], centroids[[x]]),
-                       "edge" = nncross(splitPPP[[x]], edges(owins[[x]]),
-            what = "dist"))
-        ecdfAll[[x]][[pi]](Dist)  # Do not average here, independent observations
+        Dist <- switch(pi,
+            "midpoint" = crossdist(splitPPP[[x]], centroids[[x]]),
+            "edge" = nncross(splitPPP[[x]], edges(owins[[x]]),
+                what = "dist"
+            )
+        )
+        ecdfAll[[x]][[pi]](Dist) # Do not average here, independent observations
     })
     names(obsDistEdge) <- names(splitPPP)
     obsDistEdge
 }
-

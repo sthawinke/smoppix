@@ -22,7 +22,9 @@ and throws an error when found or returns the id's when found.
 }
 \examples{
 library(spatstat.geom)
-owins = replicate(10, owin(xrange = runif(1)+c(0,0.2),
-yrange = runif(1)+c(0,0.1)), simplify = FALSE)
-idOverlap = findOverlap(owins, returnIds = TRUE)
+owins <- replicate(10, owin(
+    xrange = runif(1) + c(0, 0.2),
+    yrange = runif(1) + c(0, 0.1)
+), simplify = FALSE)
+idOverlap <- findOverlap(owins, returnIds = TRUE)
 }

@@ -14,18 +14,19 @@
 #' @examples
 #' data(Yang)
 #' hypYang <- buildHyperFrame(Yang,
-#'     coordVars = c('x', 'y'),
-#'     imageVars = c('day', 'root', 'section')
+#'     coordVars = c("x", "y"),
+#'     imageVars = c("day", "root", "section")
 #' )
 #' # Fit a subset of features to limit computation time
-#' yangPims <- estPims(hypYang, pis = 'nn')
+#' yangPims <- estPims(hypYang, pis = "nn")
 #' # First build the weighting function
-#' yangObj <- addWeightFunction(yangPims, designVars = c('day', 'root'))
-#' fittedModels <- fitLMMs(yangObj, features = getFeatures(yangObj)[seq_len(10)],
-#'     fixedVars = 'day', randomVars = 'root',
-#'     pi = 'nn'
+#' yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))
+#' fittedModels <- fitLMMs(yangObj,
+#'     features = getFeatures(yangObj)[seq_len(10)],
+#'     fixedVars = "day", randomVars = "root",
+#'     pi = "nn"
 #' )
-#' res <- getResults(fittedModels, 'Intercept')
+#' res <- getResults(fittedModels, "Intercept")
 #' head(res)
 getResults <- function(obj, parameter) {
     if (parameter == "Intercept") {

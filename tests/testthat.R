@@ -18,7 +18,8 @@ condition <- sample(conditions, n, TRUE)
 df <- data.frame(gene, x, y, fov, "condition" = condition)
 # A list of point patterns
 listPPP <- tapply(seq(nrow(df)), df$fov, function(i) {
-    ppp(x = df$x[i], y = df$y[i],
+    ppp(
+        x = df$x[i], y = df$y[i],
         marks = df[i, c("gene", "condition", "fov"), drop = FALSE]
     )
 }, simplify = FALSE)
@@ -58,12 +59,14 @@ hypFrame2 <- addCell(hypFrame, wList, cellTypes = cellTypesDf, verbose = FALSE)
 # register(SerialParam())
 nCores <- 2
 register(MulticoreParam(nCores))
-pis <- c("nn",  "nnPair",  "edge", "midpoint", "nnCell", "nnPairCell")
+pis <- c("nn", "nnPair", "edge", "midpoint", "nnCell", "nnPairCell")
 piEstsBG <- estPims(hypFrame2, pis = pis, null = "background", verbose = FALSE)
 piEstsCSR <- estPims(hypFrame2, pis = pis, null = "CSR", verbose = FALSE)
-piEstsBG2 <- estPims(hypFrame2[, c("ppp", "image", "tabObs")], pis = "nn",
-                     null = "background", verbose = FALSE)
-#No replication
+piEstsBG2 <- estPims(hypFrame2[, c("ppp", "image", "tabObs")],
+    pis = "nn",
+    null = "background", verbose = FALSE
+)
+# No replication
 # Already add weight functions
 objBG <- addWeightFunction(piEstsBG, designVars = "condition")
 objCSR <- addWeightFunction(piEstsCSR, designVars = "condition")
@@ -73,7 +76,8 @@ hypYang <- buildHyperFrame(Yang,
     coordVars = c("x", "y"),
     imageVars = c("day", "root", "section")
 )
-yangPims <- estPims(hypYang, features = getFeatures(hypYang)[seq_len(10)],
+yangPims <- estPims(hypYang,
+    features = getFeatures(hypYang)[seq_len(10)],
     pis = c("nn", "nnPair"), verbose = FALSE, nPointsAll = 1e3,
 )
 yangPims <- addWeightFunction(yangPims, lowestLevelVar = "section")

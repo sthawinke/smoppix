@@ -22,7 +22,9 @@ The element sought
 Helper function to get gene pair or order reversed from a vector or list
 }
 \examples{
-mat = t(cbind("gene1--gene2" = c(1,2),
-"gene1--gene3" = c(2,3)))
+mat <- t(cbind(
+    "gene1--gene2" = c(1, 2),
+    "gene1--gene3" = c(2, 3)
+))
 getGp(mat, "gene3--gene1")
 }

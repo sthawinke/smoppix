@@ -16,4 +16,3 @@ calcNNPI <- function(Ranks, n, m, r = 1) {
     # (NP-1): black balls, number of events of other genes in background r=1: Nearest neighbour so first
     # occurrence
 }
-

@@ -14,21 +14,25 @@
 #' @export
 #' @examples
 #' library(spatstat.geom)
-#' owins = replicate(10, owin(xrange = runif(1)+c(0,0.2),
-#' yrange = runif(1)+c(0,0.1)), simplify = FALSE)
-#' idOverlap = findOverlap(owins, returnIds = TRUE)
+#' owins <- replicate(10, owin(
+#'     xrange = runif(1) + c(0, 0.2),
+#'     yrange = runif(1) + c(0, 0.1)
+#' ), simplify = FALSE)
+#' idOverlap <- findOverlap(owins, returnIds = TRUE)
 findOverlap <- function(owins, returnIds = FALSE) {
     stopifnot(all(vapply(owins, is.owin, FUN.VALUE = TRUE)))
     combs <- combn(length(owins), 2)
     splitFac <- rep(seq_len(bpparam()$workers), length.out = ncol(combs))
     Ids <- unsplit(f = splitFac, bplapply(split(seq_len(ncol(combs)), f = splitFac), function(ss) {
-            vapply(ss, FUN.VALUE = TRUE, function(i) {
+        vapply(ss, FUN.VALUE = TRUE, function(i) {
             Overlap <- overlap.owin(owins[[combs[1, i]]], owins[[combs[2, i]]]) > 0
             if (returnIds) {
                 return(Overlap)
             } else if (Overlap) {
-                stop("Overlap detected between windows ", combs[1, i], " and ",
-                     combs[2, i], "!\nWindows must be non-overlapping.")
+                stop(
+                    "Overlap detected between windows ", combs[1, i], " and ",
+                    combs[2, i], "!\nWindows must be non-overlapping."
+                )
             }
         })
     }))
@@ -37,5 +41,4 @@ findOverlap <- function(owins, returnIds = FALSE) {
     } else {
         invisible()
     })
-
 }

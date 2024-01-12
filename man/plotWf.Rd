@@ -22,14 +22,15 @@ The observation weight as a function of the number of observations
 \examples{
 data(Yang)
 hypYang <- buildHyperFrame(Yang,
-    coordVars = c('x', 'y'),
-    imageVars = c('day', 'root', 'section')
+    coordVars = c("x", "y"),
+    imageVars = c("day", "root", "section")
 )
-yangPims <- estPims(hypYang[c(seq_len(5), seq(25, 29)),], nPointsAll = 1e3,
-    pis = c('nn', 'nnPair')
+yangPims <- estPims(hypYang[c(seq_len(5), seq(25, 29)), ],
+    nPointsAll = 1e3,
+    pis = c("nn", "nnPair")
 )
 # First Build the weighting function
-yangPims <- addWeightFunction(yangPims, designVars = c('day', 'root'))
-plotWf(yangPims, 'nn')
-plotWf(yangPims, 'nnPair')
+yangPims <- addWeightFunction(yangPims, designVars = c("day", "root"))
+plotWf(yangPims, "nn")
+plotWf(yangPims, "nnPair")
 }
