@@ -109,9 +109,9 @@ addTabObs <- function(hypFrame) {
 #'
 #' @return The dataframe with adapted randomVars
 nestRandom <- function(df, randomVars) {
-    stopifnot(any("design" == names(df)))
+    stopifnot(any("image" == names(df)))
     for (i in randomVars) {
-        df[, i] <- apply(df[, c("design", i)], 1, paste, collapse = "_")
+        df[, i] <- apply(df[, c("image", i)], 1, paste, collapse = "_")
     }
     df
 }
