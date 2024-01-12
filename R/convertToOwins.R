@@ -5,6 +5,8 @@
 #' @param windows The list of windows
 #' @param namePPP the name of the point pattern, will be added to the cell names
 #' @inheritParams addCell
+#' @details Order of traversion of polygons may differ between data types.
+#' Where applicable, different orders are tried before throwing an error.
 #'
 #' @return A list of owins
 #' @importFrom spatstat.geom is.owin owin as.owin

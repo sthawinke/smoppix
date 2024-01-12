@@ -121,7 +121,7 @@ buildDataFrame <- function(obj, gene, pi = c(
         }
     })
     if (all((Times <- vapply(piDfs, FUN.VALUE = integer(1), NROW)) == 0)) {
-        stop("Gene not found!\n")
+        return(NULL)
     }
     design <- rep(rownames(obj$hypFrame), times = Times)
     piMat <- data.frame(Reduce(piDfs, f = rbind), obj$hypFrame[
