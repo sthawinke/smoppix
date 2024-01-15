@@ -24,5 +24,5 @@ with design variables as regressors.
 }
 \examples{
 example(addWeightFunction, "spatrans")
-lmmModels <- fitLMMs(yangPims, fixedVars = "day", randomVars = "root")
+lmmModels <- fitLMMs(yangObj, fixedVars = "day", randomVars = "root")
 }

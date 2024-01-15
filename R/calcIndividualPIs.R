@@ -9,7 +9,6 @@
 #' @details For the single-feature nearest neighbour distances, the average
 #' is already calculated
 #' @importFrom spatstat.geom nncross coords npoints
-#' @importFrom BiocParallel bpparam bplapply
 calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null,
                               features, ecdfAll, ecdfsCell, loopFun, minDiff) {
     NPall <- switch(null,
@@ -18,12 +17,9 @@ calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null,
         # while limiting computation time
         "background" = npoints(p)
     )
-    loopFun <- match.fun(loopFun)
     pSplit <- split.ppp(p, f = factor(marks(p, drop = FALSE)$gene))
-    splitFac <- rep(seq_len(bpparam()$workers), length.out = length(features))
     # Divide the work over the available workers
-    piList <- unsplit(f = splitFac, loopFun(split(features, f = splitFac), function(ss) {
-        featPIs <- lapply(ss, function(feat) {
+    piList <- loadBalanceBplapply(loopFun = loopFun, iterator = features, func = function(feat) {
             pSub <- pSplit[[feat]]
             NP <- npoints(pSub)
             if (null == "background" && ((NPall - NP) < minDiff)) {
@@ -85,9 +81,6 @@ calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null,
             }
             list(windowDists = list(edge = edgeDistPI, midpoint = midPointDistPI), pointDists = list(nn = nnPI, nnPair = nnPIpair))
         })
-        names(featPIs) <- ss
-        return(featPIs)
-    }))
     names(piList) <- features
     return(piList)
 }

@@ -28,7 +28,6 @@
 #' @importFrom stats ecdf dist
 #' @importFrom spatstat.random runifpoint
 #' @importFrom Rdpack reprompt
-#' @importFrom BiocParallel bplapply
 estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = switch(null,
                               background = 1e4,
                               CSR = 1e3
@@ -99,7 +98,7 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = switch(null,
     # Within cell: recurse into estPimsSingle but now per cell
     withinCellDists <- if (any(grepl("Cell", pis))) {
         unCells <- setdiff(unique(marks(p, drop = FALSE)$cell), "NA")
-        cellDists <- bplapply(unCells, function(nam) {
+        cellDists <- loadBalanceBplapply(unCells, function(nam) {
             pSub <- p[marks(p, drop = FALSE)$cell == nam, ]
             estPimsSingle(
                 pis = gsub("Cell", "", grep(value = TRUE, "Cell", pis)),

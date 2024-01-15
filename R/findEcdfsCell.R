@@ -1,12 +1,11 @@
 #' Construct ecdfs for cellwise measures, such as distance to edge or centroid
 #'
 #' @inheritParams estPimsSingle
-#' @importFrom BiocParallel bplapply
 #' @importFrom spatstat.random runifpoint
 #' @importFrom spatstat.geom crossdist nncross
 #' @return The list of ecdf functions
 findEcdfsCell <- function(p, owins, nPointsAllWin, centroids, null, pis) {
-    ecdfsCell <- bplapply(names(owins), function(nam) {
+    ecdfsCell <- loadBalanceBplapply(names(owins), function(nam) {
         pSub <- switch(null,
             "CSR" = runifpoint(nPointsAllWin, win = owins[[nam]]),
             "background" = subSampleP(pCell <- p[marks(p,

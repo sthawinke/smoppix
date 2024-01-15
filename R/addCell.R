@@ -16,7 +16,6 @@
 #' @param ... Further arguments passed onto read functions
 #' @return The hyperframe with cell lables added in the marks of the point patterns
 #' @importFrom spatstat.geom inside.owin marks centroid.owin marks<-
-#' @importFrom BiocParallel bplapply
 #' @export
 #' @seealso \link{buildHyperFrame}
 #' @details First the different cells are checked for overlap per point pattern.
@@ -78,7 +77,7 @@ addCell <- function(hypFrame, owins, cellTypes = NULL, findOverlappingOwins = FA
     if (verbose) {
         message("Converting windows to spatstat owins")
     }
-    owins <- bplapply(Nam <- names(owins), function(nam) {
+    owins <- loadBalanceBplapply(Nam <- names(owins), function(nam) {
         convertToOwins(owins[[nam]], coords = coords, namePPP = nam, ...)
     })
     names(owins) <- Nam
