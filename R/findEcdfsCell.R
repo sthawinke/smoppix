@@ -4,7 +4,7 @@
 #' @importFrom spatstat.random runifpoint
 #' @importFrom spatstat.geom crossdist nncross
 #' @return The list of ecdf functions
-findEcdfsCell <- function(p, owins, nPointsAllWin, centroids, null, pis) {
+findEcdfsCell <- function(p, owins, nPointsAllWin, centroids, null, pis, loopFun) {
     ecdfsCell <- loadBalanceBplapply(names(owins), function(nam) {
         pSub <- switch(null,
             "CSR" = runifpoint(nPointsAllWin, win = owins[[nam]]),
@@ -19,7 +19,7 @@ findEcdfsCell <- function(p, owins, nPointsAllWin, centroids, null, pis) {
             ecdf(crossdist(pSub, centroids[[nam]]))
         }
         list(edge = edge, midpoint = midpoint)
-    })
+    }, loopFun = loopFun)
     names(ecdfsCell) <- names(owins)
     ecdfsCell
 }

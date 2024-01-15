@@ -34,11 +34,17 @@ and their centroids}
 \item{null}{A character vector, indicating how the null distribution is
 defined. See details.}
 
+\item{features}{A character vector, for which features should the
+probabilistic indices be calculated?}
+
 \item{ecdfAll, ecdfsCell}{Empirical cumulative distribution functions of all
 events and of cells within the cell, under the null}
 
 \item{loopFun}{The function to use to loop over the features.
 Defaults to bplapply except when looping over features within cells}
+
+\item{minDiff}{An integer, the minimum number of events from other genes
+needed for calculation of background PIs}
 }
 \value{
 A list containing PI entries per feature

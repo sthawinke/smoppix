@@ -4,7 +4,7 @@
 \alias{findEcdfsCell}
 \title{Construct ecdfs for cellwise measures, such as distance to edge or centroid}
 \usage{
-findEcdfsCell(p, owins, nPointsAllWin, centroids, null, pis)
+findEcdfsCell(p, owins, nPointsAllWin, centroids, null, pis, loopFun)
 }
 \arguments{
 \item{p}{The point pattern}
@@ -12,10 +12,16 @@ findEcdfsCell(p, owins, nPointsAllWin, centroids, null, pis)
 \item{owins, centroids}{The list of windows corresponding to cells,
 and their centroids}
 
+\item{nPointsAllWin}{How many points to subsample or simulate
+to calculate distance to cell edge or midpoint distribution}
+
 \item{null}{A character vector, indicating how the null distribution is
 defined. See details.}
 
 \item{pis}{The probabilistic indices to be estimated}
+
+\item{loopFun}{The function to use to loop over the features.
+Defaults to bplapply except when looping over features within cells}
 }
 \value{
 The list of ecdf functions

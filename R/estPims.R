@@ -16,7 +16,8 @@
 #' @importFrom stats ecdf dist
 #' @importFrom spatstat.random runifpoint
 #' @importFrom Rdpack reprompt
-estPimsSingle <- function(p, pis, null, tabObs, owins = NULL, centroids = NULL, window = p$window, loopFun = "bplapply") {
+estPimsSingle <- function(p, pis, null, tabObs, owins = NULL, centroids = NULL, window = p$window, loopFun = "bplapply",
+                          features, nPointsAll, nPointsAllWithinCell, nPointsAllWin, minDiff ) {
     if (!length(features)) {
         return(list(pointDists = NULL, windowDists = NULL, withinCellDists = NULL))
     }
@@ -34,14 +35,16 @@ estPimsSingle <- function(p, pis, null, tabObs, owins = NULL, centroids = NULL, 
     if (any(pis %in% c("edge", "midpoint"))) {
         ecdfsCell <- findEcdfsCell(
             p = p, owins = owins, centroids = centroids,
-            nPointsAllWin = nPointsAllWin, null = null, pis = pis
+            nPointsAllWin = nPointsAllWin, null = null, pis = pis,
+            loopFun = loopFun
         )
     }
     piList <- calcIndividualPIs(
         p = p, pSubLeft = pSubLeft, pis = pis,
         null = null, tabObs = tabObs, owins = owins,
         centroids = centroids, features = features, ecdfAll = ecdfAll,
-        ecdfsCell = ecdfsCell, loopFun = loopFun, minDiff = minDiff
+        ecdfsCell = ecdfsCell, minDiff = minDiff,
+        loopFun = loopFun
     )
     nnPis <- if ("nn" %in% pis) {
         vapply(piList[intersect(features, names(tabObs[tabObs > 1]))],
@@ -85,7 +88,9 @@ estPimsSingle <- function(p, pis, null, tabObs, owins = NULL, centroids = NULL, 
                 p = pSub, null = null,
                 nPointsAll = nPointsAllWithinCell, window = owins[[nam]], features = features,
                 tabObs = table(marks(pSub, drop = FALSE)$gene),
-                loopFun = "lapply"
+                loopFun = "lapply", nPointsAll = nPointsAll,
+                nPointsAllWithinCell = nPointsAllWithinCell,
+                nPointsAllWin = nPointsAllWin, minDiff = minDiff
             )$pointDists
         })
         names(cellDists) <- unCells
