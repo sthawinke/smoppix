@@ -130,8 +130,8 @@ addCell <- function(hypFrame, owins, cellTypes = NULL, findOverlappingOwins = FA
         marks(ppp) <- newmarks
         hypFrame[nn, "ppp"] <- ppp
     }
-    hypFrame$owins <- owins
-    hypFrame$centroids <- lapply(hypFrame$owins, function(x) {
+    hypFrame$owins <- owins[rownames(hypFrame)]
+    hypFrame$centroids <- lapply(hypFrame$owins , function(x) {
         lapply(x, function(y) centroid.owin(y, as.ppp = TRUE))
     })
     # Add centroids for all windows
