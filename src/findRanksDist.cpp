@@ -32,4 +32,5 @@ tmp = proxy::dist(coordsMat, coordsMatLeft)^2
 out2 = vapply(seq_len(ncol(distMat)), FUN.VALUE = double(nrow(distMat)), function(x){
     rowSums(distMat[,x]^2 > tmp)
 })
+all(out==out2)
 */
