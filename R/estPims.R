@@ -39,13 +39,14 @@ estPimsSingle <- function(p, pis, null, tabObs, owins = NULL, centroids = NULL, 
             loopFun = loopFun
         )
     }
-    piList <- calcIndividualPIs(
+    piList <- if(!all(idCell <- grepl("Cell", pis))){
+        calcIndividualPIs(
         p = p, pSubLeft = pSubLeft, pis = pis,
         null = null, tabObs = tabObs, owins = owins,
         centroids = centroids, features = features, ecdfAll = ecdfAll,
         ecdfsCell = ecdfsCell, minDiff = minDiff,
         loopFun = loopFun
-    )
+    )}
     nnPis <- if ("nn" %in% pis) {
         vapply(piList[intersect(features, names(tabObs[tabObs > 1]))],
             FUN.VALUE = double(1), function(x) {
@@ -79,7 +80,7 @@ estPimsSingle <- function(p, pis, null, tabObs, owins = NULL, centroids = NULL, 
         lapply(piList, function(x) x$windowDists)
     }
     # Within cell: recurse into estPimsSingle but now per cell
-    withinCellDists <- if (any(grepl("Cell", pis))) {
+    withinCellDists <- if (any(idCell)) {
         unCells <- setdiff(unique(marks(p, drop = FALSE)$cell), "NA")
         cellDists <- loadBalanceBplapply(unCells, function(nam) {
             pSub <- p[marks(p, drop = FALSE)$cell == nam, ]
@@ -88,9 +89,7 @@ estPimsSingle <- function(p, pis, null, tabObs, owins = NULL, centroids = NULL, 
                 p = pSub, null = null,
                 nPointsAll = nPointsAllWithinCell, window = owins[[nam]], features = features,
                 tabObs = table(marks(pSub, drop = FALSE)$gene),
-                loopFun = "lapply", nPointsAll = nPointsAll,
-                nPointsAllWithinCell = nPointsAllWithinCell,
-                nPointsAllWin = nPointsAllWin, minDiff = minDiff
+                loopFun = "lapply", minDiff = minDiff
             )$pointDists
         })
         names(cellDists) <- unCells
@@ -122,7 +121,6 @@ estPimsSingle <- function(p, pis, null, tabObs, owins = NULL, centroids = NULL, 
 #' @param features A character vector, for which features should the
 #' probabilistic indices be calculated?
 #' @return The hyperframe with the estimated PIMs present in it
-#' @importFrom BiocParallel bplapply
 #' @examples
 #' data(Yang)
 #' hypYang <- buildHyperFrame(Yang,

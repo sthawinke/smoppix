@@ -2,7 +2,7 @@ library(testthat)
 library(spatrans)
 library(spatstat.random)
 library(BiocParallel)
-n <- 8e3 # number of molecules
+n <- 7e3 # number of molecules
 ng <- 25 # number of genes
 nfov <- 3 # Number of fields of view
 conditions <- 4
