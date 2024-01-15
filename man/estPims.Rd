@@ -9,6 +9,10 @@ estPims(
   pis = c("nn", "nnPair", "edge", "midpoint", "nnCell", "nnPairCell"),
   verbose = TRUE,
   null = c("background", "CSR"),
+  nPointsAll = switch(null, background = 10000, CSR = 1000),
+  nPointsAllWithinCell = switch(null, background = 10000, CSR = 500),
+  nPointsAllWin = 1000,
+  minDiff = 20,
   features = getFeatures(hypFrame),
   ...
 )
@@ -22,6 +26,17 @@ estPims(
 
 \item{null}{A character vector, indicating how the null distribution is
 defined. See details.}
+
+\item{nPointsAll, nPointsAllWithinCell}{How many points to subsample or simulate to calculate
+overall interpoint distance and distance to point.
+This parameter is a strong driver of computation time.
+The second argument applies to within cell calculations.}
+
+\item{nPointsAllWin}{How many points to subsample or simulate
+to calculate distance to cell edge or midpoint distribution}
+
+\item{minDiff}{An integer, the minimum number of events from other genes
+needed for calculation of background PIs}
 
 \item{features}{A character vector, for which features should the
 probabilistic indices be calculated?}

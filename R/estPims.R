@@ -1,25 +1,13 @@
 #' A wrapper function for the different probabilistic indices (PIs)
 #'
 #' @param p The point pattern
-#' @param pis The probabilistic indices to be estimated
-#' @param null A character vector, indicating how the null distribution is
-#'  defined. See details.
-#' @param nPointsAll,nPointsAllWithinCell How many points to subsample or simulate to calculate
-#' overall interpoint distance and distance to point.
-#' This parameter is a strong driver of computation time.
-#' The second argument applies to within cell calculations.
-#' @param nPointsAllWin How many points to subsample or simulate
-#' to calculate distance to cell edge or midpoint distribution
 #' @param owins,centroids The list of windows corresponding to cells,
 #' and their centroids
-#' @param features A character vector, for which features should the
-#' probabilistic indices be calculated?
 #' @param tabObs A table of observed gene frequencies
 #' @param window An window of class owin, in which events can occur
 #' @param loopFun The function to use to loop over the features.
 #' Defaults to bplapply except when looping over features within cells
-#' @param minDiff An integer, the minimum number of events from other genes
-#'  needed for calculation of background PIs
+#' @inheritParams estPims
 #'
 #' @return A list of data frames with estimated PIs per gene and/or gene pair:
 #' \item{pointDists}{PIs for pointwise distances overall}
@@ -28,15 +16,7 @@
 #' @importFrom stats ecdf dist
 #' @importFrom spatstat.random runifpoint
 #' @importFrom Rdpack reprompt
-estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = switch(null,
-                              background = 1e4,
-                              CSR = 1e3
-                          ),
-                          nPointsAllWithinCell = switch(null,
-                              background = 1e4,
-                              CSR = 5e2
-                          ), nPointsAllWin = 1e3,
-                          features = NULL, owins = NULL, centroids = NULL, window = p$window, loopFun = "bplapply", minDiff = 2e1) {
+estPimsSingle <- function(p, pis, null, tabObs, owins = NULL, centroids = NULL, window = p$window, loopFun = "bplapply") {
     if (!length(features)) {
         return(list(pointDists = NULL, windowDists = NULL, withinCellDists = NULL))
     }
@@ -123,7 +103,19 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = switch(null,
 #' @param hypFrame the hyperframe
 #' @param ... additional arguments, passed on to estPimsSingle
 #' @param verbose a boolean, whether to report on progress of fitting
-#' @inheritParams estPimsSingle
+#' @param pis The probabilistic indices to be estimated
+#' @param null A character vector, indicating how the null distribution is
+#'  defined. See details.
+#' @param nPointsAll,nPointsAllWithinCell How many points to subsample or simulate to calculate
+#' overall interpoint distance and distance to point.
+#' This parameter is a strong driver of computation time.
+#' The second argument applies to within cell calculations.
+#' @param nPointsAllWin How many points to subsample or simulate
+#' to calculate distance to cell edge or midpoint distribution
+#' @param minDiff An integer, the minimum number of events from other genes
+#'  needed for calculation of background PIs
+#' @param features A character vector, for which features should the
+#' probabilistic indices be calculated?
 #' @return The hyperframe with the estimated PIMs present in it
 #' @importFrom BiocParallel bplapply
 #' @examples
@@ -151,7 +143,15 @@ estPimsSingle <- function(p, pis, null, tabObs, nPointsAll = switch(null,
 estPims <- function(hypFrame, pis = c("nn", "nnPair", "edge", "midpoint", "nnCell", "nnPairCell"), verbose = TRUE, null = c(
                         "background",
                         "CSR"
-                    ), features = getFeatures(hypFrame), ...) {
+                    ), nPointsAll = switch(null,
+                                           background = 1e4,
+                                           CSR = 1e3
+                    ),
+                    nPointsAllWithinCell = switch(null,
+                                                  background = 1e4,
+                                                  CSR = 5e2
+                    ), nPointsAllWin = 1e3,
+                    minDiff = 2e1, features = getFeatures(hypFrame), ...) {
     pis <- match.arg(pis, several.ok = TRUE)
     null <- match.arg(null)
     if (any(pis %in% c("edge", "midpoint", "nnCell")) && is.null(hypFrame$owins)) {
@@ -169,7 +169,9 @@ estPims <- function(hypFrame, pis = c("nn", "nnPair", "edge", "midpoint", "nnCel
         }
         out <- estPimsSingle(hypFrame[[x, "ppp"]],
             owins = hypFrame[x, "owins", drop = TRUE], pis = pis, null = null,
-            tabObs = hypFrame[[x, "tabObs"]], centroids = hypFrame[x, "centroids", drop = TRUE], features = features, ...
+            tabObs = hypFrame[[x, "tabObs"]], centroids = hypFrame[x, "centroids", drop = TRUE],
+            features = features, nPointsAll = nPointsAll, nPointsAllWithinCell = nPointsAllWithinCell,
+            nPointsAllWin = nPointsAllWin, minDiff = minDiff, ...
         )
         return(out)
     })

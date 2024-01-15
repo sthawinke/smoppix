@@ -12,9 +12,6 @@ findEcdfsCell(p, owins, nPointsAllWin, centroids, null, pis)
 \item{owins, centroids}{The list of windows corresponding to cells,
 and their centroids}
 
-\item{nPointsAllWin}{How many points to subsample or simulate
-to calculate distance to cell edge or midpoint distribution}
-
 \item{null}{A character vector, indicating how the null distribution is
 defined. See details.}
 

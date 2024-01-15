@@ -9,15 +9,10 @@ estPimsSingle(
   pis,
   null,
   tabObs,
-  nPointsAll = switch(null, background = 10000, CSR = 1000),
-  nPointsAllWithinCell = switch(null, background = 10000, CSR = 500),
-  nPointsAllWin = 1000,
-  features = NULL,
   owins = NULL,
   centroids = NULL,
   window = p$window,
-  loopFun = "bplapply",
-  minDiff = 20
+  loopFun = "bplapply"
 )
 }
 \arguments{
@@ -30,17 +25,6 @@ defined. See details.}
 
 \item{tabObs}{A table of observed gene frequencies}
 
-\item{nPointsAll, nPointsAllWithinCell}{How many points to subsample or simulate to calculate
-overall interpoint distance and distance to point.
-This parameter is a strong driver of computation time.
-The second argument applies to within cell calculations.}
-
-\item{nPointsAllWin}{How many points to subsample or simulate
-to calculate distance to cell edge or midpoint distribution}
-
-\item{features}{A character vector, for which features should the
-probabilistic indices be calculated?}
-
 \item{owins, centroids}{The list of windows corresponding to cells,
 and their centroids}
 
@@ -48,9 +32,6 @@ and their centroids}
 
 \item{loopFun}{The function to use to loop over the features.
 Defaults to bplapply except when looping over features within cells}
-
-\item{minDiff}{An integer, the minimum number of events from other genes
-needed for calculation of background PIs}
 }
 \value{
 A list of data frames with estimated PIs per gene and/or gene pair:
