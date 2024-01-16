@@ -30,7 +30,6 @@
 #'  function of the number of observations
 #' @importFrom scam scam
 #' @importFrom stats formula
-#' @importFrom Rfast rowAll rowSort
 #' @export
 #' @seealso \link{buildDataFrame}
 #' @examples
@@ -113,10 +112,10 @@ addWeightFunction <- function(resList, pis = resList$pis, designVars,
                     if (!all(geneSplit %in% colnames(tab))) {
                         return(NULL)
                     }
-                    lenOut <- sum(id <- rowAll((CellGene <- tab[,
+                    lenOut <- sum(id <- apply((CellGene <- tab[,
                         geneSplit,
                         drop = FALSE
-                    ]) > (1 - pairId)))
+                    ]) > (1 - pairId)), 1, all)
                     if (!lenOut) {
                         return(NULL)
                     } else {
@@ -128,7 +127,7 @@ addWeightFunction <- function(resList, pis = resList$pis, designVars,
                         }
                         cbind(
                             quadDeps = matrix(deps, nrow = lenOut),
-                            rowSort(CellGene[id, , drop = FALSE])
+                            t(apply(CellGene[id, , drop = FALSE], 1, sort))
                         )
                     }
                 })
