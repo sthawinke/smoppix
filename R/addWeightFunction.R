@@ -115,7 +115,7 @@ addWeightFunction <- function(resList, pis = resList$pis, designVars,
                     lenOut <- sum(id <- apply((CellGene <- tab[,
                         geneSplit,
                         drop = FALSE
-                    ]) > (1 - pairId)), 1, all)
+                    ]) > (1 - pairId), 1, all))
                     if (!lenOut) {
                         return(NULL)
                     } else {
@@ -127,7 +127,8 @@ addWeightFunction <- function(resList, pis = resList$pis, designVars,
                         }
                         cbind(
                             quadDeps = matrix(deps, nrow = lenOut),
-                            t(apply(CellGene[id, , drop = FALSE], 1, sort))
+                        if(pairId) t(apply(CellGene[id, , drop = FALSE],
+                            1, sort)) else CellGene[id, , drop = FALSE]
                         )
                     }
                 })
