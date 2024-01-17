@@ -17,3 +17,7 @@ The split string
 \description{
 Helper function to spit gene pairs
 }
+\examples{
+GenePair = "gene1--gene2"
+sund(GenePair)
+}

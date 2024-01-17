@@ -51,7 +51,7 @@ fitLMMsSingle <- function(obj, pi, fixedVars = NULL, randomVars = NULL,
     }
     designVars <- c(fixedVars, randomVarsSplit)
     if (any(id <- !(designVars %in% getDesignVars(obj)))) {
-        stop("Design variables", designVars[id], "not found in object.")
+        stop("Design variables ", designVars[id], " not found in object.")
     }
     # Allow cell as design variable, both fixed and random
     if (is.null(Formula)) {

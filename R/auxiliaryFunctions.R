@@ -6,7 +6,7 @@
 #' @export
 #' @examples
 #' GenePair = "gene1--gene2"
-#' sund(GenePair)#'
+#' sund(GenePair)
 sund <- function(x, sep = "--") {
     strsplit(x, sep)[[1]]
 }
