@@ -54,7 +54,7 @@ setMethod("buildHyperFrame", "matrix", function(x, imageVars, covariates, ...) {
     designVec <- if (NCOL(imageVars) != 1) {
         apply(imageVars, 1, paste, collapse = "_")
     } else {
-        imageVars
+        c(imageVars)
     }
 
     if (!any("gene" == colnames(covariates))) {

@@ -13,6 +13,9 @@
 #' contained in window
 #' @param coords The names of the coordinates, if the windows are given as sets of coordinates
 #' @param verbose A boolean, shoudl verbose output be printed?
+#' @param addCellMarkers A boolean, should cell identities be added. Set this to
+#'  false if cell identifiers are already present in the data, and you only want
+#'  to add windows and centroids.
 #' @param ... Further arguments passed onto read functions
 #' @return The hyperframe with cell lables added in the marks of the point patterns
 #' @importFrom spatstat.geom inside.owin marks centroid.owin marks<-
@@ -67,7 +70,8 @@
 #' names(wList) <- rownames(hypFrame) # Matching names is necessary
 #' hypFrame2 <- addCell(hypFrame, wList)
 addCell <- function(hypFrame, owins, cellTypes = NULL, findOverlappingOwins = FALSE,
-                    warnOut = TRUE, coords = c("x", "y"), verbose = TRUE, ...) {
+                    warnOut = TRUE, coords = c("x", "y"), verbose = TRUE,
+                    addCellMarkers = TRUE,  ...) {
     stopifnot(
         nrow(hypFrame) == length(owins),
         all(rownames(hypFrame) %in% names(owins)),
@@ -81,54 +85,56 @@ addCell <- function(hypFrame, owins, cellTypes = NULL, findOverlappingOwins = FA
         convertToOwins(owins[[nam]], coords = coords, namePPP = nam, ...)
     })
     names(owins) <- Nam
-    if (ct <- is.data.frame(cellTypes)) {
-        if (!("cell" %in% names(cellTypes))) {
-            stop("Variable names 'cell' must be contained in cell types dataframe")
+    if(addCellMarkers){
+        if (ct <- is.data.frame(cellTypes)) {
+            if (!("cell" %in% names(cellTypes))) {
+                stop("Variable names 'cell' must be contained in cell types dataframe")
+            }
+            otherCellNames <- names(cellTypes)[names(cellTypes) != "cell"]
+            # Names of the other covariates
         }
-        otherCellNames <- names(cellTypes)[names(cellTypes) != "cell"]
-        # Names of the other covariates
-    }
-    if (verbose) {
-        message("Adding cell names for point pattern")
-    }
-    for (nn in rownames(hypFrame)) {
         if (verbose) {
-            message(match(nn, rownames(hypFrame)), " of ", nrow(hypFrame))
+            message("Adding cell names for point pattern")
         }
-        ppp <- hypFrame[[nn, "ppp"]]
-        NP <- npoints(ppp)
-        if (any("cell" == names(marks(ppp, drop = FALSE)))) {
-            stop("Cell markers already present in point pattern ", nn)
+        for (nn in rownames(hypFrame)) {
+            if (verbose) {
+                message(match(nn, rownames(hypFrame)), " of ", nrow(hypFrame))
+            }
+            ppp <- hypFrame[[nn, "ppp"]]
+            NP <- npoints(ppp)
+            if (any("cell" == names(marks(ppp, drop = FALSE)))) {
+                stop("Cell markers already present in point pattern ", nn)
+            }
+            if (findOverlappingOwins) {
+                foo <- findOverlap(owins[[nn]])
+            }
+            cellOut <- rep("NA", NP)
+            idLeft <- seq_len(NP)
+            for (i in names(owins[[nn]])) {
+                idIn <- which(inside.owin(ppp[idLeft, ], w = owins[[nn]][[i]]))
+                cellOut[idLeft[idIn]] <- i
+                # Don't overwrite, stick to first match, and do not detect overlap
+                idLeft <- idLeft[-idIn]
+            }
+            if (NP == (nOut <- length(idLeft))) {
+                stop(
+                    "All points lie outside all windows for point pattern ", nn,
+                    " check your input!"
+                )
+            }
+            if ((nOut > 0) && warnOut) {
+                warning(nOut, " points lie outside all windows for point pattern ",
+                    nn, " and were not assigned to a cell.\n",
+                    immediate. = TRUE
+                )
+            }
+            newmarks <- cbind(marks(ppp, drop = FALSE), cell = cellOut)
+            if (ct) {
+                newmarks <- cbind(newmarks, cellTypes[match(cellOut, cellTypes$cell), otherCellNames, drop = FALSE])
+            }
+            marks(ppp) <- newmarks
+            hypFrame[nn, "ppp"] <- ppp
         }
-        if (findOverlappingOwins) {
-            foo <- findOverlap(owins[[nn]])
-        }
-        cellOut <- rep("NA", NP)
-        idLeft <- seq_len(NP)
-        for (i in names(owins[[nn]])) {
-            idIn <- which(inside.owin(ppp[idLeft, ], w = owins[[nn]][[i]]))
-            cellOut[idLeft[idIn]] <- i
-            # Don't overwrite, stick to first match, and do not detect overlap
-            idLeft <- idLeft[-idIn]
-        }
-        if (NP == (nOut <- length(idLeft))) {
-            stop(
-                "All points lie outside all windows for point pattern ", nn,
-                " check your input!"
-            )
-        }
-        if ((nOut > 0) && warnOut) {
-            warning(nOut, " points lie outside all windows for point pattern ",
-                nn, " and were not assigned to a cell.\n",
-                immediate. = TRUE
-            )
-        }
-        newmarks <- cbind(marks(ppp, drop = FALSE), cell = cellOut)
-        if (ct) {
-            newmarks <- cbind(newmarks, cellTypes[match(cellOut, cellTypes$cell), otherCellNames, drop = FALSE])
-        }
-        marks(ppp) <- newmarks
-        hypFrame[nn, "ppp"] <- ppp
     }
     hypFrame$owins <- owins[rownames(hypFrame)]
     hypFrame$centroids <- lapply(hypFrame$owins , function(x) {
