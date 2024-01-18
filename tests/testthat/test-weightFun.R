@@ -2,7 +2,7 @@ context("Constructing the weight function")
 test_that("Adding the weight function works", {
     expect_false(is.null((objBG <- addWeightFunction(piEstsBG, designVars = "condition"))$Wfs))
     expect_false(is.null((objCSR <- addWeightFunction(piEstsCSR, designVars = "condition"))$Wfs))
-    expect_silent(objBG2 <- addWeightFunction(piEstsBG2))
+    expect_false(is.null((objBG2 <- addWeightFunction(piEstsBG2))$Wfs))
     # Alternatively, specifying the lowest level
     expect_silent(objBG2 <- addWeightFunction(piEstsBG, lowestLevelVar = "fov"))
     expect_false(is.null((objCSR2 <- addWeightFunction(piEstsCSR, lowestLevelVar = "fov"))$Wfs))

@@ -110,7 +110,7 @@ fitLMMsSingle <- function(obj, pi, fixedVars = NULL, randomVars = NULL,
             return(NULL)
         }
         if (randomNested) {
-            df <- nestRandom(df, randomVarsSplit, fixedVars)
+            df <- nestRandom(df, randomVarsSplit, intersect(fixedVars, getPPPvars(obj)))
         }
         if (MM) {
             mod <- try(lmerTest::lmer(Formula, data = df, na.action = na.omit, weights = if (noWeight) {

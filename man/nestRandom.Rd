@@ -2,20 +2,20 @@
 % Please edit documentation in R/auxiliaryFunctions.R
 \name{nestRandom}
 \alias{nestRandom}
-\title{Nest random effects within point patterns, by pasting the design factor
-onto it}
+\title{Nest random effects within fixed variables, in case the names are the same}
 \usage{
-nestRandom(df, randomVars)
+nestRandom(df, randomVars, fixedVars)
 }
 \arguments{
 \item{df}{The dataframe}
 
 \item{randomVars}{The random variables}
+
+\item{fixedVars}{The fixed variables}
 }
 \value{
 The dataframe with adapted randomVars
 }
 \description{
-Nest random effects within point patterns, by pasting the design factor
-onto it
+Nest random effects within fixed variables, in case the names are the same
 }
