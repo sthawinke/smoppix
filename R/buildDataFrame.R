@@ -72,9 +72,14 @@ buildDataFrame <- function(obj, gene, pi = c(
             } else {
                 vec
             }
-            data.frame(pi = unlist(piEst), cell = rep(names(piEst),
+            dfWin <- data.frame("pi" = unlist(piEst), "cell" = rep(names(piEst),
                 times = vapply(piEst, FUN.VALUE = double(1), length)
             ))
+            if(length(cellVars <- setdiff(getEventVars(obj), "gene"))){
+                dfWin <- cbind(dfWin, marks(obj$hypFrame$ppp[[n]])[
+                match(dfWin$cell, marks(obj$hypFrame$ppp[[n]])$cell), cellVars])
+            }
+            return(dfWin)
         } else if (cellId) {
             piEst <- vapply(x[[piListNameInner]], FUN.VALUE = double(1), function(y) {
                 if (is.null(vec <- getGp(y[[piSub]], gene))) NA else vec
@@ -126,9 +131,7 @@ buildDataFrame <- function(obj, gene, pi = c(
     }
     image <- rep(rownames(obj$hypFrame), times = Times)
     piMat <- data.frame(Reduce(piDfs, f = rbind), obj$hypFrame[
-        image,
-        getPPPvars(obj)
-    ], "image" = image)
+        image, getPPPvars(obj)], "image" = image)
     if (!windowId) {
         # Add weights
         weight <- evalWeightFunction(obj$Wfs[[pi]],

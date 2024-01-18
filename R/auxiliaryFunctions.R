@@ -105,17 +105,16 @@ addTabObs <- function(hypFrame) {
     })
     hypFrame
 }
-#' Nest random effects within point patterns, by pasting the design factor
-#' onto it
+#' Nest random effects within fixed variables, in case the names are the same
 #'
 #' @param df The dataframe
 #' @param randomVars The random variables
+#' @param fixedVars The fixed variables
 #'
 #' @return The dataframe with adapted randomVars
-nestRandom <- function(df, randomVars) {
-    stopifnot(any("image" == names(df)))
+nestRandom <- function(df, randomVars, fixedVars) {
     for (i in randomVars) {
-        df[, i] <- apply(df[, c("image", i)], 1, paste, collapse = "_")
+        df[, i] <- apply(df[, c(fixedVars, i)], 1, paste, collapse = "_")
     }
     df
 }

@@ -39,22 +39,31 @@ fitLMMsSingle <- function(obj, pi, fixedVars = NULL, randomVars = NULL,
     noWeight <- pi %in% c("edge", "midpoint")
     if (noWeight) {
         randomVars <- union(randomVars, "image/cell")
+        #For edge and midpoint, cell is nested within image
     }
     if ((cellId <- grepl("Cell", pi))) {
         randomVars <- union(randomVars, "image")
         #For cell, the image is always a design factor
     }
+    if(pi %in% c("nn", "nnParir") && any(fixedVars %in% (evVars <- getEventVars(obj)))){
+        fixedVars = setdiff(fixedVars, evVars)
+        warning("Cell-wise variables cannot be incorporated into analysis with pi ",
+                pi, ", so variables\n", paste(evVars, collapse = ", "),
+                "\nwill be dropped.", immediate. = TRUE)
+    }
     # For independent distances, no weights are needed
     randomVarsSplit <- if (!is.null(randomVars)) {
+        grep("[[:punct:]]", value = TRUE, invert = TRUE,
         unique(unlist(lapply(c("/", ":"), function(Split) {
             lapply(randomVars, function(x){
                 strsplit(x, Split)[[1]]
             })
-        })))
+        }))))
     }
     designVars <- c(fixedVars, randomVarsSplit)
-    if (any(id <- !(designVars %in% getDesignVars(obj)))) {
-        stop("Design variables ", designVars[id], " not found in object.")
+    if (any(id <- !(designVars %in% c(getDesignVars(obj), "image")))) {
+        stop("Design variables ", paste(designVars[id], collapse = " "),
+             " not found in object.")
     }
     # Allow cell as design variable, both fixed and random
     if (is.null(Formula)) {
@@ -101,7 +110,7 @@ fitLMMsSingle <- function(obj, pi, fixedVars = NULL, randomVars = NULL,
             return(NULL)
         }
         if (randomNested) {
-            df <- nestRandom(df, randomVarsSplit)
+            df <- nestRandom(df, randomVarsSplit, fixedVars)
         }
         if (MM) {
             mod <- try(lmerTest::lmer(Formula, data = df, na.action = na.omit, weights = if (noWeight) {
