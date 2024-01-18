@@ -71,7 +71,7 @@ addWeightFunction <- function(resList, pis = resList$pis, designVars,
         designVars <- NULL
     }
     Wfs <- lapply(pis, function(pi) {
-        cellId <- any(grepl("Cell", pi))
+        cellId <- grepl("Cell", pi)
         features <- getFeatures(resList)
         if (pairId <- grepl("Pair", pi)) {
             features <- makePairs(features)
