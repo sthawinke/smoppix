@@ -1,6 +1,6 @@
 #' Add cell variables to a hyperframe
 #' @description Check in which cell each event lies and add a cell marker,
-#' plus include the list of regions
+#' plus include the list of the cells and their centroids in the hyperframe.
 #'
 #' @param hypFrame The hyperframe
 #' @param owins the list containing a list of owins per point pattern.
@@ -105,8 +105,10 @@ addCell <- function(hypFrame, owins, cellTypes = NULL, findOverlappingOwins = FA
             if (any("cell" == names(marks(ppp, drop = FALSE)))) {
                 stop("Cell markers already present in point pattern ", nn)
             }
+            hypFrame[nn, "centroids"] <- lapply(owins[[nn]], function(y) {
+                centroid.owin(y, as.ppp = TRUE)})
             if (findOverlappingOwins) {
-                foo <- findOverlap(owins[[nn]])
+                foo <- findOverlap(owins[[nn]], hypFrame[nn, "centroids"])
             }
             cellOut <- rep("NA", NP)
             idLeft <- seq_len(NP)
@@ -137,9 +139,7 @@ addCell <- function(hypFrame, owins, cellTypes = NULL, findOverlappingOwins = FA
         }
     }
     hypFrame$owins <- owins[rownames(hypFrame)]
-    hypFrame$centroids <- lapply(hypFrame$owins , function(x) {
-        lapply(x, function(y) centroid.owin(y, as.ppp = TRUE))
-    })
+
     # Add centroids for all windows
     return(hypFrame)
 }

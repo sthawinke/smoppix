@@ -9,7 +9,7 @@
 #' @return Throws an error when overlap found, otherwise returns invisible.
 #' When returnIds=TRUE, the indices of overlapping windows are returned.
 #' @importFrom utils combn
-#' @importFrom spatstat.geom overlap.owin is.owin
+#' @importFrom spatstat.geom overlap.owin is.owin is.ppp
 #' @export
 #' @examples
 #' library(spatstat.geom)
@@ -18,9 +18,26 @@
 #'     yrange = runif(1) + c(0, 0.1)
 #' ), simplify = FALSE)
 #' idOverlap <- findOverlap(owins, returnIds = TRUE)
-findOverlap <- function(owins, returnIds = FALSE) {
-    stopifnot(all(vapply(owins, is.owin, FUN.VALUE = TRUE)))
+findOverlap <- function(owins, centroids = NULL, returnIds = FALSE, numCentroids = 50) {
+    stopifnot(all(vapply(owins, is.owin, FUN.VALUE = TRUE)),
+              is.null(centroids) || all(vapply(centroids, is.ppp, FUN.VALUE = TRUE)))
+    if(is.null(centroids)){
+        centroids = lapply(owins, centroid.owin, as.ppp = TRUE)
+    }
     combs <- combn(length(owins), 2)
+    #First find distances between centroids
+    distCentroids = vapply(seq_len(ncol(combs)), FUN.VALUE = double(1), function(i){
+        crossdistWrapper(centroids[[combs[1, i]]], centroids[[combs[2, i]]])
+    })
+    #Find x-th centroid for every window, and forget about the other windows
+    for(winNum in seq_along(owins)){
+        idWin = which(colSums(combs==winNum)==1)
+        idNotClosest = -idWin[which(distCentroids[idWin] > sort(distCentroids[idWin])[numCentroids])]
+        if(length(idNotClosest)){
+            combs = combs[, idNotClosest, drop = FALSE];distCentroids = distCentroids[idNotClosest]
+        }
+    }
+
       Ids <- loadBalanceBplapply(seq_len(ncol(combs)), function(ss) {
         vapply(ss, FUN.VALUE = TRUE, function(i) {
             Overlap <- overlap.owin(owins[[combs[1, i]]], owins[[combs[2, i]]]) > 0
