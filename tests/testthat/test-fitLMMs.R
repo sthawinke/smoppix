@@ -63,21 +63,21 @@ test_that("Fitting linear mixed models proceeds without errors", {
     expect_is(linModsEdgeCell <- fitLMMs(objBG,
         features = getFeatures(objBG)[1:5],
         fixedVars = "condition",
-        randomVars = "root/cell", pi = "edge"
+        randomVars = "image/cell", pi = "edge"
     ), "list")
     expect_is(linModsMidCellType <- fitLMMs(objBG,
         features = getFeatures(objBG)[1:5],
         fixedVars = c("condition", "cellType"),
-        randomVars = "root/cell", pi = "midpoint"
+      pi = "midpoint"
     ), "list")
     expect_is(linModsNNCellType <- fitLMMs(objBG,
         features = getFeatures(objBG)[1:5],
         fixedVars = c("condition", "cellType"),
-        pi = "nnCell", randomVars = "root"
+        pi = "nnCell",
     ), "list")
     expect_is(fitLMMs(objBG,
         fixedVars = c("condition", "cellType"),
-        randomVars = "root", pis = c("nn", "nnCell"),
+         pis = c("nn", "nnCell"),
         features = getFeatures(objBG)[1:5]
     ), "list")
     expect_is(resMat <- getResults(linModsMP[["midpoint"]], "Intercept"), "matrix")

@@ -12,6 +12,7 @@ addCell(
   warnOut = TRUE,
   coords = c("x", "y"),
   verbose = TRUE,
+  addCellMarkers = TRUE,
   ...
 )
 }
@@ -33,6 +34,10 @@ contained in window}
 \item{coords}{The names of the coordinates, if the windows are given as sets of coordinates}
 
 \item{verbose}{A boolean, shoudl verbose output be printed?}
+
+\item{addCellMarkers}{A boolean, should cell identities be added. Set this to
+false if cell identifiers are already present in the data, and you only want
+to add windows and centroids.}
 
 \item{...}{Further arguments passed onto read functions}
 }

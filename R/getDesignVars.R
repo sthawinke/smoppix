@@ -17,7 +17,7 @@ getDesignVars <- function(x) {
 #' @param exclude variables to exclude
 #' @inheritParams getDesignVars
 #' @return A vector of variables
-getPPPvars <- function(x, exclude = c("tabObs", "centroids", "owins", "ppp", "pimRes", "image", "inSeveralCells")) {
+getPPPvars <- function(x, exclude = c("tabObs", "centroids", "owins", "ppp", "pimRes", "inSeveralCells")) {
     setdiff(names(x$hypFrame), exclude)
 }
 #' Extract variables from events (the marks)

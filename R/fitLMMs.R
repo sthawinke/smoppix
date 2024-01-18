@@ -37,17 +37,20 @@ fitLMMsSingle <- function(obj, pi, fixedVars = NULL, randomVars = NULL,
         "nnCell", "nnPairCell"
     ))
     noWeight <- pi %in% c("edge", "midpoint")
-    if (noWeight && !("cell" %in% randomVars)) {
-        randomVars <- c(randomVars, "cell")
+    if (noWeight) {
+        randomVars <- union(randomVars, "image/cell")
+    }
+    if ((cellId <- grepl("Cell", pi))) {
+        randomVars <- union(randomVars, "image")
+        #For cell, the image is always a design factor
     }
     # For independent distances, no weights are needed
     randomVarsSplit <- if (!is.null(randomVars)) {
-        unlist(lapply(c("/", ":"), function(Split) {
-            tmp <- strsplit(randomVars, Split)
-            if (length(tmp) > 2) {
-                tmp
-            }
-        }))
+        unique(unlist(lapply(c("/", ":"), function(Split) {
+            lapply(randomVars, function(x){
+                strsplit(x, Split)[[1]]
+            })
+        })))
     }
     designVars <- c(fixedVars, randomVarsSplit)
     if (any(id <- !(designVars %in% getDesignVars(obj)))) {
