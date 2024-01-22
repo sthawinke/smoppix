@@ -12,10 +12,10 @@ Description: Test for univariate and multivariate spatial patterns in
     biological specimens. Tests for aggregation, colocalization and vicinity to cell edge are provided.
 License: GPL-2
 Encoding: UTF-8
-Imports: spatstat.geom, spatstat.random, methods, BiocParallel, SummarizedExperiment, SpatialExperiment, scam, Rdpack, stats, utils, Rfast, extraDistr,lmerTest,lme4,ggplot2,graphics,grDevices,Rcpp (>= 1.0.11)
+Imports: spatstat.geom, spatstat.random, methods, BiocParallel, SummarizedExperiment, SpatialExperiment, scam, Rdpack, stats, utils, extraDistr,lmerTest,lme4,ggplot2,graphics,grDevices,Rcpp (>= 1.0.11)
 Suggests: testthat,rmarkdown,knitr,DropletUtils,polyCub,RImageJROI,sp
 RdMacros: Rdpack
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.0
 biocViews: Transcriptomics, Spatial, SingleCell
 Depends: R (>= 4.3.0)
 VignetteBuilder: knitr
