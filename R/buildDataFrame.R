@@ -75,7 +75,7 @@ buildDataFrame <- function(obj, gene, pi = c(
             dfWin <- data.frame("pi" = unlist(piEst), "cell" = rep(names(piEst),
                 times = vapply(piEst, FUN.VALUE = double(1), length)
             ))
-            if(length(cellVars <- setdiff(getEventVars(obj), "gene"))){
+            if(length(cellVars <- setdiff(getEventVars(obj), c("gene", "cell")))){
                 dfWin <- cbind(dfWin, marks(obj$hypFrame$ppp[[n]])[
                 match(dfWin$cell, marks(obj$hypFrame$ppp[[n]])$cell), cellVars])
             }
