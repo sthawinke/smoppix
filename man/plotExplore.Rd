@@ -14,7 +14,8 @@ plotExplore(
   Xlim = NULL,
   Ylim = NULL,
   Cex.main = 0.8,
-  Mar = c(0.35, 0.1, 0.75, 0.1)
+  Mar = c(0.35, 0.1, 0.75, 0.1),
+  titleVar = NULL
 )
 }
 \arguments{
@@ -36,6 +37,8 @@ Defaults to the first 8.}
 \item{Cex.main}{Expansion factor for the title}
 
 \item{Mar}{the margins}
+
+\item{titleVar}{Image variable to be added to the title}
 }
 \value{
 Plots a facet of point patterns to output
@@ -51,5 +54,6 @@ so set that one to change the colour scheme
 \examples{
 example(buildHyperFrame, "spatrans")
 plotExplore(hypYang)
+plotExplore(hypYang, titleVar = "condition")
 plotExplore(hypYang, features = c("SmRBRb", "SmTMO5b", "SmWER--SmAHK4f"))
 }

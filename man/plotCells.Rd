@@ -21,6 +21,10 @@ plotCells(
 \item{nCells}{An integer, the number of cells to be plotted}
 
 \item{Cex}{The point expansion factor}
+
+\item{borderColVar}{The variable to colour borders of the cell}
+
+\item{borderCols}{Colour paletter for the borders}
 }
 \value{
 Plots cells with highest expression to the plotting window, returns invisible

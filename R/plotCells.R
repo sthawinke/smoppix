@@ -7,6 +7,8 @@
 #' @param features The features to be plotted, a character vector
 #' @param nCells An integer, the number of cells to be plotted
 #' @param Cex The point expansion factor
+#' @param borderColVar The variable to colour borders of the cell
+#' @param borderCols Colour paletter for the borders
 #'
 #' @return Plots cells with highest expression to the plotting window, returns invisible
 #' @export
@@ -18,7 +20,7 @@
 #' plotCells(hypFrame2, "gene1")
 #' plotCells(hypFrame2, "gene1", borderColVar = "condition")
 plotCells <- function(obj, features = getFeatures(obj)[seq_len(3)], nCells = 1e2,
-                      Cex = 1.5, borderColVar = NULL, borderCols = palette()) {
+                      Cex = 1.5, borderColVar = NULL, borderCols = palette(), ...) {
     if (!is.hyperframe(obj)) {
         obj <- obj$hypFrame
     }

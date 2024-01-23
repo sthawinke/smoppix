@@ -13,6 +13,7 @@
 #' @param Xlim,Ylim Vectors of length 2 with plotting limits
 #' @param Cex.main Expansion factor for the title
 #' @param Mar the margins
+#' @param titleVar Image variable to be added to the title
 #'
 #' @return Plots a facet of point patterns to output
 #' @importFrom spatstat.geom is.hyperframe coords plot.owin
@@ -23,17 +24,20 @@
 #' @examples
 #' example(buildHyperFrame, "spatrans")
 #' plotExplore(hypYang)
+#' plotExplore(hypYang, titleVar = "day")
 #' plotExplore(hypYang, features = c("SmRBRb", "SmTMO5b", "SmWER--SmAHK4f"))
 plotExplore <- function(hypFrame, features = getFeatures(hypFrame)[seq_len(6)], ppps,
                         maxPlot = 1e+05, Cex = 1, plotWindows = !is.null(hypFrame$owins),
-                        Xlim = NULL, Ylim = NULL, Cex.main = 0.8, Mar = c(0.35, 0.1, 0.75, 0.1)) {
+                        Xlim = NULL, Ylim = NULL, Cex.main = 0.8, Mar = c(0.35, 0.1, 0.75, 0.1),
+                        titleVar = NULL) {
     if (!is.hyperframe(hypFrame)) {
         hypFrame <- hypFrame$hypFrame
     }
     if (plotWindows && is.null(hypFrame$owins)) {
         warning("No windows present in hyperframe object")
     }
-    stopifnot(is.hyperframe(hypFrame), is.character(features), is.numeric(maxPlot))
+    stopifnot(is.hyperframe(hypFrame), is.character(features), is.numeric(maxPlot),
+              is.null(titleVar) || titleVar %in% getPPPvars(hypFrame))
     features <- unique(unlist(lapply(features, sund)))
     npp <- nrow(hypFrame)
     if (missing(ppps)) {
@@ -52,7 +56,7 @@ plotExplore <- function(hypFrame, features = getFeatures(hypFrame)[seq_len(6)], 
         ordVec <- order(colVec != "grey")
         # Plot grey background first and coloured dots on top
         plot(cordMat[ordVec, ],
-            main = hypFrame$image[ppps[i]], pch = ".",
+            main = paste(hypFrame$image[ppps[i]], if(!is.null(titleVar)) hypFrame[[i, titleVar]]), pch = ".",
             cex.main = Cex.main, xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i",
             asp = 1, col = colVec[ordVec], cex = Cex, xlim = Xlim, ylim = Ylim
         )
