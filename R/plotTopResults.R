@@ -18,9 +18,9 @@
 #'
 #' @examples
 #' example(fitLMMs, "spatrans")
-#' plotTopResult(hypYang, lmmModels, "nn")
-#' plotTopResult(hypYang, lmmModels, "nn", effect = "Intercept")
-plotTopResult = function(hypFrame, results, pi, effect = "Intercept", smallPI = TRUE, sigLevel = 0.05,
+#' plotTopResults(hypYang, lmmModels, "nn")
+#' plotTopResults(hypYang, lmmModels, "nn", effect = "Intercept")
+plotTopResults = function(hypFrame, results, pi, effect = "Intercept", smallPI = TRUE, sigLevel = 0.05,
                          numFeats = 2, piThreshold = 0.5, ...){
     pi = match.arg(pi, choices = c("nn", "nnPair", "edge", "midpoint", "nnCell", "nnPairCell"))
     if(is.null(Res <- results[[pi]]$results)){
@@ -34,6 +34,8 @@ plotTopResult = function(hypFrame, results, pi, effect = "Intercept", smallPI = 
     Feats = rownames(subRes)[estId & subRes[, "pAdj"] < sigLevel ][seq_len(numFeats)]
     if(all(is.na(Feats))){
         stop("No significant features found for PI ", pi, " significance level ", sigLevel, " and smallPI ", smallPI, "!")
+    } else {
+        Feats = Feats[!is.na(Feats)]
     }
     plotFun = if(nnId <- pi %in% c("nn", "nnPair")){
         plotExplore
