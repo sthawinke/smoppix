@@ -42,7 +42,7 @@ plotCells <- function(obj, features = getFeatures(obj)[seq_len(3)], nCells = 1e2
             unVals = unique(unlist(lapply(obj$ppp, function(x) unique(marks(x, drop = FALSE)[[borderColVar]]))))
             names(borderCols)[seq_along(unVals)] = unVals
             borderCols = lapply(seq_along(tablesCell), function(x){
-                borderCols[marks(obj$ppp[[x]])[[borderColVar]][match(marks(obj$ppp[[x]])$cell, paste(names(tablesCell[[x]]), x, sep = "_"))]]
+                borderCols[marks(obj$ppp[[x]])[[borderColVar]][match(marks(obj$ppp[[x]])$cell, names(tablesCell[[x]]))]]
             })
         } else if(borderColVar %in% getPPPvars(obj)){
             unVals = unique(obj[[borderColVar]])
