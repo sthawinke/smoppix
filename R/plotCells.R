@@ -20,7 +20,7 @@
 #' plotCells(hypFrame2, "gene1")
 #' plotCells(hypFrame2, "gene1", borderColVar = "condition")
 plotCells <- function(obj, features = getFeatures(obj)[seq_len(3)], nCells = 1e2,
-                      Cex = 1.5, borderColVar = NULL, borderCols = palette(), ...) {
+                      Cex = 1.5, borderColVar = NULL, borderCols = rev(palette()), ...) {
     if (!is.hyperframe(obj)) {
         obj <- obj$hypFrame
     }

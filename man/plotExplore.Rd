@@ -54,6 +54,6 @@ so set that one to change the colour scheme
 \examples{
 example(buildHyperFrame, "spatrans")
 plotExplore(hypYang)
-plotExplore(hypYang, titleVar = "condition")
+plotExplore(hypYang, titleVar = "day")
 plotExplore(hypYang, features = c("SmRBRb", "SmTMO5b", "SmWER--SmAHK4f"))
 }

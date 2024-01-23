@@ -48,5 +48,5 @@ If smallPI is set to FALSE, features with regularity, antilocalization and remot
 \examples{
 example(fitLMMs, "spatrans")
 plotTopResult(hypYang, lmmModels, "nn")
-plotTopResult(hypYang, lmmModels, "nn", effect "condition")
+plotTopResult(hypYang, lmmModels, "nn", effect = "Intercept")
 }

@@ -10,7 +10,8 @@ plotCells(
   nCells = 100,
   Cex = 1.5,
   borderColVar = NULL,
-  borderCols = palette()
+  borderCols = rev(palette()),
+  ...
 )
 }
 \arguments{
