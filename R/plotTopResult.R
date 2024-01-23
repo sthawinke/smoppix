@@ -6,7 +6,10 @@
 #' @param smallPI A boolean, should features with PI smaller than piThreshold be shown? See details
 #' @param sigLevel The significance level
 #' @param numFeats The number of features to plot
+#' @param effect The name of the effect
+#' @param piThreshold The threshold for PI, a minimum effect size
 #' @param ... passed onto plotting functions plotCells or plotExplore
+#'
 #' @details If smallPI is set to TRUE, features with aggregation, colocalization and vicinity to cell boundary or centroid are shown.
 #' If smallPI is set to FALSE, features with regularity, antilocalization and remoteness from cell boundary or centroid are shown.
 #'
@@ -15,13 +18,18 @@
 #'
 #' @examples
 #' example(fitLMMs, "spatrans")
-#' plotTopResult(hypYang, yangObj, "nn")
-plotTopResult = function(hypFrame, results, pi, smallPI = TRUE, sigLevel = 0.05,
+#' plotTopResult(hypYang, lmmModels, "nn")
+plotTopResult = function(hypFrame, results, pi, effect = "Intercept", smallPI = TRUE, sigLevel = 0.05,
                          numFeats = 2, piThreshold = 0.5, ...){
-    Res = results[[pi]]
     pi = match.arg(pi, choices = c("nn", "nnPair", "edge", "midpoint", "nnCell", "nnPairCell"))
-    Fun = if(smallPI) "<" else ">"
-    Feats = rownames(Res)[Fun(Res[, "Estimate"], piThreshold) & Res[, "pAdj"] < sigLevel ][seq_len(numFeats)]
+    if(is.null(Res <- results[[pi]]$results)){
+        stop("PI not present in results object!")
+    }
+    if(is.null(subRes <- if(effect == "Intercept") Res$Intercept else Res$fixedEffects$effect)){
+        stop("Effect ", effect, " was not estimated in the linear model!")
+    }
+    Fun = match.fun(if(smallPI) "<" else ">")
+    Feats = rownames(subRes)[Fun(subRes[, "Estimate"], piThreshold) & subRes[, "pAdj"] < sigLevel ][seq_len(numFeats)]
     if(length(Feats) == 0){
         stop("No feature match these criteria")
     }
@@ -30,5 +38,5 @@ plotTopResult = function(hypFrame, results, pi, smallPI = TRUE, sigLevel = 0.05,
     } else {
         plotCells
     }
-    plotFun(hypFrame, features, ...)
+    plotFun(hypFrame, Feats, ...)
 }
