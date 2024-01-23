@@ -33,7 +33,7 @@ getEventVars <- function(x, exclude = c("x", "y", "z")) {
 #' Extract the hyperframe
 #' @param x The hyperframe, or list containing one
 #' @return the hyperframe
-#' @importFrom spatstat.geom getHypFrame
+#' @importFrom spatstat.geom is.hyperframe
 getHypFrame = function(x){
     if (is.hyperframe(x)) {
         x

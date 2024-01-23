@@ -8,7 +8,9 @@ plotCells(
   obj,
   features = getFeatures(obj)[seq_len(3)],
   nCells = 100,
-  Cex = 1.5
+  Cex = 1.5,
+  borderColVar = NULL,
+  borderCols = palette()
 )
 }
 \arguments{
@@ -31,4 +33,5 @@ here, but the spatial location of the cells is lost
 \examples{
 example(addCell, "spatrans")
 plotCells(hypFrame2, "gene1")
+plotCells(hypFrame2, "gene1", borderColVar = "condition")
 }
