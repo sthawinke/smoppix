@@ -16,8 +16,9 @@
 #' @examples
 #' example(addCell, "spatrans")
 #' plotCells(hypFrame2, "gene1")
+#' plotCells(hypFrame2, "gene1", borderColVar = "condition")
 plotCells <- function(obj, features = getFeatures(obj)[seq_len(3)], nCells = 1e2,
-                      Cex = 1.5) {
+                      Cex = 1.5, borderColVar = NULL, borderCols = palette()) {
     if (!is.hyperframe(obj)) {
         obj <- obj$hypFrame
     }
@@ -36,8 +37,29 @@ plotCells <- function(obj, features = getFeatures(obj)[seq_len(3)], nCells = 1e2
     tablesCell <- lapply(tablesCell, function(x) {
         x[x >= nthcell & names(x) != "NA"]
     })
+    if(colourBorder <- !is.null(borderColVar)){
+        if(borderColVar %in% getEventVars(obj)){
+            unVals = unique(unlist(lapply(obj$ppp, function(x) unique(marks(x, drop = FALSE)[[borderColVar]]))))
+            names(borderCols)[seq_along(unVals)] = unVals
+            borderCols = lapply(seq_along(tablesCell), function(x){
+                borderCols[marks(obj$ppp[[x]])[[borderColVar]][match(marks(obj$ppp[[x]])$cell, paste(names(tablesCell[[x]]), x, sep = "_"))]]
+            })
+        } else if(borderColVar %in% getPPPvars(obj)){
+            unVals = unique(obj[[borderColVar]])
+            names(borderCols)[seq_along(unVals)] = unVals
+            borderCols = lapply(seq_along(tablesCell), function(x){
+                rep(borderCols[[obj[[x, borderColVar]]]], length(tablesCell[[x]]))
+            })
+        } else {
+            stop("Border colour variable not found!")
+        }
+    } else {
+        borderCols = lapply(seq_along(tablesCell), function(x){
+            rep("black", length(tablesCell[[x]]))
+        })
+    }
     counter <- 0L
-    limVec <- c(0, 1 + (Ceil <- ceiling(sqrt(nCells + 1))))
+    limVec <- c(0, 1 + (Ceil <- ceiling(sqrt(nCells + 1 + colourBorder))))
     plot(
         type = "n", x = limVec, y = limVec, xlab = "", ylab = "", xaxt = "n",
         yaxt = "n", frame.plot = FALSE
@@ -51,13 +73,18 @@ plotCells <- function(obj, features = getFeatures(obj)[seq_len(3)], nCells = 1e2
                 ppp = subset.ppp(ppp, cell == namIn),
                 Shift = Shift <- c(counter %% Ceil, counter %/% Ceil)
             )
-            plot.owin(shifted$owin, add = TRUE)
+            plot.owin(shifted$owin, add = TRUE, border = borderCols[[i]][[j]])
             # text(x = Shift[1], y = Shift[2], labels = paste0("Point pattern ", nam, "\nCell", namIn))
             points(coords(shifted$ppp), col = Cols[marks(shifted$ppp, drop = FALSE)$gene], pch = ".", cex = Cex)
             counter <- counter + 1
         }
     }
     addLegend(Cols, Shift + c(1, 0))
+    if(colourBorder){
+        borderCols = unique(unlist(borderCols))
+        names(borderCols) = unVals
+        addLegend(borderCols, Shift + c(2, 0), Pch = 5, Main = borderColVar, Cex = 0.7)
+    }
     invisible()
 }
 #' @importFrom spatstat.geom affine.owin affine.ppp

@@ -19,18 +19,25 @@ getDesignVars <- function(x) {
 #' @return A vector of variables
 getPPPvars <- function(x, exclude = c("tabObs", "centroids", "owins", "ppp",
                                       "pimRes", "image", "inSeveralCells")){
-    setdiff(names(x$hypFrame), exclude)
+    setdiff(names(getHypFrame(x)), exclude)
 }
 #' Extract variables from events (the marks)
 #' @return A vector of variables
 #' @inheritParams getDesignVars
 #' @inheritParams getPPPvars
 getEventVars <- function(x, exclude = c("x", "y", "z")) {
-    setdiff(unique(unlist(lapply((if (is.hyperframe(x)) {
+    setdiff(unique(unlist(lapply(getHypFrame(x)$ppp, function(ppp) {
+        names(marks(ppp, drop = FALSE))
+    }))), exclude)
+}
+#' Extract the hyperframe
+#' @param x The hyperframe, or list containing one
+#' @return the hyperframe
+#' @importFrom spatstat.geom getHypFrame
+getHypFrame = function(x){
+    if (is.hyperframe(x)) {
         x
     } else {
         x$hypFrame
-    })$ppp, function(ppp) {
-        names(marks(ppp, drop = FALSE))
-    }))), exclude)
+    }
 }

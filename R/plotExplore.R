@@ -63,14 +63,18 @@ plotExplore <- function(hypFrame, features = getFeatures(hypFrame)[seq_len(6)], 
     plot(c(0, 1), c(0, 1), type = "n", xlab = "", ylab = "", xaxt = "n", yaxt = "n")
     addLegend(Cols)
 }
-addLegend <- function(Cols, Shift = c(0, 0), Cex = 0.9) {
+addLegend <- function(Cols, Shift = c(0, 0), Cex = 0.85, Pch = 20, Main = "") {
     idCols <- which(Cols != "grey")
     li <- length(idCols)
+    maxY = 0.9 - 0.05 * (mainId <- Main != "")
     points(
-        x = rep(0.1, li) + Shift[1], SeqY <- seq(0.9, 0.1, length.out = li) + Shift[2], pch = 20,
+        x = rep(0.1, li) + Shift[1], SeqY <- seq(maxY, 0.1, length.out = li) + Shift[2], pch = Pch,
         col = Cols[idCols]
     )
     text(x = rep(0.25, li) + Shift[1], SeqY, names(Cols)[idCols], adj = 0, cex = Cex)
+    if(mainId){
+        text(x = 0.5 + Shift[1], y = 1.25 + Shift[2], Main, cex = 0.8)
+    }
 }
 makeCols <- function(features, hypFrame) {
     Cols <- setdiff(palette(), "black")
