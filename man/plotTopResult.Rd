@@ -8,6 +8,7 @@ plotTopResult(
   hypFrame,
   results,
   pi,
+  effect = "Intercept",
   smallPI = TRUE,
   sigLevel = 0.05,
   numFeats = 2,
@@ -22,11 +23,15 @@ plotTopResult(
 
 \item{pi}{The probabilistic index}
 
+\item{effect}{The name of the effect}
+
 \item{smallPI}{A boolean, should features with PI smaller than piThreshold be shown? See details}
 
 \item{sigLevel}{The significance level}
 
 \item{numFeats}{The number of features to plot}
+
+\item{piThreshold}{The threshold for PI, a minimum effect size}
 
 \item{...}{passed onto plotting functions plotCells or plotExplore}
 }
@@ -42,5 +47,5 @@ If smallPI is set to FALSE, features with regularity, antilocalization and remot
 }
 \examples{
 example(fitLMMs, "spatrans")
-plotTopResult(hypYang, yangObj, "nn")
+plotTopResult(hypYang, lmmModels, "nn")
 }

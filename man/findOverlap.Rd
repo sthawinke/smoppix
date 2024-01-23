@@ -9,8 +9,12 @@ findOverlap(owins, centroids = NULL, returnIds = FALSE, numCentroids = 50)
 \arguments{
 \item{owins}{the list of windows}
 
+\item{centroids}{The centroids of the windows}
+
 \item{returnIds}{A boolean, should the indices of the overlap be returned?
 If FALSE an error is thrown at the first overlap}
+
+\item{numCentroids}{An integer, the number of cells with closest centroids to consider looking for overlap}
 }
 \value{
 Throws an error when overlap found, otherwise returns invisible.

@@ -96,6 +96,7 @@ addCell <- function(hypFrame, owins, cellTypes = NULL, findOverlappingOwins = FA
         if (verbose) {
             message("Adding cell names for point pattern")
         }
+        hypFrame$centroids = vector("list", nrow(hypFrame))
         for (nn in rownames(hypFrame)) {
             if (verbose) {
                 message(match(nn, rownames(hypFrame)), " of ", nrow(hypFrame))

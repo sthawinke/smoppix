@@ -5,6 +5,8 @@
 #' @param owins the list of windows
 #' @param returnIds A boolean, should the indices of the overlap be returned?
 #' If FALSE an error is thrown at the first overlap
+#' @param centroids The centroids of the windows
+#' @param numCentroids An integer, the number of cells with closest centroids to consider looking for overlap
 #'
 #' @return Throws an error when overlap found, otherwise returns invisible.
 #' When returnIds=TRUE, the indices of overlapping windows are returned.
@@ -29,7 +31,7 @@ findOverlap <- function(owins, centroids = NULL, returnIds = FALSE, numCentroids
     distCentroids = vapply(seq_len(ncol(combs)), FUN.VALUE = double(1), function(i){
         crossdistWrapper(centroids[[combs[1, i]]], centroids[[combs[2, i]]])
     })
-    #Find x-th centroid for every window, and forget about the other windows
+    #Find x-th closest centroid for every window, and forget about the other windows
     for(winNum in seq_along(owins)){
         idWin = which(colSums(combs==winNum)==1)
         idNotClosest = -idWin[which(distCentroids[idWin] > sort(distCentroids[idWin])[numCentroids])]
@@ -37,8 +39,7 @@ findOverlap <- function(owins, centroids = NULL, returnIds = FALSE, numCentroids
             combs = combs[, idNotClosest, drop = FALSE];distCentroids = distCentroids[idNotClosest]
         }
     }
-
-      Ids <- loadBalanceBplapply(seq_len(ncol(combs)), function(ss) {
+    Ids <- loadBalanceBplapply(seq_len(ncol(combs)), function(ss) {
         vapply(ss, FUN.VALUE = TRUE, function(i) {
             Overlap <- overlap.owin(owins[[combs[1, i]]], owins[[combs[2, i]]]) > 0
             if (returnIds) {

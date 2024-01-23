@@ -29,7 +29,7 @@ plotTopResult = function(hypFrame, results, pi, effect = "Intercept", smallPI = 
         stop("Effect ", effect, " was not estimated in the linear model!")
     }
     Fun = match.fun(if(smallPI) "<" else ">")
-    Feats = rownames(subRes)[Fun(subRes[, "Estimate"], piThreshold) & subRes[, "pAdj"] < sigLevel ][seq_len(numFeats)]
+    Feats = rownames(subRes)[!is.na(subRes[, "Estimate"]) & Fun(subRes[, "Estimate"], piThreshold) & subRes[, "pAdj"] < sigLevel ][seq_len(numFeats)]
     if(length(Feats) == 0){
         stop("No feature match these criteria")
     }
