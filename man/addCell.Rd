@@ -46,7 +46,7 @@ The hyperframe with cell lables added in the marks of the point patterns
 }
 \description{
 Check in which cell each event lies and add a cell marker,
-plus include the list of regions
+plus include the list of the cells and their centroids in the hyperframe.
 }
 \details{
 First the different cells are checked for overlap per point pattern.

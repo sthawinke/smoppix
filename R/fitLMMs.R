@@ -38,7 +38,7 @@ fitLMMsSingle <- function(obj, pi, fixedVars = NULL, randomVars = NULL,
     ))
     noWeight <- pi %in% c("edge", "midpoint")
     if (noWeight) {
-        randomVars <- union(randomVars, "image/cell")
+        randomVars <- setdiff(union(randomVars, "image/cell"), c("image", "cell"))
         #For edge and midpoint, cell is nested within image
     }
     if ((cellId <- grepl("Cell", pi))) {
@@ -113,7 +113,8 @@ fitLMMsSingle <- function(obj, pi, fixedVars = NULL, randomVars = NULL,
             df <- nestRandom(df, randomVarsSplit, intersect(fixedVars, getPPPvars(obj)))
         }
         if (MM) {
-            mod <- try(lmerTest::lmer(Formula, data = df, na.action = na.omit, weights = if (noWeight) {
+            mod <- try(lmerTest::lmer(Formula, data = df, na.action = na.omit,
+                                      weights = if (noWeight) {
                 NULL
             } else {
                 df$weight
@@ -121,7 +122,8 @@ fitLMMsSingle <- function(obj, pi, fixedVars = NULL, randomVars = NULL,
         }
         # If no random variables or fit failed, go for linear model
         if (!MM || is(mod, "try-error")) {
-            mod <- try(lm(formula(fixedPart), data = df, na.action = na.omit, weights = if (noWeight) {
+            mod <- try(lm(formula(fixedPart), data = df, na.action = na.omit,
+                          weights = if (noWeight) {
                 NULL
             } else {
                 df$weight
@@ -129,7 +131,8 @@ fitLMMsSingle <- function(obj, pi, fixedVars = NULL, randomVars = NULL,
         }
         # If still fails, drop fixed effects
         if (is(mod, "try-error")) {
-            mod <- lm(formula("pi - 0.5 ~ 1"), data = df, na.action = na.omit, weights = if (noWeight) {
+            mod <- lm(formula("pi - 0.5 ~ 1"), data = df, na.action = na.omit,
+                      weights = if (noWeight) {
                 NULL
             } else {
                 df$weight

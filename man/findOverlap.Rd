@@ -4,7 +4,7 @@
 \alias{findOverlap}
 \title{Find overlap between list of windows}
 \usage{
-findOverlap(owins, returnIds = FALSE)
+findOverlap(owins, centroids = NULL, returnIds = FALSE, numCentroids = 50)
 }
 \arguments{
 \item{owins}{the list of windows}

@@ -37,15 +37,15 @@ extractResults <- function(models, hypFrame, fixedVars = NULL, method = "BH") {
         names(emptyCoef) <- paste0(Var, unVals) # Prepare empty coefficient
         pVal <- vapply(AnovaTabs, FUN.VALUE = double(1), function(x) x[Var, "Pr(>F)"])
         coefs <- lapply(models[id], function(model) {
-            # Prepare the empty coefficient vector with all levels present.  If outcome is NA for all levels, the
+            # Prepare the empty coefficient vector with all levels present. If outcome is NA for all levels, the
             # factor level gets dropped, causing problems downstream.
             coefObj <- summary(model)$coef
-            rn <- intersect(rownames(coefObj), names(emptyCoef))
+            rn <- intersect(names(emptyCoef), rownames(coefObj))
             emptyCoef[rn] <- coefObj[rn, "Estimate"]
             emptyCoef
         })
         coefMat <- matrix(unlist(coefs), byrow = TRUE, nrow = length(pVal))
-        colnames(coefMat) <- paste0(Var, seq_len(ncol(coefMat)))
+        colnames(coefMat) <- names(emptyCoef)
         cbind(coefMat, pVal = pVal, pAdj = p.adjust(pVal, method = method))[order(pVal), ]
     })
     names(fixedOut) <- fixedVars
