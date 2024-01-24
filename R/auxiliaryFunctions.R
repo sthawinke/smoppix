@@ -25,6 +25,10 @@ makeDesignVar <- function(x, designVars, sep = "_") {
 #' @param genes The genes to be combined
 #'
 #' @return A character vector of gene pairs
+#' @export
+#' @examples
+#' genes = paste0("gene", seq_len(4))
+#' makePairs(genes)
 makePairs <- function(genes) {
     apply(combn(genes, 2), 2, paste, collapse = "--")
 }

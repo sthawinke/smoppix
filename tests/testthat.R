@@ -58,7 +58,7 @@ hypFrame2 <- addCell(hypFrame, wList, cellTypes = cellTypesDf, verbose = FALSE)
 # register(SerialParam())
 nCores <- 2
 register(MulticoreParam(nCores))
-pis <- c("nn", "nnPair", "edge", "midpoint", "nnCell", "nnPairCell")
+pis <- c("nn", "nnPair", "edge", "centroid", "nnCell", "nnPairCell")
 piEstsBG <- estPims(hypFrame2, pis = pis, null = "background", verbose = FALSE)
 piEstsCSR <- estPims(hypFrame2, pis = pis, null = "CSR", verbose = FALSE)
 piEstsBG2 <- estPims(hypFrame2[, c("ppp", "image", "tabObs")],

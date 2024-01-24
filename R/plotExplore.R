@@ -51,8 +51,9 @@ plotExplore <- function(hypFrame, features = getFeatures(hypFrame)[seq_len(6)], 
     Ncol <- (LL %/% Nrow) + 1
     par(mfrow = c(Nrow, Ncol), mar = Mar)
     baa <- lapply(ppps, function(i) {
-        colVec <- Cols[marks(hypFrame$ppp[[i]], drop = FALSE)$gene]
-        cordMat <- coords(hypFrame$ppp[[i]])
+        PPPsub = subSampleP(hypFrame$ppp[[i]], maxPlot)
+        colVec <- Cols[marks(PPPsub, drop = FALSE)$gene]
+        cordMat <- coords(PPPsub)
         ordVec <- order(colVec != "grey")
         # Plot grey background first and coloured dots on top
         plot(cordMat[ordVec, ],

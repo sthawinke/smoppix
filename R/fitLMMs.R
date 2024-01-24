@@ -45,7 +45,7 @@ fitLMMsSingle <- function(obj, pi, fixedVars = NULL, randomVars = NULL,
         randomVars <- union(randomVars, "image")
         #For cell, the image is always a design factor
     }
-    if(pi %in% c("nn", "nnParir") && any(fixedVars %in% (evVars <- getEventVars(obj)))){
+    if(pi %in% c("nn", "nnPair") && any(fixedVars %in% (evVars <- getEventVars(obj)))){
         fixedVars = setdiff(fixedVars, evVars)
         warning("Cell-wise variables cannot be incorporated into analysis with pi ",
                 pi, ", so variables\n", paste(evVars, collapse = ", "),

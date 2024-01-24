@@ -12,7 +12,7 @@ plotTopResults(
   smallPI = TRUE,
   sigLevel = 0.05,
   numFeats = 2,
-  piThreshold = 0.5,
+  piThreshold = switch(effect, Intercept = 0.5, 0),
   ...
 )
 }
