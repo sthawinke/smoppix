@@ -46,7 +46,7 @@ test_that("Fitting linear mixed models proceeds without errors", {
     expect_is(linModsMP <- fitLMMs(objBG,
         features = getFeatures(objBG)[1:5],
         fixedVars = "condition",
-        pi = "midpoint"
+        pi = "centroid"
     ), "list")
     expect_is(linModsEdge <- fitLMMs(objBG,
         features = getFeatures(objBG)[1:5],
@@ -57,7 +57,7 @@ test_that("Fitting linear mixed models proceeds without errors", {
     # E.g. test for differences between cell types
     expect_is(linModsMPcell <- fitLMMs(objBG,
         features = getFeatures(objBG)[1:5],
-        fixedVars = c("condition", "cellType"), pi = "midpoint"
+        fixedVars = c("condition", "cellType"), pi = "centroid"
     ), "list")
     # Account for cell as random effect
     expect_is(linModsEdgeCell <- fitLMMs(objBG,
@@ -68,9 +68,9 @@ test_that("Fitting linear mixed models proceeds without errors", {
     expect_is(linModsMidCellType <- fitLMMs(objBG,
         features = getFeatures(objBG)[1:5],
         fixedVars = c("condition", "cellType"),
-      pi = "midpoint", returnModels = TRUE,
+      pi = "centroid", returnModels = TRUE,
     ), "list")
-    expect_s4_class(linModsMidCellType[["midpoint"]]$models[[1]], "lmerModLmerTest")
+    expect_s4_class(linModsMidCellType[["centroid"]]$models[[1]], "lmerModLmerTest")
     expect_is(linModsNNCellType <- fitLMMs(objBG,
         features = getFeatures(objBG)[1:5],
         fixedVars = c("condition", "cellType"),
@@ -81,14 +81,14 @@ test_that("Fitting linear mixed models proceeds without errors", {
          pis = c("nn", "nnCell"),
         features = getFeatures(objBG)[1:5]
     ))
-    expect_is(resMat <- getResults(linModsMP[["midpoint"]], "Intercept"), "matrix")
+    expect_is(resMat <- getResults(linModsMP[["centroid"]], "Intercept"), "matrix")
     expect_is(resMatCond <- getResults(linModsEdge$edge, "condition"), "matrix")
-    expect_is(getResults(linModsMPcell$midpoint, "cellType"), "matrix")
+    expect_is(getResults(linModsMPcell$centroid, "cellType"), "matrix")
     expect_false(is.unsorted(getResults(linModsMP, "Intercept")[, "pVal"]))
 })
 test_that("Fitting linear mixed models throws errors where appropriate", {
     expect_error(fitLMMs(objBG,
         fixedVars = "treatment", randomVars = "fov",
-        pi = "midpoint"
+        pi = "centroid"
     ))
 })

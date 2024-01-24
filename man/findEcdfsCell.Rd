@@ -13,7 +13,7 @@ findEcdfsCell(p, owins, nPointsAllWin, centroids, null, pis, loopFun)
 and their centroids}
 
 \item{nPointsAllWin}{How many points to subsample or simulate
-to calculate distance to cell edge or midpoint distribution}
+to calculate distance to cell edge or centroid distribution}
 
 \item{null}{A character vector, indicating how the null distribution is
 defined. See details.}

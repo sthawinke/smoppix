@@ -8,7 +8,7 @@ for mixed model building}
 buildDataFrame(
   obj,
   gene,
-  pi = c("nn", "nnPair", "edge", "midpoint", "nnCell", "nnPairCell")
+  pi = c("nn", "nnPair", "edge", "centroid", "nnCell", "nnPairCell")
 )
 }
 \arguments{

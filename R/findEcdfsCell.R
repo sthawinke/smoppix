@@ -15,10 +15,10 @@ findEcdfsCell <- function(p, owins, nPointsAllWin, centroids, null, pis, loopFun
         edge <- if (any(pis == "edge")) {
             ecdf(nncross(pSub, edges(owins[[nam]]), what = "dist"))
         }
-        midpoint <- if (any(pis == "midpoint")) {
+        centroid <- if (any(pis == "centroid")) {
             ecdf(crossdist(pSub, centroids[[nam]]))
         }
-        list(edge = edge, midpoint = midpoint)
+        list(edge = edge, centroid = centroid)
     }, loopFun = loopFun)
     names(ecdfsCell) <- names(owins)
     ecdfsCell

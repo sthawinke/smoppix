@@ -22,7 +22,7 @@
 #' plotTopResults(hypYang, lmmModels, "nn", effect = "Intercept")
 plotTopResults = function(hypFrame, results, pi, effect = "Intercept", smallPI = TRUE, sigLevel = 0.05,
                          numFeats = 2, piThreshold = 0.5, ...){
-    pi = match.arg(pi, choices = c("nn", "nnPair", "edge", "midpoint", "nnCell", "nnPairCell"))
+    pi = match.arg(pi, choices = c("nn", "nnPair", "edge", "centroid", "nnCell", "nnPairCell"))
     if(is.null(Res <- results[[pi]]$results)){
         stop("PI not present in results object!")
     }

@@ -22,7 +22,7 @@ calcWindowDistPI <- function(pSub, owins, centroids, ecdfAll, pi, null, ecdfs, c
     splitPPP <- splitPPP[names(splitPPP) != "NA"]
     obsDistEdge <- lapply(names(splitPPP), function(x) {
         Dist <- switch(pi,
-            "midpoint" = crossdist(splitPPP[[x]], centroids[[x]]),
+            "centroid" = crossdist(splitPPP[[x]], centroids[[x]]),
             "edge" = nncross(splitPPP[[x]], edges(owins[[x]]),
                 what = "dist"
             )

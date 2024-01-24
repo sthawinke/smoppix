@@ -33,13 +33,13 @@ fitLMMsSingle <- function(obj, pi, fixedVars = NULL, randomVars = NULL,
                           verbose = TRUE, returnModels = FALSE, Formula = NULL,
                           randomNested = TRUE, features = getFeatures(obj)) {
     pi <- match.arg(pi, choices = c(
-        "nn", "nnPair", "edge", "midpoint",
+        "nn", "nnPair", "edge", "centroid",
         "nnCell", "nnPairCell"
     ))
-    noWeight <- pi %in% c("edge", "midpoint")
+    noWeight <- pi %in% c("edge", "centroid")
     if (noWeight) {
         randomVars <- setdiff(union(randomVars, "image/cell"), c("image", "cell"))
-        #For edge and midpoint, cell is nested within image
+        #For edge and centroid, cell is nested within image
     }
     if ((cellId <- grepl("Cell", pi))) {
         randomVars <- union(randomVars, "image")

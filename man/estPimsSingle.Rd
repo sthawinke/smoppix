@@ -47,7 +47,7 @@ This parameter is a strong driver of computation time.
 The second argument applies to within cell calculations.}
 
 \item{nPointsAllWin}{How many points to subsample or simulate
-to calculate distance to cell edge or midpoint distribution}
+to calculate distance to cell edge or centroid distribution}
 
 \item{minDiff}{An integer, the minimum number of events from other genes
 needed for calculation of background PIs}

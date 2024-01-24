@@ -6,7 +6,7 @@
 \usage{
 estPims(
   hypFrame,
-  pis = c("nn", "nnPair", "edge", "midpoint", "nnCell", "nnPairCell"),
+  pis = c("nn", "nnPair", "edge", "centroid", "nnCell", "nnPairCell"),
   verbose = TRUE,
   null = c("background", "CSR"),
   nPointsAll = switch(null, background = 10000, CSR = 1000),
@@ -33,7 +33,7 @@ This parameter is a strong driver of computation time.
 The second argument applies to within cell calculations.}
 
 \item{nPointsAllWin}{How many points to subsample or simulate
-to calculate distance to cell edge or midpoint distribution}
+to calculate distance to cell edge or centroid distribution}
 
 \item{minDiff}{An integer, the minimum number of events from other genes
 needed for calculation of background PIs}
@@ -60,8 +60,8 @@ The 'nn' prefix indicates that nearest neighbour distances are being used,
 whereas 'all' indicates all distances are being used.
 The suffix 'Pair' indicates that bivariate probabilistic indices,
 testing for co- and antilocalization are being used.
-'edge' and 'midpoint' calculate the distance to the edge respectively
- the midpoint of the windows added using the addCell() function.
+'edge' and 'centroid' calculate the distance to the edge respectively
+ the centroid of the windows added using the addCell() function.
 The suffix 'Cell' indicates distances are being calculated within cells only.
 }
 \examples{

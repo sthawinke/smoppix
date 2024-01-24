@@ -6,5 +6,5 @@ test_that("Top results plotting proceeds without errors", {
     expect_silent(plotTopResults(results = linModsNNint, hypYang, "nnPair", smallPI = FALSE))
 })
 test_that("Fitting linear mixed models throws errors where appropriate", {
-    expect_error(plotTopResults(linModsNNint, hypYang, "midpoint"))
+    expect_error(plotTopResults(linModsNNint, hypYang, "centroid"))
 })

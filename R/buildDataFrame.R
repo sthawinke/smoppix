@@ -22,17 +22,17 @@
 #' summary(mixedMod)
 #' # Evidence for aggregation
 buildDataFrame <- function(obj, gene, pi = c(
-                               "nn", "nnPair", "edge", "midpoint",
+                               "nn", "nnPair", "edge", "centroid",
                                "nnCell", "nnPairCell"
                            )) {
     pi <- match.arg(pi)
     stopifnot((lg <- length(gene)) %in% c(1, 2))
     foo <- checkPi(obj, pi)
-    if (!(pi %in% c("edge", "midpoint")) && is.null(obj$Wfs[[pi]])) {
+    if (!(pi %in% c("edge", "centroid")) && is.null(obj$Wfs[[pi]])) {
         stop("No weight function added yet, run addWeightFunction first!")
     }
     # Establish whether pi and gene match, and call separate functions
-    windowId <- pi %in% c("edge", "midpoint")
+    windowId <- pi %in% c("edge", "centroid")
     cellId <- any(grepl("Cell", pi))
     if (cellId) {
         piSub <- sub("Cell", "", pi)

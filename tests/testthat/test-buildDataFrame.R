@@ -5,7 +5,7 @@ test_that("Building data frames for mixed modelling proceeds without errors", {
     expect_s3_class(dfBG2 <- buildDataFrame(objBG, gene = "gene1--gene2", pi = "nnPair"), "data.frame")
     expect_s3_class(dfBG2b <- buildDataFrame(objBG, gene = c("gene1", "gene2"), pi = "nnPair"), "data.frame")
     expect_identical(dfBG2, dfBG2b)
-    expect_silent(dfBG3 <- buildDataFrame(objBG, gene = "gene1", pi = "midpoint"))
+    expect_silent(dfBG3 <- buildDataFrame(objBG, gene = "gene1", pi = "centroid"))
     expect_silent(dfBG6 <- buildDataFrame(objBG, gene = "gene1", pi = "edge"))
     totPointsGene1 <- sum(vapply(objBG$hypFrame$ppp,
         FUN.VALUE = double(1),
@@ -20,7 +20,7 @@ test_that("Building data frames for mixed modelling proceeds without errors", {
     expect_s3_class(dfBG7 <- buildDataFrame(objBG, gene = "gene1", pi = "nnCell"), "data.frame")
     expect_s3_class(dfBG9 <- buildDataFrame(objBG, gene = "gene1--gene2", pi = "nnPairCell"), "data.frame")
     expect_silent(dfCSR1 <- buildDataFrame(objCSR, gene = "gene2", pi = "edge"))
-    expect_silent(dfCSR3 <- buildDataFrame(objCSR, gene = "gene2", pi = "midpoint"))
+    expect_silent(dfCSR3 <- buildDataFrame(objCSR, gene = "gene2", pi = "centroid"))
     expect_s3_class(dfCSR5 <- buildDataFrame(objCSR, gene = "gene3", pi = "nn"), "data.frame")
     expect_s3_class(dfCSR6 <- buildDataFrame(objCSR, gene = "gene2--gene3", pi = "nnPair"), "data.frame")
     expect_s3_class(dfCSR8 <- buildDataFrame(objCSR, gene = "gene1", pi = "nnCell"), "data.frame")

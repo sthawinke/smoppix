@@ -49,7 +49,7 @@ addWeightFunction <- function(resList, pis = resList$pis, designVars,
             "First estimate them using the estPims() function."
         )
     }
-    if (all(pis %in% c("edge", "midpoint"))) {
+    if (all(pis %in% c("edge", "centroid"))) {
         stop(
             "Calculating weight matrices for distances to fixed points is ",
             "unnecessary as they are independent.

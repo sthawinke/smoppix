@@ -32,7 +32,7 @@ estPimsSingle <- function(p, pis, null, tabObs, owins = NULL, centroids = NULL, 
             ecdfAll <- ecdf(stats::dist(coords(pSim)))
         }
     }
-    if (any(pis %in% c("edge", "midpoint"))) {
+    if (any(pis %in% c("edge", "centroid"))) {
         ecdfsCell <- findEcdfsCell(
             p = p, owins = owins, centroids = centroids,
             nPointsAllWin = nPointsAllWin, null = null, pis = pis,
@@ -76,7 +76,7 @@ estPimsSingle <- function(p, pis, null, tabObs, owins = NULL, centroids = NULL, 
     }
     pointDists <- list(nn = nnPis, nnPair = nnPairPis)
     # Window pis
-    windowDists <- if (any(pis %in% c("edge", "midpoint"))) {
+    windowDists <- if (any(pis %in% c("edge", "centroid"))) {
         lapply(piList, function(x) x$windowDists)
     }
     # Within cell: recurse into estPimsSingle but now per cell
@@ -115,7 +115,7 @@ estPimsSingle <- function(p, pis, null, tabObs, owins = NULL, centroids = NULL, 
 #' This parameter is a strong driver of computation time.
 #' The second argument applies to within cell calculations.
 #' @param nPointsAllWin How many points to subsample or simulate
-#' to calculate distance to cell edge or midpoint distribution
+#' to calculate distance to cell edge or centroid distribution
 #' @param minDiff An integer, the minimum number of events from other genes
 #'  needed for calculation of background PIs
 #' @param features A character vector, for which features should the
@@ -140,10 +140,10 @@ estPimsSingle <- function(p, pis, null, tabObs, owins = NULL, centroids = NULL, 
 #' whereas 'all' indicates all distances are being used.
 #' The suffix 'Pair' indicates that bivariate probabilistic indices,
 #' testing for co- and antilocalization are being used.
-#' 'edge' and 'midpoint' calculate the distance to the edge respectively
-#'  the midpoint of the windows added using the addCell() function.
+#' 'edge' and 'centroid' calculate the distance to the edge respectively
+#'  the centroid of the windows added using the addCell() function.
 #' The suffix 'Cell' indicates distances are being calculated within cells only.
-estPims <- function(hypFrame, pis = c("nn", "nnPair", "edge", "midpoint", "nnCell", "nnPairCell"), verbose = TRUE, null = c(
+estPims <- function(hypFrame, pis = c("nn", "nnPair", "edge", "centroid", "nnCell", "nnPairCell"), verbose = TRUE, null = c(
                         "background",
                         "CSR"
                     ), nPointsAll = switch(null,
@@ -157,8 +157,8 @@ estPims <- function(hypFrame, pis = c("nn", "nnPair", "edge", "midpoint", "nnCel
                     minDiff = 2e1, features = getFeatures(hypFrame), ...) {
     pis <- match.arg(pis, several.ok = TRUE)
     null <- match.arg(null)
-    if (any(pis %in% c("edge", "midpoint", "nnCell")) && is.null(hypFrame$owins)) {
-        stop("No window provided for distance to edge or midpoint calculation. ", "Add it using the addCell() function")
+    if (any(pis %in% c("edge", "centroid", "nnCell")) && is.null(hypFrame$owins)) {
+        stop("No window provided for distance to edge or centroid calculation. ", "Add it using the addCell() function")
     }
     if (any(id <- !(features %in% getFeatures(hypFrame)))) {
         stop("Features ", features[id], " not found in hyperframe")
