@@ -9,6 +9,7 @@
 #' @param Cex The point expansion factor
 #' @param borderColVar The variable to colour borders of the cell
 #' @param borderCols Colour paletter for the borders
+#' @param ... Additional arguments, currently ignored
 #'
 #' @return Plots cells with highest expression to the plotting window, returns invisible
 #' @export

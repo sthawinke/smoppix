@@ -26,6 +26,8 @@ plotCells(
 \item{borderColVar}{The variable to colour borders of the cell}
 
 \item{borderCols}{Colour paletter for the borders}
+
+\item{...}{Additional arguments, currently ignored}
 }
 \value{
 Plots cells with highest expression to the plotting window, returns invisible
