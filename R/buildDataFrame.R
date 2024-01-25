@@ -33,7 +33,7 @@ buildDataFrame <- function(obj, gene, pi = c(
     }
     # Establish whether pi and gene match, and call separate functions
     windowId <- pi %in% c("edge", "centroid")
-    cellId <- any(grepl("Cell", pi))
+    cellId <- grepl("Cell", pi)
     if (cellId) {
         piSub <- sub("Cell", "", pi)
     }
@@ -63,10 +63,11 @@ buildDataFrame <- function(obj, gene, pi = c(
     } else {
         "pointDists"
     }
-    piDfs <- lapply(seq_along(obj$hypFrame$pimRes), function(n) {
+    piDfs <- lapply(seq_len(nrow(obj$hypFrame)), function(n) {
         x <- obj$hypFrame$pimRes[[n]]
         # Extract pi, and add counts and covariates
         df <- if (windowId) {
+            Marks = marks(obj$hypFrame$ppp[[n]], drop = FALSE)
             piEst <- if (is.null(vec <- getGp(x[[piListNameInner]], gene)[[pi]])) {
                 NULL
             } else {
@@ -76,15 +77,17 @@ buildDataFrame <- function(obj, gene, pi = c(
                 times = vapply(piEst, FUN.VALUE = double(1), length)
             ))
             if(length(cellVars <- setdiff(getEventVars(obj), c("gene", "cell")))){
-                dfWin <- cbind(dfWin, marks(obj$hypFrame$ppp[[n]])[
-                match(dfWin$cell, marks(obj$hypFrame$ppp[[n]])$cell), cellVars])
+                mat = Marks[match(dfWin[, "cell"], Marks$cell), cellVars, drop = FALSE]
+                colnames(mat) = cellVars
+                dfWin <- cbind(dfWin, mat)
             }
             return(dfWin)
         } else if (cellId) {
+            Marks = marks(obj$hypFrame$ppp[[n]], drop = FALSE)
             piEst <- vapply(x[[piListNameInner]], FUN.VALUE = double(1), function(y) {
                 if (is.null(vec <- getGp(y[[piSub]], gene))) NA else vec
             })
-            cellCovars <- marks(obj$hypFrame$ppp[[n]], drop = FALSE)[,
+            cellCovars <- Marks[,
                 getEventVars(obj),
                 drop = FALSE
             ]
@@ -93,8 +96,7 @@ buildDataFrame <- function(obj, gene, pi = c(
                 setdiff(colnames(cellCovars), "gene")
             ]
             tabCell <- table(
-                marks(obj$hypFrame$ppp[[n]], drop = FALSE)$gene,
-                marks(obj$hypFrame$ppp[[n]], drop = FALSE)$cell
+                Marks$gene, Marks$cell
             )
             npVec <- if (all(geneSplit %in% rownames(tabCell))) {
                 tmp <- tabCell[geneSplit, match(names(piEst), colnames(tabCell)), drop = FALSE]
@@ -114,15 +116,15 @@ buildDataFrame <- function(obj, gene, pi = c(
             } else {
                 vec
             }
-            npVec <- if (all(geneSplit %in% names(obj$hypFrame[n, "tabObs", drop = TRUE]))) {
-                obj$hypFrame[n, "tabObs", drop = TRUE][geneSplit]
+            npVec <- if (all(geneSplit %in% names(to <- obj$hypFrame[n, "tabObs", drop = TRUE]))) {
+               to[geneSplit]
             } else {
                 NA
             }
             if (pairId) {
-                data.frame(pi = piEst, minP = min(npVec), maxP = max(npVec))
+                cbind(pi = piEst, minP = min(npVec), maxP = max(npVec))
             } else {
-                data.frame(pi = piEst, NP = npVec)
+                cbind(pi = piEst, NP = npVec)
             }
         }
     })
@@ -130,8 +132,9 @@ buildDataFrame <- function(obj, gene, pi = c(
         return(NULL)
     }
     image <- rep(rownames(obj$hypFrame), times = Times)
-    piMat <- data.frame(Reduce(piDfs, f = rbind), obj$hypFrame[
-        image, getPPPvars(obj)], "image" = image)
+    piDfsMat = Reduce(piDfs, f = rbind)
+    piMat <- data.frame(piDfsMat, obj$hypFrame[
+        image, c("image", getPPPvars(obj))])
     if (!windowId) {
         # Add weights
         weight <- evalWeightFunction(obj$Wfs[[pi]],
