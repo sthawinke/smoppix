@@ -27,8 +27,7 @@ coordsMatLeft = matrix(rnorm(600), ncol = 2)
 distMat = matrix(rnorm(1200), 200, 6)
 # Call new function
 out = findRanksDist(coordsMat, coordsMatLeft, distMat^2)
-library(proxy)
-tmp = proxy::dist(coordsMat, coordsMatLeft)^2
+tmp = crossdist(X = coordsMat[, 1], Y = coordsMat[, 2], x2 = coordsMatLeft[, 1], y2 = coordsMatLeft[, 2])^2
 out2 = vapply(seq_len(ncol(distMat)), FUN.VALUE = double(nrow(distMat)), function(x){
     rowSums(distMat[,x]^2 > tmp)
 })

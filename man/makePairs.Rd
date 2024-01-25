@@ -15,3 +15,7 @@ A character vector of gene pairs
 \description{
 An aux function to build gene pairs
 }
+\examples{
+genes = paste0("gene", seq_len(4))
+makePairs(genes)
+}
