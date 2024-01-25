@@ -8,7 +8,7 @@
 #' @return A list containing PI entries per feature
 #' @details For the single-feature nearest neighbour distances, the average
 #' is already calculated
-#' @importFrom spatstat.geom nncross coords npoints
+#' @importFrom spatstat.geom coords npoints diameter boundingbox
 calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null,
                               features, ecdfAll, ecdfsCell, loopFun, minDiff) {
     NPall <- switch(null,
@@ -18,6 +18,8 @@ calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null,
         "background" = npoints(p)
     )
     pSplit <- split.ppp(p, f = factor(marks(p, drop = FALSE)$gene))
+    dmax <- diameter(boundingbox(p))
+    #Single dmax for all features, speeds up nncross dramatically!
     # Divide the work over the available workers
     piList <- loadBalanceBplapply(loopFun = loopFun, iterator = features, func = function(feat) {
             pSub <- pSplit[[feat]]
@@ -33,7 +35,7 @@ calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null,
                     id <- !(names(pSplit) %in% feat)
                     if (any(id)) {
                         matrix(unlist(lapply(pSplit[id], function(y) {
-                            nncross(pSub, y, what = "dist")
+                            nncrossFast(pSub, y, what = "dist", dmax = dmax)
                         })), nrow = NP, dimnames = list(NULL, names(pSplit)[id]))
                     }
                     # Cross-distances
