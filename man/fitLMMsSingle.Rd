@@ -7,13 +7,13 @@
 fitLMMsSingle(
   obj,
   pi,
-  fixedVars = NULL,
-  randomVars = NULL,
-  verbose = TRUE,
-  returnModels = FALSE,
-  Formula = NULL,
-  randomNested = TRUE,
-  features = getFeatures(obj)
+  fixedVars,
+  randomVars,
+  verbose,
+  returnModels,
+  Formula,
+  randomNested,
+  features
 )
 }
 \arguments{

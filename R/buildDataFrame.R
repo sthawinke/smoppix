@@ -63,6 +63,9 @@ buildDataFrame <- function(obj, gene, pi = c(
     } else {
         "pointDists"
     }
+    if(cellId || windowId){
+        eventVars = getEventVars(obj)
+    }
     piDfs <- lapply(seq_len(nrow(obj$hypFrame)), function(n) {
         x <- obj$hypFrame$pimRes[[n]]
         # Extract pi, and add counts and covariates
@@ -76,7 +79,7 @@ buildDataFrame <- function(obj, gene, pi = c(
             dfWin <- data.frame("pi" = unlist(piEst), "cell" = rep(names(piEst),
                 times = vapply(piEst, FUN.VALUE = double(1), length)
             ))
-            if(length(cellVars <- setdiff(getEventVars(obj), c("gene", "cell")))){
+            if(length(cellVars <- setdiff(eventVars, c("gene", "cell")))){
                 mat = Marks[match(dfWin[, "cell"], Marks$cell), cellVars, drop = FALSE]
                 colnames(mat) = cellVars
                 dfWin <- cbind(dfWin, mat)
@@ -87,10 +90,7 @@ buildDataFrame <- function(obj, gene, pi = c(
             piEst <- vapply(x[[piListNameInner]], FUN.VALUE = double(1), function(y) {
                 if (is.null(vec <- getGp(y[[piSub]], gene))) NA else vec
             })
-            cellCovars <- Marks[,
-                getEventVars(obj),
-                drop = FALSE
-            ]
+            cellCovars <- Marks[,eventVars,drop = FALSE]
             cellCovars <- cellCovars[
                 match(names(piEst), cellCovars$cell),
                 setdiff(colnames(cellCovars), "gene")

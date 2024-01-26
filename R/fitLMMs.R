@@ -29,9 +29,8 @@
 #' @importFrom lme4 lmerControl .makeCC isSingular
 #' @importFrom methods is
 #' @seealso \link{buildDataFrame},\link{getResults}
-fitLMMsSingle <- function(obj, pi, fixedVars = NULL, randomVars = NULL,
-                          verbose = TRUE, returnModels = FALSE, Formula = NULL,
-                          randomNested = TRUE, features = getFeatures(obj)) {
+fitLMMsSingle <- function(obj, pi, fixedVars, randomVars, verbose, returnModels,
+                          Formula, randomNested, features) {
     pi <- match.arg(pi, choices = c(
         "nn", "nnPair", "edge", "centroid",
         "nnCell", "nnPairCell"
@@ -164,9 +163,14 @@ fitLMMsSingle <- function(obj, pi, fixedVars = NULL, randomVars = NULL,
 #' @examples
 #' example(addWeightFunction, "spatrans")
 #' lmmModels <- fitLMMs(yangObj, fixedVars = "day", randomVars = "root")
-fitLMMs <- function(obj, pis = obj$pis, verbose = TRUE, ...) {
+fitLMMs <- function(obj, pis = obj$pis, fixedVars = NULL, randomVars = NULL,
+                    verbose = TRUE, returnModels = FALSE, Formula = NULL,
+                    randomNested = TRUE, features = getFeatures(obj), ...) {
     out <- lapply(pis, function(pi) {
-        fitLMMsSingle(obj, pi = pi, verbose = verbose, ...)
+        fitLMMsSingle(obj, pi = pi, verbose = verbose, fixedVars = fixedVars,
+                      randomVars = randomVars, returnModels = returnModels,
+                      Formula = Formula, randomNested = randomNested,
+                      features = features, ...)
     })
     names(out) <- pis
     return(out)

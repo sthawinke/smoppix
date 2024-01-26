@@ -4,7 +4,18 @@
 \alias{fitLMMs}
 \title{Fit linear (mixed) models fitting for all probabilistic indices (PIs)}
 \usage{
-fitLMMs(obj, pis = obj$pis, verbose = TRUE, ...)
+fitLMMs(
+  obj,
+  pis = obj$pis,
+  fixedVars = NULL,
+  randomVars = NULL,
+  verbose = TRUE,
+  returnModels = FALSE,
+  Formula = NULL,
+  randomNested = TRUE,
+  features = getFeatures(obj),
+  ...
+)
 }
 \arguments{
 \item{obj}{The result object}
