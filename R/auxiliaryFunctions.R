@@ -18,7 +18,7 @@ sund <- function(x, sep = "--") {
 #'
 #' @return a vector of design levels
 makeDesignVar <- function(x, designVars, sep = "_") {
-    apply(x[, designVars], 1, collapse = sep)
+    apply(x[, designVars, drop = FALSE], 1, collapse = sep)
 }
 #' An aux function to build gene pairs
 #'
@@ -118,7 +118,7 @@ addTabObs <- function(hypFrame) {
 #' @return The dataframe with adapted randomVars
 nestRandom <- function(df, randomVars, fixedVars) {
     for (i in randomVars) {
-        df[, i] <- apply(df[, c(fixedVars, i)], 1, paste, collapse = "_")
+        df[, i] <- apply(df[, c(fixedVars, i), drop = FALSE], 1, paste, collapse = "_")
     }
     df
 }

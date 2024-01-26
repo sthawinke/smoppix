@@ -143,16 +143,10 @@ estPimsSingle <- function(p, pis, null, tabObs, owins = NULL, centroids = NULL, 
 #' 'edge' and 'centroid' calculate the distance to the edge respectively
 #'  the centroid of the windows added using the addCell() function.
 #' The suffix 'Cell' indicates distances are being calculated within cells only.
-estPims <- function(hypFrame, pis = c("nn", "nnPair", "edge", "centroid", "nnCell", "nnPairCell"), verbose = TRUE, null = c(
-                        "background",
-                        "CSR"
-                    ), nPointsAll = switch(null,
-                                           background = 1e4,
-                                           CSR = 1e3
-                    ),
-                    nPointsAllWithinCell = switch(null,
-                                                  background = 1e4,
-                                                  CSR = 5e2
+estPims <- function(hypFrame, pis = c("nn", "nnPair", "edge", "centroid", "nnCell", "nnPairCell"),
+                    verbose = TRUE, null = c("background", "CSR"),
+                    nPointsAll = switch(null, background = 1e4, CSR = 1e3),
+                    nPointsAllWithinCell = switch(null, background = 1e4, CSR = 5e2
                     ), nPointsAllWin = 1e3,
                     minDiff = 2e1, features = getFeatures(hypFrame), ...) {
     pis <- match.arg(pis, several.ok = TRUE)

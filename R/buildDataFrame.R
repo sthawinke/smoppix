@@ -81,8 +81,8 @@ buildDataFrame <- function(obj, gene, pi = c(
             dfWin <- data.frame("pi" = unlist(piEst), "cell" = rep(names(piEst),
                 times = vapply(piEst, FUN.VALUE = double(1), length)
             ))
-            if(length(cellVars <- setdiff(eventVars, c("gene", "cell")))){
-                mat = Marks[match(dfWin[, "cell"], Marks$cell), cellVars, drop = FALSE]
+            if(length(cellVars <- setdiff(eventVars, c("gene", "cell"))) && NROW(dfWin)){
+                mat = Marks[match(dfWin$cell, Marks$cell), cellVars, drop = FALSE]
                 colnames(mat) = cellVars
                 dfWin <- cbind(dfWin, mat)
             }
