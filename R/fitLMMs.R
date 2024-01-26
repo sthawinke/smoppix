@@ -105,7 +105,7 @@ fitLMMsSingle <- function(obj, pi, fixedVars, randomVars, verbose, returnModels,
                                       weights = if (noWeight) {
                 NULL
             } else {
-                df$weight
+                weight
             }, contrasts = contrasts, control = Control), silent = TRUE)
         }
         # If no random variables or fit failed, go for linear model
@@ -114,7 +114,7 @@ fitLMMsSingle <- function(obj, pi, fixedVars, randomVars, verbose, returnModels,
                           weights = if (noWeight) {
                 NULL
             } else {
-                df$weight
+                weight
             }, contrasts = contrasts), silent = TRUE)
         }
         # If still fails, drop fixed effects
@@ -123,7 +123,7 @@ fitLMMsSingle <- function(obj, pi, fixedVars, randomVars, verbose, returnModels,
                       weights = if (noWeight) {
                 NULL
             } else {
-                df$weight
+                weight
             })
         }
         return(mod)
