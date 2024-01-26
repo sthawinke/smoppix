@@ -67,10 +67,12 @@ buildDataFrame <- function(obj, gene, pi = c(
         eventVars = getEventVars(obj)
     }
     piDfs <- lapply(seq_len(nrow(obj$hypFrame)), function(n) {
-        x <- obj$hypFrame$pimRes[[n]]
+        x <- obj$hypFrame[n, "pimRes", drop = TRUE]
         # Extract pi, and add counts and covariates
+        if(cellId || windowId){
+            Marks = marks(obj$hypFrame[n, "ppp", drop = TRUE], drop = FALSE)
+        }
         df <- if (windowId) {
-            Marks = marks(obj$hypFrame$ppp[[n]], drop = FALSE)
             piEst <- if (is.null(vec <- getGp(x[[piListNameInner]], gene)[[pi]])) {
                 NULL
             } else {
@@ -86,7 +88,6 @@ buildDataFrame <- function(obj, gene, pi = c(
             }
             return(dfWin)
         } else if (cellId) {
-            Marks = marks(obj$hypFrame$ppp[[n]], drop = FALSE)
             piEst <- vapply(x[[piListNameInner]], FUN.VALUE = double(1), function(y) {
                 if (is.null(vec <- getGp(y[[piSub]], gene))) NA else vec
             })
