@@ -19,6 +19,13 @@ nncrossFast(
   metric = NULL
 )
 }
+\arguments{
+\item{X, Y}{Point patterns}
+
+\item{dmax}{The maximium distance, precalculated for speed}
+
+\item{iX, iY, what, ..., k, sortby, is.sorted.X, is.sorted.Y, metric}{See ?spatstat.geom::nncross.ppp}
+}
 \description{
 A faster version of the nncross function in spatstat.geom, by skipping the dmax calculation
 }

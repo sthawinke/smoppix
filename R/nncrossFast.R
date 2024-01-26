@@ -1,5 +1,11 @@
 #' A faster version of the nncross function in spatstat.geom, by skipping the dmax calculation
+#'
+#' @param X,Y Point patterns
+#' @param dmax The maximium distance, precalculated for speed
+#' @param iX,iY,what,...,k,sortby,is.sorted.X,is.sorted.Y,metric See ?spatstat.geom::nncross.ppp
+#'
 #'@import spatstat.geom spatstat.utils
+#'@importFrom stats var
 #'@export
 nncrossFast = function (X, Y, dmax, iX = NULL, iY = NULL, what = c("dist", "which"),
           ..., k = 1, sortby = c("range", "var", "x", "y"), is.sorted.X = FALSE,

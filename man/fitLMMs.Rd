@@ -22,7 +22,24 @@ fitLMMs(
 
 \item{pis}{Optional, the pis required. Defaults to all pis in the object}
 
-\item{verbose}{a boolean, should output be printed?}
+\item{fixedVars}{Names of fixed effects}
+
+\item{randomVars}{Names of random variables, possibly in a single vector to
+reflect nesting structure, see details.}
+
+\item{verbose}{A boolean, should the formula be printed?}
+
+\item{returnModels}{a boolean: should the full models be returned?
+Otherwise only summary statistics are returned}
+
+\item{Formula}{A formula; if not supplied it will be constructed
+from the fixed and random variables}
+
+\item{randomNested}{A boolean, indicating if random effects are nested within
+point patterns. See details.}
+
+\item{features}{The features for which to fit linear mixed models.
+Defaults to all features in the object}
 
 \item{...}{Passed onto fitLMMsSingle}
 }

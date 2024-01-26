@@ -1,18 +1,7 @@
 #' Fit linear mixed nodels for all features of a pimRes object
 #'
 #' @inheritParams buildDataFrame
-#' @param fixedVars Names of fixed effects
-#' @param randomVars Names of random variables, possibly in a single vector to
-#' reflect nesting structure, see details.
-#' @param verbose A boolean, should the formula be printed?
-#' @param returnModels a boolean: should the full models be returned?
-#' Otherwise only summary statistics are returned
-#' @param Formula A formula; if not supplied it will be constructed
-#' from the fixed and random variables
-#' @param randomNested A boolean, indicating if random effects are nested within
-#' point patterns. See details.
-#' @param features The features for which to fit linear mixed models.
-#' Defaults to all features in the object
+#' @inheritParams fitLMMs
 #' @details Genes or gene pairs with insufficient observations will be silently
 #' omitted. When randomVars is provided as a vector, independent random
 #' intercepts are fitted for them by default. Providing them separated by '\' or
@@ -155,6 +144,18 @@ fitLMMsSingle <- function(obj, pi, fixedVars, randomVars, verbose, returnModels,
 #' @param obj The result object
 #' @param pis Optional, the pis required. Defaults to all pis in the object
 #' @param verbose a boolean, should output be printed?
+#' @param fixedVars Names of fixed effects
+#' @param randomVars Names of random variables, possibly in a single vector to
+#' reflect nesting structure, see details.
+#' @param verbose A boolean, should the formula be printed?
+#' @param returnModels a boolean: should the full models be returned?
+#' Otherwise only summary statistics are returned
+#' @param Formula A formula; if not supplied it will be constructed
+#' from the fixed and random variables
+#' @param randomNested A boolean, indicating if random effects are nested within
+#' point patterns. See details.
+#' @param features The features for which to fit linear mixed models.
+#' Defaults to all features in the object
 #' @param ... Passed onto fitLMMsSingle
 #'
 #' @return A list of fitted objects
