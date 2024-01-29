@@ -17,7 +17,7 @@ getGp <- function(x, gp, drop = TRUE, Collapse = "--") {
     if (!length(x)) {
         return(NULL)
     }
-    if (isVec <- (is.vector(x) || is.list(x))) {
+    if (isVec <- (is.vector(x) || is.list(x) || is.table(x))) {
         Names <- names(x)
     } else if (isMat <- is.matrix(x)) {
         Names <- rownames(x)

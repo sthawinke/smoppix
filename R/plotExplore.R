@@ -57,7 +57,7 @@ plotExplore <- function(hypFrame, features = getFeatures(hypFrame)[seq_len(6)], 
         ordVec <- order(colVec != "grey")
         # Plot grey background first and coloured dots on top
         plot(cordMat[ordVec, ],
-            main = paste(hypFrame$image[ppps[i]], if(!is.null(titleVar)) hypFrame[[i, titleVar]]), pch = ".",
+            main = paste(hypFrame$image[i], if(!is.null(titleVar)) hypFrame[[i, titleVar]]), pch = ".",
             cex.main = Cex.main, xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i",
             asp = 1, col = colVec[ordVec], cex = Cex, xlim = Xlim, ylim = Ylim
         )
@@ -82,7 +82,7 @@ addLegend <- function(Cols, Shift = c(0, 0), Cex = 0.85, Pch = 20, Main = "") {
     }
 }
 makeCols <- function(features, hypFrame) {
-    Cols <- setdiff(palette(), "black")
+    Cols <- setdiff(palette("Set1"), "black")
     if (length(Cols) > length(features)) {
         Cols <- Cols[seq_along(features)]
     }
