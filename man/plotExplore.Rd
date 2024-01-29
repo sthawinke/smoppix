@@ -45,7 +45,7 @@ Defaults to the first 8.}
 
 \item{piColourCell}{PI by which to colour the cell}
 
-\item{piEsts}{Set of PI estimates, returned by estPims}
+\item{piEsts}{Set of PI estimates, returned by estPis}
 
 \item{palCols}{Two extremes of the colour palette}
 }

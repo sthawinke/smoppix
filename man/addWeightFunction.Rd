@@ -16,7 +16,7 @@ addWeightFunction(
 )
 }
 \arguments{
-\item{resList}{A results list, from a call to estPims()}
+\item{resList}{A results list, from a call to estPis()}
 
 \item{pis}{The PIs for which weighting functions are constructed}
 
@@ -58,7 +58,7 @@ The scam functions fits a decreasing spline of the variance as a
  function of the number of observations
 }
 \examples{
-example(estPims, "spatrans")
+example(estPis, "spatrans")
 yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))
 # Alternative formulation with 'lowestLevelVar'
 yangObj2 <- addWeightFunction(yangPims,
