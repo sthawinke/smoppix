@@ -113,7 +113,7 @@ plotExplore(hypYang)
 The first round of tests concerns the aggregation or regularity of individual transcripts. We choose to work with nearest neighbour distances here (pi = 'nn'). The background of all other transcripts. serves as null distribution, i.e. we look for transcripts aggregated _with respect to_ all other transcripts. As this is computationally most efficient, we also fit the PI for the bivariate analysis in this step ('nnPair', see below). We set the _nPointsAll_ parameter, which drives the resolution of the PI, a bit lower than default to limit compilation time of the vignette. 
 
 ```{r, include = FALSE}
-nnObj <- estPims(hypYang,
+nnObj <- estPis(hypYang,
     pis = c("nn", "nnPair"), null = "background",
     nPointsAll = 1e4
 )

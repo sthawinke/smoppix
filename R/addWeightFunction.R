@@ -1,7 +1,7 @@
 #' Add a variance weighting function
 #' @description Build a weighting function based on the data, and attach it to the object
 #'
-#' @param resList A results list, from a call to estPims()
+#' @param resList A results list, from a call to estPis()
 #' @param designVars A character vector containing all design factors
 #' (both fixed and random), that are also present as variables in hypFrame
 #' @param ... Additional arguments passed on to the scam::scam function
@@ -33,7 +33,7 @@
 #' @export
 #' @seealso \link{buildDataFrame}
 #' @examples
-#' example(estPims, "spatrans")
+#' example(estPis, "spatrans")
 #' yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))
 #' # Alternative formulation with 'lowestLevelVar'
 #' yangObj2 <- addWeightFunction(yangPims,
@@ -46,7 +46,7 @@ addWeightFunction <- function(resList, pis = resList$pis, designVars,
     if (is.null(resList$pis)) {
         stop(
             "No pims found in the hyperframe.",
-            "First estimate them using the estPims() function."
+            "First estimate them using the estPis() function."
         )
     }
     if (all(pis %in% c("edge", "centroid"))) {

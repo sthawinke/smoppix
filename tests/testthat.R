@@ -59,9 +59,9 @@ hypFrame2 <- addCell(hypFrame, wList, cellTypes = cellTypesDf, verbose = FALSE)
 nCores <- 2
 register(MulticoreParam(nCores))
 pis <- c("nn", "nnPair", "edge", "centroid", "nnCell", "nnPairCell")
-piEstsBG <- estPims(hypFrame2, pis = pis, null = "background", verbose = FALSE)
-piEstsCSR <- estPims(hypFrame2, pis = pis, null = "CSR", verbose = FALSE)
-piEstsBG2 <- estPims(hypFrame2[, c("ppp", "image", "tabObs")],
+piEstsBG <- estPis(hypFrame2, pis = pis, null = "background", verbose = FALSE)
+piEstsCSR <- estPis(hypFrame2, pis = pis, null = "CSR", verbose = FALSE)
+piEstsBG2 <- estPis(hypFrame2[, c("ppp", "image", "tabObs")],
     pis = "nn",
     null = "background", verbose = FALSE
 )
@@ -75,7 +75,7 @@ hypYang <- buildHyperFrame(Yang,
     coordVars = c("x", "y"),
     imageVars = c("day", "root", "section")
 )
-yangPims <- estPims(hypYang,
+yangPims <- estPis(hypYang,
     features = getFeatures(hypYang)[seq_len(10)],
     pis = c("nn", "nnPair"), verbose = FALSE, nPointsAll = 1e3,
 )

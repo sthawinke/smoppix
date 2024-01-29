@@ -3,6 +3,7 @@
 #' meant for exploratory purposes and confirming correct data read-in.
 #' @details The colour palette is taken from the output of palette(),
 #' so set that one to change the colour scheme
+#'
 #' @param hypFrame The hyperframe
 #' @param features A small number of features to be fitted. Defaults to the first 5
 #' @param ppps The rownames or indices of the point patterns to be plotted.
@@ -10,15 +11,19 @@
 #' @param maxPlot The maximum number of events plotted per point pattern
 #' @param Cex Point amplification factor
 #' @param plotWindows A boolean, should windows be plotted too?
-#' @param Xlim,Ylim Vectors of length 2 with plotting limits
 #' @param Cex.main Expansion factor for the title
 #' @param Mar the margins
 #' @param titleVar Image variable to be added to the title
+#' @param Xlim,Ylim plotting limits
+#' @param piColourCell PI by which to colour the cell
+#' @param piEsts Set of PI estimates, returned by estPis
+#' @param palCols Two extremes of the colour palette
 #'
 #' @return Plots a facet of point patterns to output
 #' @importFrom spatstat.geom is.hyperframe coords plot.owin
 #' @importFrom grDevices palette
 #' @importFrom graphics par
+#' @importFrom stats aggregate
 #' @export
 #'
 #' @examples
@@ -29,7 +34,7 @@
 plotExplore <- function(hypFrame, features = getFeatures(hypFrame)[seq_len(6)], ppps,
                         maxPlot = 1e+05, Cex = 1, plotWindows = !is.null(hypFrame$owins),
                         Xlim = NULL, Ylim = NULL, Cex.main = 0.8, Mar = c(0.35, 0.1, 0.75, 0.1),
-                        titleVar = NULL) {
+                        titleVar = NULL, piColourCell = NULL, piEsts = NULL, palCols = c("blue", "yellow")) {
     if (!is.hyperframe(hypFrame)) {
         hypFrame <- hypFrame$hypFrame
     }
@@ -38,6 +43,26 @@ plotExplore <- function(hypFrame, features = getFeatures(hypFrame)[seq_len(6)], 
     }
     stopifnot(is.hyperframe(hypFrame), is.character(features), is.numeric(maxPlot),
               is.null(titleVar) || titleVar %in% getPPPvars(hypFrame))
+    if(colourCells <- !is.null(piColourCell)){
+        if(is.null(piEsts)){
+            stop("Supply list of PI estimates to lmms argument to colour cells")
+        }
+        if(!(piColourCell %in% names(piEsts))){
+            stop("Desired PI not present in piEsts object. Rerun estPis() with correct PI")
+        }
+        piColourCell = match.arg(piColourCell, choices = c("edge", "centroid", "nnCell", "nnPairCell"))
+        if(length(features) != 1){
+            stop("Supply single gene for colouring cells by univariate PI!")
+        }
+        featsplit = sund(features)
+        piDf = buildDataFrame(piEsts, gene = featsplit, pi = piColourCell)
+        if(piColourCell %in% c("edge", "midpoint")){
+            piDf = aggregate(pi ~ cell, piDf, FUN = mean, na.rm = TRUE)
+        }
+        pal = colorRampPalette(palCols)
+        Order = findInterval(piDf$pi, sort(piDf$pi))
+        Palette = pal(nrow(piDf))[Order]
+    }
     features <- unique(unlist(lapply(features, sund)))
     npp <- nrow(hypFrame)
     if (missing(ppps)) {
@@ -62,11 +87,18 @@ plotExplore <- function(hypFrame, features = getFeatures(hypFrame)[seq_len(6)], 
             asp = 1, col = colVec[ordVec], cex = Cex, xlim = Xlim, ylim = Ylim
         )
         if (plotWindows) {
-            foo <- lapply(hypFrame$owins[[i]], plot.owin, add = TRUE)
+            foo <- lapply(names(hypFrame$owins[[i]]), function(cell){
+                plot.owin(hypFrame[i, "owins", drop = TRUE][[cell]], add = TRUE,
+                          col = if(colourCells) Palette[cell == piDf$cell])
+            })
         }
     })
     plot(c(0, 1), c(0, 1), type = "n", xlab = "", ylab = "", xaxt = "n", yaxt = "n")
-    addLegend(Cols)
+    colPlot = if(colourCells){
+        tmp = pal(6)
+        names(tmp) = seq(min(piDf$pi), max(piDf$pi), length.out = 6);tmp
+    } else Cols
+    addLegend(colPlot, Main = if(colourCells) paste("pi", piColourCell) else "")
 }
 addLegend <- function(Cols, Shift = c(0, 0), Cex = 0.85, Pch = 20, Main = "") {
     idCols <- which(Cols != "grey")

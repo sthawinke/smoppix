@@ -3,7 +3,7 @@
 #' @param pSubLeft The subsampled overall point pattern
 #' @param ecdfAll,ecdfsCell Empirical cumulative distribution functions of all
 #' events and of cells within the cell, under the null
-#' @inheritParams estPimsSingle
+#' @inheritParams estPisSingle
 #'
 #' @return A list containing PI entries per feature
 #' @details For the single-feature nearest neighbour distances, the average

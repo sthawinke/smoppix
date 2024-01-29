@@ -1,6 +1,6 @@
 #' Construct ecdfs for cellwise measures, such as distance to edge or centroid
 #'
-#' @inheritParams estPimsSingle
+#' @inheritParams estPisSingle
 #' @importFrom spatstat.random runifpoint
 #' @importFrom spatstat.geom crossdist nncross
 #' @return The list of ecdf functions

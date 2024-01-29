@@ -2,7 +2,7 @@
 #'
 #' @param pSub The subset point pattern containing only a single gene
 #' @param ecdfAll the cumulative distribution function under the null
-#' @inheritParams estPimsSingle
+#' @inheritParams estPisSingle
 #' @param pi The type of PI to calculate
 #' @param feat The features
 #' @param ecdfs The ecdfs of the distances of every single point in the cell
@@ -14,7 +14,7 @@
 #' @importFrom stats dist
 #' @details Analysis of the distance to the border was introduced by \insertCite{Joyner2013}{spatrans} in the form of the B-function.
 #' The independent evaluations of the B-functions per cell are here returned as realizations of the probabilistic index.
-#' @seealso \link{addCell}, \link{estPims}
+#' @seealso \link{addCell}, \link{estPis}
 #' @references
 #' \insertAllCited{}
 calcWindowDistPI <- function(pSub, owins, centroids, ecdfAll, pi, null, ecdfs, cellAndGene, feat) {

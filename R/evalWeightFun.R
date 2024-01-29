@@ -13,7 +13,7 @@
 #'     coordVars = c("x", "y"),
 #'     imageVars = c("day", "root", "section")
 #' )
-#' yangPims <- estPims(hypYang[c(seq_len(5), seq(25, 29)), ],
+#' yangPims <- estPis(hypYang[c(seq_len(5), seq(25, 29)), ],
 #'     nPointsAll = 1e3,
 #'     pis = "nn", features = getFeatures(hypYang)[1:10]
 #' )

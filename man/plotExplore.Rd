@@ -15,7 +15,10 @@ plotExplore(
   Ylim = NULL,
   Cex.main = 0.8,
   Mar = c(0.35, 0.1, 0.75, 0.1),
-  titleVar = NULL
+  titleVar = NULL,
+  piColourCell = NULL,
+  piEsts = NULL,
+  palCols = c("blue", "yellow")
 )
 }
 \arguments{
@@ -32,13 +35,19 @@ Defaults to the first 8.}
 
 \item{plotWindows}{A boolean, should windows be plotted too?}
 
-\item{Xlim, Ylim}{Vectors of length 2 with plotting limits}
+\item{Xlim, Ylim}{plotting limits}
 
 \item{Cex.main}{Expansion factor for the title}
 
 \item{Mar}{the margins}
 
 \item{titleVar}{Image variable to be added to the title}
+
+\item{piColourCell}{PI by which to colour the cell}
+
+\item{piEsts}{Set of PI estimates, returned by estPims}
+
+\item{palCols}{Two extremes of the colour palette}
 }
 \value{
 Plots a facet of point patterns to output

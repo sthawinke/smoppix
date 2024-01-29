@@ -28,7 +28,7 @@ test_that("Building data frames for mixed modelling proceeds without errors", {
     expect_true(all(is.na(dfCSR6$pi) | (dfCSR6$pi >= 0 & dfCSR6$pi <= 1)))
     expect_true(all(is.na(dfBG3$pi) | (dfBG3$pi >= 0 & dfBG3$pi <= 1)))
 })
-objCSR2 <- estPims(hypFrame2,
+objCSR2 <- estPis(hypFrame2,
     pis = c("nn"), features = c("gene1", "gene2"),
     null = "CSR"
 )

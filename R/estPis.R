@@ -7,7 +7,7 @@
 #' @param window An window of class owin, in which events can occur
 #' @param loopFun The function to use to loop over the features.
 #' Defaults to bplapply except when looping over features within cells
-#' @inheritParams estPims
+#' @inheritParams estPis
 #'
 #' @return A list of data frames with estimated PIs per gene and/or gene pair:
 #' \item{pointDists}{PIs for pointwise distances overall}
@@ -16,7 +16,7 @@
 #' @importFrom stats ecdf dist
 #' @importFrom spatstat.random runifpoint
 #' @importFrom Rdpack reprompt
-estPimsSingle <- function(p, pis, null, tabObs, owins = NULL, centroids = NULL, window = p$window, loopFun = "bplapply",
+estPisSingle <- function(p, pis, null, tabObs, owins = NULL, centroids = NULL, window = p$window, loopFun = "bplapply",
                           features, nPointsAll, nPointsAllWithinCell, nPointsAllWin, minDiff ) {
     if (!length(features)) {
         return(list(pointDists = NULL, windowDists = NULL, withinCellDists = NULL))
@@ -79,12 +79,12 @@ estPimsSingle <- function(p, pis, null, tabObs, owins = NULL, centroids = NULL, 
     windowDists <- if (any(pis %in% c("edge", "centroid"))) {
         lapply(piList, function(x) x$windowDists)
     }
-    # Within cell: recurse into estPimsSingle but now per cell
+    # Within cell: recurse into estPisSingle but now per cell
     withinCellDists <- if (any(idCell)) {
         unCells <- setdiff(unique(marks(p, drop = FALSE)$cell), "NA")
         cellDists <- loadBalanceBplapply(unCells, function(nam) {
             pSub <- p[marks(p, drop = FALSE)$cell == nam, ]
-            estPimsSingle(
+            estPisSingle(
                 pis = gsub("Cell", "", grep(value = TRUE, "Cell", pis)),
                 p = pSub, null = null,
                 nPointsAll = nPointsAllWithinCell, window = owins[[nam]], features = features,
@@ -105,7 +105,7 @@ estPimsSingle <- function(p, pis, null, tabObs, owins = NULL, centroids = NULL, 
 #' on  a hyperframe, and integrate the results in the same hyperframe
 #' @export
 #' @param hypFrame the hyperframe
-#' @param ... additional arguments, passed on to estPimsSingle
+#' @param ... additional arguments, passed on to estPisSingle
 #' @param verbose a boolean, whether to report on progress of fitting
 #' @param pis The probabilistic indices to be estimated
 #' @param null A character vector, indicating how the null distribution is
@@ -128,7 +128,7 @@ estPimsSingle <- function(p, pis, null, tabObs, owins = NULL, centroids = NULL, 
 #'     imageVars = c("day", "root", "section")
 #' )
 #' # Fit a subset of features to limit computation time
-#' yangPims <- estPims(hypYang[c(seq_len(5), seq(25, 29)), ], pis = "nn")
+#' yangPims <- estPis(hypYang[c(seq_len(5), seq(25, 29)), ], pis = "nn")
 #' # Univariate nearest neighbour distances
 #' @details
 #' The null distribution used to calculate the PIs. Can be either 'background',
@@ -143,7 +143,7 @@ estPimsSingle <- function(p, pis, null, tabObs, owins = NULL, centroids = NULL, 
 #' 'edge' and 'centroid' calculate the distance to the edge respectively
 #'  the centroid of the windows added using the addCell() function.
 #' The suffix 'Cell' indicates distances are being calculated within cells only.
-estPims <- function(hypFrame, pis = c("nn", "nnPair", "edge", "centroid", "nnCell", "nnPairCell"),
+estPis <- function(hypFrame, pis = c("nn", "nnPair", "edge", "centroid", "nnCell", "nnPairCell"),
                     verbose = TRUE, null = c("background", "CSR"),
                     nPointsAll = switch(null, background = 1e4, CSR = 1e3),
                     nPointsAllWithinCell = switch(null, background = 1e4, CSR = 5e2
@@ -164,7 +164,7 @@ estPims <- function(hypFrame, pis = c("nn", "nnPair", "edge", "centroid", "nnCel
         if (verbose) {
             message(x, " of ", nrow(hypFrame), "  ")
         }
-        out <- estPimsSingle(hypFrame[[x, "ppp"]],
+        out <- estPisSingle(hypFrame[[x, "ppp"]],
             owins = hypFrame[x, "owins", drop = TRUE], pis = pis, null = null,
             tabObs = hypFrame[[x, "tabObs"]], centroids = hypFrame[x, "centroids", drop = TRUE],
             features = features, nPointsAll = nPointsAll, nPointsAllWithinCell = nPointsAllWithinCell,
