@@ -17,9 +17,10 @@
 #' @importFrom stats formula na.omit anova lm
 #' @importFrom lme4 lmerControl .makeCC isSingular
 #' @importFrom methods is
+#' @importFrom ape Moran.I
 #' @seealso \link{buildDataFrame},\link{getResults}
 fitLMMsSingle <- function(obj, pi, fixedVars, randomVars, verbose, returnModels,
-                          Formula, randomNested, features) {
+                          Formula, randomNested, features, addMoransI, weightMats) {
     pi <- match.arg(pi, choices = c(
         "nn", "nnPair", "edge", "centroid",
         "nnCell", "nnPairCell"
@@ -53,20 +54,21 @@ fitLMMsSingle <- function(obj, pi, fixedVars, randomVars, verbose, returnModels,
         stop("Design variables ", paste(designVars[id], collapse = " "),
              " not found in object.")
     }
-    # Allow cell as design variable, both fixed and random
-    if (is.null(Formula)) {
-        fixedPart <- paste("pi - 0.5 ~ 1", paste(if (!is.null(fixedVars)) {
-            paste("+", paste(fixedVars, collapse = " + "))
-        }))
-        Formula <- formula(formChar <- paste(fixedPart, if (!is.null(randomVars)) {
-            paste("+", paste0("(1|", randomVars, ")", collapse = " + "))
-        }))
-    } else {
-        formChar <- paste(as.character(Formula), collapse = "")
-    }
-    MM <- any(grepl("\\|", formChar))
+    Formula = buildFormula(Formula, fixedVars, randomVars)
+    MM <- any(grepl("\\|", formChar <- characterFormula))
     if (verbose) {
         message("Fitted formula for pi ", pi, ":\n", formChar)
+    }
+    if(addMoransI){
+        moranFixed = paste("MoransI ~ 1", if (!is.null(fixedVars)) {
+            paste("+", paste(intersect(fixedVars, getPPPvars(obj)), collapse = " + "))
+        })
+        moranForm <- formula(formCharMoran <- paste(fixedPart, if (!is.null(randomVars)) {
+            paste("+", paste0("(1|", randomVars, ")", collapse = " + "))
+        }))
+        if (verbose) {
+            message("Fitted formula for Moran's I for pi", pi, ":\n", formCharMoran)
+        }
     }
     Control <- lmerControl(check.conv.grad = .makeCC("ignore", tol = 0.002, relTol = NULL), check.conv.singular = .makeCC(
         action = "ignore",
@@ -100,31 +102,16 @@ fitLMMsSingle <- function(obj, pi, fixedVars, randomVars, verbose, returnModels,
         if (randomNested) {
             df <- nestRandom(df, randomVarsSplit, intersect(fixedVars, getPPPvars(obj)))
         }
-        if (MM) {
-            mod <- try(lmerTest::lmer(Formula, data = df, na.action = na.omit,
-                                      weights = if (noWeight) {
-                NULL
-            } else {
-                weight
-            }, contrasts = contrasts, control = Control), silent = TRUE)
-        }
-        # If no random variables or fit failed, go for linear model
-        if (!MM || is(mod, "try-error")) {
-            mod <- try(lm(formula(fixedPart), data = df, na.action = na.omit,
-                          weights = if (noWeight) {
-                NULL
-            } else {
-                weight
-            }, contrasts = contrasts), silent = TRUE)
-        }
-        # If still fails, drop fixed effects
-        if (is(mod, "try-error")) {
-            mod <- lm(formula("pi - 0.5 ~ 1"), data = df, na.action = na.omit,
-                      weights = if (noWeight) {
-                NULL
-            } else {
-                weight
+        piMod = fitPiModel(Formula, df, contrasts, Control, fixedPart)
+        if(addMoransI && pi %in% c("edge", "midpoint")){
+            piDf = aggregate(pi ~ cell, piDf, FUN = mean, na.rm = TRUE)
+            moransIs = vapply(unIm <- unique(piDf$image), FUN.VALUE = double(1), function(im){
+                subDf = piDf[piDf$image == im, ]
+                moranObj = Moran.I(subDf$pi, weights = weightMats[[im]][subDf$cell, subDf$cell])
+                (moranObj$observed-moranObj$expected)/moranObj$sd
             })
+            moranDf = cbind("MoransI" = moransIs, piDf[match(unIm, piDf$image),])
+            moranMod = fitPiModel(moranForm, df, contrasts, Control, fixedPart)
         }
         return(mod)
     })
@@ -166,13 +153,23 @@ fitLMMsSingle <- function(obj, pi, fixedVars, randomVars, verbose, returnModels,
 #' lmmModels <- fitLMMs(yangObj, fixedVars = "day", randomVars = "root")
 fitLMMs <- function(obj, pis = obj$pis, fixedVars = NULL, randomVars = NULL,
                     verbose = TRUE, returnModels = FALSE, Formula = NULL,
-                    randomNested = TRUE, features = getFeatures(obj), ...) {
+                    randomNested = TRUE, features = getFeatures(obj),
+                    addMoransI = any(pis %in% c("edge", "centroid", "nnCell", "nnPairCell")), ...){
+    if(addMoransI){
+        weightMats = lapply(getHypFrame(obj)$centroids, buildWeightMat)
+    }
     out <- lapply(pis, function(pi) {
         fitLMMsSingle(obj, pi = pi, verbose = verbose, fixedVars = fixedVars,
                       randomVars = randomVars, returnModels = returnModels,
                       Formula = Formula, randomNested = randomNested,
-                      features = features, ...)
+                      features = features, weightMats = weightMats,
+                      addMoransI = pi %in% c("edge", "centroid", "nnCell", "nnPairCell"), ...)
     })
     names(out) <- pis
     return(out)
 }
+#' @importFrom stats dist
+buildWeightMat = function(coordMat){
+    as.matrix(1/dist(coordMat))
+}
+

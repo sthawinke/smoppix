@@ -13,7 +13,9 @@ fitLMMsSingle(
   returnModels,
   Formula,
   randomNested,
-  features
+  features,
+  addMoransI,
+  weightMats
 )
 }
 \arguments{
