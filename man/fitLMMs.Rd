@@ -14,6 +14,7 @@ fitLMMs(
   Formula = NULL,
   randomNested = TRUE,
   features = getFeatures(obj),
+  moranFormula = NULL,
   addMoransI = any(pis \%in\% c("edge", "centroid", "nnCell", "nnPairCell")),
   ...
 )

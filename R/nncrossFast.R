@@ -4,8 +4,9 @@
 #' @param dmax The maximium distance, precalculated for speed
 #' @param iX,iY,what,...,k,sortby,is.sorted.X,is.sorted.Y,metric See ?spatstat.geom::nncross.ppp
 #'
-#'@import spatstat.geom spatstat.utils
+#'@import spatstat.geom
 #'@importFrom stats var
+#'@importFrom spatstat.utils fave.order
 #'@export
 nncrossFast = function (X, Y, dmax, iX = NULL, iY = NULL, what = c("dist", "which"),
           ..., k = 1, sortby = c("range", "var", "x", "y"), is.sorted.X = FALSE,
@@ -93,14 +94,14 @@ nncrossFast = function (X, Y, dmax, iX = NULL, iY = NULL, what = c("dist", "whic
         Yy <- Y$x
     }
     if (!is.sorted.X) {
-        oX <- fave.order(Xy)
+        oX <- spatstat.utils:::fave.order(Xy) #Delete the spatstat.utils reference later
         Xx <- Xx[oX]
         Xy <- Xy[oX]
         if (exclude)
             iX <- iX[oX]
     }
     if (!is.sorted.Y) {
-        oY <- fave.order(Yy)
+        oY <- spatstat.utils:::fave.order(Yy)
         Yx <- Yx[oY]
         Yy <- Yy[oY]
         if (exclude)

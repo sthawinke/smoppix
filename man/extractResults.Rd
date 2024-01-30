@@ -4,7 +4,14 @@
 \alias{extractResults}
 \title{Extract results from a list of fitted LMMs}
 \usage{
-extractResults(models, hypFrame, fixedVars = NULL, method = "BH")
+extractResults(
+  models,
+  hypFrame,
+  subSet = "piMod",
+  fixedVars = NULL,
+  method = "BH",
+  increment = switch(subSet, piMod = 0.5, moranMod = 0)
+)
 }
 \arguments{
 \item{models}{The models}

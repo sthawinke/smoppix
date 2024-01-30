@@ -41,8 +41,8 @@ test_that("Fitting linear mixed models proceeds without errors", {
         fixedVars = "day",
         randomVars = "root", pi = "nn", returnModels = TRUE
     ), "list")
-    expect_s3_class(linModsNNfull[["nn"]]$models[[1]], "lm")
-    expect_s4_class(linMModsNNfull[["nn"]]$models[[1]], "lmerModLmerTest")
+    expect_s3_class(linModsNNfull[["nn"]]$models[[1]]$piMod, "lm")
+    expect_s4_class(linMModsNNfull[["nn"]]$models[[1]]$piMod, "lmerModLmerTest")
     expect_is(linModsMP <- fitLMMs(objBG,
         features = getFeatures(objBG)[1:5],
         fixedVars = "condition",
@@ -70,7 +70,8 @@ test_that("Fitting linear mixed models proceeds without errors", {
         fixedVars = c("condition", "cellType"),
       pi = "centroid", returnModels = TRUE,
     ), "list")
-    expect_s4_class(linModsMidCellType[["centroid"]]$models[[1]], "lmerModLmerTest")
+    expect_s4_class(linModsMidCellType[["centroid"]]$models[[1]]$piMod, "lmerModLmerTest")
+    expect_s3_class(linModsMidCellType[["centroid"]]$models[[1]]$moranMod, "lm")
     expect_is(linModsNNCellType <- fitLMMs(objBG,
         features = getFeatures(objBG)[1:5],
         fixedVars = c("condition", "cellType"),
