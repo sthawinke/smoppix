@@ -24,6 +24,7 @@
 #' @importFrom grDevices palette
 #' @importFrom graphics par
 #' @importFrom stats aggregate
+#' @importFrom grDevices colorRampPalette
 #' @export
 #'
 #' @examples
@@ -47,9 +48,7 @@ plotExplore <- function(hypFrame, features = getFeatures(hypFrame)[seq_len(6)], 
         if(is.null(piEsts)){
             stop("Supply list of PI estimates to lmms argument to colour cells")
         }
-        if(!(piColourCell %in% names(piEsts))){
-            stop("Desired PI not present in piEsts object. Rerun estPis() with correct PI")
-        }
+        foo = checkPi(piEsts, piColourCell)
         piColourCell = match.arg(piColourCell, choices = c("edge", "centroid", "nnCell", "nnPairCell"))
         if(length(features) != 1){
             stop("Supply single gene for colouring cells by univariate PI!")
@@ -76,20 +75,25 @@ plotExplore <- function(hypFrame, features = getFeatures(hypFrame)[seq_len(6)], 
     Ncol <- (LL %/% Nrow) + 1
     par(mfrow = c(Nrow, Ncol), mar = Mar)
     baa <- lapply(ppps, function(i) {
-        PPPsub = subSampleP(hypFrame$ppp[[i]], maxPlot)
-        colVec <- Cols[marks(PPPsub, drop = FALSE)$gene]
-        cordMat <- coords(PPPsub)
-        ordVec <- order(colVec != "grey")
-        # Plot grey background first and coloured dots on top
-        plot(cordMat[ordVec, ],
-            main = paste(hypFrame$image[i], if(!is.null(titleVar)) hypFrame[[i, titleVar]]), pch = ".",
-            cex.main = Cex.main, xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i",
-            asp = 1, col = colVec[ordVec], cex = Cex, xlim = Xlim, ylim = Ylim
-        )
+        if(!colourCells){
+            PPPsub = subSampleP(hypFrame$ppp[[i]], maxPlot)
+            colVec <- Cols[marks(PPPsub, drop = FALSE)$gene]
+            cordMat <- coords(PPPsub)
+            ordVec <- order(colVec != "grey")
+            # Plot grey background first and coloured dots on top
+            plot(cordMat[ordVec, ],
+                main = paste(hypFrame$image[i], if(!is.null(titleVar)) hypFrame[[i, titleVar]]), pch = ".",
+                cex.main = Cex.main, xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i",
+                asp = 1, col = colVec[ordVec], cex = Cex, xlim = Xlim, ylim = Ylim
+            )
+        } else {
+            plot(range(coords(hypFrame$ppp[[i]])$x), range(coords(hypFrame$ppp[[i]])$y),
+                 type = "n", xlab = "", ylab = "", xaxt = "n", yaxt = "n")
+        }
         if (plotWindows) {
             foo <- lapply(names(hypFrame$owins[[i]]), function(cell){
                 plot.owin(hypFrame[i, "owins", drop = TRUE][[cell]], add = TRUE,
-                          col = if(colourCells) Palette[cell == piDf$cell])
+                          col = if(colourCells && length(Col <- Palette[cell == piDf$cell])) Col)
             })
         }
     })
