@@ -60,7 +60,7 @@ plotExplore <- function(hypFrame, features = getFeatures(hypFrame)[seq_len(6)], 
         }
         pal = colorRampPalette(palCols)
         Order = findInterval(piDf$pi, sort(piDf$pi))
-        Palette = pal(nrow(piDf))[Order]
+        Palette = pal(sum(!is.na(piDf$pi)))[Order]
     }
     features <- unique(unlist(lapply(features, sund)))
     npp <- nrow(hypFrame)
@@ -82,20 +82,24 @@ plotExplore <- function(hypFrame, features = getFeatures(hypFrame)[seq_len(6)], 
         cordMat <- coords(PPPsub)
         ordVec <- order(colVec != "grey")
         plot(cordMat[ordVec, ],
-             main = paste(hypFrame$image[i], if(!is.null(titleVar)) hypFrame[[i, titleVar]]), pch = ".",
+             main = paste(hypFrame$image[i], if(!is.null(titleVar)) hypFrame[[i, titleVar]]),type = "n",
              cex.main = Cex.main, xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i",
-             asp = 1, col = colVec[ordVec], cex = Cex, xlim = Xlim, ylim = Ylim)
+             asp = 1, xlim = Xlim, ylim = Ylim)
         if (plotWindows) {
             foo <- lapply(names(hypFrame$owins[[i]]), function(cell){
                 plot.owin(hypFrame[i, "owins", drop = TRUE][[cell]], add = TRUE,
                           col = if(colourCells && length(Col <- Palette[cell == piDf$cell])) Col)
             })
         }
+        points(cordMat[ordVec, ], pch = ".", col = colVec[ordVec], cex = Cex)
+
     })
     plot(c(0, 1), c(0, 1), type = "n", xlab = "", ylab = "", xaxt = "n", yaxt = "n")
     colPlot = if(colourCells){
         tmp = pal(6)
-        names(tmp) = signif(seq(min(piDf$pi, na.rm = TRUE), max(piDf$pi, na.rm = TRUE), length.out = 6), 3);tmp
+        names(tmp) = signif(seq(min(piDf$pi, na.rm = TRUE),
+                                max(piDf$pi, na.rm = TRUE), length.out = 6), 2)
+        tmp
     } else Cols
     addLegend(colPlot, Main = if(colourCells) paste("pi", piColourCell) else "")
 }

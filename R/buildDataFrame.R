@@ -107,10 +107,7 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
             data.frame(pi = piEst, cellCovars, npVec)
         } else {
             piEst <- if (is.null(vec <- getGp(x[[piListNameInner]][[pi]], gene))) {
-                NA
-            } else {
-                vec
-            }
+                NA} else {vec}
             npVec <- if (all(geneSplit %in% names(to <- obj$hypFrame[n, "tabObs", drop = TRUE]))) {
                to[geneSplit]
             } else {
