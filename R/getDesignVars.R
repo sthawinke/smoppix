@@ -26,7 +26,7 @@ getPPPvars <- function(x, exclude = c("tabObs", "centroids", "owins", "ppp",
 #' @inheritParams getDesignVars
 #' @inheritParams getPPPvars
 getEventVars <- function(x, exclude = c("x", "y", "z")) {
-    setdiff(unique(unlist(lapply(getHypFrame(x)[, "ppp", drop = TRUE], function(ppp) {
+    setdiff(unique(unlist(lapply(getHypFrame(x)$ppp, function(ppp) {
         names(marks(ppp, drop = FALSE))
     }))), exclude)
 }

@@ -21,10 +21,8 @@
 #' )
 #' summary(mixedMod)
 #' # Evidence for aggregation
-buildDataFrame <- function(obj, gene, pi = c(
-                               "nn", "nnPair", "edge", "centroid",
-                               "nnCell", "nnPairCell"
-                           )) {
+buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
+                               "nnCell", "nnPairCell")) {
     pi <- match.arg(pi)
     stopifnot((lg <- length(gene)) %in% c(1, 2))
     foo <- checkPi(obj, pi)
@@ -92,13 +90,9 @@ buildDataFrame <- function(obj, gene, pi = c(
                 if (is.null(vec <- getGp(y[[piSub]], gene))) NA else vec
             })
             cellCovars <- Marks[,eventVars,drop = FALSE]
-            cellCovars <- cellCovars[
-                match(names(piEst), cellCovars$cell),
-                setdiff(colnames(cellCovars), "gene")
-            ]
-            tabCell <- table(
-                Marks$gene, Marks$cell
-            )
+            cellCovars <- cellCovars[match(names(piEst), cellCovars$cell),
+                setdiff(colnames(cellCovars), "gene"), drop = FALSE]
+            tabCell <- table(Marks$gene, Marks$cell)
             npVec <- if (all(geneSplit %in% rownames(tabCell))) {
                 tmp <- tabCell[geneSplit, match(names(piEst), colnames(tabCell)), drop = FALSE]
                 t(matrix(tmp, ncol = ncol(tmp), dimnames = dimnames(tmp)))

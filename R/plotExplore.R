@@ -75,21 +75,16 @@ plotExplore <- function(hypFrame, features = getFeatures(hypFrame)[seq_len(6)], 
     Ncol <- (LL %/% Nrow) + 1
     par(mfrow = c(Nrow, Ncol), mar = Mar)
     baa <- lapply(ppps, function(i) {
-        if(!colourCells){
-            PPPsub = subSampleP(hypFrame$ppp[[i]], maxPlot)
-            colVec <- Cols[marks(PPPsub, drop = FALSE)$gene]
-            cordMat <- coords(PPPsub)
-            ordVec <- order(colVec != "grey")
-            # Plot grey background first and coloured dots on top
-            plot(cordMat[ordVec, ],
-                main = paste(hypFrame$image[i], if(!is.null(titleVar)) hypFrame[[i, titleVar]]), pch = ".",
-                cex.main = Cex.main, xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i",
-                asp = 1, col = colVec[ordVec], cex = Cex, xlim = Xlim, ylim = Ylim
-            )
-        } else {
-            plot(range(coords(hypFrame$ppp[[i]])$x), range(coords(hypFrame$ppp[[i]])$y),
-                 type = "n", xlab = "", ylab = "", xaxt = "n", yaxt = "n")
-        }
+        PPPsub = subSampleP(if(colourCells){
+            hypFrame$ppp[[i]][marks(hypFrame$ppp[[i]])$gene %in% features, ]
+            } else hypFrame$ppp[[i]], maxPlot)
+        colVec <- Cols[marks(PPPsub, drop = FALSE)$gene]
+        cordMat <- coords(PPPsub)
+        ordVec <- order(colVec != "grey")
+        plot(cordMat[ordVec, ],
+             main = paste(hypFrame$image[i], if(!is.null(titleVar)) hypFrame[[i, titleVar]]), pch = ".",
+             cex.main = Cex.main, xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i",
+             asp = 1, col = colVec[ordVec], cex = Cex, xlim = Xlim, ylim = Ylim)
         if (plotWindows) {
             foo <- lapply(names(hypFrame$owins[[i]]), function(cell){
                 plot.owin(hypFrame[i, "owins", drop = TRUE][[cell]], add = TRUE,
@@ -100,7 +95,7 @@ plotExplore <- function(hypFrame, features = getFeatures(hypFrame)[seq_len(6)], 
     plot(c(0, 1), c(0, 1), type = "n", xlab = "", ylab = "", xaxt = "n", yaxt = "n")
     colPlot = if(colourCells){
         tmp = pal(6)
-        names(tmp) = seq(min(piDf$pi), max(piDf$pi), length.out = 6);tmp
+        names(tmp) = signif(seq(min(piDf$pi, na.rm = TRUE), max(piDf$pi, na.rm = TRUE), length.out = 6), 3);tmp
     } else Cols
     addLegend(colPlot, Main = if(colourCells) paste("pi", piColourCell) else "")
 }
