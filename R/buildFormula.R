@@ -27,7 +27,7 @@ characterFormula = function(Formula){
 }
 #' @importFrom stats formula
 getFixedPart = function(Formula){
-    if(!grepl("\\|", Formula)){
+    if(!any(grepl("\\|", Formula))){
         Formula
     } else {
     formula(paste(collapse = " ", grep(value = TRUE, invert = TRUE, "\\|",
