@@ -44,6 +44,12 @@ point patterns. See details.}
 
 \item{features}{The features for which to fit linear mixed models.
 Defaults to all features in the object}
+
+\item{addMoransI}{A boolean, include Moran's I in the calculation}
+
+\item{weightMats}{A list of weight matrices for Moran's I}
+
+\item{moranFormula}{Formula for Moran's I model fitting}
 }
 \value{
 A list of test results, if requested also the linear models are returned

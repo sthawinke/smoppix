@@ -2,6 +2,8 @@
 #'
 #' @inheritParams buildDataFrame
 #' @inheritParams fitLMMs
+#' @param moranFormula Formula for Moran's I model fitting
+#' @param addMoransI A boolean, include Moran's I in the calculation
 #' @details Genes or gene pairs with insufficient observations will be silently
 #' omitted. When randomVars is provided as a vector, independent random
 #' intercepts are fitted for them by default. Providing them separated by '\' or
@@ -12,6 +14,7 @@
 #'  different point patterns are assigned to different random effects. Set
 #'  'randomNested' to FALSE to override this behaviour.
 #'
+#' @param weightMats A list of weight matrices for Moran's I
 #' @return A list of test results, if requested also the linear models are returned
 #' @importFrom lmerTest lmer
 #' @importFrom stats formula anova

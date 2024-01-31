@@ -3,14 +3,15 @@
 #' @param models The models
 #' @param hypFrame The original hyperframe
 #' @param fixedVars The fixed effects for which the effect is to be reported
+#' @param subSet The name of the subset to be extracted, either PI or Moran's I
 #' @param method passed onto p.adjust
+#'
 #' @importFrom stats p.adjust
 #' @importFrom methods is
 #' @return A list of matrices, all containing estimate, standard error,
 #' p-value and ajdusted p-value
 #' @seealso \link{fitLMMs}
-extractResults <- function(models, hypFrame, subSet = "piMod", fixedVars = NULL, method = "BH",
-                           increment = switch(subSet, "piMod" = 0.5, "moranMod" = 0)) {
+extractResults <- function(models, hypFrame, subSet = "piMod", fixedVars = NULL, method = "BH") {
     ints <- t(vapply(models, FUN.VALUE = double(3), function(x) {
         if (is.null(x[[subSet]]) || is(x[[subSet]], "try-error")) {
             c(Estimate = NA, `Std. Error` = NA, `Pr(>|t|)` = NA)
@@ -19,7 +20,7 @@ extractResults <- function(models, hypFrame, subSet = "piMod", fixedVars = NULL,
         } # Identical code for lmerTest or lm
     }))
     colnames(ints) <- c("Estimate", "SE", "pVal")
-    ints[, "Estimate"] <- ints[, "Estimate"] + increment
+    ints[, "Estimate"] <- ints[, "Estimate"] + switch(subSet, "piMod" = 0.5, "moranMod" = 0)
     intMat <- cbind(ints, pAdj = p.adjust(ints[, "pVal"], method = method))[order(ints[, "pVal"]), ]
     # Order by p-value
     id <- vapply(models, FUN.VALUE = TRUE, function(x) {

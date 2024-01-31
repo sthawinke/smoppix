@@ -9,14 +9,15 @@ extractResults(
   hypFrame,
   subSet = "piMod",
   fixedVars = NULL,
-  method = "BH",
-  increment = switch(subSet, piMod = 0.5, moranMod = 0)
+  method = "BH"
 )
 }
 \arguments{
 \item{models}{The models}
 
 \item{hypFrame}{The original hyperframe}
+
+\item{subSet}{The name of the subset to be extracted, either PI or Moran's I}
 
 \item{fixedVars}{The fixed effects for which the effect is to be reported}
 

@@ -36,7 +36,7 @@ Alternatively, the latest version can be downloaded from github as:
 
 ```{r installAndLoadGitHub, eval = FALSE}
 library(devtools)
-install_github("CenterForStatistics-UGent/spatrans")
+install_github("sthawinke/spatrans")
 ```
 
 ```{r load}
