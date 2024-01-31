@@ -112,7 +112,7 @@ plotExplore(hypYang)
 
 The first round of tests concerns the aggregation or regularity of individual transcripts. We choose to work with nearest neighbour distances here (pi = 'nn'). The background of all other transcripts. serves as null distribution, i.e. we look for transcripts aggregated _with respect to_ all other transcripts. As this is computationally most efficient, we also fit the PI for the bivariate analysis in this step ('nnPair', see below). We set the _nPointsAll_ parameter, which drives the resolution of the PI, a bit lower than default to limit compilation time of the vignette. 
 
-```{r, include = FALSE}
+```{r estpisyang, include = FALSE}
 nnObj <- estPis(hypYang,
     pis = c("nn", "nnPair"), null = "background",
     nPointsAll = 1e4
@@ -152,13 +152,13 @@ for every transcript. A simple random intercept is assumed
 for every random effect, for more complex designs it is better to supply
 your own formula through the __Formula__ argument, passed on to _lmer()_.
 
-```{r, include = FALSE}
-allModsNN <- fitLMMs(nnObj, fixedVars = "day", randomVars = "root", pi = "nn")
+```{r fitLmms, include = FALSE}
+allModsNN <- fitLMMs(nnObj, fixedVars = "day", randomVars = "root")
 ```
 
 Various errors may occur while fitting, e.g. insufficient non-missing observations. The function finishes silently but returns the error messages in the output. The results can now be viewed as follows
 
-```{r}
+```{r headgetresults}
 head(getResults(allModsNN$nn, "Intercept"))
 head(getResults(allModsNN$nn, "day"))
 ```
@@ -170,13 +170,13 @@ head(getResults(allModsNN$nn, "day"))
 Tests for colocalization are done by adding the suffix 'Pair' to the PI. All combinations of features provided are fitted. 
 Again we plot the weighting function, which is now a bivariate spline as a function of the minority and majority gene:
 
-```{r}
+```{r plotwf}
 plotWf(nnObj, pi = "nnPair")
 ```
 
 The least expressed gene or minority gene has the strongest influence on the weight. The dataframe is built in a similar way as before:
 
-```{r}
+```{r builddf}
 dfBiNN <- buildDataFrame(nnObj, gene = "SmVND2--SmPINR", pi = "nnPair")
 ```
 
@@ -190,11 +190,10 @@ lmeModNN <- lmerTest::lmer(pi - 0.5 ~ day + (1 | root),
 summary(lmeModNN)
 ```
 
-We find a significant positive intercept `r summary(lmeModNN)$coef["(Intercept)", "Estimate"]+0.5`, indicating strong antilocalization. And similarly, this process can be wrapped using _fitLMMs()_:
+We find a significant positive intercept `r summary(lmeModNN)$coef["(Intercept)", "Estimate"]+0.5`, indicating strong antilocalization. And similarly, this process can be wrapped using _fitLMMs()_, as it has already been calculated:
 
 ```{r fitlmmPair}
-allModsNNpair <- fitLMMs(nnObj, fixedVars = "day", randomVars = "root", pi = "nnPair")
-head(getResults(allModsNNpair$nnPair, "Intercept"))
+head(getResults(allModsNN$nnPair, "Intercept"))
 ```
 
 # Eng2019: Mouse brain cells
@@ -213,7 +212,7 @@ In parallel::mccollect(wait = FALSE, timeout = 1) :
   1 parallel job did not deliver a result
 \end{quote}
 
-indicates insufficient memory. Try reducing the number of cores required with MultiCoreParam(),
+often indicates insufficient memory. Try reducing the number of cores required with MultiCoreParam(),
 or switch to serial processing with register(SerialParam()).
  
 # Session info
