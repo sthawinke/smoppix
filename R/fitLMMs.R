@@ -2,8 +2,6 @@
 #'
 #' @inheritParams buildDataFrame
 #' @inheritParams fitLMMs
-#' @param moranFormula Formula for Moran's I model fitting
-#' @param addMoransI A boolean, include Moran's I in the calculation
 #' @details Genes or gene pairs with insufficient observations will be silently
 #' omitted. When randomVars is provided as a vector, independent random
 #' intercepts are fitted for them by default. Providing them separated by '\' or
@@ -148,6 +146,8 @@ fitLMMsSingle <- function(obj, pi, fixedVars, randomVars, verbose, returnModels,
 #' point patterns. See details.
 #' @param features The features for which to fit linear mixed models.
 #' Defaults to all features in the object
+#' @param moranFormula Formula for Moran's I model fitting
+#' @param addMoransI A boolean, include Moran's I in the calculation
 #' @param ... Passed onto fitLMMsSingle
 #'
 #' @return A list of fitted objects
