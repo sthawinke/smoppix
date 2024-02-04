@@ -43,6 +43,10 @@ point patterns. See details.}
 \item{features}{The features for which to fit linear mixed models.
 Defaults to all features in the object}
 
+\item{moranFormula}{Formula for Moran's I model fitting}
+
+\item{addMoransI}{A boolean, include Moran's I in the calculation}
+
 \item{...}{Passed onto fitLMMsSingle}
 }
 \value{
