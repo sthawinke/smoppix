@@ -34,7 +34,9 @@ calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null,
                     id <- !(names(pSplit) %in% feat)
                     if (any(id)) {
                         matrix(unlist(lapply(pSplit[id], function(y) {
-                            nncross.ppp(pSub, y, what = "dist")
+                            nncross.ppp(pSub, y, what = "dist", sortby = "x",
+                                        is.sorted.X = TRUE, is.sorted.Y = TRUE)
+                            #Point patterns have been pre-sorted in hyperframe function
                         })), nrow = NP, dimnames = list(NULL, names(pSplit)[id]))
                     }
                     # Cross-distances
