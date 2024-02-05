@@ -97,15 +97,28 @@ named.contr.sum <- function(x, ...) {
     colnames(x) <- lev[-length(lev)]
     x
 }
-#' Add tables with gene counts to the hyperframe
+#' Add tables with gene counts to the hyperframe, presort by gene and x-ccordinate
+#' and add design varibales
+#'
 #'
 #' @param hypFrame The hyperframe
+#' @param desMat The design matrix
 #'
 #' @return The hyperframe with tabObs added
 #' @importFrom spatstat.geom marks
-addTabObs <- function(hypFrame) {
+addTabObsAndSort <- function(hypFrame, desMat) {
     hypFrame$tabObs <- lapply(hypFrame$ppp, function(x) {
         table(marks(x, drop = FALSE)$gene)
+    })
+    #Add design variables
+    for (i in colnames(desMat)) {
+        hypFrame[, i] <- desMat[, i]
+    }
+    rownames(hypFrame) <- hypFrame$image
+    #Pre-order for nncross function
+    hypFrame$ppp = lapply(hypFrame$ppp, function(x){
+        Ord = order(marks(x, drop = FALSE)$gene, getCoordsMat(x)[, "x"])
+        x[Ord,,drop = FALSE]
     })
     hypFrame
 }
