@@ -198,6 +198,18 @@ head(getResults(allModsNN$nnPair, "Intercept"))
 
 # Eng2019: Mouse brain cells
 
+```{r readInEngData}
+data(Eng)
+hypEng = buildHyperFrame(pointLoc, coordVars = c("x", "y"), imageVars = c("fov", "experiment"))
+#Add cell identifiers
+hypEng = addCell(hypEng, EngRois)
+```
+
+```{r}
+plotExplore(hypEng)
+```
+
+
 ## Tests for vicinity to cell wall or centroid: distances to fixed objects
 
 # Troubleshooting

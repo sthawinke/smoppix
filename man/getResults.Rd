@@ -4,19 +4,21 @@
 \alias{getResults}
 \title{Extract test results from the linear model}
 \usage{
-getResults(obj, parameter)
+getResults(obj, parameter, moransI = FALSE)
 }
 \arguments{
 \item{obj}{The result object}
 
 \item{parameter}{The desired parameter}
+
+\item{moransI}{A boolean, should results for the Moran's I be returned?}
 }
 \value{
 The matrix with results, with p-values in ascending order
 \item{Estimate}{The estimated PI}
 \item{se}{The corresponding standard error}
 \item{pVal}{The p-value}
-\item{pAdj}{The Benjamini-Hichberg adjusted p-value}
+\item{pAdj}{The Benjamini-Hochberg adjusted p-value}
 }
 \description{
 Extract effect size estimates and p-values for a certain parameter
@@ -28,7 +30,6 @@ hypYang <- buildHyperFrame(Yang,
     coordVars = c("x", "y"),
     imageVars = c("day", "root", "section")
 )
-# Fit a subset of features to limit computation time
 yangPims <- estPis(hypYang, pis = "nn")
 # First build the weighting function
 yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))
