@@ -135,7 +135,7 @@ nestRandom <- function(df, randomVars, fixedVars) {
 #' @return the matrix of coordinates
 getCoordsMat <- function(x) {
     if (is.ppp(x)) {
-        as.matrix(coords(x))
+        cbind(x = x$x, y = x$y)
     } else if (is.data.frame(x)) {
         as.matrix(x)
     } else if (is.matrix(x)) {
