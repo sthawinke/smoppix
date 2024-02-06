@@ -4,12 +4,13 @@
 #'
 #' @param obj The result object
 #' @param parameter The desired parameter
+#' @param moransI A boolean, should results for the Moran's I be returned?
 #'
 #' @return The matrix with results, with p-values in ascending order
 #' \item{Estimate}{The estimated PI}
 #' \item{se}{The corresponding standard error}
 #' \item{pVal}{The p-value}
-#' \item{pAdj}{The Benjamini-Hichberg adjusted p-value}
+#' \item{pAdj}{The Benjamini-Hochberg adjusted p-value}
 #' @export
 #' @examples
 #' data(Yang)
@@ -17,7 +18,6 @@
 #'     coordVars = c("x", "y"),
 #'     imageVars = c("day", "root", "section")
 #' )
-#' # Fit a subset of features to limit computation time
 #' yangPims <- estPis(hypYang, pis = "nn")
 #' # First build the weighting function
 #' yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))
@@ -28,10 +28,11 @@
 #' )
 #' res <- getResults(fittedModels, "Intercept")
 #' head(res)
-getResults <- function(obj, parameter) {
+getResults <- function(obj, parameter, moransI = FALSE) {
+    resChar = if(moransI) "resultsMoran" else "results"
     if (parameter == "Intercept") {
-        obj$results[[parameter]]
+        obj[[resChar]][[parameter]]
     } else {
-        obj$results$fixedEffects[[parameter]]
+        obj[[resChar]]$fixedEffects[[parameter]]
     }
 }

@@ -43,11 +43,14 @@ test_that("Fitting linear mixed models proceeds without errors", {
     ), "list")
     expect_s3_class(linModsNNfull[["nn"]]$models[[1]]$piMod, "lm")
     expect_s4_class(linMModsNNfull[["nn"]]$models[[1]]$piMod, "lmerModLmerTest")
-    expect_is(linModsMP <- fitLMMs(objBG,
+    expect_is(linModsMP <- fitLMMs(objBG, returnModels = TRUE,
         features = getFeatures(objBG)[1:5],
         fixedVars = "condition",
         pi = "centroid"
     ), "list")
+    expect_is(getResults(linModsMP$centroid, "Intercept", moransI = TRUE), "matrix")
+    expect_s3_class(linModsMP[["centroid"]]$models[[1]]$moranMod, "lm")
+    expect_s4_class(linModsMP[["centroid"]]$models[[1]]$piMod, "lmerModLmerTest")
     expect_is(linModsEdge <- fitLMMs(objBG,
         features = getFeatures(objBG)[1:5],
         fixedVars = "condition",
