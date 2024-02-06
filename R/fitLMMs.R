@@ -62,7 +62,8 @@ fitLMMsSingle <- function(obj, pi, fixedVars, randomVars, verbose, returnModels,
     }
     if(addMoransI){
         moranFormula = buildFormula(moranFormula, fixedVars = intersect(fixedVars, getPPPvars(obj)),
-                                     randomVars = intersect(randomVars, getPPPvars(obj)), outcome = "MoransI")
+                                     randomVars = rvMoran <- intersect(randomVars, getPPPvars(obj)), outcome = "MoransI")
+        MMmoran = as.logical(length(rvMoran))
         if (verbose) {
             message("Fitted formula for Moran's I for pi ", pi, ":\n", formCharMoran <- characterFormula(moranFormula))
         }
@@ -107,12 +108,12 @@ fitLMMsSingle <- function(obj, pi, fixedVars, randomVars, verbose, returnModels,
             })
             finalDf = cbind("MoransI" = moransIs, df[match(unIm, df$image),
                                                           setdiff(colnames(df), "weight")])
-            fitPiModel(moranFormula, finalDf, contrasts, Control, MM = MM)
+            fitPiModel(moranFormula, finalDf, contrasts, Control, MM = MMmoran)
         } #Run this before nesting
         if (randomNested) {
             df <- nestRandom(df, randomVarsSplit, intersect(fixedVars, getPPPvars(obj)))
         }
-        piMod = fitPiModel(Formula, df, contrasts, Control, MM = MM)
+        piMod = fitPiModel(Formula, df, contrasts, Control, MM = MM, Weight = df$weight)
         return(list("piMod" = piMod, "moranMod" = moranMod))
     })
     names(models) <- Features
