@@ -40,7 +40,8 @@ The results object with a slot "Wfs" added containing the weighting
 functions
 }
 \description{
-Build a weighting function based on the data, and attach it to the object
+Build a weighting function based on the data using spline fitting,
+and attach it to the object.
 }
 \details{
 For computational and memory reasons,

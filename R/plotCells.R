@@ -1,7 +1,7 @@
-#' Plot the n cells with highest abundance of a feature
+#' Plot the n cells with highest abundance of a feature, in a random spatial orientation.
 #' @description After testing for within-cell patterns, it may be useful to
 #' look at the cells with the most events for certain genes. These are plotted
-#' here, but the spatial location of the cells is lost
+#' here, but the spatial location of the cells is lost!
 #'
 #' @param obj A hyperframe, or an object containing one
 #' @param features The features to be plotted, a character vector
@@ -88,6 +88,7 @@ plotCells <- function(obj, features = getFeatures(obj)[seq_len(3)], nCells = 1e2
         names(borderCols) = unVals
         addLegend(borderCols, Shift + c(2, 0), Pch = 5, Main = borderColVar, Cex = 0.7)
     }
+    #TO DO: Add warning on orientation!
     invisible()
 }
 #' @importFrom spatstat.geom affine.owin affine.ppp

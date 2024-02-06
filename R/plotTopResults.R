@@ -1,9 +1,9 @@
-#' Plot the most significant findings for a certain PI
+#' Plot the most significant findings for a certain PI, specifying a direction
 #'
 #' @param hypFrame The hyperframe
 #' @param results The results frame
-#' @param pi The probabilistic index
-#' @param smallPI A boolean, should features with PI smaller than piThreshold be shown? See details
+#' @param pi A character string, specifying the probabilistic index
+#' @param smallPI A boolean, should features with PI smaller than piThreshold be shown? See details.
 #' @param sigLevel The significance level
 #' @param numFeats The number of features to plot
 #' @param effect The name of the effect
@@ -15,6 +15,7 @@
 #'
 #' @return A plot from plotCells or plotExplore, throws a warning when no features meet the criteria
 #' @export
+#' @seealso [ploCells(),plotExplore(),fitLMMs()]
 #'
 #' @examples
 #' example(fitLMMs, "spatrans")

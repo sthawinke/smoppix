@@ -1,5 +1,6 @@
 #' Add a variance weighting function
-#' @description Build a weighting function based on the data, and attach it to the object
+#' @description Build a weighting function based on the data using spline fitting,
+#' and attach it to the object.
 #'
 #' @param resList A results list, from a call to estPis()
 #' @param designVars A character vector containing all design factors

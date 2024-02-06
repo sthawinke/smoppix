@@ -2,7 +2,7 @@
 % Please edit documentation in R/convertToOwins.R
 \name{convertToOwins}
 \alias{convertToOwins}
-\title{Convert windows in different formats to spatstat owin format}
+\title{Convert windows in different formats to spatstat.geom owin format}
 \usage{
 convertToOwins(windows, namePPP, coords, ...)
 }
@@ -13,16 +13,19 @@ convertToOwins(windows, namePPP, coords, ...)
 
 \item{coords}{The names of the coordinates, if the windows are given as sets of coordinates}
 
-\item{...}{Further arguments passed onto read functions}
+\item{...}{Further arguments passed onto [convertToOwins()]}
 }
 \value{
 A list of owins
 }
 \description{
 Convert a list of differently formatted windows to owins, for
-addition to a hyperframe
+addition to a hyperframe.
 }
 \details{
 Order of traversion of polygons may differ between data types.
 Where applicable, different orders are tried before throwing an error.
+}
+\seealso{
+[addCell()]
 }

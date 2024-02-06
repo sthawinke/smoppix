@@ -33,9 +33,9 @@
 #' plotExplore(hypYang, titleVar = "day")
 #' plotExplore(hypYang, features = c("SmRBRb", "SmTMO5b", "SmWER--SmAHK4f"))
 plotExplore <- function(hypFrame, features = getFeatures(hypFrame)[seq_len(6)], ppps,
-                        maxPlot = 1e+05, Cex = 1, plotWindows = !is.null(hypFrame$owins),
+                        maxPlot = 1e+05, Cex = 1, plotWindows = !is.null(hypFrame$owins), piEsts = NULL,
                         Xlim = NULL, Ylim = NULL, Cex.main = 0.8, Mar = c(0.35, 0.1, 0.75, 0.1),
-                        titleVar = NULL, piColourCell = NULL, piEsts = NULL, palCols = c("blue", "yellow")) {
+                        titleVar = NULL, piColourCell = NULL, palCols = c("blue", "yellow")) {
     if (!is.hyperframe(hypFrame)) {
         hypFrame <- hypFrame$hypFrame
     }
@@ -102,6 +102,7 @@ plotExplore <- function(hypFrame, features = getFeatures(hypFrame)[seq_len(6)], 
         tmp
     } else Cols
     addLegend(colPlot, Main = if(colourCells) paste("pi", piColourCell) else "")
+    # TO DO: add Moran's I to legend
 }
 addLegend <- function(Cols, Shift = c(0, 0), Cex = 0.85, Pch = 20, Main = "") {
     idCols <- which(Cols != "grey")

@@ -198,7 +198,7 @@ head(getResults(allModsNN$nnPair, "Intercept"))
 
 # Eng2019: Mouse brain cells
 
-A second dataset used is the one by \textcite{Eng2019} on mouse fibroblast cells, which will serve to illustrate methods given knowledge of cell boundaries. The hyperframe is built as before:
+A second dataset used is the one by \textcite{Eng2019} on mouse fibroblast cells, which will serve to illustrate methods given knowledge of cell boundaries. The dataset was subset to the eight most expressed genes for memory reasons. The hyperframe is built as before:
 
 ```{r readInEngData}
 data(Eng)
@@ -212,18 +212,74 @@ Next, the cell boundaries are added, as a list with names corresponding to the r
 hypEng = addCell(hypEng, EngRois)
 ```
 
+Now plot the complete hyperframe with cell boundaries:
+
 ```{r}
 plotExplore(hypEng)
 ```
 
-## Vicinity to cell edge or centroid
+## Vicinity to cell edge or centroid, and other within-cell localization patterns
 
-## Within-cell localization patterns
+First, we will test for vicinity of the RNA molecules to cell boundaries or centroids, and for localization patterns within the cell. For this we pass different PI arguments to the _estPis()_ function. As null hypothesis, we choose complete spatial randomness (CSR) within the cell, which seems most natural, although the "background" option is also available. The suffix "Cell" indicates that nearest neighbour distances are calculated within the same cell only.
+
+```{r}
+engPis = estPis(hypEng, pis = c("edge", "centroid", "nnCell", "nnPairCell"), null = "CSR")
+```
+
+As before, the weight function needs to be added for the nearest neighbour PIs.
+The lowest level variable defaults to "cell" in this case, so there is no need to supply it:
+
+```{r addWfCell}
+engPis = addWeightFunction(engPis)
+```
+
+We can now plot the bivariate weight function for instance:
+
+```{r}
+plotWf(engPis, "nnPairCell")
+```
+
+As before, the minority gene of the pair is the main driver of variance. Next, we fit linear mixed models on the obtained PIs. The experiment was conducted twice, so we add the experiment variable as fixed effect. The image and cell variables are added automatically where appropriate, as printed in the output:
+
+```{r plotPiCell}
+allModsNNcell <- fitLMMs(engPis, fixedVars = "experiment")
+```
+
+For the "edge" and "centroid" options, each individual RNA-molecule is an observation in the model, and random effects are added for both cell and image. For "nnCell" and "nnPairCell", the observations are averaged per cell, and so only a random effect common to all cells of a single image remains. Now we plot the genes with the strongest remoteness from the cell edge:
+
+```{r}
+plotTopResults(hypEng, results = allModsNNcell, pi = "edge", smallPI = FALSE, numFeats = 1)
+```
+
+Note that the cells are selected for high expression of the gene and are not shown in their original position! Use _plotExplore()_ for this purpose. Now plot the gene with strongest intracellular aggregation:
+
+```{r}
+plotTopResults(hypEng, results = allModsNNcell, pi = "nnCell", numFeats = 1)
+```
+
+And finally the gene pair with the strongest antilocalization:
+
+```{r}
+plotTopResults(hypEng, results = allModsNNcell, pi = "nnPairCell", numFeats = 1, smallPI = FALSE)
+```
+
+We can see that the molecule distribution within the cell is all but uniform!
 
 ### Global spatial distribution of intracellular patterns
 
+A side question that may arise is whether the measures of intracellular aggregation have a global spatial patterning throughout the tissue. As a start, we can explore this graphically for the gene most remote from the cell edge:
 
-## Tests for vicinity to cell wall or centroid: distances to fixed objects
+```{r exploreSpatCell}
+plotExplore(hypEng, piEsts = engPis, piColourCell = "edge", features = remEdge <- rownames(getResults(allModsNNcell$edge, "Intercept"))[1])
+```
+
+The molecules are shown in red, while the yellow-blue scale indicates the PI estikmte. It seems like in the central cells, the PI is smaller (molecules less remote from cell edge) than the outer cells. We test whether the Moran's I statistic, a measure for spatial aggregation of numeric variables, is significant over the different point patterns:
+
+```{r testMoransI}
+getResults(allModsNNcell$edge, "Intercept", moransI = TRUE)[remEdge,]
+```
+
+Although the estimated Moran's I is positive indeed, indicating positive spatial autocorrelation, it is not significant over the different repeats.
 
 # Troubleshooting
 

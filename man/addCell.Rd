@@ -2,7 +2,7 @@
 % Please edit documentation in R/addCell.R
 \name{addCell}
 \alias{addCell}
-\title{Add cell variables to a hyperframe}
+\title{Add cell boundaries and event-wise cell identifiers to a hyperframe}
 \usage{
 addCell(
   hypFrame,
@@ -29,24 +29,24 @@ If supplied, it must contain a variable 'cell' that is matched with the names of
 \item{findOverlappingOwins}{a boolean, should windows be checked for overlap?}
 
 \item{warnOut}{a boolean, should warning be issued when points are not
-contained in window}
+contained in window?}
 
 \item{coords}{The names of the coordinates, if the windows are given as sets of coordinates}
 
-\item{verbose}{A boolean, shoudl verbose output be printed?}
+\item{verbose}{A boolean, should verbose output be printed?}
 
-\item{addCellMarkers}{A boolean, should cell identities be added. Set this to
-false if cell identifiers are already present in the data, and you only want
+\item{addCellMarkers}{A boolean, should cell identities be added? Set this to
+FALSE if cell identifiers are already present in the data, and you only want
 to add windows and centroids.}
 
-\item{...}{Further arguments passed onto read functions}
+\item{...}{Further arguments passed onto [convertToOwins()]}
 }
 \value{
-The hyperframe with cell lables added in the marks of the point patterns
+The hyperframe with cell labels added in the marks of the point patterns
 }
 \description{
-Check in which cell each event lies and add a cell marker,
-plus include the list of the cells and their centroids in the hyperframe.
+Add the list of the cells and their centroids in the hyperframe,
+check in which cell each event lies and add a cell marker.
 }
 \details{
 First the different cells are checked for overlap per point pattern.
@@ -58,6 +58,10 @@ converting windows to owins as well as for finding overlap between the windows
 in the findOverlap() function when checkOverlap is TRUE.
 If this leads to excessive memory usage and crashes, try serial processing by
 setting register(SerialParam()).
+Different formats of windows are allowed, if the corresponding packages are installed.
+A dataframe of coordinates or a list of spatstat.geom owins is always allowed, as necessary packages are required by spatrans.
+A "SpatialPolygonsDataFrame" object is allowed if the polycub package is installed,
+and a lsit of "ijroi" object or a single "ijzip" of the "RImageJROI" package is installed.
 }
 \note{
 By default, there is no checking for overlap between windows.
@@ -103,4 +107,6 @@ hypFrame2 <- addCell(hypFrame, wList)
 }
 \seealso{
 \link{buildHyperFrame}
+
+[convertToOwins()]
 }
