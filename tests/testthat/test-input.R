@@ -51,6 +51,8 @@ test_that("Adding regions of interest works", {
 })
 
 test_that("Adding regions of interest throws errors when appropriate", {
+    wListNoNames = wList;names(wListNoNames = NULL)
     expect_error(addCell(addCell(hypFrame, wList), wList))
     expect_error(addCell(hypFrame$ppp[[1]], wList))
+    expect_error(addCell(hypFrame, wListNoNames))
 })
