@@ -64,7 +64,7 @@ setMethod("buildHyperFrame", "matrix", function(x, imageVars, covariates, ...) {
     stopifnot(is.null(covariates) || nrow(x) == NROW(covariates))
     message("Found ", length(unDesignFactors <- unique(designVec)), " unique images")
     ppps <- tapply(seq_len(nrow(x)), designVec, simplify = FALSE, function(i) {
-        i = i[order(covariates[i, "gene"], x[i, 1])]
+        i = i[order(x[i, 1])]
         #Pre-order for nncross function
         spatstat.geom::ppp(
             x = x[i, 1], y = x[i, 2], marks = covariates[i, , drop = FALSE],
@@ -115,7 +115,7 @@ setMethod("buildHyperFrame", "list", function(x, coordVars = c("x", "y"),
             if (!("gene" %in% PPcovariates)) {
                 stop("Gene marker is missing in at least one point pattern")
             }
-            i = order(z[, "gene"], z[, coordVars[1]])
+            i = order(z[, coordVars[1]])
             spatstat.geom::ppp(
                 x = z[i, coordVars[1]], y = z[i, coordVars[2]], marks = z[i, PPcovariates, drop = FALSE],
                 xrange = range(z[, coordVars[1]]), yrange = range(z[, coordVars[2]]), drop = FALSE
