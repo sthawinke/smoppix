@@ -13,7 +13,7 @@
 #' @importFrom methods slot is
 convertToOwins <- function(windows, namePPP, coords, ...) {
     if (is(windows, "SpatialPolygonsDataFrame")) {
-        if (requireNamespace("polyCub")) {
+        if (requireNamespace("polyCub", quietly = TRUE)) {
             p <- slot(windows, "polygons")
             winOut <- lapply(p, as.owin, ...)
         } else {
@@ -51,7 +51,7 @@ convertToOwins <- function(windows, namePPP, coords, ...) {
             foo
         })
     } else if ((allRoi <- allClass(windows, is, "ijroi")) || is(windows, "ijzip")) {
-        if (requireNamespace("RImageJROI")) {
+        if (requireNamespace("RImageJROI", quietly = TRUE)) {
             winOut <- if (allRoi) {
                 lapply(windows, function(w){
                     foo <- try(silent = TRUE, RImageJROI::ij2spatstat(w))
