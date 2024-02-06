@@ -106,7 +106,7 @@ named.contr.sum <- function(x, ...) {
 #'
 #' @return The hyperframe with tabObs added
 #' @importFrom spatstat.geom marks
-addTabObsAndSort <- function(hypFrame, desMat) {
+addTabObs <- function(hypFrame, desMat) {
     hypFrame$tabObs <- lapply(hypFrame$ppp, function(x) {
         table(marks(x, drop = FALSE)$gene)
     })
@@ -115,11 +115,6 @@ addTabObsAndSort <- function(hypFrame, desMat) {
         hypFrame[, i] <- desMat[, i]
     }
     rownames(hypFrame) <- hypFrame$image
-    #Pre-order for nncross function
-    hypFrame$ppp = lapply(hypFrame$ppp, function(x){
-        Ord = order(marks(x, drop = FALSE)$gene, getCoordsMat(x)[, "x"])
-        x[Ord,,drop = FALSE]
-    })
     hypFrame
 }
 #' Nest random effects within fixed variables, in case the names are the same

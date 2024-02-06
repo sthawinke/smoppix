@@ -65,8 +65,7 @@ piEstsBG2 <- estPis(hypFrame2[, c("ppp", "image", "tabObs")],
     pis = "nn",
     null = "background", verbose = FALSE
 )
-# No replication
-# Already add weight functions
+# Add weight functions
 objBG <- addWeightFunction(piEstsBG, designVars = "condition")
 objCSR <- addWeightFunction(piEstsCSR, designVars = "condition")
 # Fit Yang models too
