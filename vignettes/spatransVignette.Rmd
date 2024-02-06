@@ -108,7 +108,7 @@ plotExplore(hypYang)
 
 ## Univariate tests
 
-### Tests for univariate aggregation or regularity: interevent distances
+### Tests for univariate aggregation or regularity: nearest neighbour distances
 
 The first round of tests concerns the aggregation or regularity of individual transcripts. We choose to work with nearest neighbour distances here (pi = 'nn'). The background of all other transcripts. serves as null distribution, i.e. we look for transcripts aggregated _with respect to_ all other transcripts. As this is computationally most efficient, we also fit the PI for the bivariate analysis in this step ('nnPair', see below). We set the _nPointsAll_ parameter, which drives the resolution of the PI, a bit lower than default to limit compilation time of the vignette. 
 
@@ -198,9 +198,16 @@ head(getResults(allModsNN$nnPair, "Intercept"))
 
 # Eng2019: Mouse brain cells
 
+A second dataset used is the one by \textcite{Eng2019} on mouse fibroblast cells, which will serve to illustrate methods given knowledge of cell boundaries. The hyperframe is built as before:
+
 ```{r readInEngData}
 data(Eng)
-hypEng = buildHyperFrame(pointLoc, coordVars = c("x", "y"), imageVars = c("fov", "experiment"))
+hypEng = buildHyperFrame(Eng, coordVars = c("x", "y"), imageVars = c("fov", "experiment"))
+```
+
+Next, the cell boundaries are added, as a list with names corresponding to the rownames of the hyperframe. Different formats are allowed to provide windows in case the correct packages are installed, see _?addCell_. Based on these cells, every event is assigned to a cell.
+
+```{r CellEngData}
 #Add cell identifiers
 hypEng = addCell(hypEng, EngRois)
 ```
@@ -208,6 +215,12 @@ hypEng = addCell(hypEng, EngRois)
 ```{r}
 plotExplore(hypEng)
 ```
+
+## Vicinity to cell edge or centroid
+
+## Within-cell localization patterns
+
+### Global spatial distribution of intracellular patterns
 
 
 ## Tests for vicinity to cell wall or centroid: distances to fixed objects

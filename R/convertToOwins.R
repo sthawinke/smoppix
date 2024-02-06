@@ -1,6 +1,6 @@
-#' Convert windows in different formats to spatstat owin format
+#' Convert windows in different formats to spatstat.geom owin format
 #' @description Convert a list of differently formatted windows to owins, for
-#' addition to a hyperframe
+#' addition to a hyperframe.
 #'
 #' @param windows The list of windows
 #' @param namePPP the name of the point pattern, will be added to the cell names
@@ -11,6 +11,7 @@
 #' @return A list of owins
 #' @importFrom spatstat.geom is.owin owin as.owin
 #' @importFrom methods slot is
+#' @seealso [addCell()]
 convertToOwins <- function(windows, namePPP, coords, ...) {
     if (is(windows, "SpatialPolygonsDataFrame")) {
         if (requireNamespace("polyCub", quietly = TRUE)) {
@@ -68,7 +69,7 @@ convertToOwins <- function(windows, namePPP, coords, ...) {
             stop("Install RImageJROI package first")
         }
     } else {
-        stop("Input type unknown")
+        stop("Input type not supported yet!")
     }
     if (is.null(names(winOut))) {
         names(winOut) <- paste0("Cell", seq_along(winOut))

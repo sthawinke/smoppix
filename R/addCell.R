@@ -1,6 +1,6 @@
-#' Add cell variables to a hyperframe
-#' @description Check in which cell each event lies and add a cell marker,
-#' plus include the list of the cells and their centroids in the hyperframe.
+#' Add cell boundaries and event-wise cell identifiers to a hyperframe
+#' @description Add the list of the cells and their centroids in the hyperframe,
+#' check in which cell each event lies and add a cell marker.
 #'
 #' @param hypFrame The hyperframe
 #' @param owins the list containing a list of owins per point pattern.
@@ -10,14 +10,14 @@
 #' If supplied, it must contain a variable 'cell' that is matched with the names of the owins
 #' @param findOverlappingOwins a boolean, should windows be checked for overlap?
 #' @param warnOut a boolean, should warning be issued when points are not
-#' contained in window
+#' contained in window?
 #' @param coords The names of the coordinates, if the windows are given as sets of coordinates
-#' @param verbose A boolean, shoudl verbose output be printed?
-#' @param addCellMarkers A boolean, should cell identities be added. Set this to
-#'  false if cell identifiers are already present in the data, and you only want
+#' @param verbose A boolean, should verbose output be printed?
+#' @param addCellMarkers A boolean, should cell identities be added? Set this to
+#'  FALSE if cell identifiers are already present in the data, and you only want
 #'  to add windows and centroids.
-#' @param ... Further arguments passed onto read functions
-#' @return The hyperframe with cell lables added in the marks of the point patterns
+#' @param ... Further arguments passed onto [convertToOwins()]
+#' @return The hyperframe with cell labels added in the marks of the point patterns
 #' @importFrom spatstat.geom inside.owin marks centroid.owin marks<-
 #' @export
 #' @seealso \link{buildHyperFrame}
@@ -30,9 +30,14 @@
 #' in the findOverlap() function when checkOverlap is TRUE.
 #' If this leads to excessive memory usage and crashes, try serial processing by
 #' setting register(SerialParam()).
+#' Different formats of windows are allowed, if the corresponding packages are installed.
+#' A dataframe of coordinates or a list of spatstat.geom owins is always allowed, as necessary packages are required by spatrans.
+#' A "SpatialPolygonsDataFrame" object is allowed if the polycub package is installed,
+#' and a lsit of "ijroi" object or a single "ijzip" of the "RImageJROI" package is installed.
 #' @note By default, there is no checking for overlap between windows.
 #' Events are assigned to the first window in which they fall
 #' Do check your input or set checkOverlap to TRUE, even when this make take time.
+#' @seealso [convertToOwins()]
 #' @examples
 #' library(spatstat.random)
 #' n <- 1e3 # number of molecules
