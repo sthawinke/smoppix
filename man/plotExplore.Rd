@@ -11,13 +11,13 @@ plotExplore(
   maxPlot = 1e+05,
   Cex = 1,
   plotWindows = !is.null(hypFrame$owins),
+  piEsts = NULL,
   Xlim = NULL,
   Ylim = NULL,
   Cex.main = 0.8,
   Mar = c(0.35, 0.1, 0.75, 0.1),
   titleVar = NULL,
   piColourCell = NULL,
-  piEsts = NULL,
   palCols = c("blue", "yellow")
 )
 }
@@ -35,6 +35,8 @@ Defaults to the first 8.}
 
 \item{plotWindows}{A boolean, should windows be plotted too?}
 
+\item{piEsts}{Set of PI estimates, returned by estPis}
+
 \item{Xlim, Ylim}{plotting limits}
 
 \item{Cex.main}{Expansion factor for the title}
@@ -44,8 +46,6 @@ Defaults to the first 8.}
 \item{titleVar}{Image variable to be added to the title}
 
 \item{piColourCell}{PI by which to colour the cell}
-
-\item{piEsts}{Set of PI estimates, returned by estPis}
 
 \item{palCols}{Two extremes of the colour palette}
 }

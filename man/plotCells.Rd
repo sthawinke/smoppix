@@ -2,7 +2,7 @@
 % Please edit documentation in R/plotCells.R
 \name{plotCells}
 \alias{plotCells}
-\title{Plot the n cells with highest abundance of a feature}
+\title{Plot the n cells with highest abundance of a feature, in a random spatial orientation.}
 \usage{
 plotCells(
   obj,
@@ -35,7 +35,7 @@ Plots cells with highest expression to the plotting window, returns invisible
 \description{
 After testing for within-cell patterns, it may be useful to
 look at the cells with the most events for certain genes. These are plotted
-here, but the spatial location of the cells is lost
+here, but the spatial location of the cells is lost!
 }
 \examples{
 example(addCell, "spatrans")

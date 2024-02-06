@@ -2,7 +2,7 @@
 % Please edit documentation in R/plotTopResults.R
 \name{plotTopResults}
 \alias{plotTopResults}
-\title{Plot the most significant findings for a certain PI}
+\title{Plot the most significant findings for a certain PI, specifying a direction}
 \usage{
 plotTopResults(
   hypFrame,
@@ -21,11 +21,11 @@ plotTopResults(
 
 \item{results}{The results frame}
 
-\item{pi}{The probabilistic index}
+\item{pi}{A character string, specifying the probabilistic index}
 
 \item{effect}{The name of the effect}
 
-\item{smallPI}{A boolean, should features with PI smaller than piThreshold be shown? See details}
+\item{smallPI}{A boolean, should features with PI smaller than piThreshold be shown? See details.}
 
 \item{sigLevel}{The significance level}
 
@@ -39,7 +39,7 @@ plotTopResults(
 A plot from plotCells or plotExplore, throws a warning when no features meet the criteria
 }
 \description{
-Plot the most significant findings for a certain PI
+Plot the most significant findings for a certain PI, specifying a direction
 }
 \details{
 If smallPI is set to TRUE, features with aggregation, colocalization and vicinity to cell boundary or centroid are shown.
@@ -49,4 +49,7 @@ If smallPI is set to FALSE, features with regularity, antilocalization and remot
 example(fitLMMs, "spatrans")
 plotTopResults(hypYang, lmmModels, "nn")
 plotTopResults(hypYang, lmmModels, "nn", effect = "Intercept")
+}
+\seealso{
+[ploCells(),plotExplore(),fitLMMs()]
 }
