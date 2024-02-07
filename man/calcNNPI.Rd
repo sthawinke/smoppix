@@ -2,7 +2,8 @@
 % Please edit documentation in R/calcNNpi.R
 \name{calcNNPI}
 \alias{calcNNPI}
-\title{Estimate the PI for the nearest neighbour distances, given a set of ranks}
+\title{Estimate the PI for the nearest neighbour distances, given a set of ranks,
+using the negative hypergeometric distribution}
 \usage{
 calcNNPI(Ranks, n, m, r = 1)
 }
@@ -21,8 +22,9 @@ A vector of evaluations of the negative hypergeometric distribution
 function
 }
 \description{
-Estimate the PI for the nearest neighbour distances, given a set of ranks
+Estimate the PI for the nearest neighbour distances, given a set of ranks,
+using the negative hypergeometric distribution
 }
 \seealso{
-\link{pnhyper}
+\link{pnhyper}, \link{calcIndividualPIs}
 }

@@ -6,7 +6,7 @@
 \alias{buildHyperFrame,matrix-method}
 \alias{buildHyperFrame,list-method}
 \alias{buildHyperFrame,SpatialExperiment-method}
-\title{Build a hyperframe containing all separate point patterns.}
+\title{Build a hyperframe containing all point patterns of an experiment.}
 \usage{
 buildHyperFrame(x, ...)
 
@@ -40,7 +40,7 @@ buildHyperFrame(x, ...)
 \item{imageVars}{A character vector of variables whose unique combinations
 define the separate point patterns (images)}
 
-\item{coVars}{Names of covariates such as gene or cell for each single point}
+\item{coVars}{Names of event-wise covariates such as gene or cell for each single point}
 
 \item{covariates}{A vector of covariates}
 
@@ -54,11 +54,11 @@ with the names of covariatesDf}
 \item{list}{A list of matrices or of point patterns of class 'ppp'}
 }
 \value{
-An object of class 'hyperframe' from the 'spatstat' package
+An object of class 'hyperframe' from the 'spatstat.geom' package
 }
 \description{
 Build a spatstat hyperframe with point patterns and metadata.
- Matrices, dataframe, lists and  SpatialExperiment inputs are accepted.
+Matrices, dataframe, lists and SpatialExperiment inputs are accepted.
 }
 \examples{
 data(Yang)

@@ -3,7 +3,7 @@
 \docType{data}
 \name{Yang}
 \alias{Yang}
-\title{Spatial transcriptomics data of Selaginella moellendorffii}
+\title{Spatial transcriptomics data of Selaginella moellendorffii roots}
 \format{
 A data matrix
 \describe{

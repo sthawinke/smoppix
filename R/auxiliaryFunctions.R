@@ -155,6 +155,7 @@ getElement <- function(x, e) {
         x[e]
     }
 }
+#' Build a weight matrix for Moran's I calculations
 #' @param coordList A list of coordinate matrices
 #' @return A matrix of weights for Moran's I statistic, inversely proportional to the distance between cell centroids
 #' @importFrom stats dist

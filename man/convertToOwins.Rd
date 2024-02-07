@@ -13,7 +13,7 @@ convertToOwins(windows, namePPP, coords, ...)
 
 \item{coords}{The names of the coordinates, if the windows are given as sets of coordinates.}
 
-\item{...}{Further arguments passed onto \link{convertToOwins}}
+\item{...}{passed onto as.owin}
 }
 \value{
 A list of owins
@@ -25,7 +25,8 @@ addition to a hyperframe.
 \details{
 Order of traversion of polygons may differ between data types.
 Where applicable, different orders are tried before throwing an error.
+See \link{addCell} for accepted formats.
 }
 \seealso{
-[addCell()]
+\link{addCell}
 }

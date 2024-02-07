@@ -45,7 +45,7 @@ Defaults to all features in the object}
 
 \item{moranFormula}{Formula for Moran's I model fitting}
 
-\item{addMoransI}{A boolean, include Moran's I in the calculation}
+\item{addMoransI}{A boolean, include Moran's I of the cell-wise PIs in the calculation}
 
 \item{...}{Passed onto fitLMMsSingle}
 }
@@ -55,6 +55,9 @@ A list of fitted objects
 \description{
 The PI is used as outcome variable in a linear (mixed) model,
 with design variables as regressors.
+}
+\details{
+The weights for the Moran's I statistic are inversely proportional to the distance between cell centroids
 }
 \examples{
 example(addWeightFunction, "spatrans")

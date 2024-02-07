@@ -34,7 +34,7 @@ defined. See details.}
 \item{cellAndGene}{The marks dataframe with cell and gene, used to match the
 observations with the ecdfs}
 
-\item{feat}{The features}
+\item{feat}{The feature}
 }
 \value{
 A list of vectors of estimated probabilistic indeces per event

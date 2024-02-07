@@ -44,7 +44,7 @@ events and of cells within the cell, under the null}
 Defaults to bplapply except when looping over features within cells}
 
 \item{minDiff}{An integer, the minimum number of events from other genes
-needed for calculation of background PIs}
+needed for calculation of background distribution of distances}
 }
 \value{
 A list containing PI entries per feature

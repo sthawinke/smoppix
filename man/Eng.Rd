@@ -25,7 +25,8 @@ data(Eng)
 \description{
 Single-molecule spatial transcriptomics seqFISH+ data containing measurements of 10,000 genes in NIH/3T3 mouse fibroblast cells by
 \insertCite{Eng2019}{spatrans}. Molecule locations, gene identity and design
-variables are included, a subset of eight most expressed genes is included in the package, and the dataset was subsampled to 100,000 observations for memory reasons
+variables are included, a subset of eight most expressed genes is included in the package,
+and the dataset was subsampled to 100,000 observations for memory reasons.
 In addition, a list of regions of interest (rois) is given describing the cell boundaries.
 }
 \references{

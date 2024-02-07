@@ -2,7 +2,7 @@
 % Please edit documentation in R/estPis.R
 \name{estPis}
 \alias{estPis}
-\title{Estimate probabilistic indices for (co)localization on a hyperframe}
+\title{Estimate probabilistic indices for single-molecule localization patterns}
 \usage{
 estPis(
   hypFrame,
@@ -22,46 +22,45 @@ estPis(
 
 \item{pis}{The probabilistic indices to be estimated}
 
-\item{verbose}{a boolean, whether to report on progress of fitting}
+\item{verbose}{A boolean, whether to report on progress of the fitting process.}
 
 \item{null}{A character vector, indicating how the null distribution is
 defined. See details.}
 
-\item{nPointsAll, nPointsAllWithinCell}{How many points to subsample or simulate to calculate
-overall interpoint distance and distance to point.
-This parameter is a strong driver of computation time.
-The second argument applies to within cell calculations.}
+\item{nPointsAll, nPointsAllWithinCell}{How many points to subsample or simulate to calculate the
+overall distance distribution under the null hypothesis.
+The second argument (nPointsAllWithinCell) applies to within cell calculations, where a lower number usually suffises.}
 
 \item{nPointsAllWin}{How many points to subsample or simulate
 to calculate distance to cell edge or centroid distribution}
 
 \item{minDiff}{An integer, the minimum number of events from other genes
-needed for calculation of background PIs}
+needed for calculation of background distribution of distances}
 
 \item{features}{A character vector, for which features should the
 probabilistic indices be calculated?}
 
-\item{...}{additional arguments, passed on to estPisSingle}
+\item{...}{additional arguments, passed on to \link{estPisSingle}.}
 }
 \value{
-The hyperframe with the estimated PIMs present in it
+The hyperframe with the estimated PIs present in it
 }
 \description{
-Estimate different probabilistic indices for (co)localization
-on  a hyperframe, and integrate the results in the same hyperframe
+Estimate different probabilistic indices for localization
+on all point patterns of a hyperframe, and integrate the results in the same hyperframe
 }
 \details{
-The null distribution used to calculate the PIs. Can be either 'background',
-in which case the observed distributions of all genes is used. Alternatively,
+The null distribution used to calculate the PIs can be either 'background' or 'null'.
+For 'background', the observed distributions of all genes is used. Alternatively,
 for null = 'CSR', Monte-Carlo simulation under complete spatial randomness
- is performed within the given window.
+is performed within the given window to find the null distribution of the distance under study.
 
 The 'nn' prefix indicates that nearest neighbour distances are being used,
-whereas 'all' indicates all distances are being used.
+either univariately or bivariately.
 The suffix 'Pair' indicates that bivariate probabilistic indices,
 testing for co- and antilocalization are being used.
 'edge' and 'centroid' calculate the distance to the edge respectively
- the centroid of the windows added using the addCell() function.
+ the centroid of the windows added using the \link{addCell} function.
 The suffix 'Cell' indicates distances are being calculated within cells only.
 }
 \examples{
@@ -70,7 +69,9 @@ hypYang <- buildHyperFrame(Yang,
     coordVars = c("x", "y"),
     imageVars = c("day", "root", "section")
 )
-# Fit a subset of features to limit computation time
-yangPims <- estPis(hypYang[c(seq_len(5), seq(25, 29)), ], pis = "nn")
+yangPims <- estPis(hypYang, pis = "nn")
 # Univariate nearest neighbour distances
+}
+\seealso{
+\link{estPisSingle}
 }

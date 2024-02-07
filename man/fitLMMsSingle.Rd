@@ -45,7 +45,7 @@ point patterns. See details.}
 \item{features}{The features for which to fit linear mixed models.
 Defaults to all features in the object}
 
-\item{addMoransI}{A boolean, include Moran's I in the calculation}
+\item{addMoransI}{A boolean, include Moran's I of the cell-wise PIs in the calculation}
 
 \item{weightMats}{A list of weight matrices for Moran's I}
 

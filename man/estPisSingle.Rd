@@ -2,7 +2,7 @@
 % Please edit documentation in R/estPis.R
 \name{estPisSingle}
 \alias{estPisSingle}
-\title{A wrapper function for the different probabilistic indices (PIs)}
+\title{A wrapper function for the different probabilistic indices (PIs), applied to individual point patterns}
 \usage{
 estPisSingle(
   p,
@@ -41,16 +41,15 @@ Defaults to bplapply except when looping over features within cells}
 \item{features}{A character vector, for which features should the
 probabilistic indices be calculated?}
 
-\item{nPointsAll, nPointsAllWithinCell}{How many points to subsample or simulate to calculate
-overall interpoint distance and distance to point.
-This parameter is a strong driver of computation time.
-The second argument applies to within cell calculations.}
+\item{nPointsAll, nPointsAllWithinCell}{How many points to subsample or simulate to calculate the
+overall distance distribution under the null hypothesis.
+The second argument (nPointsAllWithinCell) applies to within cell calculations, where a lower number usually suffises.}
 
 \item{nPointsAllWin}{How many points to subsample or simulate
 to calculate distance to cell edge or centroid distribution}
 
 \item{minDiff}{An integer, the minimum number of events from other genes
-needed for calculation of background PIs}
+needed for calculation of background distribution of distances}
 }
 \value{
 A list of data frames with estimated PIs per gene and/or gene pair:
@@ -59,5 +58,8 @@ A list of data frames with estimated PIs per gene and/or gene pair:
 \item{withinCellDists}{PIs for pointwise distances within cell}
 }
 \description{
-A wrapper function for the different probabilistic indices (PIs)
+A wrapper function for the different probabilistic indices (PIs), applied to individual point patterns
+}
+\seealso{
+\links{estPis}
 }

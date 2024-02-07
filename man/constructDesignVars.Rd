@@ -2,7 +2,7 @@
 % Please edit documentation in R/constructDesignVars.R
 \name{constructDesignVars}
 \alias{constructDesignVars}
-\title{Run checks on design variables, construct if necessary and return them}
+\title{Run checks on design variables, or construct them if missing}
 \usage{
 constructDesignVars(designVars, lowestLevelVar, allCell, resList)
 }
@@ -19,5 +19,5 @@ constructDesignVars(designVars, lowestLevelVar, allCell, resList)
 A vector of design variables
 }
 \description{
-Run checks on design variables, construct if necessary and return them
+Run checks on design variables, or construct them if missing
 }

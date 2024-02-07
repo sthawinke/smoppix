@@ -89,7 +89,8 @@ estPis <- function(hypFrame, pis = c("nn", "nnPair", "edge", "centroid", "nnCell
 #' \item{windowDists}{PIs for distances to cell wall or centroid}
 #' \item{withinCellDists}{PIs for pointwise distances within cell}
 #' @importFrom stats ecdf dist
-#' @importFrom spatstat.random runifpoint is.hyperframe
+#' @importFrom spatstat.random runifpoint
+#' @importFrom spatstat.geom is.hyperframe
 #' @importFrom Rdpack reprompt
 #' @seealso \links{estPis}
 estPisSingle <- function(p, pis, null, tabObs, owins = NULL, centroids = NULL, window = p$window, loopFun = "bplapply",
