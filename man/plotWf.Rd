@@ -9,7 +9,7 @@ plotWf(obj, pi = obj$pis[1])
 }
 \arguments{
 \item{obj}{A results object, for nearest neighbour distances,
-the result of a call to addWeightFunction()}
+the result of a call to \link{addWeightFunction}}
 
 \item{pi}{The PI for which to plot the weighting function}
 }

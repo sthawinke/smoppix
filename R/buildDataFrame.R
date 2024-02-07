@@ -1,14 +1,14 @@
-#' Build a data frame for a single gene and measure to prepare
-#' for mixed model building
+#' Build a data frame for a certain gene and PI, in preparation for mixed model building.
 #'
 #' @param obj A results object, for nearest neighbour distances,
-#' the result of a call to addWeightFunction()
+#' the result of a call to \link{addWeightFunction}
 #' @param gene A character string indicating the desired gene or gene pair
-#' @param pi character string indicating the desired pim as outcome
+#' @param pi character string indicating the desired PI as outcome
 #'  in the linear mixed model
 #' @return A dataframe
 #' @export
 #' @importFrom scam predict.scam
+#' @seealso \link{addWeightFunction}
 #' @examples
 #' example(addWeightFunction, "spatrans")
 #' dfUniNN <- buildDataFrame(yangObj, gene = "SmVND2", pi = "nn")

@@ -31,7 +31,7 @@
 #' }
 #' \item \strong{EngRois} A list of list of regions of interest (ROIs)
 #' }
-#' @source \doi{10.1016/j.cub.2023.08.030}
+#' @source \doi{10.1038/s41586-019-1049-y}
 #' @references
 #' \insertAllCited{}
 #' @usage data(Eng)

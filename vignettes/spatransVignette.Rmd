@@ -39,6 +39,8 @@ library(devtools)
 install_github("sthawinke/spatrans")
 ```
 
+Once installed, we can load the package:
+
 ```{r load}
 library(spatrans)
 ```
@@ -51,13 +53,14 @@ The _spatrans_ package can be computationally intensive, especially for transcri
 library(BiocParallel)
 ```
 
-All the user needs to do is prepare the parallel backend as follows:
+All the user needs to do, is prepare the parallel backend as follows:
 
 ```{r}
 nCores <- 2 # The number of CPUs
 register(MulticoreParam(nCores))
 ```
 
+Wherever applicable, the registered backend will be used throughout the analysis.
 For serial calculations, for instance if memory is limiting, choose
 
 ```{r , eval = FALSE}
@@ -66,7 +69,8 @@ register(SerialParam())
 
 # Yang data: lycophyte roots
 
-As example dataset we use the data by \textcite{Yang2023} on _Selaginella moellendorffii_. Only a subset of the data, consisting of sections 1-3 of roots 1-3 is included for computational reasons. The data is loaded as follows.
+As example dataset we use the data used in a ["manuscript"]( 	
+doi:10.1016/j.cub.2023.08.030) by Yang et al. 2023. on _Selaginella moellendorffii_. Only a subset of the data, consisting of sections 1-3 of roots 1-3 is included for computational reasons. The data is loaded as follows.
 
 ```{r}
 data(Yang)
@@ -140,7 +144,7 @@ dfUniNN <- buildDataFrame(nnObj, gene = "SmAHK4e", pi = "nn")
 This dataframe can then be used for mixed modelling, either in R or in an other software package. We present an example analysis below using the _lmerTest_ package, which enhances the _lmer_ package by providing p-values. We fit the following linear mixed model (LMM). The day variable enters the model as a fixed effect, the root as a random effect. We use sum coding for the day variable, meaning that two dummies are created, one for "day0" and one for "day3", so without a reference level. Instead the corresponding parameters are constrained to sum to zero, i.e. to be each other's opposite in this case. This maintains the interpretability of the intercept as the baseline pi, from which the different days can depart, and allows meaningful inference on the intercept.
 
 ```{r}
-library(lmerTest)
+library(lmerTest, quietly = TRUE)
 lmeMod <- lmerTest::lmer(pi - 0.5 ~ day + (1 | root),
     data = dfUniNN, na.action = na.omit,
     weights = weight, contrasts = list("day" = "contr.sum")
@@ -165,7 +169,7 @@ head(getResults(allModsNN$nn, "day"))
 
 ## Bivariate tests
 
-### Tests for colocalization or antilocalization: interfeature distances
+### Tests for colocalization or antilocalization: interfeature nearest neighbour distances
 
 Tests for colocalization are done by adding the suffix 'Pair' to the PI. All combinations of features provided are fitted. 
 Again we plot the weighting function, which is now a bivariate spline as a function of the minority and majority gene:
@@ -198,7 +202,7 @@ head(getResults(allModsNN$nnPair, "Intercept"))
 
 # Eng2019: Mouse brain cells
 
-A second dataset used is the one by \textcite{Eng2019} on mouse fibroblast cells, which will serve to illustrate methods given knowledge of cell boundaries. The dataset was subset to the eight most expressed genes for memory reasons. The hyperframe is built as before:
+A second dataset was published in a ["paper"](10.1038/s41586-019-1049-y) by Eng et al. 2019.  on mouse fibroblast cells, which will serve to illustrate methods given knowledge of cell boundaries. The dataset was subset to the eight most expressed genes for memory reasons. The hyperframe is built as before:
 
 ```{r readInEngData}
 data(Eng)
@@ -242,7 +246,7 @@ plotWf(engPis, "nnPairCell")
 As before, the minority gene of the pair is the main driver of variance. Next, we fit linear mixed models on the obtained PIs. The experiment was conducted twice, so we add the experiment variable as fixed effect. The image and cell variables are added automatically where appropriate, as printed in the output:
 
 ```{r plotPiCell}
-allModsNNcell <- fitLMMs(engPis, fixedVars = "experiment")
+allModsNNcell <- fitLMMs(engPis, fixedVars = "experiment", addMoransI = TRUE)
 ```
 
 For the "edge" and "centroid" options, each individual RNA-molecule is an observation in the model, and random effects are added for both cell and image. For "nnCell" and "nnPairCell", the observations are averaged per cell, and so only a random effect common to all cells of a single image remains. Now we plot the genes with the strongest remoteness from the cell edge:

@@ -7,7 +7,7 @@
 buildFormula(Formula, fixedVars, randomVars, outcome = "pi - 0.5")
 }
 \arguments{
-\item{Formula}{A formula. If not supplied (is null), will be overridden}
+\item{Formula}{A formula. If not supplied or equals NULL, will be overridden}
 
 \item{fixedVars, randomVars}{Character vectors with fixed and random variables}
 
@@ -21,5 +21,8 @@ Build a formula from different components
 }
 \details{
 Random intercepts are assumed for the random effects, if more
-complicated designs are used, do supply your own formula
+complicated designs are used, do supply your own formula.
+}
+\seealso{
+\link{fitLMMs}
 }

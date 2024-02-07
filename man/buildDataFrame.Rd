@@ -2,8 +2,7 @@
 % Please edit documentation in R/buildDataFrame.R
 \name{buildDataFrame}
 \alias{buildDataFrame}
-\title{Build a data frame for a single gene and measure to prepare
-for mixed model building}
+\title{Build a data frame for a certain gene and PI, in preparation for mixed model building.}
 \usage{
 buildDataFrame(
   obj,
@@ -13,19 +12,18 @@ buildDataFrame(
 }
 \arguments{
 \item{obj}{A results object, for nearest neighbour distances,
-the result of a call to addWeightFunction()}
+the result of a call to \link{addWeightFunction}}
 
 \item{gene}{A character string indicating the desired gene or gene pair}
 
-\item{pi}{character string indicating the desired pim as outcome
+\item{pi}{character string indicating the desired PI as outcome
 in the linear mixed model}
 }
 \value{
 A dataframe
 }
 \description{
-Build a data frame for a single gene and measure to prepare
-for mixed model building
+Build a data frame for a certain gene and PI, in preparation for mixed model building.
 }
 \examples{
 example(addWeightFunction, "spatrans")
@@ -39,4 +37,7 @@ mixedMod <- lmer(pi - 0.5 ~ day + (1 | root),
 )
 summary(mixedMod)
 # Evidence for aggregation
+}
+\seealso{
+\link{addWeightFunction}
 }

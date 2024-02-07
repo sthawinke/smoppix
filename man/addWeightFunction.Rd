@@ -16,12 +16,12 @@ addWeightFunction(
 )
 }
 \arguments{
-\item{resList}{A results list, from a call to estPis()}
+\item{resList}{A results list, from a call to estPis().}
 
 \item{pis}{The PIs for which weighting functions are constructed}
 
 \item{designVars}{A character vector containing all design factors
-(both fixed and random), that are also present as variables in hypFrame}
+(both fixed and random), that are also present as variables in hypFrame.}
 
 \item{lowestLevelVar}{The design variable at the lowest level of nesting,
 often separating technical replicates. The conditional variance is calculated
@@ -33,7 +33,7 @@ features for fitting the weighting function. See details}
 \item{minNumVar}{The minimum number of observations needed to calculate a
 variance}
 
-\item{...}{Additional arguments passed on to the scam::scam function}
+\item{...}{Additional arguments passed on to the scam::scam function.}
 }
 \value{
 The input object with a slot "Wfs" added containing the weighting
@@ -44,16 +44,15 @@ Build a weighting function based on the data by fitting a
 non-increasing spline of variance as a function of number of events.
 }
 \details{
-For computational and memory reasons,
- for large datasets the trend fitting
-is restricted to a subset of the data through the maxObs and maxFeatures
-parameters.
 Provide either 'designVars' or 'lowestLevelVar'. In the latter case, the
 design variables are set to all imageVars in the hypFrame object except
 lowestLevelVar. When the PI is calculated on the cell level,
 this the lowest nesting level so inputs will be ignored for these PIs.
 The registered parallel backend will be used for fitting the trends of the
 different PIs.
+For computational and memory reasons, for large datasets the trend fitting
+is restricted to a random subset of the data through the maxObs and
+maxFeatures parameters.
 }
 \examples{
 example(estPis, "spatrans")

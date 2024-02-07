@@ -2,10 +2,10 @@
 #' @description Build a weighting function based on the data by fitting a
 #' non-increasing spline of variance as a function of number of events.
 #'
-#' @param resList A results list, from a call to estPis()
+#' @param resList A results list, from a call to estPis().
 #' @param designVars A character vector containing all design factors
-#' (both fixed and random), that are also present as variables in hypFrame
-#' @param ... Additional arguments passed on to the scam::scam function
+#' (both fixed and random), that are also present as variables in hypFrame.
+#' @param ... Additional arguments passed on to the scam::scam function.
 #' @param maxObs,maxFeatures The maximum number of observations respectively
 #' features for fitting the weighting function. See details
 #' @param pis The PIs for which weighting functions are constructed
@@ -14,16 +14,15 @@
 #' within the groups of PIs defined by this variable
 #' @param minNumVar The minimum number of observations needed to calculate a
 #' variance
-#' @details For computational and memory reasons,
-#'  for large datasets the trend fitting
-#' is restricted to a subset of the data through the maxObs and maxFeatures
-#' parameters.
-#' Provide either 'designVars' or 'lowestLevelVar'. In the latter case, the
+#' @details Provide either 'designVars' or 'lowestLevelVar'. In the latter case, the
 #' design variables are set to all imageVars in the hypFrame object except
 #' lowestLevelVar. When the PI is calculated on the cell level,
 #' this the lowest nesting level so inputs will be ignored for these PIs.
 #' The registered parallel backend will be used for fitting the trends of the
 #' different PIs.
+#' For computational and memory reasons, for large datasets the trend fitting
+#' is restricted to a random subset of the data through the maxObs and
+#' maxFeatures parameters.
 #'
 #' @return The input object with a slot "Wfs" added containing the weighting
 #' functions.
