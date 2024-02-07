@@ -82,12 +82,12 @@ fitLMMsSingle <- function(obj, pi, fixedVars, randomVars, verbose, returnModels,
     tmp <- if (grepl("Pair", pi)) {
         features <- makePairs(features)
         vapply(features, FUN.VALUE = double(nrow(obj$hypFrame)), function(gene) {
-            vapply(obj$hypFrame[, "tabObs", drop = TRUE], FUN.VALUE = double(1), function(x) all(x[sund(gene)] >= 1))
+            vapply(obj$hypFrame$tabObs, FUN.VALUE = double(1), function(x) all(x[sund(gene)] >= 1))
         })
     } else {
         # First check if gene is present at all
         vapply(features, FUN.VALUE = double(nrow(obj$hypFrame)), function(gene) {
-            vapply(obj$hypFrame[, "tabObs", drop = TRUE], FUN.VALUE = double(1), function(x) x[gene])
+            vapply(obj$hypFrame$tabObs, FUN.VALUE = double(1), function(x) x[gene])
         })
     }
     featIds <- (if (is.matrix(tmp)) colSums(tmp, na.rm = TRUE) else tmp) >= 1
