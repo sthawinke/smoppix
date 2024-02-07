@@ -1,4 +1,4 @@
-#' Run checks on design variables, construct if necessary and return them
+#' Run checks on design variables, or construct them if missing
 #'
 #' @param designVars The initial design variables
 #' @param lowestLevelVar Variable indicating the lowest level of nesting

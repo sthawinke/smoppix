@@ -1,7 +1,7 @@
-#' Build a hyperframe containing all separate point patterns.
+#' Build a hyperframe containing all point patterns of an experiment.
 #' @description
 #' Build a spatstat hyperframe with point patterns and metadata.
-#'  Matrices, dataframe, lists and  SpatialExperiment inputs are accepted.
+#' Matrices, dataframe, lists and SpatialExperiment inputs are accepted.
 #' @rdname buildHyperFrame
 #' @importFrom spatstat.geom ppp hyperframe
 #' @importFrom methods setGeneric setMethod
@@ -9,7 +9,7 @@
 #' @param x the input object, see methods('buildHyperFrame')
 #' @param ... additional constructor arguments
 #' @param covariates A vector of covariates
-#' @return An object of class 'hyperframe' from the 'spatstat' package
+#' @return An object of class 'hyperframe' from the 'spatstat.geom' package
 #' @examples
 #' data(Yang)
 #' hypYang <- buildHyperFrame(Yang,
@@ -23,7 +23,7 @@ setGeneric("buildHyperFrame", function(x, ...) standardGeneric("buildHyperFrame"
 #' @param coordVars Names of coordinates
 #' @param imageVars A character vector of variables whose unique combinations
 #' define the separate point patterns (images)
-#' @param coVars Names of covariates such as gene or cell for each single point
+#' @param coVars Names of event-wise covariates such as gene or cell for each single point
 
 setMethod("buildHyperFrame", "data.frame", function(x, coordVars, imageVars, coVars = setdiff(names(x), c(
                                                         imageVars,

@@ -1,3 +1,50 @@
+#' Fit linear (mixed) models fitting for all probabilistic indices (PIs)
+#' @description The PI is used as outcome variable in a linear (mixed) model,
+#' with design variables as regressors.
+#'
+#' @param obj The result object
+#' @param pis Optional, the pis required. Defaults to all pis in the object
+#' @param verbose a boolean, should output be printed?
+#' @param fixedVars Names of fixed effects
+#' @param randomVars Names of random variables, possibly in a single vector to
+#' reflect nesting structure, see details.
+#' @param verbose A boolean, should the formula be printed?
+#' @param returnModels a boolean: should the full models be returned?
+#' Otherwise only summary statistics are returned
+#' @param Formula A formula; if not supplied it will be constructed
+#' from the fixed and random variables
+#' @param randomNested A boolean, indicating if random effects are nested within
+#' point patterns. See details.
+#' @param features The features for which to fit linear mixed models.
+#' Defaults to all features in the object
+#' @param moranFormula Formula for Moran's I model fitting
+#' @param addMoransI A boolean, include Moran's I of the cell-wise PIs in the calculation
+#' @param ... Passed onto fitLMMsSingle
+#' @details The weights for the Moran's I statistic are inversely proportional to the distance between cell centroids
+#'
+#' @return A list of fitted objects
+#' @export
+#'
+#' @examples
+#' example(addWeightFunction, "spatrans")
+#' lmmModels <- fitLMMs(yangObj, fixedVars = "day", randomVars = "root")
+fitLMMs <- function(obj, pis = obj$pis, fixedVars = NULL, randomVars = NULL,
+                    verbose = TRUE, returnModels = FALSE, Formula = NULL,
+                    randomNested = TRUE, features = getFeatures(obj), moranFormula = NULL,
+                    addMoransI = FALSE, ...){
+    if(addMoransI){
+        weightMats = lapply(getHypFrame(obj)$centroids, buildWeightMat)
+    }
+    out <- lapply(pis, function(pi) {
+        fitLMMsSingle(obj, pi = pi, verbose = verbose, fixedVars = fixedVars,
+                      randomVars = randomVars, returnModels = returnModels,
+                      Formula = Formula, randomNested = randomNested,
+                      features = features, weightMats = weightMats, moranFormula = moranFormula,
+                      addMoransI = pi %in% c("edge", "centroid", "nnCell", "nnPairCell"), ...)
+    })
+    names(out) <- pis
+    return(out)
+}
 #' Fit linear mixed nodels for all features of a pimRes object
 #'
 #' @inheritParams buildDataFrame
@@ -128,55 +175,3 @@ fitLMMsSingle <- function(obj, pi, fixedVars, randomVars, verbose, returnModels,
         return(list(results = results$piMod, resultsMoran = results$moranMod, models = models))
     }
 }
-#' Fit linear (mixed) models fitting for all probabilistic indices (PIs)
-#' @description The PI is used as outcome variable in a linear (mixed) model,
-#' with design variables as regressors.
-#'
-#' @param obj The result object
-#' @param pis Optional, the pis required. Defaults to all pis in the object
-#' @param verbose a boolean, should output be printed?
-#' @param fixedVars Names of fixed effects
-#' @param randomVars Names of random variables, possibly in a single vector to
-#' reflect nesting structure, see details.
-#' @param verbose A boolean, should the formula be printed?
-#' @param returnModels a boolean: should the full models be returned?
-#' Otherwise only summary statistics are returned
-#' @param Formula A formula; if not supplied it will be constructed
-#' from the fixed and random variables
-#' @param randomNested A boolean, indicating if random effects are nested within
-#' point patterns. See details.
-#' @param features The features for which to fit linear mixed models.
-#' Defaults to all features in the object
-#' @param moranFormula Formula for Moran's I model fitting
-#' @param addMoransI A boolean, include Moran's I in the calculation
-#' @param ... Passed onto fitLMMsSingle
-#'
-#' @return A list of fitted objects
-#' @export
-#'
-#' @examples
-#' example(addWeightFunction, "spatrans")
-#' lmmModels <- fitLMMs(yangObj, fixedVars = "day", randomVars = "root")
-fitLMMs <- function(obj, pis = obj$pis, fixedVars = NULL, randomVars = NULL,
-                    verbose = TRUE, returnModels = FALSE, Formula = NULL,
-                    randomNested = TRUE, features = getFeatures(obj), moranFormula = NULL,
-                    addMoransI = FALSE, ...){
-    if(addMoransI){
-        weightMats = lapply(getHypFrame(obj)$centroids, buildWeightMat)
-    }
-    out <- lapply(pis, function(pi) {
-        fitLMMsSingle(obj, pi = pi, verbose = verbose, fixedVars = fixedVars,
-                      randomVars = randomVars, returnModels = returnModels,
-                      Formula = Formula, randomNested = randomNested,
-                      features = features, weightMats = weightMats, moranFormula = moranFormula,
-                      addMoransI = pi %in% c("edge", "centroid", "nnCell", "nnPairCell"), ...)
-    })
-    names(out) <- pis
-    return(out)
-}
-#' @importFrom stats dist
-buildWeightMat = function(coordList){
-    coordMat = t(vapply(coordList, FUN.VALUE = double(2), getCoordsMat))
-    as.matrix(1/dist(coordMat))
-}
-

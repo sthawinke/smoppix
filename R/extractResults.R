@@ -4,13 +4,13 @@
 #' @param hypFrame The original hyperframe
 #' @param fixedVars The fixed effects for which the effect is to be reported
 #' @param subSet The name of the subset to be extracted, either PI or Moran's I
-#' @param method passed onto p.adjust
+#' @param method Multiplicity correction method passed onto p.adjust
 #'
 #' @importFrom stats p.adjust
 #' @importFrom methods is
 #' @return A list of matrices, all containing estimate, standard error,
 #' p-value and ajdusted p-value
-#' @seealso \link{fitLMMs}
+#' @seealso \link{fitLMMs}, \link{p.adjust}
 extractResults <- function(models, hypFrame, subSet = "piMod", fixedVars = NULL, method = "BH") {
     ints <- t(vapply(models, FUN.VALUE = double(3), function(x) {
         if (is.null(x[[subSet]]) || is(x[[subSet]], "try-error")) {

@@ -1,4 +1,79 @@
-#' A wrapper function for the different probabilistic indices (PIs)
+#' Estimate probabilistic indices for single-molecule localization patterns
+#' @description Estimate different probabilistic indices for localization
+#' on all point patterns of a hyperframe, and integrate the results in the same hyperframe
+#' @export
+#' @param hypFrame the hyperframe
+#' @param ... additional arguments, passed on to \link{estPisSingle}.
+#' @param verbose A boolean, whether to report on progress of the fitting process.
+#' @param pis The probabilistic indices to be estimated
+#' @param null A character vector, indicating how the null distribution is
+#'  defined. See details.
+#' @param nPointsAll,nPointsAllWithinCell How many points to subsample or simulate to calculate the
+#' overall distance distribution under the null hypothesis.
+#' The second argument (nPointsAllWithinCell) applies to within cell calculations, where a lower number usually suffises.
+#' @param nPointsAllWin How many points to subsample or simulate
+#' to calculate distance to cell edge or centroid distribution
+#' @param minDiff An integer, the minimum number of events from other genes
+#'  needed for calculation of background distribution of distances
+#' @param features A character vector, for which features should the
+#' probabilistic indices be calculated?
+#' @return The hyperframe with the estimated PIs present in it
+#' @examples
+#' data(Yang)
+#' hypYang <- buildHyperFrame(Yang,
+#'     coordVars = c("x", "y"),
+#'     imageVars = c("day", "root", "section")
+#' )
+#' yangPims <- estPis(hypYang, pis = "nn")
+#' # Univariate nearest neighbour distances
+#' @details
+#' The null distribution used to calculate the PIs can be either 'background' or 'null'.
+#' For 'background', the observed distributions of all genes is used. Alternatively,
+#' for null = 'CSR', Monte-Carlo simulation under complete spatial randomness
+#' is performed within the given window to find the null distribution of the distance under study.
+#'
+#' The 'nn' prefix indicates that nearest neighbour distances are being used,
+#' either univariately or bivariately.
+#' The suffix 'Pair' indicates that bivariate probabilistic indices,
+#' testing for co- and antilocalization are being used.
+#' 'edge' and 'centroid' calculate the distance to the edge respectively
+#'  the centroid of the windows added using the \link{addCell} function.
+#' The suffix 'Cell' indicates distances are being calculated within cells only.
+#' @seealso \link{estPisSingle}
+estPis <- function(hypFrame, pis = c("nn", "nnPair", "edge", "centroid", "nnCell", "nnPairCell"),
+                   verbose = TRUE, null = c("background", "CSR"),
+                   nPointsAll = switch(null, background = 1e4, CSR = 1e3),
+                   nPointsAllWithinCell = switch(null, background = 1e4, CSR = 5e2
+                   ), nPointsAllWin = 1e3,
+                   minDiff = 2e1, features = getFeatures(hypFrame), ...) {
+    stopifnot(is.hyperframe(hypFrame), is.numeric(nPointsAll),
+              is.numeric(nPointsAllWithinCell), is.numeric(nPointsAllWin), is.numeric(minDiff), is.character(features))
+    pis <- match.arg(pis, several.ok = TRUE)
+    null <- match.arg(null)
+    if (any(pis %in% c("edge", "centroid", "nnCell")) && is.null(hypFrame$owins)) {
+        stop("No window provided for distance to edge or centroid calculation. ", "Add it using the addCell() function")
+    }
+    if (any(id <- !(features %in% getFeatures(hypFrame)))) {
+        stop("Features ", features[id], " not found in hyperframe")
+    }
+    if (verbose) {
+        message("Calculating PIs for point pattern ")
+    }
+    hypFrame$pimRes <- lapply(seq_len(nrow(hypFrame)), function(x) {
+        if (verbose) {
+            message(x, " of ", nrow(hypFrame), "  ")
+        }
+        out <- estPisSingle(hypFrame[[x, "ppp"]],
+                            owins = hypFrame[x, "owins", drop = TRUE], pis = pis, null = null,
+                            tabObs = hypFrame[[x, "tabObs"]], centroids = hypFrame[x, "centroids", drop = TRUE],
+                            features = features, nPointsAll = nPointsAll, nPointsAllWithinCell = nPointsAllWithinCell,
+                            nPointsAllWin = nPointsAllWin, minDiff = minDiff, ...
+        )
+        return(out)
+    })
+    list(hypFrame = hypFrame, null = null, pis = pis, features = features)
+}
+#' A wrapper function for the different probabilistic indices (PIs), applied to individual point patterns
 #'
 #' @param p The point pattern
 #' @param owins,centroids The list of windows corresponding to cells,
@@ -14,10 +89,11 @@
 #' \item{windowDists}{PIs for distances to cell wall or centroid}
 #' \item{withinCellDists}{PIs for pointwise distances within cell}
 #' @importFrom stats ecdf dist
-#' @importFrom spatstat.random runifpoint
+#' @importFrom spatstat.random runifpoint is.hyperframe
 #' @importFrom Rdpack reprompt
+#' @seealso \links{estPis}
 estPisSingle <- function(p, pis, null, tabObs, owins = NULL, centroids = NULL, window = p$window, loopFun = "bplapply",
-                          features, nPointsAll, nPointsAllWithinCell, nPointsAllWin, minDiff ) {
+                          features, nPointsAll, nPointsAllWithinCell, nPointsAllWin, minDiff) {
     if (!length(features)) {
         return(list(pointDists = NULL, windowDists = NULL, withinCellDists = NULL))
     }
@@ -99,78 +175,4 @@ estPisSingle <- function(p, pis, null, tabObs, owins = NULL, centroids = NULL, w
         pointDists = pointDists, windowDists = windowDists,
         withinCellDists = withinCellDists
     )
-}
-#' Estimate probabilistic indices for (co)localization on a hyperframe
-#' @description Estimate different probabilistic indices for (co)localization
-#' on  a hyperframe, and integrate the results in the same hyperframe
-#' @export
-#' @param hypFrame the hyperframe
-#' @param ... additional arguments, passed on to estPisSingle
-#' @param verbose a boolean, whether to report on progress of fitting
-#' @param pis The probabilistic indices to be estimated
-#' @param null A character vector, indicating how the null distribution is
-#'  defined. See details.
-#' @param nPointsAll,nPointsAllWithinCell How many points to subsample or simulate to calculate
-#' overall interpoint distance and distance to point.
-#' This parameter is a strong driver of computation time.
-#' The second argument applies to within cell calculations.
-#' @param nPointsAllWin How many points to subsample or simulate
-#' to calculate distance to cell edge or centroid distribution
-#' @param minDiff An integer, the minimum number of events from other genes
-#'  needed for calculation of background PIs
-#' @param features A character vector, for which features should the
-#' probabilistic indices be calculated?
-#' @return The hyperframe with the estimated PIMs present in it
-#' @examples
-#' data(Yang)
-#' hypYang <- buildHyperFrame(Yang,
-#'     coordVars = c("x", "y"),
-#'     imageVars = c("day", "root", "section")
-#' )
-#' # Fit a subset of features to limit computation time
-#' yangPims <- estPis(hypYang[c(seq_len(5), seq(25, 29)), ], pis = "nn")
-#' # Univariate nearest neighbour distances
-#' @details
-#' The null distribution used to calculate the PIs. Can be either 'background',
-#' in which case the observed distributions of all genes is used. Alternatively,
-#' for null = 'CSR', Monte-Carlo simulation under complete spatial randomness
-#'  is performed within the given window.
-#'
-#' The 'nn' prefix indicates that nearest neighbour distances are being used,
-#' whereas 'all' indicates all distances are being used.
-#' The suffix 'Pair' indicates that bivariate probabilistic indices,
-#' testing for co- and antilocalization are being used.
-#' 'edge' and 'centroid' calculate the distance to the edge respectively
-#'  the centroid of the windows added using the addCell() function.
-#' The suffix 'Cell' indicates distances are being calculated within cells only.
-estPis <- function(hypFrame, pis = c("nn", "nnPair", "edge", "centroid", "nnCell", "nnPairCell"),
-                    verbose = TRUE, null = c("background", "CSR"),
-                    nPointsAll = switch(null, background = 1e4, CSR = 1e3),
-                    nPointsAllWithinCell = switch(null, background = 1e4, CSR = 5e2
-                    ), nPointsAllWin = 1e3,
-                    minDiff = 2e1, features = getFeatures(hypFrame), ...) {
-    pis <- match.arg(pis, several.ok = TRUE)
-    null <- match.arg(null)
-    if (any(pis %in% c("edge", "centroid", "nnCell")) && is.null(hypFrame$owins)) {
-        stop("No window provided for distance to edge or centroid calculation. ", "Add it using the addCell() function")
-    }
-    if (any(id <- !(features %in% getFeatures(hypFrame)))) {
-        stop("Features ", features[id], " not found in hyperframe")
-    }
-    if (verbose) {
-        message("Calculating PIs for point pattern ")
-    }
-    hypFrame$pimRes <- lapply(seq_len(nrow(hypFrame)), function(x) {
-        if (verbose) {
-            message(x, " of ", nrow(hypFrame), "  ")
-        }
-        out <- estPisSingle(hypFrame[[x, "ppp"]],
-            owins = hypFrame[x, "owins", drop = TRUE], pis = pis, null = null,
-            tabObs = hypFrame[[x, "tabObs"]], centroids = hypFrame[x, "centroids", drop = TRUE],
-            features = features, nPointsAll = nPointsAll, nPointsAllWithinCell = nPointsAllWithinCell,
-            nPointsAllWin = nPointsAllWin, minDiff = minDiff, ...
-        )
-        return(out)
-    })
-    list(hypFrame = hypFrame, null = null, pis = pis, features = features)
 }

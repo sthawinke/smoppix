@@ -4,14 +4,16 @@
 #'
 #' @param windows The list of windows
 #' @param namePPP the name of the point pattern, will be added to the cell names
+#' @param ... passed onto as.owin
 #' @inheritParams addCell
 #' @details Order of traversion of polygons may differ between data types.
 #' Where applicable, different orders are tried before throwing an error.
+#' See \link{addCell} for accepted formats.
 #'
 #' @return A list of owins
 #' @importFrom spatstat.geom is.owin owin as.owin
 #' @importFrom methods slot is
-#' @seealso [addCell()]
+#' @seealso \link{addCell}
 convertToOwins <- function(windows, namePPP, coords, ...) {
     if (is(windows, "SpatialPolygonsDataFrame")) {
         if (requireNamespace("polyCub", quietly = TRUE)) {
@@ -61,7 +63,7 @@ convertToOwins <- function(windows, namePPP, coords, ...) {
                         foo <- try(silent = TRUE, RImageJROI::ij2spatstat(w))
                     }
                     return(foo)
-                    }, ...)
+                    })
             } else {
                 RImageJROI::ij2spatstat(windows)
             }
