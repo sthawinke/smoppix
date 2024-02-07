@@ -2,8 +2,7 @@
 % Please edit documentation in R/plotWf.R
 \name{plotWf}
 \alias{plotWf}
-\title{Plot the variance weighting function
-The observation weight as a function of the number of observations}
+\title{Plot the variance weighting function}
 \usage{
 plotWf(obj, pi = obj$pis[1])
 }
@@ -17,8 +16,9 @@ the result of a call to \link{addWeightFunction}}
 For univariate PI, returns a line plot; for bivariate PI a ggplot object
 }
 \description{
-Plot the variance weighting function
-The observation weight as a function of the number of observations
+The observation weights are plotted as a function of number of events.
+For a univariate PI, this is a line plot, for a bivariate PI this is a
+scatterplot of majority gene pair as a function of minority gene pair, with the weight represented as a colour scale
 }
 \examples{
 data(Yang)

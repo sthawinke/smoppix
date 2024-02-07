@@ -1,13 +1,13 @@
 #' Plot the hyperframe for exploratory purposes
-#' @description A subset of 8 point patterns is plotted. This function is mainly
-#' meant for exploratory purposes and confirming correct data read-in.
-#' @details The colour palette is taken from the output of palette(),
-#' so set that one to change the colour scheme
+#' @description A subset of point patterns is plotted that fit in the window, highlighting some features.
+#' This function is meant for exploratory purposes as well as for visual confirmation of findings
+#' @note The colour palette is taken from the output of palette(),
+#' so set that one to change the colour scheme.
 #'
 #' @param hypFrame The hyperframe
 #' @param features A small number of features to be fitted. Defaults to the first 5
 #' @param ppps The rownames or indices of the point patterns to be plotted.
-#' Defaults to the first 8.
+#' Defaults to maximum 99.
 #' @param maxPlot The maximum number of events plotted per point pattern
 #' @param Cex Point amplification factor
 #' @param plotWindows A boolean, should windows be plotted too?

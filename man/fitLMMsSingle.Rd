@@ -57,17 +57,6 @@ A list of test results, if requested also the linear models are returned
 \description{
 Fit linear mixed nodels for all features of a pimRes object
 }
-\details{
-Genes or gene pairs with insufficient observations will be silently
-omitted. When randomVars is provided as a vector, independent random
-intercepts are fitted for them by default. Providing them separated by '\' or
-':' as in the lmer formulas is also allowed to reflect nesting structure.
-
-It is by default assumed that random effects are nested within the point
- patterns. This means for instance that cells with the same name but from
- different point patterns are assigned to different random effects. Set
- 'randomNested' to FALSE to override this behaviour.
-}
 \seealso{
 \link{buildDataFrame},\link{getResults}
 }

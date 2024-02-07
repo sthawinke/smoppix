@@ -2,7 +2,7 @@
 % Please edit documentation in R/plotTopResults.R
 \name{plotTopResults}
 \alias{plotTopResults}
-\title{Plot the most significant findings for a certain PI, specifying a direction}
+\title{Plot the most significant findings for a certain PI}
 \usage{
 plotTopResults(
   hypFrame,
@@ -39,7 +39,7 @@ plotTopResults(
 A plot from plotCells or plotExplore, throws a warning when no features meet the criteria
 }
 \description{
-Plot the most significant findings for a certain PI, specifying a direction
+Plot the most significant findings for a certain PI
 }
 \details{
 If smallPI is set to TRUE, features with aggregation, colocalization and vicinity to cell boundary or centroid are shown.
@@ -51,5 +51,5 @@ plotTopResults(hypYang, lmmModels, "nn")
 plotTopResults(hypYang, lmmModels, "nn", effect = "Intercept")
 }
 \seealso{
-[ploCells(),plotExplore(),fitLMMs()]
+\link{plotCells},\link{plotExplore},\link{fitLMMs}
 }

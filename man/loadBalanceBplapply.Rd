@@ -17,9 +17,6 @@ loadBalanceBplapply(iterator, func, loopFun = "bplapply")
 A list with the same length as iterator
 }
 \description{
-Parallel processing with BiocParallel with load balancing
-}
-\details{
-the vector to iterate over is split into as many parts as there are
+The vector to iterate over (iterator) is split into as many parts as there are
 cores available, such that each core gets an equal load and overhead is minimized
 }

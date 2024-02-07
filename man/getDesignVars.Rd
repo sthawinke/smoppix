@@ -18,7 +18,7 @@ Return all design variables, both at the level of the point pattern and the
 level of the event
 }
 \details{
-getDesignVars() returns all design variables, getPPPvars returns
-design variables related to the different images and getEventVars returs
+getDesignVars() returns all design variables, \link{getPPPvars} returns
+design variables related to the different images and \link{getEventVars} returns
 design variables related to the individual events
 }

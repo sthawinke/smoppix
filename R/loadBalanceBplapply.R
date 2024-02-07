@@ -1,5 +1,5 @@
 #' Parallel processing with BiocParallel with load balancing
-#' @details the vector to iterate over is split into as many parts as there are
+#' @description The vector to iterate over (iterator) is split into as many parts as there are
 #' cores available, such that each core gets an equal load and overhead is minimized
 #'
 #' @param iterator The vector to iterate over

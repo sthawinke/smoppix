@@ -2,7 +2,7 @@
 % Please edit documentation in R/fitLMMs.R
 \name{fitLMMs}
 \alias{fitLMMs}
-\title{Fit linear (mixed) models fitting for all probabilistic indices (PIs)}
+\title{Fit linear (mixed) models for all probabilistic indices (PIs) and all genes}
 \usage{
 fitLMMs(
   obj,
@@ -54,10 +54,21 @@ A list of fitted objects
 }
 \description{
 The PI is used as outcome variable in a linear (mixed) model,
-with design variables as regressors.
+with design variables as regressors. Separate models are fitted for every combination of gene
+and PI.
 }
 \details{
-The weights for the Moran's I statistic are inversely proportional to the distance between cell centroids
+Genes or gene pairs with insufficient observations will be silently
+omitted. When randomVars is provided as a vector, independent random
+intercepts are fitted for them by default. Providing them separated by '\' or
+':' as in the lmer formulas is also allowed to reflect nesting structure.
+
+It is by default assumed that random effects are nested within the point
+ patterns. This means for instance that cells with the same name but from
+ different point patterns are assigned to different random effects. Set
+ 'randomNested' to FALSE to override this behaviour.
+
+ The weights for the Moran's I statistic are inversely proportional to the distance between cell centroids.
 }
 \examples{
 example(addWeightFunction, "spatrans")

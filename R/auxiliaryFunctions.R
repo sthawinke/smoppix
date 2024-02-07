@@ -163,3 +163,14 @@ buildWeightMat = function(coordList){
     coordMat = t(vapply(coordList, FUN.VALUE = double(2), getCoordsMat))
     as.matrix(1/dist(coordMat))
 }
+#' Extract the hyperframe
+#' @param x The hyperframe, or list containing one
+#' @return the hyperframe
+#' @importFrom spatstat.geom is.hyperframe
+getHypFrame = function(x){
+    if (is.hyperframe(x)) {
+        x
+    } else {
+        x$hypFrame
+    }
+}

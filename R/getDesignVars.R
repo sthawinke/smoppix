@@ -4,13 +4,11 @@
 #' @param x The results list
 #'
 #' @return A vector of likely design variables
-#' @details getDesignVars() returns all design variables, getPPPvars returns
-#' design variables related to the different images and getEventVars returs
+#' @details getDesignVars() returns all design variables, \link{getPPPvars} returns
+#' design variables related to the different images and \link{getEventVars} returns
 #' design variables related to the individual events
 getDesignVars <- function(x) {
-    pppVars <- getPPPvars(x)
-    eventVars <- getEventVars(x)
-    c(pppVars, eventVars)
+    c(getPPPvars(x), getEventVars(x))
 }
 #' Extract variables from point patterns
 #'
@@ -30,14 +28,4 @@ getEventVars <- function(x, exclude = c("x", "y", "z")) {
         names(marks(ppp, drop = FALSE))
     }))), exclude)
 }
-#' Extract the hyperframe
-#' @param x The hyperframe, or list containing one
-#' @return the hyperframe
-#' @importFrom spatstat.geom is.hyperframe
-getHypFrame = function(x){
-    if (is.hyperframe(x)) {
-        x
-    } else {
-        x$hypFrame
-    }
-}
+

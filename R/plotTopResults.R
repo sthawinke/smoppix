@@ -1,4 +1,4 @@
-#' Plot the most significant findings for a certain PI, specifying a direction
+#' Plot the most significant findings for a certain PI
 #'
 #' @param hypFrame The hyperframe
 #' @param results The results frame
@@ -15,7 +15,7 @@
 #'
 #' @return A plot from plotCells or plotExplore, throws a warning when no features meet the criteria
 #' @export
-#' @seealso [ploCells(),plotExplore(),fitLMMs()]
+#' @seealso \link{plotCells},\link{plotExplore},\link{fitLMMs}
 #'
 #' @examples
 #' example(fitLMMs, "spatrans")
@@ -23,6 +23,7 @@
 #' plotTopResults(hypYang, lmmModels, "nn", effect = "Intercept")
 plotTopResults = function(hypFrame, results, pi, effect = "Intercept", smallPI = TRUE, sigLevel = 0.05,
                          numFeats = 2, piThreshold = switch(effect, "Intercept" = 0.5, 0), ...){
+    stopifnot(is.hyperframe(hypFrame), is.logical(smallPI), sigLevel > 0, sigLevel < 1)
     pi = match.arg(pi, choices = c("nn", "nnPair", "edge", "centroid", "nnCell", "nnPairCell"))
     if(is.null(Res <- results[[pi]]$results)){
         stop("PI not present in results object!")

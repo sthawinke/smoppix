@@ -1,5 +1,7 @@
 #' Plot the variance weighting function
-#' The observation weight as a function of the number of observations
+#' @description The observation weights are plotted as a function of number of events.
+#' For a univariate PI, this is a line plot, for a bivariate PI this is a
+#' scatterplot of majority gene pair as a function of minority gene pair, with the weight represented as a colour scale
 #'
 #' @inheritParams buildDataFrame
 #' @param pi The PI for which to plot the weighting function

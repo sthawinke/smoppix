@@ -1,7 +1,8 @@
-#' Plot the n cells with highest abundance of a feature, in a random spatial orientation.
+#' Plot the n cells with highest abundance of a feature, breaking their spatial orientation.
 #' @description After testing for within-cell patterns, it may be useful to
 #' look at the cells with the most events for certain genes. These are plotted
-#' here, but the spatial location of the cells is lost!
+#' here, but the spatial location of the cells is lost! The choice and ranking of cells
+#' is one of decreasing gene (pair) expression.
 #'
 #' @param obj A hyperframe, or an object containing one
 #' @param features The features to be plotted, a character vector

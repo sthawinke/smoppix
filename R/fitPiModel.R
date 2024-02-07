@@ -1,5 +1,16 @@
+#' Fit a linear model for an individual gene and PI combination
+#'
+#' @param dff The dataframe
+#' @param contrasts The contrasts to be used, see \link{model.matrix}
+#' @param Control Control parameters
+#' @param MM A boolean, should a mixed model be tried
+#' @param Weight A weight variable
+#' @inheritParams fitLMMsSingle
+#' @return A fitted model
+#'
 #' @importFrom lmerTest lmer
 #' @importFrom stats na.omit lm as.formula
+#' @seealso \link{fitLMMsSingle}
 fitPiModel = function(Formula, dff, contrasts, Control, MM, Weight = NULL){
     ff <- as.formula(Formula)
     environment(ff) <- environment() #Make sure formula sees the weights, see

@@ -1,6 +1,7 @@
-#' Fit linear (mixed) models fitting for all probabilistic indices (PIs)
+#' Fit linear (mixed) models for all probabilistic indices (PIs) and all genes
 #' @description The PI is used as outcome variable in a linear (mixed) model,
-#' with design variables as regressors.
+#' with design variables as regressors. Separate models are fitted for every combination of gene
+#' and PI.
 #'
 #' @param obj The result object
 #' @param pis Optional, the pis required. Defaults to all pis in the object
@@ -20,7 +21,17 @@
 #' @param moranFormula Formula for Moran's I model fitting
 #' @param addMoransI A boolean, include Moran's I of the cell-wise PIs in the calculation
 #' @param ... Passed onto fitLMMsSingle
-#' @details The weights for the Moran's I statistic are inversely proportional to the distance between cell centroids
+#' @details Genes or gene pairs with insufficient observations will be silently
+#' omitted. When randomVars is provided as a vector, independent random
+#' intercepts are fitted for them by default. Providing them separated by '\' or
+#' ':' as in the lmer formulas is also allowed to reflect nesting structure.
+#'
+#' It is by default assumed that random effects are nested within the point
+#'  patterns. This means for instance that cells with the same name but from
+#'  different point patterns are assigned to different random effects. Set
+#'  'randomNested' to FALSE to override this behaviour.
+#'
+#'  The weights for the Moran's I statistic are inversely proportional to the distance between cell centroids.
 #'
 #' @return A list of fitted objects
 #' @export
@@ -49,15 +60,6 @@ fitLMMs <- function(obj, pis = obj$pis, fixedVars = NULL, randomVars = NULL,
 #'
 #' @inheritParams buildDataFrame
 #' @inheritParams fitLMMs
-#' @details Genes or gene pairs with insufficient observations will be silently
-#' omitted. When randomVars is provided as a vector, independent random
-#' intercepts are fitted for them by default. Providing them separated by '\' or
-#' ':' as in the lmer formulas is also allowed to reflect nesting structure.
-#'
-#' It is by default assumed that random effects are nested within the point
-#'  patterns. This means for instance that cells with the same name but from
-#'  different point patterns are assigned to different random effects. Set
-#'  'randomNested' to FALSE to override this behaviour.
 #'
 #' @param weightMats A list of weight matrices for Moran's I
 #' @return A list of test results, if requested also the linear models are returned

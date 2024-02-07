@@ -27,7 +27,7 @@ plotExplore(
 \item{features}{A small number of features to be fitted. Defaults to the first 5}
 
 \item{ppps}{The rownames or indices of the point patterns to be plotted.
-Defaults to the first 8.}
+Defaults to maximum 99.}
 
 \item{maxPlot}{The maximum number of events plotted per point pattern}
 
@@ -53,12 +53,12 @@ Defaults to the first 8.}
 Plots a facet of point patterns to output
 }
 \description{
-A subset of 8 point patterns is plotted. This function is mainly
-meant for exploratory purposes and confirming correct data read-in.
+A subset of point patterns is plotted that fit in the window, highlighting some features.
+This function is meant for exploratory purposes as well as for visual confirmation of findings
 }
-\details{
+\note{
 The colour palette is taken from the output of palette(),
-so set that one to change the colour scheme
+so set that one to change the colour scheme.
 }
 \examples{
 example(buildHyperFrame, "spatrans")

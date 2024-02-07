@@ -6,7 +6,7 @@
 \alias{spatrans}
 \title{spatrans: Analyze Spatial Transcriptomics and Other Spatial Omics Data on the Single Molecule Scale}
 \description{
-Test for univariate and multivariate spatial patterns in spatial omics data with single-molecule resolution. The tests implemented allow for analysis of nested designs and are automatically calibrated to different biological specimens. Tests for aggregation, colocalization and vicinity to cell edge are provided.
+Test for univariate and multivariate spatial patterns in spatial omics data with single-molecule resolution. The tests implemented allow for analysis of nested designs and are automatically calibrated to different biological specimens. Tests for aggregation, colocalization and vicinity to cell edge or centroid are provided.
 }
 \seealso{
 Useful links:
