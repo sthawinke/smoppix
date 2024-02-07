@@ -11,9 +11,9 @@ convertToOwins(windows, namePPP, coords, ...)
 
 \item{namePPP}{the name of the point pattern, will be added to the cell names}
 
-\item{coords}{The names of the coordinates, if the windows are given as sets of coordinates}
+\item{coords}{The names of the coordinates, if the windows are given as sets of coordinates.}
 
-\item{...}{Further arguments passed onto [convertToOwins()]}
+\item{...}{Further arguments passed onto \link{convertToOwins}}
 }
 \value{
 A list of owins

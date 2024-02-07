@@ -21,11 +21,15 @@
 #' \insertCite{Eng2019}{spatrans}. Molecule locations, gene identity and design
 #' variables are included, a subset of eight most expressed genes is included in the package, and the dataset was subsampled to 100,000 observations for memory reasons
 #' In addition, a list of regions of interest (rois) is given describing the cell boundaries.
-#' @format A data matrix
+#' @format
+#' \enumerate{
+#' \item \strong{Eng} A data frame with variables
 #' \describe{
 #'   \item{x,y}{Molecule coordinates}
 #'   \item{gene}{Character vector with gene identities}
 #'  \item{experiment,fov}{Design variables}
+#' }
+#' \item \strong{EngRois} A list of list of regions of interest (ROIs)
 #' }
 #' @source \doi{10.1016/j.cub.2023.08.030}
 #' @references

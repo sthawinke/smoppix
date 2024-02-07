@@ -5,22 +5,22 @@
 #' @param hypFrame The hyperframe
 #' @param owins the list containing a list of owins per point pattern.
 #' The length of the list must match the length of the hyperframe, and the names must match.
-#' Also lists of geojson objects, coordinate matrices or rois are accepted
+#' Also lists of geojson objects, coordinate matrices or rois are accepted, see details.
 #' @param cellTypes A dataframe of cell types and other cell-associated covariates.
 #' If supplied, it must contain a variable 'cell' that is matched with the names of the owins
 #' @param findOverlappingOwins a boolean, should windows be checked for overlap?
 #' @param warnOut a boolean, should warning be issued when points are not
 #' contained in window?
-#' @param coords The names of the coordinates, if the windows are given as sets of coordinates
+#' @param coords The names of the coordinates, if the windows are given as sets of coordinates.
 #' @param verbose A boolean, should verbose output be printed?
 #' @param addCellMarkers A boolean, should cell identities be added? Set this to
 #'  FALSE if cell identifiers are already present in the data, and you only want
 #'  to add windows and centroids.
-#' @param ... Further arguments passed onto [convertToOwins()]
+#' @param ... Further arguments passed onto \link{convertToOwins}
 #' @return The hyperframe with cell labels added in the marks of the point patterns
 #' @importFrom spatstat.geom inside.owin marks centroid.owin marks<-
 #' @export
-#' @seealso \link{buildHyperFrame}
+#' @seealso \link{buildHyperFrame}, \link{convertToOwins}
 #' @details First the different cells are checked for overlap per point pattern.
 #' If no overlap is found, each event is assigned the cell that it falls into.
 #' Events not belonging to any cell will trigger a warning and be assigned 'NA'.
@@ -37,7 +37,6 @@
 #' @note By default, there is no checking for overlap between windows.
 #' Events are assigned to the first window in which they fall
 #' Do check your input or set checkOverlap to TRUE, even when this make take time.
-#' @seealso [convertToOwins()]
 #' @examples
 #' library(spatstat.random)
 #' n <- 1e3 # number of molecules

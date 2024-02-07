@@ -6,11 +6,14 @@
 \alias{EngRois}
 \title{Spatial transcriptomics data of mouse fibroblast cells}
 \format{
-A data matrix
+\enumerate{
+\item \strong{Eng} A data frame with variables
 \describe{
   \item{x,y}{Molecule coordinates}
   \item{gene}{Character vector with gene identities}
  \item{experiment,fov}{Design variables}
+}
+\item \strong{EngRois} A list of list of regions of interest (ROIs)
 }
 }
 \source{

@@ -1,6 +1,6 @@
 #' Add a variance weighting function
-#' @description Build a weighting function based on the data using spline fitting,
-#' and attach it to the object.
+#' @description Build a weighting function based on the data by fitting a
+#' non-increasing spline of variance as a function of number of events.
 #'
 #' @param resList A results list, from a call to estPis()
 #' @param designVars A character vector containing all design factors
@@ -25,14 +25,12 @@
 #' The registered parallel backend will be used for fitting the trends of the
 #' different PIs.
 #'
-#' @return The results object with a slot "Wfs" added containing the weighting
-#' functions
-#' @details The scam functions fits a decreasing spline of the variance as a
-#'  function of the number of observations
+#' @return The input object with a slot "Wfs" added containing the weighting
+#' functions.
 #' @importFrom scam scam
 #' @importFrom stats formula
 #' @export
-#' @seealso \link{buildDataFrame}
+#' @seealso \link{buildDataFrame}, \link{estPis}
 #' @examples
 #' example(estPis, "spatrans")
 #' yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))

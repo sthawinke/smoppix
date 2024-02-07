@@ -36,12 +36,12 @@ variance}
 \item{...}{Additional arguments passed on to the scam::scam function}
 }
 \value{
-The results object with a slot "Wfs" added containing the weighting
-functions
+The input object with a slot "Wfs" added containing the weighting
+functions.
 }
 \description{
-Build a weighting function based on the data using spline fitting,
-and attach it to the object.
+Build a weighting function based on the data by fitting a
+non-increasing spline of variance as a function of number of events.
 }
 \details{
 For computational and memory reasons,
@@ -54,9 +54,6 @@ lowestLevelVar. When the PI is calculated on the cell level,
 this the lowest nesting level so inputs will be ignored for these PIs.
 The registered parallel backend will be used for fitting the trends of the
 different PIs.
-
-The scam functions fits a decreasing spline of the variance as a
- function of the number of observations
 }
 \examples{
 example(estPis, "spatrans")
@@ -68,5 +65,5 @@ yangObj2 <- addWeightFunction(yangPims,
 )
 }
 \seealso{
-\link{buildDataFrame}
+\link{buildDataFrame}, \link{estPis}
 }

@@ -21,7 +21,7 @@ addCell(
 
 \item{owins}{the list containing a list of owins per point pattern.
 The length of the list must match the length of the hyperframe, and the names must match.
-Also lists of geojson objects, coordinate matrices or rois are accepted}
+Also lists of geojson objects, coordinate matrices or rois are accepted, see details.}
 
 \item{cellTypes}{A dataframe of cell types and other cell-associated covariates.
 If supplied, it must contain a variable 'cell' that is matched with the names of the owins}
@@ -31,7 +31,7 @@ If supplied, it must contain a variable 'cell' that is matched with the names of
 \item{warnOut}{a boolean, should warning be issued when points are not
 contained in window?}
 
-\item{coords}{The names of the coordinates, if the windows are given as sets of coordinates}
+\item{coords}{The names of the coordinates, if the windows are given as sets of coordinates.}
 
 \item{verbose}{A boolean, should verbose output be printed?}
 
@@ -39,7 +39,7 @@ contained in window?}
 FALSE if cell identifiers are already present in the data, and you only want
 to add windows and centroids.}
 
-\item{...}{Further arguments passed onto [convertToOwins()]}
+\item{...}{Further arguments passed onto \link{convertToOwins}}
 }
 \value{
 The hyperframe with cell labels added in the marks of the point patterns
@@ -106,7 +106,5 @@ names(wList) <- rownames(hypFrame) # Matching names is necessary
 hypFrame2 <- addCell(hypFrame, wList)
 }
 \seealso{
-\link{buildHyperFrame}
-
-[convertToOwins()]
+\link{buildHyperFrame}, \link{convertToOwins}
 }
