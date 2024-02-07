@@ -160,7 +160,7 @@ fitLMMsSingle <- function(obj, pi, fixedVars, randomVars, verbose, returnModels,
 fitLMMs <- function(obj, pis = obj$pis, fixedVars = NULL, randomVars = NULL,
                     verbose = TRUE, returnModels = FALSE, Formula = NULL,
                     randomNested = TRUE, features = getFeatures(obj), moranFormula = NULL,
-                    addMoransI = any(pis %in% c("edge", "centroid", "nnCell", "nnPairCell")), ...){
+                    addMoransI = FALSE, ...){
     if(addMoransI){
         weightMats = lapply(getHypFrame(obj)$centroids, buildWeightMat)
     }
