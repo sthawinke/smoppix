@@ -9,7 +9,9 @@
 #' @param nCells An integer, the number of cells to be plotted
 #' @param Cex The point expansion factor
 #' @param borderColVar The variable to colour borders of the cell
-#' @param borderCols Colour paletter for the borders
+#' @param borderCols Colour palette for the borders
+#' @param warnOrienation A boolean, should a warning be issued printed on the
+#'  image that cells are not in their original location?
 #' @param ... Additional arguments, currently ignored
 #'
 #' @return Plots cells with highest expression to the plotting window, returns invisible
@@ -22,7 +24,8 @@
 #' plotCells(hypFrame2, "gene1")
 #' plotCells(hypFrame2, "gene1", borderColVar = "condition")
 plotCells <- function(obj, features = getFeatures(obj)[seq_len(3)], nCells = 1e2,
-                      Cex = 1.5, borderColVar = NULL, borderCols = rev(palette()), ...) {
+                      Cex = 1.5, borderColVar = NULL, borderCols = rev(palette()),
+                      warnOrienation = TRUE, ...) {
     if (!is.hyperframe(obj)) {
         obj <- obj$hypFrame
     }
@@ -89,7 +92,8 @@ plotCells <- function(obj, features = getFeatures(obj)[seq_len(3)], nCells = 1e2
         names(borderCols) = unVals
         addLegend(borderCols, Shift + c(2, 0), Pch = 5, Main = borderColVar, Cex = 0.7)
     }
-    #TO DO: Add warning on orientation!
+    if(warnOrientation)
+        text(Ceil/2, -0.2, labels = "Cells not on original location but sorted by expression!")
     invisible()
 }
 #' @importFrom spatstat.geom affine.owin affine.ppp
