@@ -11,6 +11,7 @@ plotCells(
   Cex = 1.5,
   borderColVar = NULL,
   borderCols = rev(palette()),
+  warnOrienation = TRUE,
   ...
 )
 }
@@ -25,7 +26,10 @@ plotCells(
 
 \item{borderColVar}{The variable to colour borders of the cell}
 
-\item{borderCols}{Colour paletter for the borders}
+\item{borderCols}{Colour palette for the borders}
+
+\item{warnOrienation}{A boolean, should a warning be issued printed on the
+image that cells are not in their original location?}
 
 \item{...}{Additional arguments, currently ignored}
 }

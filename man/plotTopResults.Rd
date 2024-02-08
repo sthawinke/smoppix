@@ -17,7 +17,7 @@ plotTopResults(
 )
 }
 \arguments{
-\item{hypFrame}{The hyperframe}
+\item{hypFrame}{The hyperframe with the data}
 
 \item{results}{The results frame}
 
@@ -36,10 +36,11 @@ plotTopResults(
 \item{...}{passed onto plotting functions plotCells or plotExplore}
 }
 \value{
-A plot from plotCells or plotExplore, throws a warning when no features meet the criteria
+A plot from plotCells or plotExplore, throws an error when no features meet the criteria
 }
 \description{
-Plot the most significant findings for a certain PI
+Extract the most significant features for a certain PI and direction of effect,
+and plot them using an appropriate function.
 }
 \details{
 If smallPI is set to TRUE, features with aggregation, colocalization and vicinity to cell boundary or centroid are shown.

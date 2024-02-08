@@ -1,6 +1,6 @@
 #' Plot the hyperframe for exploratory purposes
 #' @description A subset of point patterns is plotted that fit in the window, highlighting some features.
-#' This function is meant for exploratory purposes as well as for visual confirmation of findings
+#' This function is meant for exploratory purposes as well as for visual confirmation of findings.
 #' @note The colour palette is taken from the output of palette(),
 #' so set that one to change the colour scheme.
 #'
@@ -101,20 +101,19 @@ plotExplore <- function(hypFrame, features = getFeatures(hypFrame)[seq_len(6)], 
                                 max(piDf$pi, na.rm = TRUE), length.out = 6), 2)
         tmp
     } else Cols
-    addLegend(colPlot, Main = if(colourCells) paste("pi", piColourCell) else "")
-    # TO DO: add Moran's I to legend
+    addLegend(colPlot, Main = if(colourCells) paste("pi", piColourCell) else "Feature")
 }
 addLegend <- function(Cols, Shift = c(0, 0), Cex = 0.85, Pch = 20, Main = "") {
     idCols <- which(Cols != "grey")
     li <- length(idCols)
-    maxY = 0.9 - 0.05 * (mainId <- Main != "")
+    maxY = 0.9 - 0.1 * (mainId <- Main != "")
     points(
         x = rep(0.1, li) + Shift[1], SeqY <- seq(maxY, 0.1, length.out = li) + Shift[2], pch = Pch,
         col = Cols[idCols]
     )
     text(x = rep(0.25, li) + Shift[1], SeqY, names(Cols)[idCols], adj = 0, cex = Cex)
     if(mainId){
-        text(x = 0.5 + Shift[1], y = 1.25 + Shift[2], Main, cex = 0.8)
+        text(x = 0.4 + Shift[1], y = 0.95 + Shift[2], Main, cex = 1.2)
     }
 }
 makeCols <- function(features, hypFrame) {

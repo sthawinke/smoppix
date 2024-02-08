@@ -54,7 +54,7 @@ Plots a facet of point patterns to output
 }
 \description{
 A subset of point patterns is plotted that fit in the window, highlighting some features.
-This function is meant for exploratory purposes as well as for visual confirmation of findings
+This function is meant for exploratory purposes as well as for visual confirmation of findings.
 }
 \note{
 The colour palette is taken from the output of palette(),
