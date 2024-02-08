@@ -24,46 +24,38 @@
 #' is restricted to a random subset of the data through the maxObs and
 #' maxFeatures parameters.
 #'
-#' @return The input object with a slot "Wfs" added containing the weighting
+#' @return The input object with a slot 'Wfs' added containing the weighting
 #' functions.
 #' @importFrom scam scam
 #' @importFrom stats formula
 #' @export
 #' @seealso \link{buildDataFrame}, \link{estPis}
 #' @examples
-#' example(estPis, "spatrans")
-#' yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))
+#' example(estPis, 'spatrans')
+#' yangObj <- addWeightFunction(yangPims, designVars = c('day', 'root'))
 #' # Alternative formulation with 'lowestLevelVar'
 #' yangObj2 <- addWeightFunction(yangPims,
-#'     lowestLevelVar = "section",
-#'     pi = "nn"
+#'     lowestLevelVar = 'section',
+#'     pi = 'nn'
 #' )
-addWeightFunction <- function(resList, pis = resList$pis, designVars,
-                              lowestLevelVar, maxObs = 1e+05, maxFeatures = 1e3,
-                              minNumVar = 3, ...) {
+addWeightFunction <- function(resList, pis = resList$pis, designVars, lowestLevelVar, maxObs = 1e+05, maxFeatures = 1000,
+    minNumVar = 3, ...) {
     if (is.null(resList$pis)) {
-        stop(
-            "No pims found in the hyperframe.",
-            "First estimate them using the estPis() function."
-        )
+        stop("No pims found in the hyperframe.", "First estimate them using the estPis() function.")
     }
     if (all(pis %in% c("edge", "centroid"))) {
-        stop(
-            "Calculating weight matrices for distances to fixed points is ",
-            "unnecessary as they are independent.
+        stop("Calculating weight matrices for distances to fixed points is ", "unnecessary as they are independent.
              Simply proceed with fitting the model on the",
-            " individual evaluations of the B-function."
-        )
+            " individual evaluations of the B-function.")
     }
     if (!all(vapply(resList$Wfs[pis], FUN.VALUE = TRUE, is.null))) {
         warning("Overwriting pre-existing weight function!")
     }
     pis <- match.arg(pis, choices = c("nn", "nnPair", "nnCell", "nnPairCell"), several.ok = TRUE)
-    isNested <- length(getPPPvars(resList)) >= 1 # Is there a nested structure in the design
+    isNested <- length(getPPPvars(resList)) >= 1  # Is there a nested structure in the design
     allCell <- all(grepl("Cell", pis))
     if (isNested) {
-        designVars <- constructDesignVars(designVars, lowestLevelVar, allCell,
-                                          resList = resList)
+        designVars <- constructDesignVars(designVars, lowestLevelVar, allCell, resList = resList)
     } else {
         # Only check design if there is nesting
         designVec <- integer(nrow(resList$hypFrame))
@@ -82,98 +74,85 @@ addWeightFunction <- function(resList, pis = resList$pis, designVars,
             ordDesign <- seq_len(nrow(resList$hypFrame))
         } else {
             designVec <- apply(as.data.frame(resList$hypFrame[, designVars, drop = FALSE]), 1, paste, collapse = "_")
-            ordDesign <- order(designVec) # Ensure correct ordering for tapply
+            ordDesign <- order(designVec)  # Ensure correct ordering for tapply
         }
         varEls <- lapply(features, function(gene) {
             geneSplit <- if (pairId) {
                 sund(gene)
-            } else {gene}
+            } else {
+                gene
+            }
             if (cellId) {
                 piSub <- sub("Cell", "", pi)
                 piList <- lapply(resList$hypFrame$pimRes, function(x) {
-                    lapply(x[["withinCellDists"]], function(y) {
-                        if (!is.null(vec <- getGp(y[[piSub]], gene))) {
-                            vec
-                        } else {
-                            NULL
-                        }
-                    })
+                  lapply(x[["withinCellDists"]], function(y) {
+                    if (!is.null(vec <- getGp(y[[piSub]], gene))) {
+                      vec
+                    } else {
+                      NULL
+                    }
+                  })
                 })
                 # If cellId, there is no tapply, cells are the lowest level anyway
                 tmp <- lapply(ordDesign, function(x) {
-                    tab <- table(
-                        marks(resList$hypFrame$ppp[[x]])$cell,
-                        marks(resList$hypFrame$ppp[[x]])$gene
-                    )
-                    tab <- tab[setdiff(rownames(tab), "NA"), ]
-                    if (!all(geneSplit %in% colnames(tab))) {
-                        return(NULL)
-                    }
-                    lenOut <- sum(id <- apply((CellGene <- tab[,
-                        geneSplit,
-                        drop = FALSE
-                    ]) > (1 - pairId), 1, all))
-                    if (!lenOut) {
-                        return(NULL)
+                  tab <- table(marks(resList$hypFrame$ppp[[x]])$cell, marks(resList$hypFrame$ppp[[x]])$gene)
+                  tab <- tab[setdiff(rownames(tab), "NA"), ]
+                  if (!all(geneSplit %in% colnames(tab))) {
+                    return(NULL)
+                  }
+                  lenOut <- sum(id <- apply((CellGene <- tab[, geneSplit, drop = FALSE]) > (1 - pairId), 1, all))
+                  if (!lenOut) {
+                    return(NULL)
+                  } else {
+                    xx <- unlist(piList[[x]])
+                    deps <- if (sum(!is.na(xx)) >= minNumVar) {
+                      (xx - mean(xx, na.rm = TRUE))^2
                     } else {
-                        xx <- unlist(piList[[x]])
-                        deps <- if (sum(!is.na(xx)) >= minNumVar) {
-                            (xx - mean(xx, na.rm = TRUE))^2
-                        } else {
-                            rep_len(NA, lenOut)
-                        }
-                        cbind(
-                            quadDeps = matrix(deps, nrow = lenOut),
-                        if(pairId) t(apply(CellGene[id, , drop = FALSE],
-                            1, sort)) else CellGene[id, , drop = FALSE]
-                        )
+                      rep_len(NA, lenOut)
                     }
+                    cbind(quadDeps = matrix(deps, nrow = lenOut), if (pairId)
+                      t(apply(CellGene[id, , drop = FALSE], 1, sort)) else CellGene[id, , drop = FALSE])
+                  }
                 })
                 if (all(vapply(tmp, FUN.VALUE = logical(1), is.null))) {
-                    return(NULL)
+                  return(NULL)
                 } else {
-                    out <- t(Reduce(tmp, f = rbind))
+                  out <- t(Reduce(tmp, f = rbind))
                 }
             } else {
                 # Points with nn
-                piList <- vapply(resList$hypFrame$pimRes[ordDesign],
-                    FUN.VALUE = double(1), function(x) {
-                        if (is.null(baa <- getGp(x[["pointDists"]][[pi]], gene))) {
-                            NA
-                        } else {
-                            baa
-                        }
-                    }
-                )
+                piList <- vapply(resList$hypFrame$pimRes[ordDesign], FUN.VALUE = double(1), function(x) {
+                  if (is.null(baa <- getGp(x[["pointDists"]][[pi]], gene))) {
+                    NA
+                  } else {
+                    baa
+                  }
+                })
                 quadDeps <- unlist(tapply(piList, designVec, function(x) {
-                    if (sum(!is.na(x)) >= minNumVar) {
-                        (x - mean(x, na.rm = TRUE))^2
-                    } else {
-                        rep_len(NA, length(x))
-                    }
-                })) # The quadratic departures from the conditional mean
-                tabEntries <- vapply(resList$hypFrame$tabObs[ordDesign],
-                    FUN.VALUE = double(if (pairId) 2 else 1),
-                    function(x) {
-                        if (all(geneSplit %in% names(x))) {
-                            sort(x[geneSplit]) # Number of NN distances
-                        } else {
-                            rep(NA, if (pairId) 2 else 1)
-                        }
-                    }
-                )
-                out <- rbind("quadDeps" = quadDeps, tabEntries)
+                  if (sum(!is.na(x)) >= minNumVar) {
+                    (x - mean(x, na.rm = TRUE))^2
+                  } else {
+                    rep_len(NA, length(x))
+                  }
+                }))  # The quadratic departures from the conditional mean
+                tabEntries <- vapply(resList$hypFrame$tabObs[ordDesign], FUN.VALUE = double(if (pairId)
+                  2 else 1), function(x) {
+                  if (all(geneSplit %in% names(x))) {
+                    sort(x[geneSplit])  # Number of NN distances
+                  } else {
+                    rep(NA, if (pairId) 2 else 1)
+                  }
+                })
+                out <- rbind(quadDeps = quadDeps, tabEntries)
             }
-            rownames(out)[-1] <- if (pairId) c("minP", "maxP") else "NP"
+            rownames(out)[-1] <- if (pairId)
+                c("minP", "maxP") else "NP"
             out
         })
-        varElMat <- matrix(unlist(varEls),
-            ncol = if (pairId) 3 else 2, byrow = TRUE,
-            dimnames = list(NULL, c("quadDeps", if (pairId) c("minP", "maxP") else "NP"))
-        )
+        varElMat <- matrix(unlist(varEls), ncol = if (pairId)
+            3 else 2, byrow = TRUE, dimnames = list(NULL, c("quadDeps", if (pairId) c("minP", "maxP") else "NP")))
         # Build matrix with variance entries and number of events
-        varElMat <- varElMat[!is.na(varElMat[, "quadDeps"]) &
-            varElMat[, "quadDeps"] != 0, ]
+        varElMat <- varElMat[!is.na(varElMat[, "quadDeps"]) & varElMat[, "quadDeps"] != 0, ]
         if (nrow(varElMat) > maxObs) {
             varElMat <- varElMat[sample(nrow(varElMat), maxObs), ]
         }
@@ -182,14 +161,12 @@ addWeightFunction <- function(resList, pis = resList$pis, designVars,
         } else {
             "s(log(NP), bs = 'mpd')"
         }))
-        #Fit a spline
+        # Fit a spline
         scamMod <- scam(scamForm, data = data.frame(varElMat), ...)
         attr(scamMod, "pis") <- pi
         return(scamMod)
     })
     names(Wfs) <- pis
-    return(c(resList[setdiff(names(resList), c("Wfs", "designVars"))],
-        list(Wfs = Wfs, designVars = designVars)
-    ))
+    return(c(resList[setdiff(names(resList), c("Wfs", "designVars"))], list(Wfs = Wfs, designVars = designVars)))
     # Overwrite preexisting Wfs
 }

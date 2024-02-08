@@ -21,22 +21,22 @@
 #' ), simplify = FALSE)
 #' idOverlap <- findOverlap(owins, returnIds = TRUE)
 findOverlap <- function(owins, centroids = NULL, returnIds = FALSE, numCentroids = 50) {
-    stopifnot(all(vapply(owins, is.owin, FUN.VALUE = TRUE)),
-              is.null(centroids) || all(vapply(centroids, is.ppp, FUN.VALUE = TRUE)))
-    if(is.null(centroids)){
-        centroids = lapply(owins, centroid.owin, as.ppp = TRUE)
+    stopifnot(all(vapply(owins, is.owin, FUN.VALUE = TRUE)), is.null(centroids) || all(vapply(centroids, is.ppp, FUN.VALUE = TRUE)))
+    if (is.null(centroids)) {
+        centroids <- lapply(owins, centroid.owin, as.ppp = TRUE)
     }
     combs <- combn(length(owins), 2)
-    #First find distances between centroids
-    distCentroids = vapply(seq_len(ncol(combs)), FUN.VALUE = double(1), function(i){
+    # First find distances between centroids
+    distCentroids <- vapply(seq_len(ncol(combs)), FUN.VALUE = double(1), function(i) {
         crossdistWrapper(centroids[[combs[1, i]]], centroids[[combs[2, i]]])
     })
-    #Find x-th closest centroid for every window, and forget about the other windows
-    for(winNum in seq_along(owins)){
-        idWin = which(colSums(combs==winNum)==1)
-        idNotClosest = -idWin[which(distCentroids[idWin] > sort(distCentroids[idWin])[numCentroids])]
-        if(length(idNotClosest)){
-            combs = combs[, idNotClosest, drop = FALSE];distCentroids = distCentroids[idNotClosest]
+    # Find x-th closest centroid for every window, and forget about the other windows
+    for (winNum in seq_along(owins)) {
+        idWin <- which(colSums(combs == winNum) == 1)
+        idNotClosest <- -idWin[which(distCentroids[idWin] > sort(distCentroids[idWin])[numCentroids])]
+        if (length(idNotClosest)) {
+            combs <- combs[, idNotClosest, drop = FALSE]
+            distCentroids <- distCentroids[idNotClosest]
         }
     }
     Ids <- loadBalanceBplapply(seq_len(ncol(combs)), function(ss) {
@@ -45,13 +45,10 @@ findOverlap <- function(owins, centroids = NULL, returnIds = FALSE, numCentroids
             if (returnIds) {
                 return(Overlap)
             } else if (Overlap) {
-                stop(
-                    "Overlap detected between windows ", combs[1, i], " and ",
-                    combs[2, i], "!\nWindows must be non-overlapping."
-                )
+                stop("Overlap detected between windows ", combs[1, i], " and ", combs[2, i], "!\nWindows must be non-overlapping.")
             }
         })
-      })
+    })
     return(if (returnIds) {
         combs[, unlist(Ids)]
     } else {

@@ -29,41 +29,29 @@ convertToOwins <- function(windows, namePPP, coords, ...) {
     })) {
         winOut <- lapply(windows, function(df) {
             i <- seq_len(nrow(df))
-            foo <- try(silent = TRUE, owin(poly = list(
-                x = df[, coords[1]],
-                y = df[, coords[2]]
-            ), ...))
+            foo <- try(silent = TRUE, owin(poly = list(x = df[, coords[1]], y = df[, coords[2]]), ...))
             if (is(foo, "try-error")) {
-                foo <- try(silent = TRUE, owin(poly = list(
-                    x = df[rev(i), coords[1]],
-                    y = df[, coords[2]]
-                ), ...))
+                foo <- try(silent = TRUE, owin(poly = list(x = df[rev(i), coords[1]], y = df[, coords[2]]), ...))
             }
             if (is(foo, "try-error")) {
-                foo <- try(silent = TRUE, owin(poly = list(
-                    x = df[, coords[1]],
-                    y = df[rev(i), coords[2]]
-                ), ...))
+                foo <- try(silent = TRUE, owin(poly = list(x = df[, coords[1]], y = df[rev(i), coords[2]]), ...))
             }
             if (is(foo, "try-error")) {
-                foo <- try(silent = TRUE, owin(poly = list(
-                    x = df[rev(i), coords[1]],
-                    y = df[rev(i), coords[2]]
-                ), ...))
+                foo <- try(silent = TRUE, owin(poly = list(x = df[rev(i), coords[1]], y = df[rev(i), coords[2]]), ...))
             }
             foo
         })
     } else if ((allRoi <- allClass(windows, is, "ijroi")) || is(windows, "ijzip")) {
         if (requireNamespace("RImageJROI", quietly = TRUE)) {
             winOut <- if (allRoi) {
-                lapply(windows, function(w){
+                lapply(windows, function(w) {
+                  foo <- try(silent = TRUE, RImageJROI::ij2spatstat(w))
+                  if (is(foo, "try-error")) {
+                    w$coords <- w$coords[rev(seq_len(nrow(w$coords))), ]
                     foo <- try(silent = TRUE, RImageJROI::ij2spatstat(w))
-                    if(is(foo, "try-error")){
-                        w$coords = w$coords[rev(seq_len(nrow(w$coords))),]
-                        foo <- try(silent = TRUE, RImageJROI::ij2spatstat(w))
-                    }
-                    return(foo)
-                    })
+                  }
+                  return(foo)
+                })
             } else {
                 RImageJROI::ij2spatstat(windows)
             }

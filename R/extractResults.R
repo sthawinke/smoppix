@@ -17,10 +17,10 @@ extractResults <- function(models, hypFrame, subSet = "piMod", fixedVars = NULL,
             c(Estimate = NA, `Std. Error` = NA, `Pr(>|t|)` = NA)
         } else {
             summary(x[[subSet]])$coef["(Intercept)", c("Estimate", "Std. Error", "Pr(>|t|)")]
-        } # Identical code for lmerTest or lm
+        }  # Identical code for lmerTest or lm
     }))
     colnames(ints) <- c("Estimate", "SE", "pVal")
-    ints[, "Estimate"] <- ints[, "Estimate"] + switch(subSet, "piMod" = 0.5, "moranMod" = 0)
+    ints[, "Estimate"] <- ints[, "Estimate"] + switch(subSet, piMod = 0.5, moranMod = 0)
     intMat <- cbind(ints, pAdj = p.adjust(ints[, "pVal"], method = method))[order(ints[, "pVal"]), ]
     # Order by p-value
     id <- vapply(models, FUN.VALUE = TRUE, function(x) {
@@ -36,7 +36,7 @@ extractResults <- function(models, hypFrame, subSet = "piMod", fixedVars = NULL,
             unique(hypFrame[[Var]])
         }
         emptyCoef <- rep_len(NA, length(unVals))
-        names(emptyCoef) <- paste0(Var, unVals) # Prepare empty coefficient
+        names(emptyCoef) <- paste0(Var, unVals)  # Prepare empty coefficient
         pVal <- vapply(AnovaTabs, FUN.VALUE = double(1), function(x) x[Var, "Pr(>F)"])
         coefs <- lapply(models[id], function(x) {
             # Prepare the empty coefficient vector with all levels present. If outcome is NA for all levels, the

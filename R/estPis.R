@@ -21,10 +21,10 @@
 #' @examples
 #' data(Yang)
 #' hypYang <- buildHyperFrame(Yang,
-#'     coordVars = c("x", "y"),
-#'     imageVars = c("day", "root", "section")
+#'     coordVars = c('x', 'y'),
+#'     imageVars = c('day', 'root', 'section')
 #' )
-#' yangPims <- estPis(hypYang, pis = "nn")
+#' yangPims <- estPis(hypYang, pis = 'nn')
 #' # Univariate nearest neighbour distances
 #' @details
 #' The null distribution used to calculate the PIs can be either 'background' or 'null'.
@@ -40,16 +40,13 @@
 #'  the centroid of the windows added using the \link{addCell} function.
 #' The suffix 'Cell' indicates distances are being calculated within cells only.
 #' @seealso \link{estPisSingle}
-estPis <- function(hypFrame, pis = c("nn", "nnPair", "edge", "centroid", "nnCell", "nnPairCell"),
-                   verbose = TRUE, null = c("background", "CSR"),
-                   nPointsAll = switch(null, background = 1e4, CSR = 1e3),
-                   nPointsAllWithinCell = switch(null, background = 1e4, CSR = 5e2
-                   ), nPointsAllWin = 1e3,
-                   minDiff = 2e1, features = getFeatures(hypFrame), ...) {
+estPis <- function(hypFrame, pis = c("nn", "nnPair", "edge", "centroid", "nnCell", "nnPairCell"), verbose = TRUE, null = c("background",
+    "CSR"), nPointsAll = switch(null, background = 10000, CSR = 1000), nPointsAllWithinCell = switch(null, background = 10000,
+    CSR = 500), nPointsAllWin = 1000, minDiff = 20, features = getFeatures(hypFrame), ...) {
     pis <- match.arg(pis, several.ok = TRUE)
     null <- match.arg(null)
-    stopifnot(is.hyperframe(hypFrame), is.numeric(nPointsAll),
-              is.numeric(nPointsAllWithinCell), is.numeric(nPointsAllWin), is.numeric(minDiff), is.character(features))
+    stopifnot(is.hyperframe(hypFrame), is.numeric(nPointsAll), is.numeric(nPointsAllWithinCell), is.numeric(nPointsAllWin),
+        is.numeric(minDiff), is.character(features))
     if (any(pis %in% c("edge", "centroid", "nnCell")) && is.null(hypFrame$owins)) {
         stop("No window provided for distance to edge or centroid calculation. ", "Add it using the addCell() function")
     }
@@ -63,12 +60,9 @@ estPis <- function(hypFrame, pis = c("nn", "nnPair", "edge", "centroid", "nnCell
         if (verbose) {
             message(x, " of ", nrow(hypFrame), "  ")
         }
-        out <- estPisSingle(hypFrame[[x, "ppp"]],
-                            owins = hypFrame[x, "owins", drop = TRUE], pis = pis, null = null,
-                            tabObs = hypFrame[[x, "tabObs"]], centroids = hypFrame[x, "centroids", drop = TRUE],
-                            features = features, nPointsAll = nPointsAll, nPointsAllWithinCell = nPointsAllWithinCell,
-                            nPointsAllWin = nPointsAllWin, minDiff = minDiff, ...
-        )
+        out <- estPisSingle(hypFrame[[x, "ppp"]], owins = hypFrame[x, "owins", drop = TRUE], pis = pis, null = null, tabObs = hypFrame[[x,
+            "tabObs"]], centroids = hypFrame[x, "centroids", drop = TRUE], features = features, nPointsAll = nPointsAll,
+            nPointsAllWithinCell = nPointsAllWithinCell, nPointsAllWin = nPointsAllWin, minDiff = minDiff, ...)
         return(out)
     })
     list(hypFrame = hypFrame, null = null, pis = pis, features = features)
@@ -94,7 +88,7 @@ estPis <- function(hypFrame, pis = c("nn", "nnPair", "edge", "centroid", "nnCell
 #' @importFrom Rdpack reprompt
 #' @seealso \link{estPis}
 estPisSingle <- function(p, pis, null, tabObs, owins = NULL, centroids = NULL, window = p$window, loopFun = "bplapply",
-                          features, nPointsAll, nPointsAllWithinCell, nPointsAllWin, minDiff) {
+    features, nPointsAll, nPointsAllWithinCell, nPointsAllWin, minDiff) {
     if (!length(features)) {
         return(list(pointDists = NULL, windowDists = NULL, withinCellDists = NULL))
     }
@@ -110,43 +104,25 @@ estPisSingle <- function(p, pis, null, tabObs, owins = NULL, centroids = NULL, w
         }
     }
     if (any(pis %in% c("edge", "centroid"))) {
-        ecdfsCell <- findEcdfsCell(
-            p = p, owins = owins, centroids = centroids,
-            nPointsAllWin = nPointsAllWin, null = null, pis = pis,
-            loopFun = loopFun
-        )
+        ecdfsCell <- findEcdfsCell(p = p, owins = owins, centroids = centroids, nPointsAllWin = nPointsAllWin, null = null,
+            pis = pis, loopFun = loopFun)
     }
-    piList <- if(!all(idCell <- grepl("Cell", pis))){
-        calcIndividualPIs(
-        p = p, pSubLeft = pSubLeft, pis = pis,
-        null = null, tabObs = tabObs, owins = owins,
-        centroids = centroids, features = features, ecdfAll = ecdfAll,
-        ecdfsCell = ecdfsCell, minDiff = minDiff,
-        loopFun = loopFun
-    )}
+    piList <- if (!all(idCell <- grepl("Cell", pis))) {
+        calcIndividualPIs(p = p, pSubLeft = pSubLeft, pis = pis, null = null, tabObs = tabObs, owins = owins, centroids = centroids,
+            features = features, ecdfAll = ecdfAll, ecdfsCell = ecdfsCell, minDiff = minDiff, loopFun = loopFun)
+    }
     nnPis <- if ("nn" %in% pis) {
-        vapply(piList[intersect(features, names(tabObs[tabObs > 1]))],
-            FUN.VALUE = double(1), function(x) {
-                x$pointDists$nn
-            }
-        )
+        vapply(piList[intersect(features, names(tabObs[tabObs > 1]))], FUN.VALUE = double(1), function(x) {
+            x$pointDists$nn
+        })
     }
     if ("nnPair" %in% pis && length(features) > 1) {
         genePairsMat <- combn(features, 2)
-        nnPairPis <- vapply(seq_len(ncol(genePairsMat)),
-            FUN.VALUE = double(1),
-            function(i) {
-                feat1 <- genePairsMat[1, i]
-                feat2 <- genePairsMat[2, i]
-                mean(c(
-                    getElement(piList[[feat1]]$pointDists$nnPair, feat2),
-                    getElement(
-                        piList[[feat2]]$pointDists$nnPair,
-                        feat1
-                    )
-                ))
-            }
-        )
+        nnPairPis <- vapply(seq_len(ncol(genePairsMat)), FUN.VALUE = double(1), function(i) {
+            feat1 <- genePairsMat[1, i]
+            feat2 <- genePairsMat[2, i]
+            mean(c(getElement(piList[[feat1]]$pointDists$nnPair, feat2), getElement(piList[[feat2]]$pointDists$nnPair, feat1)))
+        })
         names(nnPairPis) <- apply(genePairsMat, 2, paste, collapse = "--")
     } else {
         nnPairPis <- NULL
@@ -161,19 +137,12 @@ estPisSingle <- function(p, pis, null, tabObs, owins = NULL, centroids = NULL, w
         unCells <- setdiff(unique(marks(p, drop = FALSE)$cell), "NA")
         cellDists <- loadBalanceBplapply(unCells, function(nam) {
             pSub <- p[marks(p, drop = FALSE)$cell == nam, ]
-            estPisSingle(
-                pis = gsub("Cell", "", grep(value = TRUE, "Cell", pis)),
-                p = pSub, null = null,
-                nPointsAll = nPointsAllWithinCell, window = owins[[nam]], features = features,
-                tabObs = table(marks(pSub, drop = FALSE)$gene),
-                loopFun = "lapply", minDiff = minDiff
-            )$pointDists
+            estPisSingle(pis = gsub("Cell", "", grep(value = TRUE, "Cell", pis)), p = pSub, null = null, nPointsAll = nPointsAllWithinCell,
+                window = owins[[nam]], features = features, tabObs = table(marks(pSub, drop = FALSE)$gene), loopFun = "lapply",
+                minDiff = minDiff)$pointDists
         })
         names(cellDists) <- unCells
         cellDists
     }
-    list(
-        pointDists = pointDists, windowDists = windowDists,
-        withinCellDists = withinCellDists
-    )
+    list(pointDists = pointDists, windowDists = windowDists, withinCellDists = withinCellDists)
 }

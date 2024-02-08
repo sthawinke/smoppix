@@ -6,8 +6,7 @@
 #' @return Throws an error when the PIs are not found, otherwise returns invisible
 checkPi <- function(x, pi) {
     if (!(pi %in% x$pis)) {
-        stop("Required PI not present in object.",
-        "Rerun estPis with correct 'pis' argument")
+        stop("Required PI not present in object.", "Rerun estPis with correct 'pis' argument")
     } else {
         invisible()
     }

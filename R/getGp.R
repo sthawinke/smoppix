@@ -9,10 +9,10 @@
 #' @export
 #' @examples
 #' mat <- t(cbind(
-#'     "gene1--gene2" = c(1, 2),
-#'     "gene1--gene3" = c(2, 3)
+#'     'gene1--gene2' = c(1, 2),
+#'     'gene1--gene3' = c(2, 3)
 #' ))
-#' getGp(mat, "gene3--gene1")
+#' getGp(mat, 'gene3--gene1')
 getGp <- function(x, gp, drop = TRUE, Collapse = "--") {
     if (!length(x)) {
         return(NULL)

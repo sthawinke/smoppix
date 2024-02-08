@@ -9,9 +9,9 @@
 #' complicated designs are used, do supply your own formula.
 #' @importFrom stats formula
 #' @seealso \link{fitLMMs}
-buildFormula = function(Formula, fixedVars, randomVars, outcome = "pi - 0.5"){
+buildFormula <- function(Formula, fixedVars, randomVars, outcome = "pi - 0.5") {
     # Allow cell as design variable, both fixed and random
-    Formula =  if (missing(Formula) || is.null(Formula)) {
+    Formula <- if (missing(Formula) || is.null(Formula)) {
         fixedPart <- paste(outcome, " ~ 1", if (!is.null(fixedVars)) {
             paste("+", paste(fixedVars, collapse = " + "))
         })
@@ -23,15 +23,15 @@ buildFormula = function(Formula, fixedVars, randomVars, outcome = "pi - 0.5"){
     }
     return(Formula)
 }
-characterFormula = function(Formula){
-    paste(as.character(Formula)[c(2,1,3)], collapse = " ")
+characterFormula <- function(Formula) {
+    paste(as.character(Formula)[c(2, 1, 3)], collapse = " ")
 }
 #' @importFrom stats formula
-getFixedPart = function(Formula){
-    if(!any(grepl("\\|", Formula))){
+getFixedPart <- function(Formula) {
+    if (!any(grepl("\\|", Formula))) {
         Formula
     } else {
-    formula(paste(collapse = " ", grep(value = TRUE, invert = TRUE, "\\|",
-                        strsplit(as.character(Formula), split = "\\+")[[1]])))
+        formula(paste(collapse = " ", grep(value = TRUE, invert = TRUE, "\\|",
+                                           strsplit(as.character(Formula), split = "\\+")[[1]])))
     }
 }

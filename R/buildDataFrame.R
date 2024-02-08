@@ -10,19 +10,18 @@
 #' @importFrom scam predict.scam
 #' @seealso \link{addWeightFunction}
 #' @examples
-#' example(addWeightFunction, "spatrans")
-#' dfUniNN <- buildDataFrame(yangObj, gene = "SmVND2", pi = "nn")
+#' example(addWeightFunction, 'spatrans')
+#' dfUniNN <- buildDataFrame(yangObj, gene = 'SmVND2', pi = 'nn')
 #' # Example analysis with linear mixed model
 #' library(lmerTest)
 #' # Use sum coding for day to maintain interpretability of the intercept
 #' mixedMod <- lmer(pi - 0.5 ~ day + (1 | root),
 #'     weight = weight, data = dfUniNN,
-#'     contrasts = list("day" = "contr.sum")
+#'     contrasts = list('day' = 'contr.sum')
 #' )
 #' summary(mixedMod)
 #' # Evidence for aggregation
-buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
-                               "nnCell", "nnPairCell")) {
+buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid", "nnCell", "nnPairCell")) {
     pi <- match.arg(pi)
     stopifnot((lg <- length(gene)) %in% c(1, 2))
     foo <- checkPi(obj, pi)
@@ -39,10 +38,7 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
         if (lg == 2) {
             gene <- paste(gene, collapse = "--")
         } else if (!grepl("--", gene)) {
-            stop(
-                "Provide gene pair as character vector of length 2",
-                " or separated by '--'."
-            )
+            stop("Provide gene pair as character vector of length 2", " or separated by '--'.")
         }
     } else {
         if (lg != 1 || grepl("--", gene)) {
@@ -61,14 +57,14 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
     } else {
         "pointDists"
     }
-    if(cellId || windowId){
-        eventVars = getEventVars(obj)
+    if (cellId || windowId) {
+        eventVars <- getEventVars(obj)
     }
     piDfs <- lapply(seq_len(nrow(obj$hypFrame)), function(n) {
         x <- obj$hypFrame[n, "pimRes", drop = TRUE]
         # Extract pi, and add counts and covariates
-        if(cellId || windowId){
-            Marks = marks(obj$hypFrame[n, "ppp", drop = TRUE], drop = FALSE)
+        if (cellId || windowId) {
+            Marks <- marks(obj$hypFrame[n, "ppp", drop = TRUE], drop = FALSE)
         }
         df <- if (windowId) {
             piEst <- if (is.null(vec <- getGp(x[[piListNameInner]], gene)[[pi]])) {
@@ -76,28 +72,28 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
             } else {
                 vec
             }
-            dfWin <- data.frame("pi" = unlist(piEst), "cell" = rep(names(piEst),
-                times = vapply(piEst, FUN.VALUE = double(1), length)
-            ))
-            if(length(cellVars <- setdiff(eventVars, c("gene", "cell"))) && NROW(dfWin)){
-                mat = Marks[match(dfWin$cell, Marks$cell), cellVars, drop = FALSE]
-                colnames(mat) = cellVars
+            dfWin <- data.frame(pi = unlist(piEst), cell = rep(names(piEst), times = vapply(piEst, FUN.VALUE = double(1),
+                length)))
+            if (length(cellVars <- setdiff(eventVars, c("gene", "cell"))) && NROW(dfWin)) {
+                mat <- Marks[match(dfWin$cell, Marks$cell), cellVars, drop = FALSE]
+                colnames(mat) <- cellVars
                 dfWin <- cbind(dfWin, mat)
             }
             return(dfWin)
         } else if (cellId) {
             piEst <- vapply(x[[piListNameInner]], FUN.VALUE = double(1), function(y) {
-                if (is.null(vec <- getGp(y[[piSub]], gene))) NA else vec
+                if (is.null(vec <- getGp(y[[piSub]], gene)))
+                  NA else vec
             })
-            cellCovars <- Marks[,eventVars,drop = FALSE]
-            cellCovars <- cellCovars[match(names(piEst), cellCovars$cell),
-                setdiff(colnames(cellCovars), "gene"), drop = FALSE]
+            cellCovars <- Marks[, eventVars, drop = FALSE]
+            cellCovars <- cellCovars[match(names(piEst), cellCovars$cell), setdiff(colnames(cellCovars), "gene"), drop = FALSE]
             tabCell <- table(Marks$gene, Marks$cell)
             npVec <- if (all(geneSplit %in% rownames(tabCell))) {
                 tmp <- tabCell[geneSplit, match(names(piEst), colnames(tabCell)), drop = FALSE]
                 t(matrix(tmp, ncol = ncol(tmp), dimnames = dimnames(tmp)))
             } else {
-                matrix(NA, ncol = if (pairId) 2 else 1, nrow = length(piEst))
+                matrix(NA, ncol = if (pairId)
+                  2 else 1, nrow = length(piEst))
             }
             colnames(npVec) <- if (pairId) {
                 c("minP", "maxP")
@@ -107,9 +103,12 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
             data.frame(pi = piEst, cellCovars, npVec)
         } else {
             piEst <- if (is.null(vec <- getGp(x[[piListNameInner]][[pi]], gene))) {
-                NA} else {vec}
+                NA
+            } else {
+                vec
+            }
             npVec <- if (all(geneSplit %in% names(to <- obj$hypFrame[n, "tabObs", drop = TRUE]))) {
-               to[geneSplit]
+                to[geneSplit]
             } else {
                 NA
             }
@@ -120,20 +119,16 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
             }
         }
     })
-    if (all((Times <- vapply(piDfs, FUN.VALUE = integer(1), NROW)) == 0)){
+    if (all((Times <- vapply(piDfs, FUN.VALUE = integer(1), NROW)) == 0)) {
         return(NULL)
     }
     image <- rep(rownames(obj$hypFrame), times = Times)
-    piDfsMat = Reduce(piDfs, f = rbind)
-    piMat <- data.frame(piDfsMat, obj$hypFrame[
-        image, c("image", getPPPvars(obj))])
+    piDfsMat <- Reduce(piDfs, f = rbind)
+    piMat <- data.frame(piDfsMat, obj$hypFrame[image, c("image", getPPPvars(obj))])
     if (!windowId) {
         # Add weights
-        weight <- evalWeightFunction(obj$Wfs[[pi]],
-            newdata = piMat[, if(grepl("Pair", pi)) c("minP", "maxP") else "NP",
-                drop = FALSE
-            ]
-        )
+        weight <- evalWeightFunction(obj$Wfs[[pi]], newdata = piMat[, if (grepl("Pair", pi))
+            c("minP", "maxP") else "NP", drop = FALSE])
         weight <- weight/sum(weight, na.rm = TRUE)
         piMat <- cbind(piMat, weight = weight)
     }

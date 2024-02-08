@@ -5,7 +5,7 @@
 #' @return The split string
 #' @export
 #' @examples
-#' GenePair = "gene1--gene2"
+#' GenePair = 'gene1--gene2'
 #' sund(GenePair)
 sund <- function(x, sep = "--") {
     strsplit(x, sep)[[1]]
@@ -27,7 +27,7 @@ makeDesignVar <- function(x, designVars, sep = "_") {
 #' @return A character vector of gene pairs
 #' @export
 #' @examples
-#' genes = paste0("gene", seq_len(4))
+#' genes = paste0('gene', seq_len(4))
 #' makePairs(genes)
 makePairs <- function(genes) {
     apply(combn(genes, 2), 2, paste, collapse = "--")
@@ -90,7 +90,7 @@ addTabObs <- function(hypFrame, desMat) {
     hypFrame$tabObs <- lapply(hypFrame$ppp, function(x) {
         table(marks(x, drop = FALSE)$gene)
     })
-    #Add design variables
+    # Add design variables
     for (i in colnames(desMat)) {
         hypFrame[, i] <- desMat[, i]
     }
@@ -139,15 +139,15 @@ getElement <- function(x, e) {
 #' @param coordList A list of coordinate matrices
 #' @return A matrix of weights for Moran's I statistic, inversely proportional to the distance between cell centroids
 #' @importFrom stats dist
-buildWeightMat = function(coordList){
-    coordMat = t(vapply(coordList, FUN.VALUE = double(2), getCoordsMat))
+buildWeightMat <- function(coordList) {
+    coordMat <- t(vapply(coordList, FUN.VALUE = double(2), getCoordsMat))
     as.matrix(1/dist(coordMat))
 }
 #' Extract the hyperframe
 #' @param x The hyperframe, or list containing one
 #' @return the hyperframe
 #' @importFrom spatstat.geom is.hyperframe
-getHypFrame = function(x){
+getHypFrame <- function(x) {
     if (is.hyperframe(x)) {
         x
     } else {
