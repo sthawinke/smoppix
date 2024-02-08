@@ -20,10 +20,11 @@
 #' @importFrom graphics points text
 #'
 #' @examples
-#' example(addCell, 'spatrans')
-#' plotCells(hypFrame2, 'gene1')
-#' plotCells(hypFrame2, 'gene1', borderColVar = 'condition')
-plotCells <- function(obj, features = getFeatures(obj)[seq_len(3)], nCells = 100, Cex = 1.5, borderColVar = NULL, borderCols = rev(palette()),
+#' example(addCell, "spatrans")
+#' plotCells(hypFrame2, "gene1")
+#' plotCells(hypFrame2, "gene1", borderColVar = "condition")
+plotCells <- function(
+    obj, features = getFeatures(obj)[seq_len(3)], nCells = 100, Cex = 1.5, borderColVar = NULL, borderCols = rev(palette()),
     warnPosition = TRUE, ...) {
     if (!is.hyperframe(obj)) {
         obj <- obj$hypFrame
@@ -69,8 +70,10 @@ plotCells <- function(obj, features = getFeatures(obj)[seq_len(3)], nCells = 100
         ppp <- subset.ppp(obj[[nam, "ppp"]], gene %in% features)
         for (j in seq_along(tablesCell[[nam]])) {
             namIn <- names(tablesCell[[nam]])[j]
-            shifted <- toUnitSquare(obj[[nam, "owins"]][[namIn]], ppp = subset.ppp(ppp, cell == namIn), Shift = Shift <- c(counter%%Ceil,
-                counter%/%Ceil))
+            shifted <- toUnitSquare(obj[[nam, "owins"]][[namIn]], ppp = subset.ppp(ppp, cell == namIn), Shift = Shift <- c(
+                counter %% Ceil,
+                counter %/% Ceil
+            ))
             plot.owin(shifted$owin, add = TRUE, border = borderCols[[i]][[j]])
             # text(x = Shift[1], y = Shift[2], labels = paste0('Point pattern ', nam, '\nCell', namIn))
             points(coords(shifted$ppp), col = Cols[marks(shifted$ppp, drop = FALSE)$gene], pch = ".", cex = Cex)
@@ -83,13 +86,14 @@ plotCells <- function(obj, features = getFeatures(obj)[seq_len(3)], nCells = 100
         names(borderCols) <- unVals
         addLegend(borderCols, Shift + c(2, 0), Pch = 5, Main = borderColVar, Cex = 0.7)
     }
-    if (warnPosition)
-        text(Ceil/2, -0.2, labels = "Cells not on original location but sorted by expression!")
+    if (warnPosition) {
+        text(Ceil / 2, -0.2, labels = "Cells not on original location but sorted by expression!")
+    }
     invisible()
 }
 #' @importFrom spatstat.geom affine.owin affine.ppp
 toUnitSquare <- function(owin, ppp, Shift) {
-    shrink <- 1/rep(max(diff(owin$xrange), diff(owin$yrange)), 2)
+    shrink <- 1 / rep(max(diff(owin$xrange), diff(owin$yrange)), 2)
     vec <- -c(owin$xrange[1], owin$yrange[1]) * shrink + Shift
     list(owin = affine.owin(owin, diag(shrink), vec), ppp = affine.ppp(ppp, diag(shrink), vec))
 }

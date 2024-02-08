@@ -2,9 +2,9 @@ library(testthat)
 library(spatrans)
 library(spatstat.random)
 library(BiocParallel)
-n <- 5000  # number of molecules
-ng <- 10  # number of genes
-nfov <- 3  # Number of fields of view
+n <- 5000 # number of molecules
+ng <- 10 # number of genes
+nfov <- 3 # Number of fields of view
 conditions <- 4
 # sample xy-coordinates in [0, 1]
 x <- runif(n)
@@ -54,7 +54,6 @@ objCSR <- addWeightFunction(piEstsCSR, designVars = "condition")
 # Fit Yang models too
 data(Yang)
 hypYang <- buildHyperFrame(Yang, coordVars = c("x", "y"), imageVars = c("day", "root", "section"))
-yangPims <- estPis(hypYang, features = getFeatures(hypYang)[seq_len(10)], pis = c("nn", "nnPair"), verbose = FALSE, nPointsAll = 1000,
-    )
+yangPims <- estPis(hypYang, features = getFeatures(hypYang)[seq_len(10)], pis = c("nn", "nnPair"), verbose = FALSE, nPointsAll = 1000, )
 yangPims <- addWeightFunction(yangPims, lowestLevelVar = "section")
 test_check("spatrans")

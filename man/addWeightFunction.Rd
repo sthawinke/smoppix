@@ -36,7 +36,7 @@ variance}
 \item{...}{Additional arguments passed on to the scam::scam function.}
 }
 \value{
-The input object with a slot "Wfs" added containing the weighting
+The input object with a slot 'Wfs' added containing the weighting
 functions.
 }
 \description{

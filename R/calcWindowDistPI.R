@@ -21,9 +21,13 @@ calcWindowDistPI <- function(pSub, owins, centroids, ecdfAll, pi, null, ecdfs, c
     splitPPP <- split.ppp(pSub, f = "cell")
     splitPPP <- splitPPP[names(splitPPP) != "NA"]
     obsDistEdge <- lapply(names(splitPPP), function(x) {
-        Dist <- switch(pi, centroid = crossdist(splitPPP[[x]], centroids[[x]]), edge = nncross(splitPPP[[x]], edges(owins[[x]]),
-            what = "dist"))
-        ecdfAll[[x]][[pi]](Dist)  # Do not average here, independent observations
+        Dist <- switch(pi,
+            centroid = crossdist(splitPPP[[x]], centroids[[x]]),
+            edge = nncross(splitPPP[[x]], edges(owins[[x]]),
+                what = "dist"
+            )
+        )
+        ecdfAll[[x]][[pi]](Dist) # Do not average here, independent observations
     })
     names(obsDistEdge) <- names(splitPPP)
     obsDistEdge

@@ -27,4 +27,3 @@ getEventVars <- function(x, exclude = c("x", "y", "z")) {
         names(marks(ppp, drop = FALSE))
     }))), exclude)
 }
-

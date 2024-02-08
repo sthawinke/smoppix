@@ -10,14 +10,14 @@
 #' @importFrom scam predict.scam
 #' @seealso \link{addWeightFunction}
 #' @examples
-#' example(addWeightFunction, 'spatrans')
-#' dfUniNN <- buildDataFrame(yangObj, gene = 'SmVND2', pi = 'nn')
+#' example(addWeightFunction, "spatrans")
+#' dfUniNN <- buildDataFrame(yangObj, gene = "SmVND2", pi = "nn")
 #' # Example analysis with linear mixed model
 #' library(lmerTest)
 #' # Use sum coding for day to maintain interpretability of the intercept
 #' mixedMod <- lmer(pi - 0.5 ~ day + (1 | root),
 #'     weight = weight, data = dfUniNN,
-#'     contrasts = list('day' = 'contr.sum')
+#'     contrasts = list("day" = "contr.sum")
 #' )
 #' summary(mixedMod)
 #' # Evidence for aggregation
@@ -72,8 +72,10 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
             } else {
                 vec
             }
-            dfWin <- data.frame(pi = unlist(piEst), cell = rep(names(piEst), times = vapply(piEst, FUN.VALUE = double(1),
-                length)))
+            dfWin <- data.frame(pi = unlist(piEst), cell = rep(names(piEst), times = vapply(piEst,
+                FUN.VALUE = double(1),
+                length
+            )))
             if (length(cellVars <- setdiff(eventVars, c("gene", "cell"))) && NROW(dfWin)) {
                 mat <- Marks[match(dfWin$cell, Marks$cell), cellVars, drop = FALSE]
                 colnames(mat) <- cellVars
@@ -82,8 +84,11 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
             return(dfWin)
         } else if (cellId) {
             piEst <- vapply(x[[piListNameInner]], FUN.VALUE = double(1), function(y) {
-                if (is.null(vec <- getGp(y[[piSub]], gene)))
-                  NA else vec
+                if (is.null(vec <- getGp(y[[piSub]], gene))) {
+                    NA
+                } else {
+                    vec
+                }
             })
             cellCovars <- Marks[, eventVars, drop = FALSE]
             cellCovars <- cellCovars[match(names(piEst), cellCovars$cell), setdiff(colnames(cellCovars), "gene"), drop = FALSE]
@@ -92,8 +97,11 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
                 tmp <- tabCell[geneSplit, match(names(piEst), colnames(tabCell)), drop = FALSE]
                 t(matrix(tmp, ncol = ncol(tmp), dimnames = dimnames(tmp)))
             } else {
-                matrix(NA, ncol = if (pairId)
-                  2 else 1, nrow = length(piEst))
+                matrix(NA, ncol = if (pairId) {
+                    2
+                } else {
+                    1
+                }, nrow = length(piEst))
             }
             colnames(npVec) <- if (pairId) {
                 c("minP", "maxP")
@@ -127,9 +135,12 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
     piMat <- data.frame(piDfsMat, obj$hypFrame[image, c("image", getPPPvars(obj))])
     if (!windowId) {
         # Add weights
-        weight <- evalWeightFunction(obj$Wfs[[pi]], newdata = piMat[, if (grepl("Pair", pi))
-            c("minP", "maxP") else "NP", drop = FALSE])
-        weight <- weight/sum(weight, na.rm = TRUE)
+        weight <- evalWeightFunction(obj$Wfs[[pi]], newdata = piMat[, if (grepl("Pair", pi)) {
+            c("minP", "maxP")
+        } else {
+            "NP"
+        }, drop = FALSE])
+        weight <- weight / sum(weight, na.rm = TRUE)
         piMat <- cbind(piMat, weight = weight)
     }
     rownames(piMat) <- NULL

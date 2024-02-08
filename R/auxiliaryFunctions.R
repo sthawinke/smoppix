@@ -5,7 +5,7 @@
 #' @return The split string
 #' @export
 #' @examples
-#' GenePair = 'gene1--gene2'
+#' GenePair <- "gene1--gene2"
 #' sund(GenePair)
 sund <- function(x, sep = "--") {
     strsplit(x, sep)[[1]]
@@ -27,7 +27,7 @@ makeDesignVar <- function(x, designVars, sep = "_") {
 #' @return A character vector of gene pairs
 #' @export
 #' @examples
-#' genes = paste0('gene', seq_len(4))
+#' genes <- paste0("gene", seq_len(4))
 #' makePairs(genes)
 makePairs <- function(genes) {
     apply(combn(genes, 2), 2, paste, collapse = "--")
@@ -141,7 +141,7 @@ getElement <- function(x, e) {
 #' @importFrom stats dist
 buildWeightMat <- function(coordList) {
     coordMat <- t(vapply(coordList, FUN.VALUE = double(2), getCoordsMat))
-    as.matrix(1/dist(coordMat))
+    as.matrix(1 / dist(coordMat))
 }
 #' Extract the hyperframe
 #' @param x The hyperframe, or list containing one

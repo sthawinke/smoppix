@@ -7,12 +7,17 @@ test_that("Building data frames for mixed modelling proceeds without errors", {
     expect_identical(dfBG2, dfBG2b)
     expect_silent(dfBG3 <- buildDataFrame(objBG, gene = "gene1", pi = "centroid"))
     expect_silent(dfBG6 <- buildDataFrame(objBG, gene = "gene1", pi = "edge"))
-    totPointsGene1 <- sum(vapply(objBG$hypFrame$ppp, FUN.VALUE = double(1), function(x) sum(marks(x, drop = TRUE)$gene ==
-        "gene1")))
+    totPointsGene1 <- sum(vapply(objBG$hypFrame$ppp, FUN.VALUE = double(1), function(x) {
+        sum(marks(x, drop = TRUE)$gene ==
+            "gene1")
+    }))
     # For fixed points, number of PI must match number of events
     expect_equal(totPointsGene1, nrow(dfBG6))
-    expect_equal(sum(!is.na(dfBG0$pi)), sum(vapply(objBG$hypFrame$ppp, FUN.VALUE = logical(1), function(x) sum(marks(x,
-        drop = TRUE)$gene == "gene1") > 1)))
+    expect_equal(sum(!is.na(dfBG0$pi)), sum(vapply(objBG$hypFrame$ppp, FUN.VALUE = logical(1), function(x) {
+        sum(marks(x,
+            drop = TRUE
+        )$gene == "gene1") > 1
+    })))
     expect_s3_class(dfBG7 <- buildDataFrame(objBG, gene = "gene1", pi = "nnCell"), "data.frame")
     expect_s3_class(dfBG9 <- buildDataFrame(objBG, gene = "gene1--gene2", pi = "nnPairCell"), "data.frame")
     expect_silent(dfCSR1 <- buildDataFrame(objCSR, gene = "gene2", pi = "edge"))

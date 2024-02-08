@@ -28,11 +28,12 @@
 #' @export
 #'
 #' @examples
-#' example(buildHyperFrame, 'spatrans')
+#' example(buildHyperFrame, "spatrans")
 #' plotExplore(hypYang)
-#' plotExplore(hypYang, titleVar = 'day')
-#' plotExplore(hypYang, features = c('SmRBRb', 'SmTMO5b', 'SmWER--SmAHK4f'))
-plotExplore <- function(hypFrame, features = getFeatures(hypFrame)[seq_len(6)], ppps, maxPlot = 1e+05, Cex = 1, plotWindows = !is.null(hypFrame$owins),
+#' plotExplore(hypYang, titleVar = "day")
+#' plotExplore(hypYang, features = c("SmRBRb", "SmTMO5b", "SmWER--SmAHK4f"))
+plotExplore <- function(
+    hypFrame, features = getFeatures(hypFrame)[seq_len(6)], ppps, maxPlot = 1e+05, Cex = 1, plotWindows = !is.null(hypFrame$owins),
     piEsts = NULL, Xlim = NULL, Ylim = NULL, Cex.main = 0.8, Mar = c(0.35, 0.1, 0.75, 0.1), titleVar = NULL, piColourCell = NULL,
     palCols = c("blue", "yellow")) {
     if (!is.hyperframe(hypFrame)) {
@@ -70,36 +71,46 @@ plotExplore <- function(hypFrame, features = getFeatures(hypFrame)[seq_len(6)], 
     on.exit(par(old.par))
     LL <- length(ppps)
     Nrow <- ceiling(sqrt(LL))
-    Ncol <- (LL%/%Nrow) + 1
+    Ncol <- (LL %/% Nrow) + 1
     par(mfrow = c(Nrow, Ncol), mar = Mar)
     baa <- lapply(ppps, function(i) {
         PPPsub <- subSampleP(if (colourCells) {
             hypFrame$ppp[[i]][marks(hypFrame$ppp[[i]])$gene %in% features, ]
-        } else hypFrame$ppp[[i]], maxPlot)
+        } else {
+            hypFrame$ppp[[i]]
+        }, maxPlot)
         colVec <- Cols[marks(PPPsub, drop = FALSE)$gene]
         cordMat <- coords(PPPsub)
         ordVec <- order(colVec != "grey")
-        plot(cordMat[ordVec, ], main = paste(hypFrame$image[i], if (!is.null(titleVar))
-            hypFrame[[i, titleVar]]), type = "n", cex.main = Cex.main, xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i", asp = 1,
-            xlim = Xlim, ylim = Ylim)
+        plot(cordMat[ordVec, ],
+            main = paste(hypFrame$image[i], if (!is.null(titleVar)) {
+                hypFrame[[i, titleVar]]
+            }), type = "n", cex.main = Cex.main, xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i", asp = 1,
+            xlim = Xlim, ylim = Ylim
+        )
         if (plotWindows) {
             foo <- lapply(names(hypFrame$owins[[i]]), function(cell) {
                 plot.owin(hypFrame[i, "owins", drop = TRUE][[cell]], add = TRUE, col = if (colourCells && length(Col <- Palette[cell ==
-                  piDf$cell]))
-                  Col)
+                    piDf$cell])) {
+                    Col
+                })
             })
         }
         points(cordMat[ordVec, ], pch = ".", col = colVec[ordVec], cex = Cex)
-
     })
     plot(c(0, 1), c(0, 1), type = "n", xlab = "", ylab = "", xaxt = "n", yaxt = "n")
     colPlot <- if (colourCells) {
         tmp <- pal(6)
         names(tmp) <- signif(seq(min(piDf$pi, na.rm = TRUE), max(piDf$pi, na.rm = TRUE), length.out = 6), 2)
         tmp
-    } else Cols
-    addLegend(colPlot, Main = if (colourCells)
-        paste("pi", piColourCell) else "Feature")
+    } else {
+        Cols
+    }
+    addLegend(colPlot, Main = if (colourCells) {
+        paste("pi", piColourCell)
+    } else {
+        "Feature"
+    })
 }
 addLegend <- function(Cols, Shift = c(0, 0), Cex = 0.85, Pch = 20, Main = "") {
     idCols <- which(Cols != "grey")

@@ -11,7 +11,7 @@ loadBalanceBplapply(iterator, func, loopFun = "bplapply")
 
 \item{func}{The function to apply to each element}
 
-\item{loopFun}{The looping function, can also be "lapply" for serial processing}
+\item{loopFun}{The looping function, can also be 'lapply' for serial processing}
 }
 \value{
 A list with the same length as iterator

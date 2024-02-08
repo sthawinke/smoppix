@@ -4,7 +4,8 @@ test_that("sund yields correct result", {
     expect_identical("gene1", "gene1")
 })
 test_that("Make gene pairs works as expected", {
-    expect_identical(makePairs(paste0("gene", seq_len(3))), c("gene1--gene2", "gene1--gene3", "gene2--gene3"))
+    expect_identical(makePairs(paste0("gene", seq_len(3))),
+                     c("gene1--gene2", "gene1--gene3", "gene2--gene3"))
 })
 test_that("getGp does correct extraction", {
     geneMat <- matrix(rnorm(6), 3, 2)
@@ -13,5 +14,5 @@ test_that("getGp does correct extraction", {
     expect_is(getGp(geneMat, "gene1--gene2", drop = FALSE), "matrix")
 })
 test_that("Only fixed part of formula is extracted", {
-    expect_identical(getFixedPart("outcome~fixed + (1|random)"), "outcome ~ fixed")
+    expect_equal(getFixedPart("outcome~fixed + (1|random)"), formula("outcome ~ fixed"))
 })

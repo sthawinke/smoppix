@@ -7,4 +7,3 @@ test_that("findOverlap really detects overlap between windows", {
     expect_error(findOverlap(owins))
     expect_is(idOverlap <- findOverlap(owins, returnIds = TRUE), "matrix")
 })
-

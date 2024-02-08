@@ -69,8 +69,7 @@ register(SerialParam())
 
 # Yang data: lycophyte roots
 
-As example dataset we use the data used in a ["manuscript"]( 	
-doi:10.1016/j.cub.2023.08.030) by Yang et al. 2023. on _Selaginella moellendorffii_. Only a subset of the data, consisting of sections 1-5 of roots 1-3 is included for computational reasons. The data is loaded as follows.
+As example dataset we use the data used in a ["manuscript"](doi:10.1016/j.cub.2023.08.030) by Yang et al. 2023. on _Selaginella moellendorffii_. Only a subset of the data, consisting of sections 1-5 of roots 1-3 is included for computational reasons. The data is loaded as follows.
 
 ```{r}
 data(Yang)
@@ -210,14 +209,14 @@ A second dataset was published in a ["paper"](10.1038/s41586-019-1049-y) by Eng 
 
 ```{r readInEngData, warning=FALSE}
 data(Eng)
-hypEng = buildHyperFrame(Eng, coordVars = c("x", "y"), imageVars = c("fov", "experiment"))
+hypEng <- buildHyperFrame(Eng, coordVars = c("x", "y"), imageVars = c("fov", "experiment"))
 ```
 
 Next, the cell boundaries are added, as a list with names corresponding to the rownames of the hyperframe. Different formats are allowed to provide windows in case the correct packages are installed, see _?addCell_. Based on these cells, every event is assigned to a cell.
 
 ```{r CellEngData}
-#Add cell identifiers
-hypEng = addCell(hypEng, EngRois, verbose = FALSE)
+# Add cell identifiers
+hypEng <- addCell(hypEng, EngRois, verbose = FALSE)
 ```
 
 Now plot the complete hyperframe with cell boundaries:
@@ -231,14 +230,14 @@ plotExplore(hypEng)
 First, we will test for vicinity of the RNA molecules to cell boundaries or centroids, and for localization patterns within the cell. For this we pass different PI arguments to the _estPis()_ function. As null hypothesis, we choose complete spatial randomness (CSR) within the cell, which seems most natural, although the "background" option is also available. The suffix "Cell" indicates that nearest neighbour distances are calculated within the same cell only.
 
 ```{r}
-engPis = estPis(hypEng, pis = c("edge", "centroid", "nnCell", "nnPairCell"), null = "CSR")
+engPis <- estPis(hypEng, pis = c("edge", "centroid", "nnCell", "nnPairCell"), null = "CSR")
 ```
 
 As before, the weight function needs to be added for the nearest neighbour PIs.
 The lowest level variable defaults to "cell" in this case, so there is no need to supply it:
 
 ```{r addWfCell}
-engPis = addWeightFunction(engPis)
+engPis <- addWeightFunction(engPis)
 ```
 
 We can now plot the bivariate weight function for instance:
@@ -284,7 +283,7 @@ plotExplore(hypEng, piEsts = engPis, piColourCell = "edge", features = remEdge <
 The molecules are shown in red, while the yellow-blue scale indicates the PI estimate. It seems like in the central cells, the PI is smaller (molecules less remote from cell edge) than the outer cells. We test whether the Moran's I statistic, a measure for spatial aggregation of numeric variables, is significant over the different point patterns:
 
 ```{r testMoransI}
-getResults(allModsNNcell$edge, "Intercept", moransI = TRUE)[remEdge,]
+getResults(allModsNNcell$edge, "Intercept", moransI = TRUE)[remEdge, ]
 ```
 
 Although the estimated Moran's I is positive indeed, indicating positive spatial autocorrelation, it is not significant over the different repeats.

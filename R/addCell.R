@@ -47,15 +47,15 @@
 #' x <- runif(n)
 #' y <- runif(n)
 #' # assign each molecule to some gene-cell pair
-#' gs <- paste0('gene', seq(ng))
+#' gs <- paste0("gene", seq(ng))
 #' gene <- sample(gs, n, TRUE)
 #' fov <- sample(nfov, n, TRUE)
 #' condition <- sample(conditions, n, TRUE)
 #' # construct data.frame of molecule coordinates
-#' df <- data.frame(gene, x, y, fov, 'condition' = condition)
+#' df <- data.frame(gene, x, y, fov, "condition" = condition)
 #' # A list of point patterns
 #' listPPP <- tapply(seq(nrow(df)), df$fov, function(i) {
-#'     ppp(x = df$x[i], y = df$y[i], marks = df[i, 'gene', drop = FALSE])
+#'     ppp(x = df$x[i], y = df$y[i], marks = df[i, "gene", drop = FALSE])
 #' }, simplify = FALSE)
 #' # Regions of interest (roi): Diamond in the center plus four triangles
 #' w1 <- owin(poly = list(x = c(0, .5, 1, .5), y = c(.5, 0, .5, 1)))
@@ -64,16 +64,17 @@
 #' w4 <- owin(poly = list(x = c(1, 1, .5), y = c(0.5, 1, 1)))
 #' w5 <- owin(poly = list(x = c(1, 1, .5), y = c(0, 0.5, 0)))
 #' hypFrame <- buildHyperFrame(df,
-#'     coordVars = c('x', 'y'),
-#'     imageVars = c('condition', 'fov')
+#'     coordVars = c("x", "y"),
+#'     imageVars = c("condition", "fov")
 #' )
 #' nDesignFactors <- length(unique(hypFrame$image))
 #' wList <- lapply(seq_len(nDesignFactors), function(x) {
-#'     list('w1' = w1, 'w2' = w2, 'w3' = w3, 'w4' = w4, 'w5' = w5)
+#'     list("w1" = w1, "w2" = w2, "w3" = w3, "w4" = w4, "w5" = w5)
 #' })
 #' names(wList) <- rownames(hypFrame) # Matching names is necessary
 #' hypFrame2 <- addCell(hypFrame, wList)
-addCell <- function(hypFrame, owins, cellTypes = NULL, findOverlappingOwins = FALSE, warnOut = TRUE, coords = c("x", "y"),
+addCell <- function(
+    hypFrame, owins, cellTypes = NULL, findOverlappingOwins = FALSE, warnOut = TRUE, coords = c("x", "y"),
     verbose = TRUE, addCellMarkers = TRUE, ...) {
     stopifnot(nrow(hypFrame) == length(owins), all(rownames(hypFrame) %in% names(owins)), is.hyperframe(hypFrame), is.null(cellTypes) ||
         is.data.frame(cellTypes))
@@ -108,7 +109,7 @@ addCell <- function(hypFrame, owins, cellTypes = NULL, findOverlappingOwins = FA
             }
             hypFrame[nn, "centroids"] <- lapply(owins[[nn]], function(y) {
                 centroid.owin(y, as.ppp = TRUE)
-            })  # Add centroids of the windows
+            }) # Add centroids of the windows
             if (findOverlappingOwins) {
                 # Find overlap between cells
                 foo <- findOverlap(owins[[nn]], hypFrame[nn, "centroids"])
@@ -127,7 +128,8 @@ addCell <- function(hypFrame, owins, cellTypes = NULL, findOverlappingOwins = FA
             }
             if ((nOut > 0) && warnOut) {
                 warning(nOut, " points lie outside all windows for point pattern ", nn, " and were not assigned to a cell.\n",
-                  immediate. = TRUE)
+                    immediate. = TRUE
+                )
             }
             newmarks <- cbind(marks(ppp, drop = FALSE), cell = cellOut)
             if (ct) {

@@ -45,12 +45,12 @@ convertToOwins <- function(windows, namePPP, coords, ...) {
         if (requireNamespace("RImageJROI", quietly = TRUE)) {
             winOut <- if (allRoi) {
                 lapply(windows, function(w) {
-                  foo <- try(silent = TRUE, RImageJROI::ij2spatstat(w))
-                  if (is(foo, "try-error")) {
-                    w$coords <- w$coords[rev(seq_len(nrow(w$coords))), ]
                     foo <- try(silent = TRUE, RImageJROI::ij2spatstat(w))
-                  }
-                  return(foo)
+                    if (is(foo, "try-error")) {
+                        w$coords <- w$coords[rev(seq_len(nrow(w$coords))), ]
+                        foo <- try(silent = TRUE, RImageJROI::ij2spatstat(w))
+                    }
+                    return(foo)
                 })
             } else {
                 RImageJROI::ij2spatstat(windows)

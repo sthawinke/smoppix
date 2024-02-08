@@ -31,7 +31,9 @@ getFixedPart <- function(Formula) {
     if (!any(grepl("\\|", Formula))) {
         Formula
     } else {
-        formula(paste(collapse = " ", grep(value = TRUE, invert = TRUE, "\\|",
-                                           strsplit(as.character(Formula), split = "\\+")[[1]])))
+        formula(paste(collapse = " ", grep(
+            value = TRUE, invert = TRUE, "\\|",
+            strsplit(as.character(Formula), split = "\\+")[[1]]
+        )))
     }
 }

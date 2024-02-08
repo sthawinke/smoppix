@@ -21,11 +21,13 @@
 #' @seealso \link{plotCells},\link{plotExplore},\link{fitLMMs}
 #'
 #' @examples
-#' example(fitLMMs, 'spatrans')
-#' plotTopResults(hypYang, lmmModels, 'nn')
-#' plotTopResults(hypYang, lmmModels, 'nn', effect = 'Intercept')
+#' example(fitLMMs, "spatrans")
+#' plotTopResults(hypYang, lmmModels, "nn")
+#' plotTopResults(hypYang, lmmModels, "nn", effect = "Intercept")
 plotTopResults <- function(hypFrame, results, pi, effect = "Intercept", smallPI = TRUE, sigLevel = 0.05, numFeats = 2, piThreshold = switch(effect,
-    Intercept = 0.5, 0), ...) {
+                               Intercept = 0.5,
+                               0
+                           ), ...) {
     stopifnot(is.hyperframe(hypFrame), is.logical(smallPI), sigLevel > 0, sigLevel < 1)
     pi <- match.arg(pi, choices = c("nn", "nnPair", "edge", "centroid", "nnCell", "nnPairCell"))
     if (is.null(Res <- results[[pi]]$results)) {
@@ -34,13 +36,18 @@ plotTopResults <- function(hypFrame, results, pi, effect = "Intercept", smallPI 
     if (is.null(subRes <- if (effectId <- effect == "Intercept") Res$Intercept else Res$fixedEffects[[effect]])) {
         stop("Effect ", effect, " was not estimated in the linear model!")
     }
-    Fun <- match.fun(if (smallPI)
-        "<" else ">")
+    Fun <- match.fun(if (smallPI) {
+        "<"
+    } else {
+        ">"
+    })
     estId <- if (effectId) {
         !is.na(subRes[, "Estimate"]) & Fun(subRes[, "Estimate"], piThreshold)
     } else if (ncol(subRes) == 4) {
         Fun(apply(subRes[, seq_len(2)], 1, max, na.rm = TRUE), piThreshold)
-    } else TRUE
+    } else {
+        TRUE
+    }
     Feats <- rownames(subRes)[estId & subRes[, "pAdj"] < sigLevel][seq_len(numFeats)]
     if (all(is.na(Feats))) {
         stop("No significant features found for PI ", pi, " significance level ", sigLevel, " and smallPI ", smallPI, "!")
@@ -52,6 +59,7 @@ plotTopResults <- function(hypFrame, results, pi, effect = "Intercept", smallPI 
     } else {
         plotCells
     }
-    plotFun(hypFrame, Feats, titleVar = if (!effectId && !nnId)
-        effect, ...)
+    plotFun(hypFrame, Feats, titleVar = if (!effectId && !nnId) {
+        effect
+    }, ...)
 }
