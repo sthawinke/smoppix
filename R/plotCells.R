@@ -10,7 +10,7 @@
 #' @param Cex The point expansion factor
 #' @param borderColVar The variable to colour borders of the cell
 #' @param borderCols Colour palette for the borders
-#' @param warnOrienation A boolean, should a warning be issued printed on the
+#' @param warnPosition A boolean, should a warning be issued printed on the
 #'  image that cells are not in their original location?
 #' @param ... Additional arguments, currently ignored
 #'
@@ -25,7 +25,7 @@
 #' plotCells(hypFrame2, "gene1", borderColVar = "condition")
 plotCells <- function(obj, features = getFeatures(obj)[seq_len(3)], nCells = 1e2,
                       Cex = 1.5, borderColVar = NULL, borderCols = rev(palette()),
-                      warnOrienation = TRUE, ...) {
+                      warnPosition = TRUE, ...) {
     if (!is.hyperframe(obj)) {
         obj <- obj$hypFrame
     }
@@ -92,7 +92,7 @@ plotCells <- function(obj, features = getFeatures(obj)[seq_len(3)], nCells = 1e2
         names(borderCols) = unVals
         addLegend(borderCols, Shift + c(2, 0), Pch = 5, Main = borderColVar, Cex = 0.7)
     }
-    if(warnOrientation)
+    if(warnPosition)
         text(Ceil/2, -0.2, labels = "Cells not on original location but sorted by expression!")
     invisible()
 }
