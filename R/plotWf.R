@@ -1,7 +1,8 @@
 #' Plot the variance weighting function
 #' @description The observation weights are plotted as a function of number of events.
 #' For a univariate PI, this is a line plot, for a bivariate PI this is a
-#' scatterplot of majority gene pair as a function of minority gene pair, with the weight represented as a colour scale
+#' scatterplot of majority gene as a function of minority gene, with the weight represented as a colour scale.
+#' The minority respectively majority gene are the genes in the gene pair with least and most events
 #'
 #' @inheritParams buildDataFrame
 #' @param pi The PI for which to plot the weighting function
@@ -55,7 +56,7 @@ plotWf <- function(obj, pi = obj$pis[1]) {
         df[, "Weight"] <- df[, "Weight"] / max(df[, "Weight"])
         plot(Weight ~ NP,
             data = df[order(df$NP), ], type = "l",
-            xlab = "Number of observations", ylab = "Weight",
+            xlab = "Number of molecules", ylab = "Weight",
             main = paste(
                 "Weighting function for probabilistic indices of type",
                 pi
