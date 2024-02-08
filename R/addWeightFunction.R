@@ -46,7 +46,8 @@ addWeightFunction <- function(
     }
     if (all(pis %in% c("edge", "centroid"))) {
         stop(
-            "Calculating weight matrices for distances to fixed points is ", "unnecessary as they are independent.
+            "Calculating weight matrices for distances to fixed points is ",
+            "unnecessary as they are independent.
              Simply proceed with fitting the model on the",
             " individual evaluations of the B-function."
         )
