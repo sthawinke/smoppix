@@ -1,14 +1,17 @@
 context("Plotting of top results")
+linModsMP <- fitLMMs(objBG, returnModels = TRUE,
+                     features = getFeatures(objBG)[1:5],
+                     fixedVars = "condition", pi = "centroid")
 test_that("Top results plotting proceeds without errors", {
     linModsNNint <- fitLMMs(yangPims, features = getFeatures(yangPims)[seq_len(10)])
     expect_silent(plotTopResults(results = linModsNNint, hypYang, "nn"))
     expect_silent(plotTopResults(results = linModsNNint, hypYang, "nnPair"))
+    expect_silent(plotTopResults(results = linModsNNint, hypYang, "nnPair", effect = "day"))
     expect_silent(plotTopResults(results = linModsNNint, hypYang, "nnPair", smallPI = FALSE))
+    expect_silent(plotTopResults(results = linModsMP, hypFrame2, "centroid", sigLevel = 0.99))
 })
 test_that("Fitting linear mixed models throws errors where appropriate", {
     expect_error(plotTopResults(results = linModsNNint, hypYang, "centroid"))
-    linModsMP <- fitLMMs(objBG, returnModels = TRUE,
-                         features = getFeatures(objBG)[1:5],
-                         fixedVars = "condition", pi = "centroid")
+    expect_error(plotTopResults(results = linModsNNint, hypYang, "nn", effect = "treatment"))
     expect_error(plotTopResults(results = linModsMP, hypFrame, "centroid", sigLevel = 1e-5))
 })
