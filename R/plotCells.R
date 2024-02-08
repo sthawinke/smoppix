@@ -87,7 +87,7 @@ plotCells <- function(
         addLegend(borderCols, Shift + c(2, 0), Pch = 5, Main = borderColVar, Cex = 0.7)
     }
     if (warnPosition) {
-        text(Ceil / 2, -0.2, labels = "Cells not on original location but sorted by expression!")
+        text(Ceil / 2, -0.4, labels = "Cells not on original location but sorted by expression!")
     }
     invisible()
 }

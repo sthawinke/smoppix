@@ -116,7 +116,7 @@ addLegend <- function(Cols, Shift = c(0, 0), Cex = 0.85, Pch = 20, Main = "") {
     idCols <- which(Cols != "grey")
     li <- length(idCols)
     maxY <- 0.9 - 0.1 * (mainId <- Main != "")
-    points(x = rep(0.1, li) + Shift[1], SeqY <- seq(maxY, 0.1, length.out = li) + Shift[2], pch = Pch, col = Cols[idCols])
+    points(x = rep(0.15, li) + Shift[1], SeqY <- seq(maxY, 0.1, length.out = li) + Shift[2], pch = Pch, col = Cols[idCols])
     text(x = rep(0.25, li) + Shift[1], SeqY, names(Cols)[idCols], adj = 0, cex = Cex)
     if (mainId) {
         text(x = 0.4 + Shift[1], y = 0.95 + Shift[2], Main, cex = 1.2)
