@@ -41,9 +41,10 @@ unCells <- unlist(lapply(wList, names))
 cellTypesDf <- data.frame(cell = unCells, cellType = sample(paste0("CellType_", LETTERS[seq_len(5)]), length(unCells), replace = TRUE))
 names(wList) <- names(wList2) <- rownames(hypFrame)
 hypFrame2 <- addCell(hypFrame, wList, cellTypes = cellTypesDf, verbose = FALSE)
-# Register the parallel backend register(SerialParam())
+# Register the parallel backend
 nCores <- 2
 register(MulticoreParam(nCores))
+#register(SerialParam()) #Switch on when exploring test coverage
 pis <- c("nn", "nnPair", "edge", "centroid", "nnCell", "nnPairCell")
 piEstsBG <- estPis(hypFrame2, pis = pis, null = "background", verbose = FALSE)
 piEstsCSR <- estPis(hypFrame2, pis = pis, null = "CSR", verbose = FALSE)

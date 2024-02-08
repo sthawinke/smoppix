@@ -16,3 +16,11 @@ test_that("getGp does correct extraction", {
 test_that("Only fixed part of formula is extracted", {
     expect_equal(getFixedPart("outcome~fixed + (1|random)"), formula("outcome ~ fixed"))
 })
+test_that("Design variables are well constructed", {
+    expect_identical(makeDesignVar(data.frame("a" = 1:3, "b" = LETTERS[1:3]), c("a", "b")), c("1_A", "2_B", "3_C"))
+})
+test_that("Coordinate extraction works", {
+    expect_is(mat <- getCoordsMat(hypYang$ppp[[1]]), "matrix")
+    expect_is(mat <- getCoordsMat(mat), "matrix")
+    expect_is(mat <- getCoordsMat(as.data.frame(mat)), "matrix")
+})

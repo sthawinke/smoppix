@@ -16,6 +16,7 @@ test_that("Adding the weight function works", {
     # With information sharing across features
     expect_s3_class(dfBG1 <- buildDataFrame(objBG, gene = "gene1", pi = "nn"), "data.frame")
     expect_s3_class(dfBG2 <- buildDataFrame(objBG, gene = "gene1--gene2", pi = "nnPair"), "data.frame")
+    expect_warning(addWeightFunction(objBG2, lowestLevelVar = "fov"))
 })
 test_that("Weight function application throws errors where appropriate", {
     expect_error(buildDataFrame(piEstsBG, gene = "gene101", pi = "nn"))
@@ -25,4 +26,6 @@ test_that("Weight function application throws errors where appropriate", {
     expect_error(addWeightFunction(piEstsCSR, pi = "nn", lowestLevelVar = c("fov", "condition")))
     expect_error(addWeightFunction(piEstsCSR, pi = "nn", lowestLevelVar = "treatment"))
     expect_error(addWeightFunction(piEstsCSR, pi = "nn"))
+    expect_error(addWeightFunction(piEstsCSR, pi = "centroid"))
+    expect_error(addWeightFunction(hypYang))
 })

@@ -18,7 +18,11 @@ sund <- function(x, sep = "--") {
 #'
 #' @return a vector of design levels
 makeDesignVar <- function(x, designVars, sep = "_") {
-    apply(x[, designVars, drop = FALSE], 1, collapse = sep)
+    if (NCOL(x) != 1) {
+        apply(x[, designVars, drop = FALSE], 1, paste, collapse = sep)
+    } else {
+        c(x)
+    }
 }
 #' An aux function to build gene pairs
 #'
@@ -53,17 +57,6 @@ subSampleP <- function(p, nSims, returnId = FALSE) {
     } else {
         return(Pout)
     }
-}
-#' Remove the diagonal from a square matrix
-#' @details The diagonal elements are removed, and the elements right from the
-#' diagonal are shifted left to form a new matrix with one column less
-#'
-#' @param x The matrix from which to remove the diagonal
-#'
-#' @return A matrix with the same number of rows as x and one column less
-dropDiagonal <- function(x) {
-    diagId <- seq(1, length(x), by = (NR <- nrow(x)) + 1)
-    t(matrix(t(x)[-diagId], ncol = NR))
 }
 #' A version of contr.sum that retains names, a bit controversial but also
 #' clearer
