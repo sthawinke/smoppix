@@ -51,7 +51,7 @@ fitLMMs <- function(obj, pis = obj$pis, fixedVars = NULL, randomVars = NULL,
                       randomVars = randomVars, returnModels = returnModels,
                       Formula = Formula, randomNested = randomNested,
                       features = features, weightMats = weightMats, moranFormula = moranFormula,
-                      addMoransI = pi %in% c("edge", "centroid", "nnCell", "nnPairCell"), ...)
+                      addMoransI = addMoransI, ...)
     })
     names(out) <- pis
     return(out)

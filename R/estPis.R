@@ -46,10 +46,10 @@ estPis <- function(hypFrame, pis = c("nn", "nnPair", "edge", "centroid", "nnCell
                    nPointsAllWithinCell = switch(null, background = 1e4, CSR = 5e2
                    ), nPointsAllWin = 1e3,
                    minDiff = 2e1, features = getFeatures(hypFrame), ...) {
-    stopifnot(is.hyperframe(hypFrame), is.numeric(nPointsAll),
-              is.numeric(nPointsAllWithinCell), is.numeric(nPointsAllWin), is.numeric(minDiff), is.character(features))
     pis <- match.arg(pis, several.ok = TRUE)
     null <- match.arg(null)
+    stopifnot(is.hyperframe(hypFrame), is.numeric(nPointsAll),
+              is.numeric(nPointsAllWithinCell), is.numeric(nPointsAllWin), is.numeric(minDiff), is.character(features))
     if (any(pis %in% c("edge", "centroid", "nnCell")) && is.null(hypFrame$owins)) {
         stop("No window provided for distance to edge or centroid calculation. ", "Add it using the addCell() function")
     }
@@ -92,7 +92,7 @@ estPis <- function(hypFrame, pis = c("nn", "nnPair", "edge", "centroid", "nnCell
 #' @importFrom spatstat.random runifpoint
 #' @importFrom spatstat.geom is.hyperframe
 #' @importFrom Rdpack reprompt
-#' @seealso \links{estPis}
+#' @seealso \link{estPis}
 estPisSingle <- function(p, pis, null, tabObs, owins = NULL, centroids = NULL, window = p$window, loopFun = "bplapply",
                           features, nPointsAll, nPointsAllWithinCell, nPointsAllWin, minDiff) {
     if (!length(features)) {

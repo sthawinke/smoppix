@@ -61,5 +61,5 @@ A list of data frames with estimated PIs per gene and/or gene pair:
 A wrapper function for the different probabilistic indices (PIs), applied to individual point patterns
 }
 \seealso{
-\links{estPis}
+\link{estPis}
 }
