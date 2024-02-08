@@ -37,4 +37,11 @@ test_that("Weight function application throws errors where appropriate", {
         designVars = "condition",
         lowestLevelVar = "fov"
     ))
+    expect_error(addWeightFunction(piEstsCSR, pi = "nn",
+                                   lowestLevelVar = c("fov", "condition")
+    ))
+    expect_error(addWeightFunction(piEstsCSR, pi = "nn",
+                                   lowestLevelVar = "treatment"
+    ))
+    expect_error(addWeightFunction(piEstsCSR, pi = "nn"))
 })

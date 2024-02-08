@@ -2,7 +2,7 @@
 % Please edit documentation in R/addCell.R
 \name{addCell}
 \alias{addCell}
-\title{Add cell boundaries and event-wise cell identifiers to a hyperframe}
+\title{Add cell boundaries and event-wise cell identifiers to a hyperframe.}
 \usage{
 addCell(
   hypFrame,

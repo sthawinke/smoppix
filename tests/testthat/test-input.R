@@ -48,6 +48,10 @@ test_that("Adding regions of interest works", {
     expect_error(addCell(hypFrame, wList2, findOverlappingOwins = TRUE)) # Detect overlap
     expect_type(marks(hypFrame5[[1, "ppp"]])$cell, "character")
     expect_type(marks(hypFrame6[[1, "ppp"]])$cellType, "character")
+    expect_error(hypFrame4 <- buildHyperFrame(spe,
+                                                imageVars = c("sample_id", "in_tissue"),
+                                                coVars = "in_tissue"
+    ))
 })
 
 test_that("Adding regions of interest throws errors when appropriate", {

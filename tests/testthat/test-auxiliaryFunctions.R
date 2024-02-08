@@ -13,4 +13,6 @@ test_that("getGp does correct extraction", {
     expect_identical(getGp(geneMat, "gene1--gene2"), getGp(geneMat, "gene2--gene1"))
     expect_is(getGp(geneMat, "gene1--gene2", drop = FALSE), "matrix")
 })
-
+test_that("Only fixed part of formula is extracted", {
+    expect_identical(getFixedPart("outcome~fixed + (1|random)"), "outcome ~ fixed")
+})
