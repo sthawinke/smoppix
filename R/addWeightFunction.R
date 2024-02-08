@@ -62,7 +62,8 @@ addWeightFunction <- function(resList, pis = resList$pis, designVars,
     isNested <- length(getPPPvars(resList)) >= 1 # Is there a nested structure in the design
     allCell <- all(grepl("Cell", pis))
     if (isNested) {
-        designVars <- constructDesignVars(designVars, lowestLevelVar, allCell, resList = resList)
+        designVars <- constructDesignVars(designVars, lowestLevelVar, allCell,
+                                          resList = resList)
     } else {
         # Only check design if there is nesting
         designVec <- integer(nrow(resList$hypFrame))
@@ -86,9 +87,7 @@ addWeightFunction <- function(resList, pis = resList$pis, designVars,
         varEls <- lapply(features, function(gene) {
             geneSplit <- if (pairId) {
                 sund(gene)
-            } else {
-                gene
-            }
+            } else {gene}
             if (cellId) {
                 piSub <- sub("Cell", "", pi)
                 piList <- lapply(resList$hypFrame$pimRes, function(x) {
@@ -172,7 +171,7 @@ addWeightFunction <- function(resList, pis = resList$pis, designVars,
             ncol = if (pairId) 3 else 2, byrow = TRUE,
             dimnames = list(NULL, c("quadDeps", if (pairId) c("minP", "maxP") else "NP"))
         )
-        # Faster than cbind
+        # Build matrix with variance entries and number of events
         varElMat <- varElMat[!is.na(varElMat[, "quadDeps"]) &
             varElMat[, "quadDeps"] != 0, ]
         if (nrow(varElMat) > maxObs) {
@@ -183,13 +182,13 @@ addWeightFunction <- function(resList, pis = resList$pis, designVars,
         } else {
             "s(log(NP), bs = 'mpd')"
         }))
+        #Fit a spline
         scamMod <- scam(scamForm, data = data.frame(varElMat), ...)
         attr(scamMod, "pis") <- pi
         return(scamMod)
     })
     names(Wfs) <- pis
-    return(c(
-        resList[setdiff(names(resList), c("Wfs", "designVars"))],
+    return(c(resList[setdiff(names(resList), c("Wfs", "designVars"))],
         list(Wfs = Wfs, designVars = designVars)
     ))
     # Overwrite preexisting Wfs

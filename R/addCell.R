@@ -1,4 +1,4 @@
-#' Add cell boundaries and event-wise cell identifiers to a hyperframe
+#' Add cell boundaries and event-wise cell identifiers to a hyperframe.
 #' @description Add the list of the cells and their centroids in the hyperframe,
 #' check in which cell each event lies and add a cell marker.
 #'
@@ -85,6 +85,7 @@ addCell <- function(hypFrame, owins, cellTypes = NULL, findOverlappingOwins = FA
     if (verbose) {
         message("Converting windows to spatstat owins")
     }
+    #Convert different types of windows to owins
     owins <- loadBalanceBplapply(Nam <- names(owins), function(nam) {
         convertToOwins(owins[[nam]], coords = coords, namePPP = nam, ...)
     })
@@ -111,10 +112,12 @@ addCell <- function(hypFrame, owins, cellTypes = NULL, findOverlappingOwins = FA
                 stop("Cell markers already present in point pattern ", nn)
             }
             hypFrame[nn, "centroids"] <- lapply(owins[[nn]], function(y) {
-                centroid.owin(y, as.ppp = TRUE)})
+                centroid.owin(y, as.ppp = TRUE)}) # Add centroids of the windows
             if (findOverlappingOwins) {
+                #Find overlap between cells
                 foo <- findOverlap(owins[[nn]], hypFrame[nn, "centroids"])
             }
+            #Assign events to cells
             cellOut <- rep("NA", NP)
             idLeft <- seq_len(NP)
             for (i in names(owins[[nn]])) {
@@ -144,7 +147,5 @@ addCell <- function(hypFrame, owins, cellTypes = NULL, findOverlappingOwins = FA
         }
     }
     hypFrame$owins <- owins[rownames(hypFrame)]
-
-    # Add centroids for all windows
     return(hypFrame)
 }

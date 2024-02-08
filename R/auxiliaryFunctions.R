@@ -32,14 +32,6 @@ makeDesignVar <- function(x, designVars, sep = "_") {
 makePairs <- function(genes) {
     apply(combn(genes, 2), 2, paste, collapse = "--")
 }
-#' Return the number of observations used to fit the ecdf
-#'
-#' @param ecdf The ecdf function
-#'
-#' @return The number of observations
-getN <- function(ecdf) {
-    environment(ecdf)$nobs
-}
 #' Subsample a point pattern when it is too large
 #'
 #' @param p The point pattern
@@ -61,17 +53,6 @@ subSampleP <- function(p, nSims, returnId = FALSE) {
     } else {
         return(Pout)
     }
-}
-#' Extract elements from a distance matrix by index
-#'
-#' @param distMat the distance matrix of class 'dist'
-#' @param i,j Indices for which entries are extracted
-#' @details See documentation of the stats::dist function
-#' @return The required distances
-getElDist <- function(distMat, i, j) {
-    id <- outer(attr(distMat, "Size") * (i - 1) - i * (i - 1) / 2 - i, j, FUN = "+")
-    # Following dist help
-    distMat[c(id)]
 }
 #' Remove the diagonal from a square matrix
 #' @details The diagonal elements are removed, and the elements right from the
@@ -99,7 +80,6 @@ named.contr.sum <- function(x, ...) {
 }
 #' Add tables with gene counts to the hyperframe, presort by gene and x-ccordinate
 #' and add design varibales
-#'
 #'
 #' @param hypFrame The hyperframe
 #' @param desMat The design matrix
