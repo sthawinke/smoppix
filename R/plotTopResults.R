@@ -1,6 +1,9 @@
 #' Plot the most significant findings for a certain PI
 #'
-#' @param hypFrame The hyperframe
+#' Extract the most significant features for a certain PI and direction of effect,
+#' and plot them using an appropriate function.
+#'
+#' @param hypFrame The hyperframe with the data
 #' @param results The results frame
 #' @param pi A character string, specifying the probabilistic index
 #' @param smallPI A boolean, should features with PI smaller than piThreshold be shown? See details.
@@ -13,7 +16,7 @@
 #' @details If smallPI is set to TRUE, features with aggregation, colocalization and vicinity to cell boundary or centroid are shown.
 #' If smallPI is set to FALSE, features with regularity, antilocalization and remoteness from cell boundary or centroid are shown.
 #'
-#' @return A plot from plotCells or plotExplore, throws a warning when no features meet the criteria
+#' @return A plot from plotCells or plotExplore, throws an error when no features meet the criteria
 #' @export
 #' @seealso \link{plotCells},\link{plotExplore},\link{fitLMMs}
 #'

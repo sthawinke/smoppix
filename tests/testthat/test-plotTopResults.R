@@ -6,5 +6,9 @@ test_that("Top results plotting proceeds without errors", {
     expect_silent(plotTopResults(results = linModsNNint, hypYang, "nnPair", smallPI = FALSE))
 })
 test_that("Fitting linear mixed models throws errors where appropriate", {
-    expect_error(plotTopResults(linModsNNint, hypYang, "centroid"))
+    expect_error(plotTopResults(results = linModsNNint, hypYang, "centroid"))
+    linModsMP <- fitLMMs(objBG, returnModels = TRUE,
+                         features = getFeatures(objBG)[1:5],
+                         fixedVars = "condition", pi = "centroid")
+    expect_error(plotTopResults(results = linModsMP, hypFrame, "centroid", sigLevel = 1e-5))
 })
