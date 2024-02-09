@@ -44,7 +44,7 @@
 fitLMMs <- function(
     obj, pis = obj$pis, fixedVars = NULL, randomVars = NULL, verbose = TRUE, returnModels = FALSE, Formula = NULL,
     randomNested = TRUE, features = getFeatures(obj), moranFormula = NULL, addMoransI = FALSE, numNNs = 10,...) {
-    stopifnt(is.logical(returnModels), is.logical(randomNested),
+    stopifnot(is.logical(returnModels), is.logical(randomNested),
              is.logical(addMoransI), is.numeric(numNNs))
     if (addMoransI) {
         weightMats <- lapply(getHypFrame(obj)$centroids, buildMoransIWeightMat,
