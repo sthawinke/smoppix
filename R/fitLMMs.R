@@ -48,7 +48,8 @@ fitLMMs <- function(
              is.logical(addMoransI), is.numeric(numNNs))
     if (addMoransI) {
         weightMats <- lapply(getHypFrame(obj)$centroids, buildMoransIWeightMat,
-                             numNNs = numNNs);names(weightMats) = rownames(getHypFrame(obj))
+                             numNNs = numNNs)
+        names(weightMats) = getHypFrame(obj)$image
     }
     out <- lapply(pis, function(pi) {
         fitLMMsSingle(obj,
@@ -100,7 +101,6 @@ fitLMMsSingle <- function(
                 strsplit(x, Split)[[1]]
             })
         }))))
-        findbars(RHS)
     }
     designVars <- c(fixedVars, randomVarsSplit)
     if (any(id <- !(designVars %in% c(getDesignVars(obj), "image")))) {
@@ -157,16 +157,7 @@ fitLMMsSingle <- function(
             return(NULL)
         }
         moranMod <- if (addMoransI) {
-            dfMoran <- if (pi %in% c("edge", "centroid")) {
-                aggregate(pi ~ cell + image, df, FUN = mean, na.rm = TRUE)
-            } else {
-                df
-            }
-            moransIs <- vapply(unIm <- unique(dfMoran$image), FUN.VALUE = double(1), function(im) {
-                subDf <- dfMoran[dfMoran$image == im, ]
-                moransI(subDf$pi, W = weightMats[[im]][subDf$cell, subDf$cell])
-            })
-            finalDf <- cbind(MoransI = moransIs, df[match(unIm, df$image), setdiff(colnames(df), "weight")])
+            finalDf = buildDataFrame(piMat = df, gene = gene, pi = pi, moransI = TRUE, obj = obj, weightMats = weightMats)
             fitPiModel(moranFormula, finalDf, contrastsMoran, Control, MM = MMmoran)
         } # Run this before nesting
         if (randomNested) {

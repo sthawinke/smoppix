@@ -1,9 +1,10 @@
 context("Tests on Moran's I")
 library(Matrix)
 coordList = replicate(20,ppp("x" = runif(1), y = runif(1)), simplify = FALSE)
+numNNs <- 8
 test_that("Weight matrix is correctly constructed", {
-    wMat = buildMoransIWeightMat(coordList, numNNs = numNNs <- 8)
-    expect_identical(unique(rowSums(wMat>0)), numNNs)
+    wMat = buildMoransIWeightMat(coordList, numNNs = numNNs)
+    expect_equal(unique(Matrix::rowSums(wMat>0)), numNNs)
 })
 if(requireNamespace("ape")){
     m = 1e3;x = rnorm(m)

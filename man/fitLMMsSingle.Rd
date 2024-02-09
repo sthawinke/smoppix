@@ -23,8 +23,7 @@ fitLMMsSingle(
 \item{obj}{A results object, for nearest neighbour distances,
 the result of a call to \link{addWeightFunction}}
 
-\item{pi}{character string indicating the desired PI as outcome
-in the linear mixed model}
+\item{pi}{character string indicating the desired PI as outcome}
 
 \item{fixedVars}{Names of fixed effects}
 

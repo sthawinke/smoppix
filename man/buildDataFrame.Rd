@@ -7,7 +7,10 @@
 buildDataFrame(
   obj,
   gene,
-  pi = c("nn", "nnPair", "edge", "centroid", "nnCell", "nnPairCell")
+  pi = c("nn", "nnPair", "edge", "centroid", "nnCell", "nnPairCell"),
+  weightMats,
+  piMat,
+  moransI = FALSE
 )
 }
 \arguments{
@@ -16,7 +19,11 @@ the result of a call to \link{addWeightFunction}}
 
 \item{gene}{A character string indicating the desired gene or gene pair}
 
-\item{pi}{character string indicating the desired PI as outcome
+\item{pi}{character string indicating the desired PI as outcome}
+
+\item{piMat}{A data frame. Will be constructed if not provided}
+
+\item{moransI}{A boolean, should Moran's I be calculated
 in the linear mixed model}
 }
 \value{
