@@ -5,7 +5,7 @@
 #' @importFrom Matrix sparseMatrix
 buildMoransIWeightMat <- function(coordList, numNNs) {
     coordMat <- t(vapply(coordList, FUN.VALUE = double(2), getCoordsMat))
-    nns = nnwhich(X = coordMat[, "x"], Y = coordMat[, "y"], k = seq.int(numNNs))
+    nns = nnwhich(X = coordMat[, 1], Y = coordMat[, 2], k = seq.int(numNNs))
     # Assign non-zero slots to all numNNs nearest neighbours
     sparseMatrix(i = rep(seq_len(nrow(coordMat)), numNNs), j = nns, x = 1/numNNs, symmetric = FALSE)
     # Sparse, but not symmetric
