@@ -8,6 +8,9 @@ buildMoransIWeightMat(coordList, numNNs)
 }
 \arguments{
 \item{coordList}{A list of coordinate matrices}
+
+\item{numNNs}{An integer, the number of nearest neighbours in the
+weight matrix for the calculation of the Moran's I statistic}
 }
 \value{
 A sparse matrix of weights for Moran's I statistic, of equal value

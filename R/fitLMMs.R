@@ -20,6 +20,8 @@
 #' Defaults to all features in the object
 #' @param moranFormula Formula for Moran's I model fitting
 #' @param addMoransI A boolean, include Moran's I of the cell-wise PIs in the calculation
+#' @param numNNs An integer, the number of nearest neighbours in the
+#' weight matrix for the calculation of the Moran's I statistic
 #' @param ... Passed onto fitLMMsSingle
 #' @details Genes or gene pairs with insufficient observations will be silently
 #' omitted. When randomVars is provided as a vector, independent random
@@ -41,9 +43,12 @@
 #' lmmModels <- fitLMMs(yangObj, fixedVars = "day", randomVars = "root")
 fitLMMs <- function(
     obj, pis = obj$pis, fixedVars = NULL, randomVars = NULL, verbose = TRUE, returnModels = FALSE, Formula = NULL,
-    randomNested = TRUE, features = getFeatures(obj), moranFormula = NULL, addMoransI = FALSE, ...) {
+    randomNested = TRUE, features = getFeatures(obj), moranFormula = NULL, addMoransI = FALSE, numNNs = 10,...) {
+    stopifnt(is.logical(returnModels), is.logical(randomNested),
+             is.logical(addMoransI), is.numeric(numNNs))
     if (addMoransI) {
-        weightMats <- lapply(getHypFrame(obj)$centroids, buildMoransIWeightMat)
+        weightMats <- lapply(getHypFrame(obj)$centroids, buildMoransIWeightMat,
+                             numNNs = numNNs)
     }
     out <- lapply(pis, function(pi) {
         fitLMMsSingle(obj,
@@ -66,7 +71,6 @@ fitLMMs <- function(
 #' @importFrom stats formula anova
 #' @importFrom lme4 lmerControl .makeCC isSingular
 #' @importFrom methods is
-#' @importFrom ape Moran.I
 #' @seealso \link{buildDataFrame},\link{getResults}
 fitLMMsSingle <- function(
     obj, pi, fixedVars, randomVars, verbose, returnModels, Formula, randomNested, features, addMoransI,
@@ -155,8 +159,7 @@ fitLMMsSingle <- function(
             }
             moransIs <- vapply(unIm <- unique(dfMoran$image), FUN.VALUE = double(1), function(im) {
                 subDf <- dfMoran[dfMoran$image == im, ]
-                moranObj <- Moran.I(subDf$pi, weight = weightMats[[im]][subDf$cell, subDf$cell])
-                (moranObj$observed - moranObj$expected) / moranObj$sd
+                moransI(subDf$pi, W = weightMats[[im]][subDf$cell, subDf$cell])
             })
             finalDf <- cbind(MoransI = moransIs, df[match(unIm, df$image), setdiff(colnames(df), "weight")])
             fitPiModel(moranFormula, finalDf, contrasts, Control, MM = MMmoran)

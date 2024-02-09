@@ -16,6 +16,7 @@ fitLMMs(
   features = getFeatures(obj),
   moranFormula = NULL,
   addMoransI = FALSE,
+  numNNs = 10,
   ...
 )
 }
@@ -46,6 +47,9 @@ Defaults to all features in the object}
 \item{moranFormula}{Formula for Moran's I model fitting}
 
 \item{addMoransI}{A boolean, include Moran's I of the cell-wise PIs in the calculation}
+
+\item{numNNs}{An integer, the number of nearest neighbours in the
+weight matrix for the calculation of the Moran's I statistic}
 
 \item{...}{Passed onto fitLMMsSingle}
 }
