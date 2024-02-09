@@ -21,6 +21,8 @@ the result of a call to \link{addWeightFunction}}
 
 \item{pi}{character string indicating the desired PI as outcome}
 
+\item{weightMats}{List of weight matrices for Moran's I calculation}
+
 \item{piMat}{A data frame. Will be constructed if not provided}
 
 \item{moransI}{A boolean, should Moran's I be calculated
