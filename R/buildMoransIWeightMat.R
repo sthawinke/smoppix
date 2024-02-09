@@ -7,6 +7,9 @@
 #' @importFrom spatstat.geom nnwhich
 buildMoransIWeightMat <- function(coordList, numNNs) {
     numNNs <- min(numNNs, length(coordList)-3)
+    if(numNNs < 0){
+        matrix(0, nrow(coordList), nrow(coordList))
+    }
     #Maximum as many NN as there are neighbouring cells
     coordMat <- t(vapply(coordList, FUN.VALUE = double(2), getCoordsMat))
     nns = nnwhich(X = coordMat[, 1], Y = coordMat[, 2], k = seq.int(numNNs))

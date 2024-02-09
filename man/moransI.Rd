@@ -22,5 +22,5 @@ distribution under the null hypothesis
 The implementation is inspired on the one from ape::Moran.I, but more
  bare-bones faster and using less memory.
  @details Calculations are only correct for weight matrices as prepared by
- buildMoransIWeightMat!#'
+ buildMoransIWeightMat!
 }

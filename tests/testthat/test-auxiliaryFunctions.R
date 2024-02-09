@@ -13,8 +13,9 @@ test_that("getGp does correct extraction", {
     expect_identical(getGp(geneMat, "gene1--gene2"), getGp(geneMat, "gene2--gene1"))
     expect_is(getGp(geneMat, "gene1--gene2", drop = FALSE), "matrix")
 })
+library(lme4)
 test_that("Only fixed part of formula is extracted", {
-    expect_equal(getFixedPart("outcome~fixed + (1|random)"), formula("outcome ~ fixed"))
+    expect_equal(nobars(formula("outcome~fixed + (1|random)")), formula("outcome ~ fixed"))
 })
 test_that("Design variables are well constructed", {
     expect_identical(makeDesignVar(data.frame("a" = 1:3, "b" = LETTERS[1:3]), c("a", "b")), c("1_A", "2_B", "3_C"))

@@ -43,8 +43,8 @@ names(wList) <- names(wList2) <- rownames(hypFrame)
 hypFrame2 <- addCell(hypFrame, wList, cellTypes = cellTypesDf, verbose = FALSE)
 # Register the parallel backend
 nCores <- 2
-register(MulticoreParam(nCores))
-#register(SerialParam()) #Switch on when mapping test coverage
+#register(MulticoreParam(nCores))
+register(SerialParam()) #Switch on when mapping test coverage
 pis <- c("nn", "nnPair", "edge", "centroid", "nnCell", "nnPairCell")
 piEstsBG <- estPis(hypFrame2, pis = pis, null = "background", verbose = FALSE)
 piEstsCSR <- estPis(hypFrame2, pis = pis, null = "CSR", verbose = FALSE)
