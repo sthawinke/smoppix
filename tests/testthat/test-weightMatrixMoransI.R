@@ -1,4 +1,5 @@
 context("Tests on Moran's I")
+library(Matrix)
 coordList = replicate(20,ppp("x" = runif(1), y = runif(1)), simplify = FALSE)
 test_that("Weight matrix is correctly constructed", {
     wMat = buildMoransIWeightMat(coordList, numNNs = numNNs <- 8)

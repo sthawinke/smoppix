@@ -26,14 +26,3 @@ buildFormula <- function(Formula, fixedVars, randomVars, outcome = "pi - 0.5") {
 characterFormula <- function(Formula) {
     paste(as.character(Formula)[c(2, 1, 3)], collapse = " ")
 }
-#' @importFrom stats formula
-getFixedPart <- function(Formula) {
-    if (!any(grepl("\\|", Formula))) {
-        Formula
-    } else {
-        formula(paste(collapse = " ", grep(
-            value = TRUE, invert = TRUE, "\\|",
-            strsplit(as.character(Formula), split = "\\+")[[1]]
-        )))
-    }
-}

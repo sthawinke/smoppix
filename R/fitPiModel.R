@@ -10,6 +10,7 @@
 #'
 #' @importFrom lmerTest lmer
 #' @importFrom stats na.omit lm as.formula
+#' @importFrom lme4 nobars
 #' @seealso \link{fitLMMsSingle}
 fitPiModel <- function(Formula, dff, contrasts, Control, MM, Weight = NULL) {
     ff <- as.formula(Formula)
@@ -22,7 +23,7 @@ fitPiModel <- function(Formula, dff, contrasts, Control, MM, Weight = NULL) {
     }
     # If no random variables or fit failed, go for linear model
     if (!MM || is(mod, "try-error")) {
-        mod <- try(lm(getFixedPart(ff), data = dff, na.action = na.omit, weights = Weight, contrasts = contrasts), silent = TRUE)
+        mod <- try(lm(nobars(ff), data = dff, na.action = na.omit, weights = Weight, contrasts = contrasts), silent = TRUE)
     }
     return(mod)
 }

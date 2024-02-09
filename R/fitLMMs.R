@@ -100,6 +100,7 @@ fitLMMsSingle <- function(
                 strsplit(x, Split)[[1]]
             })
         }))))
+        findbars(RHS)
     }
     designVars <- c(fixedVars, randomVarsSplit)
     if (any(id <- !(designVars %in% c(getDesignVars(obj), "image")))) {

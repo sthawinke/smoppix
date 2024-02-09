@@ -13,7 +13,7 @@ Description: Test for univariate and multivariate spatial patterns in
 License: GPL-2
 Encoding: UTF-8
 Imports: spatstat.geom(>= 3.2.0),spatstat.random, methods,BiocParallel,SummarizedExperiment,SpatialExperiment,scam,Rdpack,stats,utils,extraDistr,lmerTest,lme4,ggplot2,graphics,grDevices,Rcpp (>= 1.0.11),Matrix
-Suggests: testthat,rmarkdown,knitr,DropletUtils,polyCub,RImageJROI,sp
+Suggests: testthat,rmarkdown,knitr,DropletUtils,polyCub,RImageJROI,sp,ape
 RdMacros: Rdpack
 RoxygenNote: 7.3.0
 biocViews: Transcriptomics, Spatial, SingleCell

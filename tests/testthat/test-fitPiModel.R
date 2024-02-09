@@ -12,7 +12,7 @@ Control <- lmerControl()
 contrasts <- list(fixed = "contr.sum")
 test_that("Mixed model fitting works", {
     expect_s4_class(fitPiModel("outcome~fixed + (1|random)", df, contrasts, Control, MM = TRUE), "lmerModLmerTest")
-    expect_s4_class(fitPiModel("outcome~fixed + 1|random", df, contrasts, Control, MM = TRUE, Weight = weight), "lmerModLmerTest")
+    expect_s4_class(fitPiModel("outcome~fixed + (1|random)", df, contrasts, Control, MM = TRUE, Weight = weight), "lmerModLmerTest")
 })
 test_that("Fixed model fitting works", {
     expect_s3_class(fitPiModel("outcome~fixed", df, contrasts, Control, MM = FALSE), "lm")
