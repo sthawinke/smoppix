@@ -8,7 +8,6 @@
 #' @param moransI A boolean, should Moran's I be calculated
 #'  in the linear mixed model
 #' @param weightMats List of weight matrices for Moran's I calculation
-#' @inheritParams fitLMMs
 #' @return A dataframe
 #' @export
 #' @importFrom scam predict.scam

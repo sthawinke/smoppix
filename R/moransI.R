@@ -5,7 +5,7 @@
 #' @note The implementation is inspired on the one from ape::Moran.I, but more
 #'  bare-bones faster and using less memory.
 #'  @details Calculations are only correct for weight matrices as prepared by
-#'  buildMoransIWeightMat!#'
+#'  buildMoransIWeightMat!
 #'
 #' @param x A vector of outcomes
 #' @param W The matrix of weights, with dimensions equal to the lenght of x
