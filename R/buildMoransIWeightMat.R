@@ -6,6 +6,8 @@
 #' @importFrom Matrix sparseMatrix
 #' @importFrom spatstat.geom nnwhich
 buildMoransIWeightMat <- function(coordList, numNNs) {
+    numNNs <- min(numNNs, length(coordList)-1)
+    #Maximum as many NN as there are neighbouring cells
     coordMat <- t(vapply(coordList, FUN.VALUE = double(2), getCoordsMat))
     nns = nnwhich(X = coordMat[, 1], Y = coordMat[, 2], k = seq.int(numNNs))
     # Assign non-zero slots to all numNNs nearest neighbours

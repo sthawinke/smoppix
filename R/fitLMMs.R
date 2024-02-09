@@ -48,12 +48,14 @@ fitLMMs <- function(
              is.logical(addMoransI), is.numeric(numNNs))
     if (addMoransI) {
         weightMats <- lapply(getHypFrame(obj)$centroids, buildMoransIWeightMat,
-                             numNNs = numNNs)
+                             numNNs = numNNs);names(weightMats) = rownames(getHypFrame(obj))
     }
     out <- lapply(pis, function(pi) {
         fitLMMsSingle(obj,
-            pi = pi, verbose = verbose, fixedVars = fixedVars, randomVars = randomVars, returnModels = returnModels,
-            Formula = Formula, randomNested = randomNested, features = features, weightMats = weightMats, moranFormula = moranFormula,
+            pi = pi, verbose = verbose, fixedVars = fixedVars,
+            randomVars = randomVars, returnModels = returnModels,
+            Formula = Formula, randomNested = randomNested, features = features,
+            weightMats = weightMats, moranFormula = moranFormula,
             addMoransI = addMoransI, ...
         )
     })
@@ -109,11 +111,13 @@ fitLMMsSingle <- function(
         message("Fitted formula for pi ", pi, ":\n", formChar)
     }
     if (addMoransI) {
-        moranFormula <- buildFormula(moranFormula, fixedVars = intersect(fixedVars, getPPPvars(obj)), randomVars = rvMoran <- intersect(
-            randomVars,
-            getPPPvars(obj)
-        ), outcome = "MoransI")
+        moranFormula <- buildFormula(moranFormula,
+        fixedVars = morFix <- intersect(fixedVars, getPPPvars(obj)),
+        randomVars = rvMoran <- intersect(randomVars, getPPPvars(obj)),
+        outcome = "MoransI")
         MMmoran <- as.logical(length(rvMoran))
+        names(morFix) <- morFix
+        contrastsMoran <- lapply(morFix, function(x) named.contr.sum)
         if (verbose) {
             message("Fitted formula for Moran's I for pi ", pi, ":\n", formCharMoran <- characterFormula(moranFormula))
         }
@@ -162,7 +166,7 @@ fitLMMsSingle <- function(
                 moransI(subDf$pi, W = weightMats[[im]][subDf$cell, subDf$cell])
             })
             finalDf <- cbind(MoransI = moransIs, df[match(unIm, df$image), setdiff(colnames(df), "weight")])
-            fitPiModel(moranFormula, finalDf, contrasts, Control, MM = MMmoran)
+            fitPiModel(moranFormula, finalDf, contrastsMoran, Control, MM = MMmoran)
         } # Run this before nesting
         if (randomNested) {
             df <- nestRandom(df, randomVarsSplit, intersect(fixedVars, getPPPvars(obj)))

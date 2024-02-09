@@ -13,6 +13,7 @@
 #' @param warnPosition A boolean, should a warning be issued printed on the
 #'  image that cells are not in their original location?
 #' @param ... Additional arguments, currently ignored
+#' @inheritParams plotExplore
 #'
 #' @return Plots cells with highest expression to the plotting window, returns invisible
 #' @export
@@ -23,15 +24,19 @@
 #' example(addCell, "spatrans")
 #' plotCells(hypFrame2, "gene1")
 #' plotCells(hypFrame2, "gene1", borderColVar = "condition")
-plotCells <- function(
-    obj, features = getFeatures(obj)[seq_len(3)], nCells = 100, Cex = 1.5, borderColVar = NULL, borderCols = rev(palette()),
-    warnPosition = TRUE, ...) {
+plotCells <- function(obj, features = getFeatures(obj)[seq_len(3)],
+                      nCells = 100, Cex = 1.5, borderColVar = NULL, borderCols = rev(palette()),
+                      Mar = c(0.35, 0.1, 0.75, 0.1), warnPosition = TRUE, ...) {
     if (!is.hyperframe(obj)) {
         obj <- obj$hypFrame
     }
+    old.par <- par(no.readonly = TRUE)
+    on.exit(par(old.par))
+    par(mar = Mar)
     features <- unique(unlist(lapply(features, sund)))
     Cols <- makeCols(features, obj)
-    stopifnot(is.hyperframe(obj), !is.null(obj$owins), length(nCells) == 1, all(features %in% getFeatures(obj)))
+    stopifnot(is.hyperframe(obj), !is.null(obj$owins), length(nCells) == 1,
+              all(features %in% getFeatures(obj)))
     tablesCell <- lapply(obj$ppp, function(p) {
         table(marks(p[marks(p, drop = FALSE)$gene %in% features, ], drop = FALSE)$cell)
     })
@@ -43,7 +48,8 @@ plotCells <- function(
     })
     if (colourBorder <- !is.null(borderColVar)) {
         if (borderColVar %in% getEventVars(obj)) {
-            unVals <- unique(unlist(lapply(obj$ppp, function(x) unique(marks(x, drop = FALSE)[[borderColVar]]))))
+            unVals <- unique(unlist(lapply(obj$ppp, function(x)
+                unique(marks(x, drop = FALSE)[[borderColVar]]))))
             names(borderCols)[seq_along(unVals)] <- unVals
             borderCols <- lapply(seq_along(tablesCell), function(x) {
                 borderCols[marks(obj$ppp[[x]])[[borderColVar]][match(marks(obj$ppp[[x]])$cell, names(tablesCell[[x]]))]]
