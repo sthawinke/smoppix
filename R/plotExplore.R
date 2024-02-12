@@ -65,6 +65,8 @@ plotExplore <- function(
     npp <- nrow(hypFrame)
     if (missing(ppps)) {
         ppps <- seq_len(min(99, npp))
+    } else if(is.character(pps)){
+        pps = match(rownames(hypFrame), ppps)
     }
     Cols <- makeCols(features, hypFrame)
     old.par <- par(no.readonly = TRUE)
@@ -115,7 +117,7 @@ plotExplore <- function(
 addLegend <- function(Cols, Shift = c(0, 0), Cex = 0.85, Pch = 20, Main = "") {
     idCols <- which(Cols != "grey")
     li <- length(idCols)
-    maxY <- 0.9 - 0.1 * (mainId <- Main != "")
+    maxY <- 0.85 - 0.1 * (mainId <- Main != "")
     points(x = rep(0.15, li) + Shift[1], SeqY <- seq(maxY, 0.1, length.out = li) + Shift[2], pch = Pch, col = Cols[idCols])
     text(x = rep(0.25, li) + Shift[1], SeqY, names(Cols)[idCols], adj = 0, cex = Cex)
     if (mainId) {

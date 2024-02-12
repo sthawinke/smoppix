@@ -30,19 +30,18 @@ plotCells <- function(obj, features = getFeatures(obj)[seq_len(3)],
     if (!is.hyperframe(obj)) {
         obj <- obj$hypFrame
     }
-    old.par <- par(no.readonly = TRUE)
-    on.exit(par(old.par))
+    stopifnot(is.hyperframe(obj), !is.null(obj$owins), length(nCells) == 1,
+              all(features %in% getFeatures(obj)))
+    old.par <- par(no.readonly = TRUE);on.exit(par(old.par))
     par(mar = Mar)
     features <- unique(unlist(lapply(features, sund)))
     Cols <- makeCols(features, obj)
-    stopifnot(is.hyperframe(obj), !is.null(obj$owins), length(nCells) == 1,
-              all(features %in% getFeatures(obj)))
     tablesCell <- lapply(obj$ppp, function(p) {
         table(marks(p[marks(p, drop = FALSE)$gene %in% features, ], drop = FALSE)$cell)
     })
     names(tablesCell) <- rownames(obj)
     nCells <- min(nCells - 1, length(ul <- unlist(tablesCell)))
-    nthcell <- sort(ul, decreasing = TRUE)[nCells + 1]
+    nthcell <- sort(ul, decreasing = TRUE)[min(nCells + 1, length(ul))]
     tablesCell <- lapply(tablesCell, function(x) {
         x[x > nthcell & names(x) != "NA"]
     })
@@ -86,11 +85,11 @@ plotCells <- function(obj, features = getFeatures(obj)[seq_len(3)],
             counter <- counter + 1
         }
     }
-    addLegend(Cols, Shift + c(1, 0))
+    addLegend(Cols, Shift <- c(counter %% Ceils[1], counter %/% Ceils[1]))
     if (colourBorder) {
         borderCols <- unique(unlist(borderCols))
         names(borderCols) <- unVals
-        addLegend(borderCols, Shift + c(2, 0), Pch = 5, Main = borderColVar, Cex = 0.7)
+        addLegend(borderCols, Shift + c(1, 0), Pch = 5, Main = borderColVar, Cex = 0.7)
     }
     if (warnPosition) {
         text(Ceils[1] / 2, -0.4, labels = "Cells not on original location but sorted by expression!")
