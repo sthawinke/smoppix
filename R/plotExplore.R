@@ -65,8 +65,8 @@ plotExplore <- function(
     npp <- nrow(hypFrame)
     if (missing(ppps)) {
         ppps <- seq_len(min(99, npp))
-    } else if(is.character(pps)){
-        pps = match(rownames(hypFrame), ppps)
+    } else if(is.character(ppps)){
+        ppps = match(rownames(hypFrame), ppps)
     }
     Cols <- makeCols(features, hypFrame)
     old.par <- par(no.readonly = TRUE)
