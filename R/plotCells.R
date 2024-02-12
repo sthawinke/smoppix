@@ -42,9 +42,9 @@ plotCells <- function(obj, features = getFeatures(obj)[seq_len(3)],
     })
     names(tablesCell) <- rownames(obj)
     nCells <- min(nCells - 1, length(ul <- unlist(tablesCell)))
-    nthcell <- sort(ul, decreasing = TRUE)[nCells]
+    nthcell <- sort(ul, decreasing = TRUE)[nCells + 1]
     tablesCell <- lapply(tablesCell, function(x) {
-        x[x >= nthcell & names(x) != "NA"]
+        x[x > nthcell & names(x) != "NA"]
     })
     if (colourBorder <- !is.null(borderColVar)) {
         if (borderColVar %in% getEventVars(obj)) {
