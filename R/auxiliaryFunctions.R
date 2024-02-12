@@ -139,3 +139,15 @@ getHypFrame <- function(x) {
         x$hypFrame
     }
 }
+#' Split a number of plots into rows and colums
+#'
+#' @param x The number of plots
+#'
+#' @return A vector of length 2 with required number of rows and colums
+splitWindow = function(x){
+    Sqrt = sqrt(x)
+    a = ceiling(Sqrt);b = floor(Sqrt)
+    if(a*b < x)
+        b = b+1
+    c(a, b)
+}

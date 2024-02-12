@@ -69,16 +69,16 @@ plotCells <- function(obj, features = getFeatures(obj)[seq_len(3)],
         })
     }
     counter <- 0L
-    limVec <- c(0, 1 + (Ceil <- ceiling(sqrt(nCells + 1 + colourBorder))))
-    plot(type = "n", x = limVec, y = limVec, xlab = "", ylab = "", xaxt = "n", yaxt = "n", frame.plot = FALSE)
+    Ceils = splitWindow(nCells + 1 + colourBorder)
+    plot(type = "n", x = c(0, Ceils[1]), y = c(0, Ceils[2]), xlab = "", ylab = "", xaxt = "n", yaxt = "n", frame.plot = FALSE)
     for (i in seq_along(tablesCell)) {
         nam <- names(tablesCell)[i]
         ppp <- subset.ppp(obj[[nam, "ppp"]], gene %in% features)
         for (j in seq_along(tablesCell[[nam]])) {
             namIn <- names(tablesCell[[nam]])[j]
             shifted <- toUnitSquare(obj[[nam, "owins"]][[namIn]], ppp = subset.ppp(ppp, cell == namIn), Shift = Shift <- c(
-                counter %% Ceil,
-                counter %/% Ceil
+                counter %% Ceils[1],
+                counter %/% Ceils[1]
             ))
             plot.owin(shifted$owin, add = TRUE, border = borderCols[[i]][[j]])
             # text(x = Shift[1], y = Shift[2], labels = paste0('Point pattern ', nam, '\nCell', namIn))
@@ -93,7 +93,7 @@ plotCells <- function(obj, features = getFeatures(obj)[seq_len(3)],
         addLegend(borderCols, Shift + c(2, 0), Pch = 5, Main = borderColVar, Cex = 0.7)
     }
     if (warnPosition) {
-        text(Ceil / 2, -0.4, labels = "Cells not on original location but sorted by expression!")
+        text(Ceils[1] / 2, -0.4, labels = "Cells not on original location but sorted by expression!")
     }
     invisible()
 }
