@@ -47,7 +47,7 @@ Defaults to maximum 99.}
 
 \item{piColourCell}{PI by which to colour the cell}
 
-\item{palCols}{Two extremes of the colour palette}
+\item{palCols}{Two extremes of the colour palette for colouring the cells}
 }
 \value{
 Plots a facet of point patterns to output
@@ -59,6 +59,8 @@ This function is meant for exploratory purposes as well as for visual confirmati
 \note{
 The colour palette is taken from the output of palette(),
 so set that one to change the colour scheme.
+
+palCols sets the pseudo-continuous scale to colour cells.
 }
 \examples{
 example(buildHyperFrame, "spatrans")

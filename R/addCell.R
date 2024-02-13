@@ -39,6 +39,7 @@
 #' Do check your input or set checkOverlap to TRUE, even when this make take time.
 #' @examples
 #' library(spatstat.random)
+#' set.seed(54321)
 #' n <- 1e3 # number of molecules
 #' ng <- 25 # number of genes
 #' nfov <- 3 # Number of fields of view

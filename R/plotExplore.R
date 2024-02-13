@@ -17,7 +17,8 @@
 #' @param Xlim,Ylim plotting limits
 #' @param piColourCell PI by which to colour the cell
 #' @param piEsts Set of PI estimates, returned by estPis
-#' @param palCols Two extremes of the colour palette
+#' @param palCols Two extremes of the colour palette for colouring the cells
+#' @note palCols sets the pseudo-continuous scale to colour cells.
 #'
 #' @return Plots a facet of point patterns to output
 #' @importFrom spatstat.geom is.hyperframe coords plot.owin
