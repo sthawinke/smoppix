@@ -11,7 +11,7 @@ plotCells(
   Cex = 1.5,
   borderColVar = NULL,
   borderCols = rev(palette()),
-  Mar = c(0.35, 0.1, 0.75, 0.1),
+  Mar = c(3.5, 0.1, 0.75, 0.1),
   warnPosition = TRUE,
   ...
 )

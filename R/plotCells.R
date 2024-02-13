@@ -71,7 +71,8 @@ plotCells <- function(obj, features = getFeatures(obj)[seq_len(3)],
     }
     counter <- 0L
     Ceils = splitWindow(nCells + 1 + colourBorder)
-    plot(type = "n", x = c(0, Ceils[1]), y = c(-0.1, Ceils[2]), xlab = "", ylab = "", xaxt = "n", yaxt = "n", frame.plot = FALSE)
+    plot(type = "n", x = c(0, Ceils[1]), y = c(0 - warnPosition*0.1, Ceils[2]),
+         xlab = "", ylab = "", xaxt = "n", yaxt = "n", frame.plot = FALSE)
     for (i in seq_along(tablesCell)) {
         nam <- names(tablesCell)[i]
         ppp <- subset.ppp(obj[[nam, "ppp"]], gene %in% features)
