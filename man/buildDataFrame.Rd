@@ -8,9 +8,10 @@ buildDataFrame(
   obj,
   gene,
   pi = c("nn", "nnPair", "edge", "centroid", "nnCell", "nnPairCell"),
-  weightMats,
   piMat,
-  moransI = FALSE
+  moransI = FALSE,
+  numNNs = 8,
+  weightMats
 )
 }
 \arguments{
@@ -21,12 +22,15 @@ the result of a call to \link{addWeightFunction}}
 
 \item{pi}{character string indicating the desired PI as outcome}
 
-\item{weightMats}{List of weight matrices for Moran's I calculation}
-
 \item{piMat}{A data frame. Will be constructed if not provided}
 
 \item{moransI}{A boolean, should Moran's I be calculated
 in the linear mixed model}
+
+\item{numNNs}{An integer, the number of nearest neighbours in the
+weight matrix for the calculation of the Moran's I statistic}
+
+\item{weightMats}{List of weight matrices for Moran's I calculation}
 }
 \value{
 A dataframe

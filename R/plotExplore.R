@@ -54,7 +54,7 @@ plotExplore <- function(
         }
         featsplit <- sund(features)
         piDf <- buildDataFrame(piEsts, gene = featsplit, pi = piColourCell)
-        if (piColourCell %in% c("edge", "midpoint")) {
+        if (piColourCell %in% c("edge", "centroid")) {
             piDf <- aggregate(pi ~ cell, piDf, FUN = mean, na.rm = TRUE)
         }
         pal <- colorRampPalette(palCols)
@@ -66,7 +66,7 @@ plotExplore <- function(
     if (missing(ppps)) {
         ppps <- seq_len(min(99, npp))
     } else if(is.character(ppps)){
-        ppps = match(rownames(hypFrame), ppps)
+        ppps = match(ppps, rownames(hypFrame))
     }
     Cols <- makeCols(features, hypFrame)
     old.par <- par(no.readonly = TRUE)

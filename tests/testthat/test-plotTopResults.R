@@ -4,7 +4,7 @@ test_that("Top results plotting proceeds without errors", {
     linModsNNint <- fitLMMs(yangPims, fixedVars = "day", randomVars = "root", features = getFeatures(yangPims)[seq_len(10)])
     expect_silent(plotTopResults(results = linModsNNint, hypYang, "nn"))
     expect_silent(plotTopResults(results = linModsNNint, hypYang, "nnPair"))
-    expect_silent(plotTopResults(results = linModsNNint, hypYang, "nnPair", effect = "day", sigLevel = 0.9))
+    expect_silent(plotTopResults(results = linModsNNint, hypYang, "nnPair", effect = "day", sigLevel = 0.99))
     expect_silent(plotTopResults(results = linModsNNint, hypYang, "nnPair", smallPI = FALSE, sigLevel = 0.4))
     #expect_silent(plotTopResults(results = linModsMP, hypFrame2, "centroid", sigLevel = 0.99))
 })

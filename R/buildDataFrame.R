@@ -6,8 +6,9 @@
 #' @param pi character string indicating the desired PI as outcome
 #' @param piMat A data frame. Will be constructed if not provided
 #' @param moransI A boolean, should Moran's I be calculated
-#'  in the linear mixed model
+#' in the linear mixed model
 #' @param weightMats List of weight matrices for Moran's I calculation
+#' @inheritParams fitLMMs
 #' @return A dataframe
 #' @export
 #' @importFrom scam predict.scam
@@ -25,7 +26,7 @@
 #' summary(mixedMod)
 #' # Evidence for aggregation
 buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid", "nnCell", "nnPairCell"),
-                           weightMats, piMat, moransI = FALSE) {
+                           piMat, moransI = FALSE, numNNs = 8, weightMats) {
     pi <- match.arg(pi)
     if(missing(piMat)){
         stopifnot((lg <- length(gene)) %in% c(1, 2))
@@ -151,6 +152,11 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
         rownames(piMat) <- NULL
     }
     if(moransI){
+        if(missing(weightMats)){
+            weightMats <- lapply(getHypFrame(obj)$centroids, buildMoransIWeightMat,
+                             numNNs = numNNs)
+            names(weightMats) = getHypFrame(obj)$image
+        }
         piMat = buildMoransIDataFrame(piMat = piMat, pi = pi,
                                       weightMats = weightMats)
     }

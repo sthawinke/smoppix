@@ -10,7 +10,7 @@
 #' @param Cex The point expansion factor
 #' @param borderColVar The variable to colour borders of the cell
 #' @param borderCols Colour palette for the borders
-#' @param warnPosition A boolean, should a warning be issued printed on the
+#' @param warnPosition A boolean, should a warning be printed on the
 #'  image that cells are not in their original location?
 #' @param ... Additional arguments, currently ignored
 #' @inheritParams plotExplore
@@ -45,6 +45,8 @@ plotCells <- function(obj, features = getFeatures(obj)[seq_len(3)],
     tablesCell <- lapply(tablesCell, function(x) {
         x[x > nthcell & names(x) != "NA"]
     })
+    nCells = sum(vapply(tablesCell, FUN.VALUE = double(1), length))
+    #Readjust to number of cells really used
     if (colourBorder <- !is.null(borderColVar)) {
         if (borderColVar %in% getEventVars(obj)) {
             unVals <- unique(unlist(lapply(obj$ppp, function(x)
@@ -75,21 +77,18 @@ plotCells <- function(obj, features = getFeatures(obj)[seq_len(3)],
         ppp <- subset.ppp(obj[[nam, "ppp"]], gene %in% features)
         for (j in seq_along(tablesCell[[nam]])) {
             namIn <- names(tablesCell[[nam]])[j]
-            shifted <- toUnitSquare(obj[[nam, "owins"]][[namIn]], ppp = subset.ppp(ppp, cell == namIn), Shift = Shift <- c(
-                counter %% Ceils[1],
-                counter %/% Ceils[1]
-            ))
+            shifted <- toUnitSquare(obj[[nam, "owins"]][[namIn]], ppp = subset.ppp(ppp, cell == namIn), Shift = shiftVec(counter, Ceils[1]))
             plot.owin(shifted$owin, add = TRUE, border = borderCols[[i]][[j]])
             # text(x = Shift[1], y = Shift[2], labels = paste0('Point pattern ', nam, '\nCell', namIn))
             points(coords(shifted$ppp), col = Cols[marks(shifted$ppp, drop = FALSE)$gene], pch = ".", cex = Cex)
             counter <- counter + 1
         }
     }
-    addLegend(Cols, Shift <- c(counter %% Ceils[1], counter %/% Ceils[1]))
+    addLegend(Cols, shiftVec(counter, Ceils[1]))
     if (colourBorder) {
         borderCols <- unique(unlist(borderCols))
         names(borderCols) <- unVals
-        addLegend(borderCols, Shift + c(1, 0), Pch = 5, Main = borderColVar, Cex = 0.7)
+        addLegend(borderCols, shiftVec(counter + 1, Ceils[1]), Pch = 5, Main = borderColVar, Cex = 0.7)
     }
     if (warnPosition) {
         text(Ceils[1] / 2, -0.4, labels = "Cells not on original location but sorted by expression!")
@@ -101,4 +100,7 @@ toUnitSquare <- function(owin, ppp, Shift) {
     shrink <- 1 / rep(max(diff(owin$xrange), diff(owin$yrange)), 2)
     vec <- -c(owin$xrange[1], owin$yrange[1]) * shrink + Shift
     list(owin = affine.owin(owin, diag(shrink), vec), ppp = affine.ppp(ppp, diag(shrink), vec))
+}
+shiftVec = function(counter, Ceil){
+    c(counter %% Ceil, counter %/% Ceil)
 }

@@ -63,7 +63,7 @@ fitLMMs <- function(
     names(out) <- pis
     return(out)
 }
-#' Fit linear mixed nodels for all features of a pimRes object
+#' Fit linear mixed models for all features of a object containing estimated PiS
 #'
 #' @inheritParams buildDataFrame
 #' @inheritParams fitLMMs

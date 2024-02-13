@@ -2,7 +2,7 @@
 % Please edit documentation in R/fitLMMs.R
 \name{fitLMMsSingle}
 \alias{fitLMMsSingle}
-\title{Fit linear mixed nodels for all features of a pimRes object}
+\title{Fit linear mixed models for all features of a object containing estimated PiS}
 \usage{
 fitLMMsSingle(
   obj,
@@ -54,7 +54,7 @@ Defaults to all features in the object}
 A list of test results, if requested also the linear models are returned
 }
 \description{
-Fit linear mixed nodels for all features of a pimRes object
+Fit linear mixed models for all features of a object containing estimated PiS
 }
 \seealso{
 \link{buildDataFrame},\link{getResults}

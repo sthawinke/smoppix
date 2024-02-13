@@ -31,7 +31,7 @@ plotCells(
 
 \item{Mar}{the margins}
 
-\item{warnPosition}{A boolean, should a warning be issued printed on the
+\item{warnPosition}{A boolean, should a warning be printed on the
 image that cells are not in their original location?}
 
 \item{...}{Additional arguments, currently ignored}
