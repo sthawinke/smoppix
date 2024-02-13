@@ -66,10 +66,10 @@ The suffix 'Cell' indicates distances are being calculated within cells only.
 \examples{
 data(Yang)
 hypYang <- buildHyperFrame(Yang,
-    coordVars = c("x", "y"),
-    imageVars = c("day", "root", "section")
+    coordVars = c('x', 'y'),
+    imageVars = c('day', 'root', 'section')
 )
-yangPims <- estPis(hypYang, pis = "nn")
+yangPims <- estPis(hypYang, pis = 'nn')
 # Univariate nearest neighbour distances
 }
 \seealso{

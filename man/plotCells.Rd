@@ -46,7 +46,7 @@ here, but the spatial location of the cells is lost! The choice and ranking of c
 is one of decreasing gene (pair) expression.
 }
 \examples{
-example(addCell, "spatrans")
-plotCells(hypFrame2, "gene1")
-plotCells(hypFrame2, "gene1", borderColVar = "condition")
+example(addCell, 'spatrans')
+plotCells(hypFrame2, 'gene1')
+plotCells(hypFrame2, 'gene1', borderColVar = 'condition')
 }

@@ -39,14 +39,14 @@ A dataframe
 Build a data frame for a certain gene and PI, in preparation for mixed model building.
 }
 \examples{
-example(addWeightFunction, "spatrans")
-dfUniNN <- buildDataFrame(yangObj, gene = "SmVND2", pi = "nn")
+example(addWeightFunction, 'spatrans')
+dfUniNN <- buildDataFrame(yangObj, gene = 'SmVND2', pi = 'nn')
 # Example analysis with linear mixed model
 library(lmerTest)
 # Use sum coding for day to maintain interpretability of the intercept
 mixedMod <- lmer(pi - 0.5 ~ day + (1 | root),
     weight = weight, data = dfUniNN,
-    contrasts = list("day" = "contr.sum")
+    contrasts = list('day' = 'contr.sum')
 )
 summary(mixedMod)
 # Evidence for aggregation

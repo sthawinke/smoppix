@@ -47,9 +47,9 @@ If smallPI is set to TRUE, features with aggregation, colocalization and vicinit
 If smallPI is set to FALSE, features with regularity, antilocalization and remoteness from cell boundary or centroid are shown.
 }
 \examples{
-example(fitLMMs, "spatrans")
-plotTopResults(hypYang, lmmModels, "nn")
-plotTopResults(hypYang, lmmModels, "nn", effect = "Intercept")
+example(fitLMMs, 'spatrans')
+plotTopResults(hypYang, lmmModels, 'nn')
+plotTopResults(hypYang, lmmModels, 'nn', effect = 'Intercept')
 }
 \seealso{
 \link{plotCells},\link{plotExplore},\link{fitLMMs}

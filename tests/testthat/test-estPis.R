@@ -1,4 +1,4 @@
-context("Test pim calculation spatrans package")
+context("Test PI calculation spatrans package")
 test_that("Calculating pims proceeds without errors", {
     expect_is(piEstsCSR, "list")
     expect_is(piEstsBG, "list")

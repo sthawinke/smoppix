@@ -18,6 +18,6 @@ The split string
 Helper function to spit gene pairs
 }
 \examples{
-GenePair <- "gene1--gene2"
+GenePair <- 'gene1--gene2'
 sund(GenePair)
 }
