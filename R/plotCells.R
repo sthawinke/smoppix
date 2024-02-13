@@ -26,15 +26,15 @@
 #' plotCells(hypFrame2, "gene1", borderColVar = "condition")
 plotCells <- function(obj, features = getFeatures(obj)[seq_len(3)],
                       nCells = 100, Cex = 1.5, borderColVar = NULL, borderCols = rev(palette()),
-                      Mar = c(0.35, 0.1, 0.75, 0.1), warnPosition = TRUE, ...) {
+                      Mar = c(3.5, 0.1, 0.75, 0.1), warnPosition = TRUE, ...) {
     if (!is.hyperframe(obj)) {
         obj <- obj$hypFrame
     }
-    stopifnot(is.hyperframe(obj), !is.null(obj$owins), length(nCells) == 1,
-              all(features %in% getFeatures(obj)))
     old.par <- par(no.readonly = TRUE);on.exit(par(old.par))
     par(mar = Mar)
     features <- unique(unlist(lapply(features, sund)))
+    stopifnot(is.hyperframe(obj), !is.null(obj$owins), length(nCells) == 1,
+              all(features %in% getFeatures(obj)))
     Cols <- makeCols(features, obj)
     tablesCell <- lapply(obj$ppp, function(p) {
         table(marks(p[marks(p, drop = FALSE)$gene %in% features, ], drop = FALSE)$cell)
@@ -71,7 +71,7 @@ plotCells <- function(obj, features = getFeatures(obj)[seq_len(3)],
     }
     counter <- 0L
     Ceils = splitWindow(nCells + 1 + colourBorder)
-    plot(type = "n", x = c(0, Ceils[1]), y = c(0, Ceils[2]), xlab = "", ylab = "", xaxt = "n", yaxt = "n", frame.plot = FALSE)
+    plot(type = "n", x = c(0, Ceils[1]), y = c(-0.1, Ceils[2]), xlab = "", ylab = "", xaxt = "n", yaxt = "n", frame.plot = FALSE)
     for (i in seq_along(tablesCell)) {
         nam <- names(tablesCell)[i]
         ppp <- subset.ppp(obj[[nam, "ppp"]], gene %in% features)
@@ -91,7 +91,7 @@ plotCells <- function(obj, features = getFeatures(obj)[seq_len(3)],
         addLegend(borderCols, shiftVec(counter + 1, Ceils[1]), Pch = 5, Main = borderColVar, Cex = 0.7)
     }
     if (warnPosition) {
-        text(Ceils[1] / 2, -0.4, labels = "Cells not on original location but sorted by expression!")
+        text(Ceils[1] / 2, -0.1, labels = "Cells not in original location but sorted by expression!")
     }
     invisible()
 }
