@@ -7,12 +7,14 @@
 #' @param trend A formula, describing the log intensity
 #' @param returnModel A boolean, should the entire model be returned?
 #' Otherwise the gradient is returned
+#' @param ... passed onto spatstat.model::ppm
 #'
 #' @return A ppm object, or a scalar that is the gradient
 #' @importFrom stats formula
 #' @importFrom spatstat.model ppm coef.ppm
-fitGradient = function(ppp, trend = formula("~ x + y"), returnModel = FALSE){
-    mod = ppm(ppp, trend = trend)
+#' @seealso \link{estGradients}
+fitGradient = function(ppp, trend = formula("~ x + y"), returnModel = FALSE, ...){
+    mod = ppm(ppp, trend = trend, ...)
     if(returnModel){
         return(mod)
     } else {
