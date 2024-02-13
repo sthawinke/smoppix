@@ -13,6 +13,7 @@
 #' @seealso \link{pnhyper}, \link{calcIndividualPIs}
 calcNNPI <- function(Ranks, n, m, r = 1) {
     pnhyper(Ranks, n = n, m = m, r = r)
-    # Exclude event itself, so NP - 1 m = N-1: White balls, number of other events of the same gene n = n - (NP-1):
-    # black balls, number of events of other genes in background r=1: Nearest neighbour so first occurrence
+    # Exclude event itself, so NP - 1 m = N-1: White balls, number of other
+    # events of the same gene n = n - (NP-1): black balls, number of events of
+    # other genes in background r=1: Nearest neighbour so first occurrence
 }

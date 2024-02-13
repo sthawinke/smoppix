@@ -11,20 +11,20 @@
 #' @return A list of matrices, all containing estimate, standard error,
 #' p-value and ajdusted p-value
 #' @seealso \link{fitLMMs}, \link{p.adjust}
-extractResults <- function(models, hypFrame, subSet = "piMod", fixedVars = NULL, method = "BH") {
+extractResults <- function(models, hypFrame, subSet = "piMod", fixedVars = NULL,
+    method = "BH") {
     ints <- t(vapply(models, FUN.VALUE = double(3), function(x) {
         if (is.null(x[[subSet]]) || is(x[[subSet]], "try-error")) {
             c(Estimate = NA, `Std. Error` = NA, `Pr(>|t|)` = NA)
         } else {
-            summary(x[[subSet]])$coef["(Intercept)", c("Estimate", "Std. Error", "Pr(>|t|)")]
-        } # Identical code for lmerTest or lm
+            summary(x[[subSet]])$coef["(Intercept)", c("Estimate", "Std. Error",
+                "Pr(>|t|)")]
+        }  # Identical code for lmerTest or lm
     }))
     colnames(ints) <- c("Estimate", "SE", "pVal")
-    ints[, "Estimate"] <- ints[, "Estimate"] + switch(subSet,
-        piMod = 0.5,
-        moranMod = 0
-    )
-    intMat <- cbind(ints, pAdj = p.adjust(ints[, "pVal"], method = method))[order(ints[, "pVal"]), ]
+    ints[, "Estimate"] <- ints[, "Estimate"] + switch(subSet, piMod = 0.5, moranMod = 0)
+    intMat <- cbind(ints, pAdj = p.adjust(ints[, "pVal"], method = method))[order(ints[,
+        "pVal"]), ]
     # Order by p-value
     id <- vapply(models, FUN.VALUE = TRUE, function(x) {
         is(x[[subSet]], "lmerModLmerTest") || is(x[[subSet]], "lm")
@@ -39,11 +39,12 @@ extractResults <- function(models, hypFrame, subSet = "piMod", fixedVars = NULL,
             unique(hypFrame[[Var]])
         }
         emptyCoef <- rep_len(NA, length(unVals))
-        names(emptyCoef) <- paste0(Var, unVals) # Prepare empty coefficient
+        names(emptyCoef) <- paste0(Var, unVals)  # Prepare empty coefficient
         pVal <- vapply(AnovaTabs, FUN.VALUE = double(1), function(x) x[Var, "Pr(>F)"])
         coefs <- lapply(models[id], function(x) {
-            # Prepare the empty coefficient vector with all levels present. If outcome is NA for all levels, the
-            # factor level gets dropped, causing problems downstream.
+            # Prepare the empty coefficient vector with all levels present. If
+            # outcome is NA for all levels, the factor level gets dropped,
+            # causing problems downstream.
             coefObj <- summary(x[[subSet]])$coef
             rn <- intersect(names(emptyCoef), rownames(coefObj))
             emptyCoef[rn] <- coefObj[rn, "Estimate"]
@@ -51,7 +52,8 @@ extractResults <- function(models, hypFrame, subSet = "piMod", fixedVars = NULL,
         })
         coefMat <- matrix(unlist(coefs), byrow = TRUE, nrow = length(pVal))
         colnames(coefMat) <- names(emptyCoef)
-        cbind(coefMat, pVal = pVal, pAdj = p.adjust(pVal, method = method))[order(pVal), ]
+        cbind(coefMat, pVal = pVal, pAdj = p.adjust(pVal, method = method))[order(pVal),
+            ]
     })
     names(fixedOut) <- fixedVars
     list(Intercept = intMat, fixedEffects = fixedOut)

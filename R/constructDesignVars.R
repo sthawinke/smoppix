@@ -26,7 +26,8 @@ constructDesignVars <- function(designVars, lowestLevelVar, allCell, resList) {
                     see getFeatures(resList)")
         }
         designVars <- setdiff(getPPPvars(resList), lowestLevelVar)
-        # If missing take everything but the ones that are obviously no design variables
+        # If missing take everything but the ones that are obviously no design
+        # variables
     }
     if (any(idMissing <- !(designVars %in% allVars))) {
         stop("Design variables\n", designVars[idMissing], "\nnot found in hypFrame object")

@@ -3,7 +3,7 @@
 #' @inheritParams buildDataFrame
 #'
 #' @return A modified data frame
-buildMoransIDataFrame = function(pi, piMat, weightMats){
+buildMoransIDataFrame <- function(pi, piMat, weightMats) {
     dfMoran <- if (pi %in% c("edge", "centroid")) {
         aggregate(pi ~ cell + image, piMat, FUN = mean, na.rm = TRUE)
     } else {
@@ -13,5 +13,6 @@ buildMoransIDataFrame = function(pi, piMat, weightMats){
         subDf <- dfMoran[dfMoran$image == im, ]
         moransI(subDf$pi, W = weightMats[[im]][subDf$cell, subDf$cell])
     })
-    cbind(MoransI = moransIs, piMat[match(unIm, piMat$image), setdiff(colnames(piMat), "weight")])
+    cbind(MoransI = moransIs, piMat[match(unIm, piMat$image), setdiff(colnames(piMat),
+        "weight")])
 }

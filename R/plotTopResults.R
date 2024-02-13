@@ -21,15 +21,16 @@
 #' @seealso \link{plotCells},\link{plotExplore},\link{fitLMMs}
 #'
 #' @examples
-#' example(fitLMMs, "spatrans")
-#' plotTopResults(hypYang, lmmModels, "nn")
-#' plotTopResults(hypYang, lmmModels, "nn", effect = "Intercept")
-plotTopResults <- function(hypFrame, results, pi, effect = "Intercept", smallPI = TRUE, sigLevel = 0.05, numFeats = 2, piThreshold = switch(effect,
-                               Intercept = 0.5,
-                               0
-                           ), ...) {
-    stopifnot(is.hyperframe(hypFrame), is.logical(smallPI), sigLevel > 0, sigLevel < 1)
-    pi <- match.arg(pi, choices = c("nn", "nnPair", "edge", "centroid", "nnCell", "nnPairCell"))
+#' example(fitLMMs, 'spatrans')
+#' plotTopResults(hypYang, lmmModels, 'nn')
+#' plotTopResults(hypYang, lmmModels, 'nn', effect = 'Intercept')
+plotTopResults <- function(hypFrame, results, pi, effect = "Intercept", smallPI = TRUE,
+    sigLevel = 0.05, numFeats = 2, piThreshold = switch(effect, Intercept = 0.5,
+        0), ...) {
+    stopifnot(is.hyperframe(hypFrame), is.logical(smallPI), sigLevel > 0, sigLevel <
+        1)
+    pi <- match.arg(pi, choices = c("nn", "nnPair", "edge", "centroid", "nnCell",
+        "nnPairCell"))
     if (is.null(Res <- results[[pi]]$results)) {
         stop("PI not present in results object!")
     }
@@ -50,7 +51,8 @@ plotTopResults <- function(hypFrame, results, pi, effect = "Intercept", smallPI 
     }
     Feats <- rownames(subRes)[estId & subRes[, "pAdj"] < sigLevel][seq_len(numFeats)]
     if (all(is.na(Feats))) {
-        stop("No significant features found for PI ", pi, " significance level ", sigLevel, " and smallPI ", smallPI, "!")
+        stop("No significant features found for PI ", pi, " significance level ",
+            sigLevel, " and smallPI ", smallPI, "!")
     } else {
         Feats <- Feats[!is.na(Feats)]
     }

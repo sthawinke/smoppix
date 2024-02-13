@@ -14,11 +14,13 @@ if (requireNamespace("RImageJROI")) {
     for (x in seq_len(nrow(hypFrameRoi))) {
         PPP <- hypFrameRoi$ppp[[x]]
         PPP$window <- owin(xrange = c(0, 100), yrange = c(0, 100))
-        coords(PPP) <- data.frame(x = runif(npoints(PPP), 1, 100), y = runif(npoints(PPP), 1, 100))
+        coords(PPP) <- data.frame(x = runif(npoints(PPP), 1, 100), y = runif(npoints(PPP),
+            1, 100))
         hypFrameRoi$ppp[[x]] <- PPP
     }
     test_that("Conversion of rois works", {
-        expect_s3_class(acRoi <- addCell(hypFrameRoi, wListRoi, warnOut = FALSE), "hyperframe")
+        expect_s3_class(acRoi <- addCell(hypFrameRoi, wListRoi, warnOut = FALSE),
+            "hyperframe")
         expect_is(marks(acRoi$ppp[[1]])$cell, "character")
     })
 }
@@ -30,13 +32,15 @@ if (requireNamespace("polyCub")) {
     x <- centroids[, 1]
     y <- centroids[, 2]
     z <- 1.4 + 0.1 * x + 0.2 * y + 0.002 * x * x
-    ex_1.7 <- SpatialPolygonsDataFrame(polys, data = data.frame(x = x, y = y, z = z, row.names = row.names(polys)))
+    ex_1.7 <- SpatialPolygonsDataFrame(polys, data = data.frame(x = x, y = y, z = z,
+        row.names = row.names(polys)))
     wListSPDF <- lapply(seq_len(nDesignFactors), function(x) {
         ex_1.7
     })
     names(wListSPDF) <- rownames(hypFrame)
     test_that("Conversion of SpatialPolygonsDataFrame works", {
-        expect_s3_class(acSPDF <- addCell(hypFrame, wListSPDF, warnOut = FALSE), "hyperframe")
+        expect_s3_class(acSPDF <- addCell(hypFrame, wListSPDF, warnOut = FALSE),
+            "hyperframe")
         expect_is(marks(acSPDF$ppp[[1]])$cell, "character")
     })
 }

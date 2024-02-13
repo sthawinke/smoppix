@@ -21,20 +21,21 @@
 #' @importFrom graphics points text
 #'
 #' @examples
-#' example(addCell, "spatrans")
-#' plotCells(hypFrame2, "gene1")
-#' plotCells(hypFrame2, "gene1", borderColVar = "condition")
-plotCells <- function(obj, features = getFeatures(obj)[seq_len(3)],
-                      nCells = 100, Cex = 1.5, borderColVar = NULL, borderCols = rev(palette()),
-                      Mar = c(3.5, 0.1, 0.75, 0.1), warnPosition = TRUE, ...) {
+#' example(addCell, 'spatrans')
+#' plotCells(hypFrame2, 'gene1')
+#' plotCells(hypFrame2, 'gene1', borderColVar = 'condition')
+plotCells <- function(obj, features = getFeatures(obj)[seq_len(3)], nCells = 100,
+    Cex = 1.5, borderColVar = NULL, borderCols = rev(palette()), Mar = c(3.5, 0.1,
+        0.75, 0.1), warnPosition = TRUE, ...) {
     if (!is.hyperframe(obj)) {
         obj <- obj$hypFrame
     }
-    old.par <- par(no.readonly = TRUE);on.exit(par(old.par))
+    old.par <- par(no.readonly = TRUE)
+    on.exit(par(old.par))
     par(mar = Mar)
     features <- unique(unlist(lapply(features, sund)))
-    stopifnot(is.hyperframe(obj), !is.null(obj$owins), length(nCells) == 1,
-              all(features %in% getFeatures(obj)))
+    stopifnot(is.hyperframe(obj), !is.null(obj$owins), length(nCells) == 1, all(features %in%
+        getFeatures(obj)))
     Cols <- makeCols(features, obj)
     tablesCell <- lapply(obj$ppp, function(p) {
         table(marks(p[marks(p, drop = FALSE)$gene %in% features, ], drop = FALSE)$cell)
@@ -45,15 +46,15 @@ plotCells <- function(obj, features = getFeatures(obj)[seq_len(3)],
     tablesCell <- lapply(tablesCell, function(x) {
         x[x > nthcell & names(x) != "NA"]
     })
-    nCells = sum(vapply(tablesCell, FUN.VALUE = double(1), length))
-    #Readjust to number of cells really used
+    nCells <- sum(vapply(tablesCell, FUN.VALUE = double(1), length))
+    # Readjust to number of cells really used
     if (colourBorder <- !is.null(borderColVar)) {
         if (borderColVar %in% getEventVars(obj)) {
-            unVals <- unique(unlist(lapply(obj$ppp, function(x)
-                unique(marks(x, drop = FALSE)[[borderColVar]]))))
+            unVals <- unique(unlist(lapply(obj$ppp, function(x) unique(marks(x, drop = FALSE)[[borderColVar]]))))
             names(borderCols)[seq_along(unVals)] <- unVals
             borderCols <- lapply(seq_along(tablesCell), function(x) {
-                borderCols[marks(obj$ppp[[x]])[[borderColVar]][match(marks(obj$ppp[[x]])$cell, names(tablesCell[[x]]))]]
+                borderCols[marks(obj$ppp[[x]])[[borderColVar]][match(marks(obj$ppp[[x]])$cell,
+                  names(tablesCell[[x]]))]]
             })
         } else if (borderColVar %in% getPPPvars(obj)) {
             unVals <- unique(obj[[borderColVar]])
@@ -70,18 +71,21 @@ plotCells <- function(obj, features = getFeatures(obj)[seq_len(3)],
         })
     }
     counter <- 0L
-    Ceils = splitWindow(nCells + 1 + colourBorder)
-    plot(type = "n", x = c(0, Ceils[1]), y = c(0 - warnPosition*0.1, Ceils[2]),
-         xlab = "", ylab = "", xaxt = "n", yaxt = "n", frame.plot = FALSE)
+    Ceils <- splitWindow(nCells + 1 + colourBorder)
+    plot(type = "n", x = c(0, Ceils[1]), y = c(0 - warnPosition * 0.1, Ceils[2]),
+        xlab = "", ylab = "", xaxt = "n", yaxt = "n", frame.plot = FALSE)
     for (i in seq_along(tablesCell)) {
         nam <- names(tablesCell)[i]
         ppp <- subset.ppp(obj[[nam, "ppp"]], gene %in% features)
         for (j in seq_along(tablesCell[[nam]])) {
             namIn <- names(tablesCell[[nam]])[j]
-            shifted <- toUnitSquare(obj[[nam, "owins"]][[namIn]], ppp = subset.ppp(ppp, cell == namIn), Shift = shiftVec(counter, Ceils[1]))
+            shifted <- toUnitSquare(obj[[nam, "owins"]][[namIn]], ppp = subset.ppp(ppp,
+                cell == namIn), Shift = shiftVec(counter, Ceils[1]))
             plot.owin(shifted$owin, add = TRUE, border = borderCols[[i]][[j]])
-            # text(x = Shift[1], y = Shift[2], labels = paste0('Point pattern ', nam, '\nCell', namIn))
-            points(coords(shifted$ppp), col = Cols[marks(shifted$ppp, drop = FALSE)$gene], pch = ".", cex = Cex)
+            # text(x = Shift[1], y = Shift[2], labels = paste0('Point pattern
+            # ', nam, '\nCell', namIn))
+            points(coords(shifted$ppp), col = Cols[marks(shifted$ppp, drop = FALSE)$gene],
+                pch = ".", cex = Cex)
             counter <- counter + 1
         }
     }
@@ -89,19 +93,21 @@ plotCells <- function(obj, features = getFeatures(obj)[seq_len(3)],
     if (colourBorder) {
         borderCols <- unique(unlist(borderCols))
         names(borderCols) <- unVals
-        addLegend(borderCols, shiftVec(counter + 1, Ceils[1]), Pch = 5, Main = borderColVar, Cex = 0.7)
+        addLegend(borderCols, shiftVec(counter + 1, Ceils[1]), Pch = 5, Main = borderColVar,
+            Cex = 0.7)
     }
     if (warnPosition) {
-        text(Ceils[1] / 2, -0.1, labels = "Cells not in original location but sorted by expression!")
+        text(Ceils[1]/2, -0.1, labels = "Cells not in original location but sorted by expression!")
     }
     invisible()
 }
 #' @importFrom spatstat.geom affine.owin affine.ppp
 toUnitSquare <- function(owin, ppp, Shift) {
-    shrink <- 1 / rep(max(diff(owin$xrange), diff(owin$yrange)), 2)
+    shrink <- 1/rep(max(diff(owin$xrange), diff(owin$yrange)), 2)
     vec <- -c(owin$xrange[1], owin$yrange[1]) * shrink + Shift
-    list(owin = affine.owin(owin, diag(shrink), vec), ppp = affine.ppp(ppp, diag(shrink), vec))
+    list(owin = affine.owin(owin, diag(shrink), vec), ppp = affine.ppp(ppp, diag(shrink),
+        vec))
 }
-shiftVec = function(counter, Ceil){
-    c(counter %% Ceil, counter %/% Ceil)
+shiftVec <- function(counter, Ceil) {
+    c(counter%%Ceil, counter%/%Ceil)
 }

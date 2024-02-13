@@ -5,7 +5,7 @@
 #' @return The split string
 #' @export
 #' @examples
-#' GenePair <- "gene1--gene2"
+#' GenePair <- 'gene1--gene2'
 #' sund(GenePair)
 sund <- function(x, sep = "--") {
     strsplit(x, sep)[[1]]
@@ -31,7 +31,7 @@ makeDesignVar <- function(x, designVars, sep = "_") {
 #' @return A character vector of gene pairs
 #' @export
 #' @examples
-#' genes <- paste0("gene", seq_len(4))
+#' genes <- paste0('gene', seq_len(4))
 #' makePairs(genes)
 makePairs <- function(genes) {
     apply(combn(genes, 2), 2, paste, collapse = "--")
@@ -144,10 +144,11 @@ getHypFrame <- function(x) {
 #' @param x The number of plots
 #'
 #' @return A vector of length 2 with required number of rows and colums
-splitWindow = function(x){
-    Sqrt = sqrt(x)
-    a = ceiling(Sqrt);b = floor(Sqrt)
-    if(a*b < x)
-        b = b+1
+splitWindow <- function(x) {
+    Sqrt <- sqrt(x)
+    a <- ceiling(Sqrt)
+    b <- floor(Sqrt)
+    if (a * b < x)
+        b <- b + 1
     c(a, b)
 }
