@@ -7,7 +7,7 @@
 #' @param returnModel A boolean, should the entire model be returned?
 #' Otherwise the p-value is returned
 #' @param ... passed onto spatstat.model::ppm
-#' @inheirtParams estGradients
+#' @inheritParams estGradients
 #'
 #' @return A vector of of length 3 with p-value and variances of the random effects,
 #' or a mppm model when returnModel is true
@@ -20,11 +20,13 @@ fitGradient = function(hypFrame, fixedEffects = NULL, returnModel = FALSE, silen
                              randomVars = NULL)
     xyModel = try(mppm(data = hypFrame, fixedForm, random = ~x + y | id, verb = FALSE, ...),
                   silent = silent)
-     if(returnModel || is(xyModel, "try-error")){
+     if(returnModel){
         return(xyModel)
-    } else {
+    } else if(is(xyModel, "try-error")){
+        return(c("pVal" = 1, "x" = NA, "y" = NA))
+   } else {
         intModel = try(mppm(data = hypFrame, fixedForm, random = ~1 | id, verb = FALSE, ...), silent = silent)
-        pVal = if(is(intModel, "try-error")){
+        pVal = if(is(intModel, "try-error") ){
             NA
         } else {
             anovaRes = anova(xyModel, intModel, test = "Chisq")

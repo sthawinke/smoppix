@@ -19,8 +19,8 @@
 #'     coordVars = c('x', 'y'),
 #'     imageVars = c('day', 'root', 'section')
 #' )
-#' yangGrads <- estGradients(hypYang, features = getFeatures(hypYang)[seq_len(5)])
-#' Overall Gradients
+#' yangGrads <- estGradients(hypYang, features = getFeatures(hypYang)[seq_len(3)])
+#' #Overall Gradients
 #' @seealso \link{fitGradient}, \link{estGradientsSingle}
 estGradients <- function(hypFrame, gradients = c("overall", if(!is.null(hypFrame$owins)) "cell"), fixedEffects = NULL,
                          verbose = FALSE, features = getFeatures(hypFrame), silent = TRUE, loopFun = "bplapply", ...) {
@@ -39,7 +39,7 @@ estGradients <- function(hypFrame, gradients = c("overall", if(!is.null(hypFrame
     }
     grads <- loadBalanceBplapply(loopFun = loopFun, features, function(gene) {
         hypFrame$ppp = lapply(hypFrame$ppp, function(x) x[marks(x, drop = FALSE)$gene == gene, ])
-        out <- estGradientsSingle(hypFrame, owins = hypFrame[x, "owins", drop = TRUE],
+        out <- estGradientsSingle(hypFrame, owins = hypFrame$owins,
             gradients = gradients, silent = silent, fixedEffects = fixedEffects, ...)
         return(out)
     })
