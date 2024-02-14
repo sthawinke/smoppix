@@ -290,6 +290,8 @@ Although the estimated Moran's I is positive indeed, indicating positive spatial
 
 ## Gradients
 
+Another biologically interesting spatial pattern are gradients. Again, they can be estimated image-wide or within cells. The direction in the x-y plane with largest slope in absolute value is found together with its variance. The slope is then used as outcome in a linear model, inversely weighted by its variance. This means that the direction of the strongest gradient can vary across images and cells, and only its absolute value is used as outcome value.
+
 # Troubleshooting
 
 An error like 
