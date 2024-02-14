@@ -15,7 +15,7 @@
 #'     coordVars = c('x', 'y'),
 #'     imageVars = c('day', 'root', 'section')
 #' )
-#' yangGrads <- estGradients(hypYang)
+#' yangGrads <- estGradients(hypYang, features = getFeatures(hypYang)[seq_len(5)])
 #' Overall Gradients
 #' @seealso \link{fitGradient, estGradientsSingle}
 estGradients <- function(hypFrame, gradients = c("overall", if(!is.null(hypFrame$owins)) "cell"), fixedEffects = NULL,
@@ -34,11 +34,13 @@ estGradients <- function(hypFrame, gradients = c("overall", if(!is.null(hypFrame
         message("Calculating gradients")
     }
     grads <- loadBalanceBplapply(loopFun = loopFun, features, function(gene) {
-        hypFrameSub = lapply(hypFrame$ppp, function(x) x[marks(x, drop = FALSE)$gene == gene, ])
-        out <- estGradientsSingle(hypFrameSub, owins = hypFrame[x, "owins", drop = TRUE],
+        hypFrame$ppp = lapply(hypFrame$ppp, function(x) x[marks(x, drop = FALSE)$gene == gene, ])
+        out <- estGradientsSingle(hypFrame, owins = hypFrame[x, "owins", drop = TRUE],
             gradients = gradients, silent = silent, fixedEffects = fixedEffects, ...)
         return(out)
     })
+    grads = matrix(unlist(grads), byrow = TRUE,, ncol = 3,
+                   dimnames = list(features, c("pVal", "x", "y")))
     list(hypFrame = hypFrame, grads = grads)
 }
 #' A wrapper function for the estimation of the different gradients, applied to individual point patterns
@@ -53,21 +55,22 @@ estGradients <- function(hypFrame, gradients = c("overall", if(!is.null(hypFrame
 #' @importFrom spatstat.geom unmark
 #' @seealso \link{estGradients}
 estGradientsSingle <- function(hypFrame, gradients, fixedEffects, owins, ...) {
-    #Unmark for ppm.ppp
-    overall <- if ("overall" %in% gradients) {
-        fitGradient(hypFrame, fixedEffects = fixedEffects,...)
-    }
     # Within cell: recurse into estGradientsSingle but now per cell
     cell <- if ("cell" %in% gradients) {
         hypSub = hyperframe("ppp" = unlist(recursive = FALSE,
             lapply(rownames(hypFrame), function(rn) {
                 sp = split.ppp(hypFrame$ppp[[rn]], f = marks(hypFrame$ppp[[rn]])$cell)
-                sp = sd[names(sp)!="NA"]
+                sp = unmark(sd[names(sp)!="NA"])
                 for(nam in names(sp)){
                     sp[[nam]]$window = owins[[rn]][[nam]]
                 }
                 })))
        estGradientsSingle(gradients = "overall", hypFrame = hypSub, fixedEffects = fixedEffects, ...)
+    }
+    #Unmark for ppm.ppp
+    overall <- if ("overall" %in% gradients) {
+        hypFrame$ppp = lapply(hypFrame$ppp, unmark)
+        fitGradient(hypFrame, fixedEffects = fixedEffects,...)
     }
     cbind("overall" = overall, "cell" = cell)
 }

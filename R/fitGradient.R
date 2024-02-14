@@ -18,17 +18,21 @@
 #' @importFrom nlme VarCorr
 #' @seealso \link{estGradients}
 fitGradient = function(hypFrame, fixedEffects = NULL, returnModel = FALSE, silent,...){
-    fixedForm = paste("ppp ~ 1", paste(paste("+",  fixedEffects), collapse = ""))
-    xyModel = try(mppm(data = hypFrame, fixedForm, random = "x + y |id", ...), silent = silent)
+    fixedForm = buildFormula(outcome = "ppp", fixedVars = fixedEffects,
+                             randomVars = NULL)
+    xyModel = try(mppm(data = hypFrame, fixedForm, random = ~x + y | id, verb = FALSE, ...),
+                  silent = silent)
      if(returnModel || is(xyModel, "try-error")){
         return(xyModel)
     } else {
-        intModel = try(mppm(data = hypFrame, fixedForm, random = "1 |id", ...), silent = TRUE)
+        intModel = try(mppm(data = hypFrame, fixedForm, random = ~1 | id, verb = FALSE, ...), silent = silent)
         pVal = if(is(intModel, "try-error")){
             NA
         } else {
             anovaRes = anova(xyModel, intModel, test = "Chisq")
-            anovaRes$p.value[2]
+            if(anovaRes["xyModel", "logLik"] < anovaRes["intModel", "logLik"]){
+                1 #IF elaborate model not better, return 1
+            } else {anovaRes$"p-value"[2]}
         }
         Variances = as.numeric(VarCorr(xyModel$Fit$FIT)[c("x", "y"), "Variance"])
         out = c(pVal, Variances);names(out) = c("pVal", "x", "y")

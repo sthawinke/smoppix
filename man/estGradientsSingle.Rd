@@ -4,7 +4,7 @@
 \alias{estGradientsSingle}
 \title{A wrapper function for the estimation of the different gradients, applied to individual point patterns}
 \usage{
-estGradientsSingle(hypFrame, gradients, fixedEffects, owins = NULL, ...)
+estGradientsSingle(hypFrame, gradients, fixedEffects, owins, ...)
 }
 \arguments{
 \item{hypFrame}{the hyperframe}

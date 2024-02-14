@@ -7,6 +7,7 @@
 estGradients(
   hypFrame,
   gradients = c("overall", if (!is.null(hypFrame$owins)) "cell"),
+  fixedEffects = NULL,
   verbose = FALSE,
   features = getFeatures(hypFrame),
   silent = TRUE,
@@ -41,7 +42,7 @@ hypYang <- buildHyperFrame(Yang,
     coordVars = c('x', 'y'),
     imageVars = c('day', 'root', 'section')
 )
-yangGrads <- estGradients(hypYang)
+yangGrads <- estGradients(hypYang, features = getFeatures(hypYang)[seq_len(5)])
 Overall Gradients
 }
 \seealso{
