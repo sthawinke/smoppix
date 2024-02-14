@@ -7,7 +7,11 @@
 #' @param features A character vector, for which features should the
 #' gradients indices be calculated?
 #' @param silent A bolean, should error messages from ppm.ppp be printed?
+#' @param fixedEffects Character vector of fixed effects present in the hyperframe,
+#' modifying the baseline intensity. See details.
 #' @inheritParams estPis
+#' @inheritParams estPisSingle
+#' @details The fixed effects modify the baseline intensity of the point pattern, not the gradient!
 #' @return A list with the hyperframe and the estimated gradients
 #' @examples
 #' data(Yang)
@@ -17,7 +21,7 @@
 #' )
 #' yangGrads <- estGradients(hypYang, features = getFeatures(hypYang)[seq_len(5)])
 #' Overall Gradients
-#' @seealso \link{fitGradient, estGradientsSingle}
+#' @seealso \link{fitGradient}, \link{estGradientsSingle}
 estGradients <- function(hypFrame, gradients = c("overall", if(!is.null(hypFrame$owins)) "cell"), fixedEffects = NULL,
                          verbose = FALSE, features = getFeatures(hypFrame), silent = TRUE, loopFun = "bplapply", ...) {
     gradients <- match.arg(gradients, several.ok = TRUE, choices = c("overall", "cell"))
@@ -39,7 +43,7 @@ estGradients <- function(hypFrame, gradients = c("overall", if(!is.null(hypFrame
             gradients = gradients, silent = silent, fixedEffects = fixedEffects, ...)
         return(out)
     })
-    grads = matrix(unlist(grads), byrow = TRUE,, ncol = 3,
+    grads = matrix(unlist(grads), byrow = TRUE, ncol = 3,
                    dimnames = list(features, c("pVal", "x", "y")))
     list(hypFrame = hypFrame, grads = grads)
 }
@@ -60,7 +64,7 @@ estGradientsSingle <- function(hypFrame, gradients, fixedEffects, owins, ...) {
         hypSub = hyperframe("ppp" = unlist(recursive = FALSE,
             lapply(rownames(hypFrame), function(rn) {
                 sp = split.ppp(hypFrame$ppp[[rn]], f = marks(hypFrame$ppp[[rn]])$cell)
-                sp = unmark(sd[names(sp)!="NA"])
+                sp = unmark(sp[names(sp)!="NA"])
                 for(nam in names(sp)){
                     sp[[nam]]$window = owins[[rn]][[nam]]
                 }

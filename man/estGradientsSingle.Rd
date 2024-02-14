@@ -11,6 +11,9 @@ estGradientsSingle(hypFrame, gradients, fixedEffects, owins, ...)
 
 \item{gradients}{The gradients indices to be estimated}
 
+\item{fixedEffects}{Character vector of fixed effects present in the hyperframe,
+modifying the baseline intensity. See details.}
+
 \item{...}{Passed onto fitGradient}
 }
 \value{

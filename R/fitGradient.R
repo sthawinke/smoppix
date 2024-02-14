@@ -4,12 +4,10 @@
 #' between x and y variables and intensity
 #'
 #' @param hypFrame the hyperframe
-#' @param fixedEffects Character vector of fixed effects present in the hyperframe,
-#' modifying the baseline intensity. See details.
 #' @param returnModel A boolean, should the entire model be returned?
 #' Otherwise the p-value is returned
 #' @param ... passed onto spatstat.model::ppm
-#' @details The fixed effects modify the baseline intensity of the point pattern, not the gradient!
+#' @inheirtParams estGradients
 #'
 #' @return A vector of of length 3 with p-value and variances of the random effects,
 #' or a mppm model when returnModel is true

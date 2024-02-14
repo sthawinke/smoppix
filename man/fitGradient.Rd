@@ -9,9 +9,6 @@ fitGradient(hypFrame, fixedEffects = NULL, returnModel = FALSE, silent, ...)
 \arguments{
 \item{hypFrame}{the hyperframe}
 
-\item{fixedEffects}{Character vector of fixed effects present in the hyperframe,
-modifying the baseline intensity. See details.}
-
 \item{returnModel}{A boolean, should the entire model be returned?
 Otherwise the p-value is returned}
 
@@ -24,9 +21,6 @@ or a mppm model when returnModel is true
 \description{
 A Poisson process is fitted to the data assuming exponential relationship
 between x and y variables and intensity
-}
-\details{
-The fixed effects modify the baseline intensity of the point pattern, not the gradient!
 }
 \seealso{
 \link{estGradients}

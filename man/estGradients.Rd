@@ -20,12 +20,18 @@ estGradients(
 
 \item{gradients}{The gradients indices to be estimated}
 
+\item{fixedEffects}{Character vector of fixed effects present in the hyperframe,
+modifying the baseline intensity. See details.}
+
 \item{verbose}{A boolean, whether to report on progress of the fitting process.}
 
 \item{features}{A character vector, for which features should the
 gradients indices be calculated?}
 
 \item{silent}{A bolean, should error messages from ppm.ppp be printed?}
+
+\item{loopFun}{The function to use to loop over the features.
+Defaults to bplapply except when looping over features within cells}
 
 \item{...}{additional arguments, passed on to \link{fitGradient}.}
 }
@@ -35,6 +41,9 @@ A list with the hyperframe and the estimated gradients
 \description{
 Estimate gradients on all point patterns of a hyperframe,
 and integrate the results in the same hyperframe
+}
+\details{
+The fixed effects modify the baseline intensity of the point pattern, not the gradient!
 }
 \examples{
 data(Yang)
@@ -46,5 +55,5 @@ yangGrads <- estGradients(hypYang, features = getFeatures(hypYang)[seq_len(5)])
 Overall Gradients
 }
 \seealso{
-\link{fitGradient, estGradientsSingle}
+\link{fitGradient}, \link{estGradientsSingle}
 }
