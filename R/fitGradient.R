@@ -3,38 +3,35 @@
 #' A Poisson process is fitted to the data assuming exponential relationship
 #' between x and y variables and intensity
 #'
-#' @param ppp The point pattern
-#' @param trend A formula, describing the log intensity
+#' @param hypFrame the hyperframe
+#' @param fixedEffects Character vector of fixed effects present in the hyperframe,
+#' modifying the baseline intensity. See details.
 #' @param returnModel A boolean, should the entire model be returned?
-#' Otherwise the gradient and its variance are returned
+#' Otherwise the p-value is returned
 #' @param ... passed onto spatstat.model::ppm
+#' @details The fixed effects modify the baseline intensity of the point pattern, not the gradient!
 #'
-#' @return A ppm object, or a scalar that is the gradient
+#' @return A vector of of length 3 with p-value and variances of the random effects,
+#' or a mppm model when returnModel is true
 #' @importFrom stats formula
-#' @importFrom spatstat.model ppm coef.ppm vcov.ppm
-#' @importFrom spatstat.geom unmark is.marked
+#' @importFrom spatstat.model mppm anova.mppm
+#' @importFrom nlme VarCorr
 #' @seealso \link{estGradients}
-fitGradient = function(ppp, trend = formula("~ x + y"), returnModel = FALSE, ...){
-    if(is.marked(ppp)){
-        ppp = unmark(ppp)
-        #Get rid of marks for ppm.ppp function
-    }
-    mod = try(ppm(ppp, trend = trend, ...))
-    if(returnModel){
-        return(mod)
-    } else if(is(mod, "try-error")){
-        return(c("gradient" = NA, "variance" = NA))
+fitGradient = function(hypFrame, fixedEffects = NULL, returnModel = FALSE, silent,...){
+    fixedForm = paste("ppp ~ 1", paste(paste("+",  fixedEffects), collapse = ""))
+    xyModel = try(mppm(data = hypFrame, fixedForm, random = "x + y |id", ...), silent = silent)
+     if(returnModel || is(xyModel, "try-error")){
+        return(xyModel)
     } else {
-        Coef = coef.ppm(mod)[c("x", "y")]
-        Grad = sqrt(Coef["x"]^2 + Coef["y"]^2) #The gradient
-        Deriv = Coef/Grad #Derivative to x- and y-slopes
-        VarGrad = if(is.null(vcov.ppm(mod))){
+        intModel = try(mppm(data = hypFrame, fixedForm, random = "1 |id", ...), silent = TRUE)
+        pVal = if(is(intModel, "try-error")){
             NA
         } else {
-           crossprod(Deriv, vcov.ppm(mod)[c("x", "y"), c("x", "y")]) %*% Deriv
+            anovaRes = anova(xyModel, intModel, test = "Chisq")
+            anovaRes$p.value[2]
         }
-        #When Fisher information matrix is singular, no variance can be found,
-        #so attach no weight
-        return(c("gradient" = unname(Grad), "variance" = c(VarGrad)))
+        Variances = as.numeric(VarCorr(xyModel$Fit$FIT)[c("x", "y"), "Variance"])
+        out = c(pVal, Variances);names(out) = c("pVal", "x", "y")
+        return(out)
     }
 }

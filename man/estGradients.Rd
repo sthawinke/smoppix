@@ -7,9 +7,10 @@
 estGradients(
   hypFrame,
   gradients = c("overall", if (!is.null(hypFrame$owins)) "cell"),
-  verbose = TRUE,
+  verbose = FALSE,
   features = getFeatures(hypFrame),
   silent = TRUE,
+  loopFun = "bplapply",
   ...
 )
 }
@@ -28,7 +29,7 @@ gradients indices be calculated?}
 \item{...}{additional arguments, passed on to \link{fitGradient}.}
 }
 \value{
-The hyperframe with the estimated gradients present in it
+A list with the hyperframe and the estimated gradients
 }
 \description{
 Estimate gradients on all point patterns of a hyperframe,

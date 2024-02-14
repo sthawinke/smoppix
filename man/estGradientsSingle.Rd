@@ -4,26 +4,12 @@
 \alias{estGradientsSingle}
 \title{A wrapper function for the estimation of the different gradients, applied to individual point patterns}
 \usage{
-estGradientsSingle(
-  p,
-  tabObs,
-  gradients,
-  owins = NULL,
-  loopFun = "bplapply",
-  features,
-  ...
-)
+estGradientsSingle(hypFrame, gradients, fixedEffects, owins = NULL, ...)
 }
 \arguments{
-\item{p}{The point pattern}
+\item{hypFrame}{the hyperframe}
 
-\item{tabObs}{A table of observed gene frequencies}
-
-\item{loopFun}{The function to use to loop over the features.
-Defaults to bplapply except when looping over features within cells}
-
-\item{features}{A character vector, for which features should the
-probabilistic indices be calculated?}
+\item{gradients}{The gradients indices to be estimated}
 
 \item{...}{Passed onto fitGradient}
 }

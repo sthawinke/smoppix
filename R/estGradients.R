@@ -8,7 +8,7 @@
 #' gradients indices be calculated?
 #' @param silent A bolean, should error messages from ppm.ppp be printed?
 #' @inheritParams estPis
-#' @return The hyperframe with the estimated gradients present in it
+#' @return A list with the hyperframe and the estimated gradients
 #' @examples
 #' data(Yang)
 #' hypYang <- buildHyperFrame(Yang,
@@ -18,31 +18,32 @@
 #' yangGrads <- estGradients(hypYang)
 #' Overall Gradients
 #' @seealso \link{fitGradient, estGradientsSingle}
-estGradients <- function(hypFrame, gradients = c("overall", if(!is.null(hypFrame$owins)) "cell"),
-                         verbose = TRUE, features = getFeatures(hypFrame), silent = TRUE, ...) {
+estGradients <- function(hypFrame, gradients = c("overall", if(!is.null(hypFrame$owins)) "cell"), fixedEffects = NULL,
+                         verbose = FALSE, features = getFeatures(hypFrame), silent = TRUE, loopFun = "bplapply", ...) {
     gradients <- match.arg(gradients, several.ok = TRUE, choices = c("overall", "cell"))
     stopifnot(is.hyperframe(hypFrame), is.character(features))
     if (any(gradients == "cell") && is.null(hypFrame$owins)) {
         stop("No window provided for gradient calculation within cell. ",
             "Add it using the addCell() function")
     }
+    if(!all(id <- (fixedEffects %in% getPPPvars(hypFrame)))){
+        stop("Variables ", fixedEffects[!id], " not found in hyperframe.")
+    }
     foo = checkFeatures(hypFrame, features)
     if (verbose) {
-        message("Calculating gradients for point pattern ")
+        message("Calculating gradients")
     }
-    hypFrame$gradients <- lapply(seq_len(nrow(hypFrame)), function(x) {
-        if (verbose) {
-            message(x, " of ", nrow(hypFrame), "  ")
-        }
-        out <- estGradientsSingle(hypFrame[[x, "ppp"]], owins = hypFrame[x, "owins", drop = TRUE],
-            gradients = gradients, features = features, tabObs = hypFrame[[x, "tabObs"]], silent = silent,...)
+    grads <- loadBalanceBplapply(loopFun = loopFun, features, function(gene) {
+        hypFrameSub = lapply(hypFrame$ppp, function(x) x[marks(x, drop = FALSE)$gene == gene, ])
+        out <- estGradientsSingle(hypFrameSub, owins = hypFrame[x, "owins", drop = TRUE],
+            gradients = gradients, silent = silent, fixedEffects = fixedEffects, ...)
         return(out)
     })
-    list(hypFrame = hypFrame, gradients = gradients)
+    list(hypFrame = hypFrame, grads = grads)
 }
 #' A wrapper function for the estimation of the different gradients, applied to individual point patterns
 #'
-#' @inheritParams estPisSingle
+#' @inheritParams estGradients
 #' @param ... Passed onto fitGradient
 #'
 #' @return A list of data frames with estimated gradients per gene
@@ -51,34 +52,22 @@ estGradients <- function(hypFrame, gradients = c("overall", if(!is.null(hypFrame
 #' @importFrom Rdpack reprompt
 #' @importFrom spatstat.geom unmark
 #' @seealso \link{estGradients}
-estGradientsSingle <- function(p, tabObs, gradients, owins = NULL, loopFun = "bplapply",
-                         features, ...) {
-    if (!length(features)) {
-        return(list(overall = NULL, cell = NULL))
-    }
-    features <- sample(intersect(features, names(tabObs)))
-    # Scramble to ensure equal calculation times in multithreading
-    pSplit <- unmark(split.ppp(p, f = factor(marks(p, drop = FALSE)$gene)))
+estGradientsSingle <- function(hypFrame, gradients, fixedEffects, owins, ...) {
     #Unmark for ppm.ppp
     overall <- if ("overall" %in% gradients) {
-        tmp = t(simplify2array(loadBalanceBplapply(features, function(gene){
-            fitGradient(pSplit[[gene]], ...)
-        }, loopFun = loopFun)))
-        rownames(tmp) = features
-        tmp
+        fitGradient(hypFrame, fixedEffects = fixedEffects,...)
     }
     # Within cell: recurse into estGradientsSingle but now per cell
     cell <- if ("cell" %in% gradients) {
-        unCells <- setdiff(unique(marks(p, drop = FALSE)$cell), "NA")
-        cellGrads <- loadBalanceBplapply(unCells, function(nam) {
-            pSub <- p[marks(p, drop = FALSE)$cell == nam, ]
-            pSub$window = owins[[nam]]
-            estGradientsSingle(gradients = "cell", p = pSub, features = features,
-                               tabObs = table(marks(pSub, drop = FALSE)$gene),
-                loopFun = "lapply")
-        }, loopFun = loopFun)
-        names(cellGrads) <- unCells
-        cellGrads
+        hypSub = hyperframe("ppp" = unlist(recursive = FALSE,
+            lapply(rownames(hypFrame), function(rn) {
+                sp = split.ppp(hypFrame$ppp[[rn]], f = marks(hypFrame$ppp[[rn]])$cell)
+                sp = sd[names(sp)!="NA"]
+                for(nam in names(sp)){
+                    sp[[nam]]$window = owins[[rn]][[nam]]
+                }
+                })))
+       estGradientsSingle(gradients = "overall", hypFrame = hypSub, fixedEffects = fixedEffects, ...)
     }
-    list("overall" = overall, "cell" = cell)
+    cbind("overall" = overall, "cell" = cell)
 }

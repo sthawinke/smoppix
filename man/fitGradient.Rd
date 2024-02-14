@@ -4,24 +4,29 @@
 \alias{fitGradient}
 \title{Fit a gradient to a point pattern}
 \usage{
-fitGradient(ppp, trend = formula("~ x + y"), returnModel = FALSE, ...)
+fitGradient(hypFrame, fixedEffects = NULL, returnModel = FALSE, silent, ...)
 }
 \arguments{
-\item{ppp}{The point pattern}
+\item{hypFrame}{the hyperframe}
 
-\item{trend}{A formula, describing the log intensity}
+\item{fixedEffects}{Character vector of fixed effects present in the hyperframe,
+modifying the baseline intensity. See details.}
 
 \item{returnModel}{A boolean, should the entire model be returned?
-Otherwise the gradient and its variance are returned}
+Otherwise the p-value is returned}
 
 \item{...}{passed onto spatstat.model::ppm}
 }
 \value{
-A ppm object, or a scalar that is the gradient
+A vector of of length 3 with p-value and variances of the random effects,
+or a mppm model when returnModel is true
 }
 \description{
 A Poisson process is fitted to the data assuming exponential relationship
 between x and y variables and intensity
+}
+\details{
+The fixed effects modify the baseline intensity of the point pattern, not the gradient!
 }
 \seealso{
 \link{estGradients}
