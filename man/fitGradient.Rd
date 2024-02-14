@@ -4,7 +4,7 @@
 \alias{fitGradient}
 \title{Fit a gradient to a point pattern}
 \usage{
-fitGradient(ppp, trend = formula("~ x + y"), returnModel = FALSE)
+fitGradient(ppp, trend = formula("~ x + y"), returnModel = FALSE, ...)
 }
 \arguments{
 \item{ppp}{The point pattern}
@@ -12,7 +12,9 @@ fitGradient(ppp, trend = formula("~ x + y"), returnModel = FALSE)
 \item{trend}{A formula, describing the log intensity}
 
 \item{returnModel}{A boolean, should the entire model be returned?
-Otherwise the gradient is returned}
+Otherwise the gradient and its variance are returned}
+
+\item{...}{passed onto spatstat.model::ppm}
 }
 \value{
 A ppm object, or a scalar that is the gradient
@@ -20,4 +22,7 @@ A ppm object, or a scalar that is the gradient
 \description{
 A Poisson process is fitted to the data assuming exponential relationship
 between x and y variables and intensity
+}
+\seealso{
+\link{estGradients}
 }

@@ -11,3 +11,13 @@ checkPi <- function(x, pi) {
         invisible()
     }
 }
+#' Check if features are present in hyperframe
+#'
+#' @inheritParams estPis
+#'
+#' @return Throws errorwhen features not found
+checkFeatures = function(hypFrame, features){
+    if (any(id <- !(features %in% getFeatures(hypFrame)))) {
+        stop("Features ", features[id], " not found in hyperframe")
+    } else{invisible}
+}

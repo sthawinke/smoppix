@@ -288,6 +288,8 @@ getResults(allModsNNcell$edge, "Intercept", moransI = TRUE)[remEdge, ]
 
 Although the estimated Moran's I is positive indeed, indicating positive spatial autocorrelation, it is not significant over the different repeats.
 
+## Gradients
+
 # Troubleshooting
 
 An error like 

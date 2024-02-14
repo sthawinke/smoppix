@@ -53,9 +53,7 @@ estPis <- function(hypFrame, pis = c("nn", "nnPair", "edge", "centroid", "nnCell
         stop("No window provided for distance to edge or centroid calculation. ",
             "Add it using the addCell() function")
     }
-    if (any(id <- !(features %in% getFeatures(hypFrame)))) {
-        stop("Features ", features[id], " not found in hyperframe")
-    }
+    foo = checkFeatures(hypFrame, features)
     if (verbose) {
         message("Calculating PIs for point pattern ")
     }
@@ -70,7 +68,7 @@ estPis <- function(hypFrame, pis = c("nn", "nnPair", "edge", "centroid", "nnCell
             minDiff = minDiff, ...)
         return(out)
     })
-    list(hypFrame = hypFrame, null = null, pis = pis, features = features)
+    list(hypFrame = hypFrame, null = null, pis = pis)
 }
 #' A wrapper function for the different probabilistic indices (PIs), applied to individual point patterns
 #'
@@ -150,7 +148,7 @@ estPisSingle <- function(p, pis, null, tabObs, owins = NULL, centroids = NULL, w
                 p = pSub, null = null, nPointsAll = nPointsAllWithinCell, window = owins[[nam]],
                 features = features, tabObs = table(marks(pSub, drop = FALSE)$gene),
                 loopFun = "lapply", minDiff = minDiff)$pointDists
-        })
+        }, loopFun = loopFun)
         names(cellDists) <- unCells
         cellDists
     }
