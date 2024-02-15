@@ -7,11 +7,11 @@
 #' @param returnModel A boolean, should the entire model be returned?
 #' Otherwise the p-value is returned
 #' @param ... passed onto spatstat.model::ppm
-#' @inheritParams estGradients
+#' @inheritParams estGradientsSIngle
 #'
 #' @return A list with p-value and coefficients,
 #' or a mppm model when returnModel is true
-#' @importFrom stats formula
+#' @importFrom stats formula coef
 #' @importFrom spatstat.model mppm anova.mppm
 #' @seealso \link{estGradients}
 fitGradient = function(hypFrame, fixedForm, randomForm, fixedFormSimple,

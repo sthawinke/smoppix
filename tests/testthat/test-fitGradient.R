@@ -12,8 +12,8 @@ test_that("fitGradient has correct return", {
                                 fixedFormReduced = formula("ppp ~ id"), randomForm = NULL,
                                 returnModel = TRUE), "mppm")
 })
-test_that("fitGradient throws errors where appropriate", {
-    expect_error(fitGradient(runifpoint(5e1), silent = FALSE))
+test_that("fitGradient fails where appropriate", {
+    expect_identical(fitGradient(runifpoint(5e1))$pVal, NA)
 })
 test_that("estGradients has correct return", {
     yangGrads <- estGradients(hypYang[seq_len(20),], features = feat <- getFeatures(hypYang)[seq_len(2)])
@@ -28,7 +28,7 @@ test_that("estGradients throws errors where appropriate", {
 test_that("estGradients works for cells as well", {
     engGrads <- estGradients(hypEng[seq_len(4),], features = feat <- getFeatures(hypEng)[seq_len(2)])
     expect_equal(names(engGrads), feat)
-    expect_equal(names(engGrads), c("overall", "cell"))
+    expect_equal(names(engGrads[[1]]), c("overall", "cell"))
     expect_true(engGrads[[1]]$overall$pVal >= 0 & engGrads[[1]]$overall$pVal <= 1)
     engGradsCell <- estGradients(hypEng[seq_len(4),], features = feat <- getFeatures(hypEng)[seq_len(2)],
                              fixedEffects = "experiment")

@@ -68,6 +68,7 @@ estGradients <- function(hypFrame, gradients = c("overall", if(!is.null(hypFrame
 #' @inheritParams estGradients
 #' @param fixedForm,randomForm,fixedFormSimple Formulae for fixed effects, random effects and fixed effects without
 #' slopes respectively
+#' @param effects Character vector of fixed and random effects
 #' @param ... Passed onto fitGradient
 #'
 #' @return A list of data frames with estimated gradients per gene

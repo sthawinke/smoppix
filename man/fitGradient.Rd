@@ -20,8 +20,6 @@ fitGradient(
 \item{returnModel}{A boolean, should the entire model be returned?
 Otherwise the p-value is returned}
 
-\item{silent}{A boolean, should error messages from ppm.ppp be printed?}
-
 \item{...}{passed onto spatstat.model::ppm}
 }
 \value{
