@@ -290,7 +290,7 @@ Although the estimated Moran's I is positive indeed, indicating positive spatial
 
 ## Gradients
 
-Another biologically interesting spatial pattern are gradients. Again, they can be estimated image-wide or within cells. Parametric model fitting of Poisson point processes is provided in the ["spatstat.model package"](https://doi.org/10.1007/s11004-016-9670-x) by Baddeley _et al._ 2015.
+Another biologically interesting spatial pattern are gradients. Again, they can be estimated image-wide or within cells. Parametric model fitting of Poisson point processes is provided in the ["spatstat.model package"](http://book.spatstat.org/) by Baddeley _et al._ 2015., we wrap it here for convenience. Detecting presence of gradients over different point patterns is done by fitting a model including interaction terms between x and y coordinates and image identifiers. If this interactions are significant, this implies existence of gradients in the different point patterns, albeit with different directions. 
 
 The fitting process is quite computation intensive, so we limit ourselves to a subset of the data. By default both overall gradients and within-cell gradients are fitted
 
