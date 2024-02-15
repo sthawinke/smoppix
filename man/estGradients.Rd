@@ -47,7 +47,9 @@ and integrate the results in the same hyperframe
 The test for existence of a gradient revolves around interaction terms
 between x and y coordinates and image identifiers. If this interactions are
 significant, this implies existence of gradients in the different point patterns,
-albeit with different directions.
+albeit with different directions. Yet be aware that a gradient that is significant
+for a computer may look very different from the human perspective; many
+spatial patterns can be captured by a gradient to some extent.
 Baseline intensity corrections for every image or cell are included by default.
 The fixed and random effects modify the baseline intensity of the point pattern, not the gradient!
 Random effects can lead to problems with fitting and are dissuaded.
