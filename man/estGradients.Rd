@@ -8,6 +8,7 @@ estGradients(
   hypFrame,
   gradients = c("overall", if (!is.null(hypFrame$owins)) "cell"),
   fixedEffects = NULL,
+  randomEffects = NULL,
   verbose = FALSE,
   features = getFeatures(hypFrame),
   silent = TRUE,
@@ -20,7 +21,7 @@ estGradients(
 
 \item{gradients}{The gradients indices to be estimated}
 
-\item{fixedEffects}{Character vector of fixed effects present in the hyperframe,
+\item{fixedEffects, randomEffects}{Character vectors of fixed and random effects present in the hyperframe,
 modifying the baseline intensity. See details.}
 
 \item{verbose}{A boolean, whether to report on progress of the fitting process.}
@@ -28,7 +29,7 @@ modifying the baseline intensity. See details.}
 \item{features}{A character vector, for which features should the
 gradients indices be calculated?}
 
-\item{silent}{A bolean, should error messages from ppm.ppp be printed?}
+\item{silent}{A boolean, should error messages from ppm.ppp be printed?}
 
 \item{loopFun}{The function to use to loop over the features.
 Defaults to bplapply except when looping over features within cells}
@@ -36,14 +37,23 @@ Defaults to bplapply except when looping over features within cells}
 \item{...}{additional arguments, passed on to \link{fitGradient}.}
 }
 \value{
-A list with the hyperframe and the estimated gradients
+A list with the estimated gradients
 }
 \description{
 Estimate gradients on all point patterns of a hyperframe,
 and integrate the results in the same hyperframe
 }
 \details{
-The fixed effects modify the baseline intensity of the point pattern, not the gradient!
+The test for existence of a gradient revolves around interaction terms
+between x and y coordinates and image identifiers. If this interactions are
+significant, this implies existence of gradients in the different point patterns,
+albeit with different directions.
+Baseline intensity corrections for every image or cell are included by default.
+The fixed and random effects modify the baseline intensity of the point pattern, not the gradient!
+Random effects can lead to problems with fitting and are dissuaded.
+}
+\note{
+Fitting Poisson point processes is computation-intensive.
 }
 \examples{
 data(Yang)
@@ -51,8 +61,8 @@ hypYang <- buildHyperFrame(Yang,
     coordVars = c('x', 'y'),
     imageVars = c('day', 'root', 'section')
 )
-yangGrads <- estGradients(hypYang, features = getFeatures(hypYang)[seq_len(5)])
-Overall Gradients
+yangGrads <- estGradients(hypYang, features = getFeatures(hypYang)[seq_len(3)])
+#Overall Gradients
 }
 \seealso{
 \link{fitGradient}, \link{estGradientsSingle}

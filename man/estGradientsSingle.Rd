@@ -4,15 +4,23 @@
 \alias{estGradientsSingle}
 \title{A wrapper function for the estimation of the different gradients, applied to individual point patterns}
 \usage{
-estGradientsSingle(hypFrame, gradients, fixedEffects, owins, ...)
+estGradientsSingle(
+  hypFrame,
+  gradients,
+  fixedForm,
+  randomForm,
+  fixedFormSimple,
+  effects = NULL,
+  ...
+)
 }
 \arguments{
 \item{hypFrame}{the hyperframe}
 
 \item{gradients}{The gradients indices to be estimated}
 
-\item{fixedEffects}{Character vector of fixed effects present in the hyperframe,
-modifying the baseline intensity. See details.}
+\item{fixedForm, randomForm, fixedFormSimple}{Formulae for fixed effects, random effects and fixed effects without
+slopes respectively}
 
 \item{...}{Passed onto fitGradient}
 }

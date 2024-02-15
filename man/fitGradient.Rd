@@ -4,7 +4,15 @@
 \alias{fitGradient}
 \title{Fit a gradient to a point pattern}
 \usage{
-fitGradient(hypFrame, fixedEffects = NULL, returnModel = FALSE, silent, ...)
+fitGradient(
+  hypFrame,
+  fixedForm,
+  randomForm,
+  fixedFormSimple,
+  returnModel = FALSE,
+  silent,
+  ...
+)
 }
 \arguments{
 \item{hypFrame}{the hyperframe}
@@ -12,10 +20,12 @@ fitGradient(hypFrame, fixedEffects = NULL, returnModel = FALSE, silent, ...)
 \item{returnModel}{A boolean, should the entire model be returned?
 Otherwise the p-value is returned}
 
+\item{silent}{A boolean, should error messages from ppm.ppp be printed?}
+
 \item{...}{passed onto spatstat.model::ppm}
 }
 \value{
-A vector of of length 3 with p-value and variances of the random effects,
+A list with p-value and coefficients,
 or a mppm model when returnModel is true
 }
 \description{

@@ -62,4 +62,7 @@ hypYang <- buildHyperFrame(Yang, coordVars = c("x", "y"), imageVars = c("day", "
 yangPims <- estPis(hypYang, features = getFeatures(hypYang)[seq_len(10)], pis = c("nn",
     "nnPair"), verbose = FALSE, nPointsAll = 10000)
 yangPims <- addWeightFunction(yangPims, lowestLevelVar = "section")
+data(Eng)
+hypEng <- buildHyperFrame(Eng, coordVars = c("x", "y"), imageVars = c("fov", "experiment"))
+hypEng <- addCell(hypEng, EngRois, verbose = FALSE)
 test_check("spatrans")
