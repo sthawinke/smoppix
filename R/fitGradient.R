@@ -9,6 +9,7 @@
 #' Otherwise the p-value and coefficient vector are returned
 #' @param ... passed onto spatstat.model::mppm
 #' @inheritParams estGradientsSingle
+#' @inheritParams estGradients
 #'
 #' @return A list contraining
 #' \item{pVal}{The p-value for existence of gradients}

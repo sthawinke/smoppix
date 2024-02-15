@@ -23,6 +23,8 @@ slopes respectively}
 \item{returnModel}{A boolean, should the entire model be returned?
 Otherwise the p-value and coefficient vector are returned}
 
+\item{silent}{A boolean, should error messages from spatstat.model::mppm be printed?}
+
 \item{...}{passed onto spatstat.model::mppm}
 }
 \value{
