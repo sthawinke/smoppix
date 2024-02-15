@@ -290,7 +290,15 @@ Although the estimated Moran's I is positive indeed, indicating positive spatial
 
 ## Gradients
 
-Another biologically interesting spatial pattern are gradients. Again, they can be estimated image-wide or within cells. The direction in the x-y plane with largest slope in absolute value is found together with its variance. The slope is then used as outcome in a linear model, inversely weighted by its variance. This means that the direction of the strongest gradient can vary across images and cells, and only its absolute value is used as outcome value.
+Another biologically interesting spatial pattern are gradients. Again, they can be estimated image-wide or within cells. Parametric model fitting of Poisson point processes is provided in the ["spatstat.model package"](https://doi.org/10.1007/s11004-016-9670-x) by Baddeley _et al._ 2015.
+
+The fitting process is quite computation intensive, so we limit ourselves to a subset of the data. By default both overall gradients and within-cell gradients are fitted
+
+```{r}
+engGrads <- estGradients(hypEng[seq_len(3),], features = feat <- getFeatures(hypEng)[seq_len(3)])
+```
+
+Keep in mind though that a gradient that is significant for a computer may look very different from the human perspective; many types of spatial patterns can be captured by a gradient to some extent without providing a satisfactory fit.
 
 # Troubleshooting
 
