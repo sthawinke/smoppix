@@ -13,7 +13,7 @@ test_that("fitGradient has correct return", {
                                 returnModel = TRUE), "mppm")
 })
 test_that("fitGradient fails where appropriate", {
-    expect_identical(fitGradient(runifpoint(5e1))$pVal, NA)
+    expect_identical(fitGradient(runifpoint(5e1), silent = TRUE)$pVal, NA)
 })
 test_that("estGradients has correct return", {
     yangGrads <- estGradients(hypYang[seq_len(20),], features = feat <- getFeatures(hypYang)[seq_len(2)])

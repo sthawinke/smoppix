@@ -2,7 +2,7 @@
 % Please edit documentation in R/estGradients.R
 \name{estGradientsSingle}
 \alias{estGradientsSingle}
-\title{A wrapper function for the estimation of the different gradients, applied to individual point patterns}
+\title{A wrapper function for the estimation of the different gradients on a hyperframe for a single feature}
 \usage{
 estGradientsSingle(
   hypFrame,
@@ -15,7 +15,7 @@ estGradientsSingle(
 )
 }
 \arguments{
-\item{hypFrame}{the hyperframe}
+\item{hypFrame}{A hyperframe}
 
 \item{gradients}{The gradients indices to be estimated}
 
@@ -27,12 +27,12 @@ slopes respectively}
 \item{...}{Passed onto fitGradient}
 }
 \value{
-A list of data frames with estimated gradients per gene
-\item{overall}{overall gradients}
-\item{cell}{gradients per cell}
+A list contraining
+\item{overall}{Overall gradients}
+\item{cell}{Gradients within the cell}
 }
 \description{
-A wrapper function for the estimation of the different gradients, applied to individual point patterns
+Workhorse for \link{estGradients} on a single feature
 }
 \seealso{
 \link{estGradients}

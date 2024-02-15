@@ -2,7 +2,7 @@
 % Please edit documentation in R/estGradients.R
 \name{estGradients}
 \alias{estGradients}
-\title{Estimate gradients for single-molecule localization patterns}
+\title{Estimate gradients over multiple single-molecule point patterns}
 \usage{
 estGradients(
   hypFrame,
@@ -17,7 +17,7 @@ estGradients(
 )
 }
 \arguments{
-\item{hypFrame}{the hyperframe}
+\item{hypFrame}{A hyperframe}
 
 \item{gradients}{The gradients indices to be estimated}
 
@@ -29,10 +29,9 @@ modifying the baseline intensity. See details.}
 \item{features}{A character vector, for which features should the
 gradients indices be calculated?}
 
-\item{silent}{A boolean, should error messages from ppm.ppp be printed?}
+\item{silent}{A boolean, should error messages from spatstat.model::mppm be printed?}
 
-\item{loopFun}{The function to use to loop over the features.
-Defaults to bplapply except when looping over features within cells}
+\item{loopFun}{The function to use to loop over the features.}
 
 \item{...}{additional arguments, passed on to \link{fitGradient}.}
 }
@@ -41,7 +40,6 @@ A list with the estimated gradients
 }
 \description{
 Estimate gradients on all point patterns of a hyperframe,
-and integrate the results in the same hyperframe
 }
 \details{
 The test for existence of a gradient revolves around interaction terms
@@ -58,13 +56,19 @@ Random effects can lead to problems with fitting and are dissuaded.
 Fitting Poisson point processes is computation-intensive.
 }
 \examples{
+#Overall Gradients
 data(Yang)
 hypYang <- buildHyperFrame(Yang,
     coordVars = c('x', 'y'),
     imageVars = c('day', 'root', 'section')
 )
 yangGrads <- estGradients(hypYang, features = getFeatures(hypYang)[seq_len(3)])
-#Overall Gradients
+#Gradients within cell
+data(Eng)
+hypEng <- buildHyperFrame(Eng, coordVars = c("x", "y"), imageVars = c("fov", "experiment"))
+hypEng <- addCell(hypEng, EngRois, verbose = FALSE)
+#Limit number of cells for computational reasons
+engGrads <- estGradients(hypEng[seq_len(2),], features = feat <- getFeatures(hypEng)[seq_len(2)])
 }
 \seealso{
 \link{fitGradient}, \link{estGradientsSingle}

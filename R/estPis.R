@@ -2,7 +2,7 @@
 #' @description Estimate different probabilistic indices for localization
 #' on all point patterns of a hyperframe, and integrate the results in the same hyperframe
 #' @export
-#' @param hypFrame the hyperframe
+#' @param hypFrame A hyperframe
 #' @param ... additional arguments, passed on to \link{estPisSingle}.
 #' @param verbose A boolean, whether to report on progress of the fitting process.
 #' @param pis The probabilistic indices to be estimated

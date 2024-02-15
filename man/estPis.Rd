@@ -18,7 +18,7 @@ estPis(
 )
 }
 \arguments{
-\item{hypFrame}{the hyperframe}
+\item{hypFrame}{A hyperframe}
 
 \item{pis}{The probabilistic indices to be estimated}
 

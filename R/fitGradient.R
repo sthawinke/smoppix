@@ -1,15 +1,18 @@
-#' Fit a gradient to a point pattern
+#' Test for presence of gradient in a hyperframe of point patterns
 #'
-#' A Poisson process is fitted to the data assuming exponential relationship
-#' between x and y variables and intensity
+#' A Poisson process is fitted to the data assuming exponential relationship wit intensity of
+#' the interaction between x and y variables and image identifier. This is
+#' compared to a model without this interaction to test for the significance of the gradient.
 #'
 #' @param hypFrame the hyperframe
 #' @param returnModel A boolean, should the entire model be returned?
-#' Otherwise the p-value is returned
-#' @param ... passed onto spatstat.model::ppm
-#' @inheritParams estGradientsSIngle
+#' Otherwise the p-value and coefficient vector are returned
+#' @param ... passed onto spatstat.model::mppm
+#' @inheritParams estGradientsSingle
 #'
-#' @return A list with p-value and coefficients,
+#' @return A list contraining
+#' \item{pVal}{The p-value for existence of gradients}
+#' \item{coef}{The model coefficients}
 #' or a mppm model when returnModel is true
 #' @importFrom stats formula coef
 #' @importFrom spatstat.model mppm anova.mppm

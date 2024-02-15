@@ -7,7 +7,7 @@
 checkFeatures(hypFrame, features)
 }
 \arguments{
-\item{hypFrame}{the hyperframe}
+\item{hypFrame}{A hyperframe}
 
 \item{features}{A character vector, for which features should the
 probabilistic indices be calculated?}

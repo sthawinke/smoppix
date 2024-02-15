@@ -2,7 +2,7 @@
 % Please edit documentation in R/fitGradient.R
 \name{fitGradient}
 \alias{fitGradient}
-\title{Fit a gradient to a point pattern}
+\title{Test for presence of gradient in a hyperframe of point patterns}
 \usage{
 fitGradient(
   hypFrame,
@@ -17,18 +17,24 @@ fitGradient(
 \arguments{
 \item{hypFrame}{the hyperframe}
 
-\item{returnModel}{A boolean, should the entire model be returned?
-Otherwise the p-value is returned}
+\item{fixedForm, randomForm, fixedFormSimple}{Formulae for fixed effects, random effects and fixed effects without
+slopes respectively}
 
-\item{...}{passed onto spatstat.model::ppm}
+\item{returnModel}{A boolean, should the entire model be returned?
+Otherwise the p-value and coefficient vector are returned}
+
+\item{...}{passed onto spatstat.model::mppm}
 }
 \value{
-A list with p-value and coefficients,
+A list contraining
+\item{pVal}{The p-value for existence of gradients}
+\item{coef}{The model coefficients}
 or a mppm model when returnModel is true
 }
 \description{
-A Poisson process is fitted to the data assuming exponential relationship
-between x and y variables and intensity
+A Poisson process is fitted to the data assuming exponential relationship wit intensity of
+the interaction between x and y variables and image identifier. This is
+compared to a model without this interaction to test for the significance of the gradient.
 }
 \seealso{
 \link{estGradients}

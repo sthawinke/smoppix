@@ -1,14 +1,14 @@
-#' Estimate gradients for single-molecule localization patterns
+#' Estimate gradients over multiple single-molecule point patterns
 #' @description Estimate gradients on all point patterns of a hyperframe,
-#' and integrate the results in the same hyperframe
 #' @export
 #' @param ... additional arguments, passed on to \link{fitGradient}.
 #' @param gradients The gradients indices to be estimated
 #' @param features A character vector, for which features should the
 #' gradients indices be calculated?
-#' @param silent A boolean, should error messages from ppm.ppp be printed?
+#' @param silent A boolean, should error messages from spatstat.model::mppm be printed?
 #' @param fixedEffects,randomEffects Character vectors of fixed and random effects present in the hyperframe,
 #' modifying the baseline intensity. See details.
+#' @param loopFun The function to use to loop over the features.
 #' @inheritParams estPis
 #' @inheritParams estPisSingle
 #' @note Fitting Poisson point processes is computation-intensive.
@@ -23,13 +23,19 @@
 #' Random effects can lead to problems with fitting and are dissuaded.
 #' @return A list with the estimated gradients
 #' @examples
+#' #Overall Gradients
 #' data(Yang)
 #' hypYang <- buildHyperFrame(Yang,
 #'     coordVars = c('x', 'y'),
 #'     imageVars = c('day', 'root', 'section')
 #' )
 #' yangGrads <- estGradients(hypYang, features = getFeatures(hypYang)[seq_len(3)])
-#' #Overall Gradients
+#' #Gradients within cell
+#'data(Eng)
+#' hypEng <- buildHyperFrame(Eng, coordVars = c("x", "y"), imageVars = c("fov", "experiment"))
+#' hypEng <- addCell(hypEng, EngRois, verbose = FALSE)
+#' #Limit number of cells for computational reasons
+#' engGrads <- estGradients(hypEng[seq_len(2),], features = feat <- getFeatures(hypEng)[seq_len(2)])
 #' @seealso \link{fitGradient}, \link{estGradientsSingle}
 estGradients <- function(hypFrame, gradients = c("overall", if(!is.null(hypFrame$owins)) "cell"),
                          fixedEffects = NULL, randomEffects = NULL,
@@ -63,7 +69,9 @@ estGradients <- function(hypFrame, gradients = c("overall", if(!is.null(hypFrame
     names(grads) = features
     grads
 }
-#' A wrapper function for the estimation of the different gradients, applied to individual point patterns
+#' A wrapper function for the estimation of the different gradients on a hyperframe for a single feature
+#'
+#' Workhorse for \link{estGradients} on a single feature
 #'
 #' @inheritParams estGradients
 #' @param fixedForm,randomForm,fixedFormSimple Formulae for fixed effects, random effects and fixed effects without
@@ -71,9 +79,9 @@ estGradients <- function(hypFrame, gradients = c("overall", if(!is.null(hypFrame
 #' @param effects Character vector of fixed and random effects
 #' @param ... Passed onto fitGradient
 #'
-#' @return A list of data frames with estimated gradients per gene
-#' \item{overall}{overall gradients}
-#' \item{cell}{gradients per cell}
+#' @return A list contraining
+#' \item{overall}{Overall gradients}
+#' \item{cell}{Gradients within the cell}
 #' @importFrom Rdpack reprompt
 #' @importFrom spatstat.geom unmark cbind.hyperframe
 #' @seealso \link{estGradients}
