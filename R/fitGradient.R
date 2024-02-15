@@ -15,27 +15,29 @@
 #' @importFrom spatstat.model mppm anova.mppm
 #' @importFrom nlme VarCorr
 #' @seealso \link{estGradients}
-fitGradient = function(hypFrame, fixedEffects = NULL, returnModel = FALSE, silent,...){
-    fixedForm = buildFormula(outcome = "ppp", fixedVars = fixedEffects,
+fitGradient = function(hypFrame, fixedEffects = NULL, randomEffects = NULL, returnModel = FALSE, silent,...){
+    fixedForm = buildFormula(outcome = "ppp", fixedVars = c(fixedEffects, "x:id", "y:id", "id"),
                              randomVars = NULL)
-    xyModel = try(mppm(data = hypFrame, fixedForm, random = ~x + y | id, verb = FALSE, ...),
+    randomForm = buildFormula(outcome = "", fixedVars = NULL, randomVars = randomEffects)
+    xyModel = try(mppm(data = hypFrame, fixedForm, random = randomForm, verb = FALSE, ...),
                   silent = silent)
      if(returnModel){
         return(xyModel)
     } else if(is(xyModel, "try-error")){
         return(c("pVal" = 1, "x" = NA, "y" = NA))
    } else {
-        intModel = try(mppm(data = hypFrame, fixedForm, random = ~1 | id, verb = FALSE, ...), silent = silent)
+       fixedFormReduced = buildFormula(outcome = "ppp", fixedVars = c(fixedEffects, "id"),
+                                randomVars = NULL)
+        intModel = try(mppm(data = hypFrame, fixedFormReduced, random = randomForm, verb = FALSE, ...), silent = silent)
         pVal = if(is(intModel, "try-error") ){
             NA
         } else {
             anovaRes = anova(xyModel, intModel, test = "Chisq")
             if(anovaRes["xyModel", "logLik"] < anovaRes["intModel", "logLik"]){
-                1 #IF elaborate model not better, return 1
-            } else {anovaRes$"p-value"[2]}
+                1 #If elaborate model not better, return 1
+            } else {anovaRes$"Pr(>Chi)"[2]}
         }
-        Variances = as.numeric(VarCorr(xyModel$Fit$FIT)[c("x", "y"), "Variance"])
-        out = c(pVal, Variances);names(out) = c("pVal", "x", "y")
+        out = list("pVal" = pVal, "coef" = coef(xyModel))
         return(out)
     }
 }
