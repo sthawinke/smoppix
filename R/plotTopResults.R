@@ -37,11 +37,7 @@ plotTopResults <- function(hypFrame, results, pi, effect = "Intercept", smallPI 
     if (is.null(subRes <- if (effectId <- effect == "Intercept") Res$Intercept else Res$fixedEffects[[effect]])) {
         stop("Effect ", effect, " was not estimated in the linear model!")
     }
-    Fun <- match.fun(if (smallPI) {
-        "<"
-    } else {
-        ">"
-    })
+    Fun <- match.fun(if (smallPI) {"<"} else {">"})
     estId <- if (effectId) {
         !is.na(subRes[, "Estimate"]) & Fun(subRes[, "Estimate"], piThreshold)
     } else if (ncol(subRes) == 4) {

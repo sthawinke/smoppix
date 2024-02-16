@@ -39,6 +39,7 @@ plotCells <- function(obj, features = getFeatures(obj)[seq_len(3)], nCells = 100
     Cols <- makeCols(features, obj)
     tablesCell <- lapply(obj$ppp, function(p) {
         table(marks(p[marks(p, drop = FALSE)$gene %in% features, ], drop = FALSE)$cell)
+        #Some better subsampling needed here
     })
     names(tablesCell) <- rownames(obj)
     nCells <- min(nCells - 1, length(ul <- unlist(tablesCell)))
