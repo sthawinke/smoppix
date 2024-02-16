@@ -39,15 +39,23 @@ plotCells <- function(obj, features = getFeatures(obj)[seq_len(3)], nCells = 100
     Cols <- makeCols(features, obj)
     tablesCell <- lapply(obj$ppp, function(p) {
         table(marks(p[marks(p, drop = FALSE)$gene %in% features, ], drop = FALSE)$cell)
-        #Some better subsampling needed here
+        #Crosstable gene and cell needed
     })
-    names(tablesCell) <- rownames(obj)
     nCells <- min(nCells - 1, length(ul <- unlist(tablesCell)))
     nthcell <- sort(ul, decreasing = TRUE)[min(nCells + 1, length(ul))]
     tablesCell <- lapply(tablesCell, function(x) {
-        x[x > nthcell & names(x) != "NA"]
+        x[x >= nthcell & names(x) != "NA"]
     })
-    nCells <- sum(vapply(tablesCell, FUN.VALUE = double(1), length))
+    if((nCellsEffective <- sum(lls <- vapply(tablesCell, FUN.VALUE = double(1), length))) > nCells){
+        cellsKeep = sample(rep(seq_along(tablesCell), times = lls), nCells)
+        tablesCell = lapply(seq_along(tablesCell), function(x){
+            sample(tablesCell, sum(cellsKeep==x))
+        })
+        #Randomly subset to meet require cell number
+    } else {
+        nCells = nCellsEffective
+    }
+    names(tablesCell) <- rownames(obj)
     # Readjust to number of cells really used
     if (colourBorder <- !is.null(borderColVar)) {
         if (borderColVar %in% getEventVars(obj)) {
