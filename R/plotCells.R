@@ -72,7 +72,7 @@ plotCells <- function(obj, features = getFeatures(obj)[seq_len(3)], nCells = 100
     }
     counter <- 0L
     Ceils <- splitWindow(nCells + 1 + colourBorder)
-    plot(type = "n", x = c(0, Ceils[1]), y = c(0 - warnPosition * 0.1, Ceils[2]),
+    plot(type = "n", x = c(0, Ceils[1]), y = c(0 - warnPosition * 0.12, Ceils[2]),
         xlab = "", ylab = "", xaxt = "n", yaxt = "n", frame.plot = FALSE)
     for (i in seq_along(tablesCell)) {
         nam <- names(tablesCell)[i]
@@ -97,7 +97,7 @@ plotCells <- function(obj, features = getFeatures(obj)[seq_len(3)], nCells = 100
             Cex = 0.7)
     }
     if (warnPosition) {
-        text(Ceils[1]/2, -0.1, labels = "Cells not in original location but sorted by expression!")
+        text(Ceils[1]/2, -0.12, labels = "Cells not in original location but sorted by expression!", cex = 0.75)
     }
     invisible()
 }
