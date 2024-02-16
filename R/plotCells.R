@@ -12,6 +12,9 @@
 #' @param borderCols Colour palette for the borders
 #' @param warnPosition A boolean, should a warning be printed on the
 #'  image that cells are not in their original location?
+#' @param summaryFun A function to summarize the gene-cell table in case multiple genes are plotted
+#' Choose "min" to choose the cells with the highest minimum, or "sum" for highest total expression
+#' of the combination of genes
 #' @param ... Additional arguments, currently ignored
 #' @inheritParams plotExplore
 #'
@@ -26,10 +29,11 @@
 #' plotCells(hypFrame2, 'gene1', borderColVar = 'condition')
 plotCells <- function(obj, features = getFeatures(obj)[seq_len(3)], nCells = 100,
     Cex = 1.5, borderColVar = NULL, borderCols = rev(palette()), Mar = c(3.5, 0.1,
-        0.75, 0.1), warnPosition = TRUE, ...) {
+        0.75, 0.1), warnPosition = TRUE, summaryFun = "min", ...) {
     if (!is.hyperframe(obj)) {
         obj <- obj$hypFrame
     }
+    summaryFun = match.fun(summaryFun)
     old.par <- par(no.readonly = TRUE)
     on.exit(par(old.par))
     par(mar = Mar)
@@ -38,8 +42,8 @@ plotCells <- function(obj, features = getFeatures(obj)[seq_len(3)], nCells = 100
         getFeatures(obj)))
     Cols <- makeCols(features, obj)
     tablesCell <- lapply(obj$ppp, function(p) {
-        table(marks(p[marks(p, drop = FALSE)$gene %in% features, ], drop = FALSE)$cell)
-        #Crosstable gene and cell needed
+        tab = table(marks(p[marks(p, drop = FALSE)$gene %in% features, ], drop = FALSE)[, c("gene", "cell")])
+        apply(tab, 2, summaryFun)
     })
     nCells <- min(nCells - 1, length(ul <- unlist(tablesCell)))
     nthcell <- sort(ul, decreasing = TRUE)[min(nCells + 1, length(ul))]
@@ -49,7 +53,7 @@ plotCells <- function(obj, features = getFeatures(obj)[seq_len(3)], nCells = 100
     if((nCellsEffective <- sum(lls <- vapply(tablesCell, FUN.VALUE = double(1), length))) > nCells){
         cellsKeep = sample(rep(seq_along(tablesCell), times = lls), nCells)
         tablesCell = lapply(seq_along(tablesCell), function(x){
-            sample(tablesCell, sum(cellsKeep==x))
+            sample(tablesCell[[x]], sum(cellsKeep==x))
         })
         #Randomly subset to meet require cell number
     } else {

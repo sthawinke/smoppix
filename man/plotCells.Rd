@@ -13,6 +13,7 @@ plotCells(
   borderCols = rev(palette()),
   Mar = c(3.5, 0.1, 0.75, 0.1),
   warnPosition = TRUE,
+  summaryFun = "min",
   ...
 )
 }
@@ -33,6 +34,10 @@ plotCells(
 
 \item{warnPosition}{A boolean, should a warning be printed on the
 image that cells are not in their original location?}
+
+\item{summaryFun}{A function to summarize the gene-cell table in case multiple genes are plotted
+Choose "min" to choose the cells with the highest minimum, or "sum" for highest total expression
+of the combination of genes}
 
 \item{...}{Additional arguments, currently ignored}
 }
