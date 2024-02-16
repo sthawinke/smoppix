@@ -43,7 +43,7 @@ plotCells <- function(obj, features = getFeatures(obj)[seq_len(3)], nCells = 100
     Cols <- makeCols(features, obj)
     tablesCell <- lapply(obj$ppp, function(p) {
         tab = table(marks(p[marks(p, drop = FALSE)$gene %in% features, ], drop = FALSE)[, c("gene", "cell")])
-        apply(tab, 2, summaryFun)
+        apply(tab, 2, summaryFun, simplify = FALSE)
     })
     nCells <- min(nCells - 1, length(ul <- unlist(tablesCell)))
     nthcell <- sort(ul, decreasing = TRUE)[min(nCells + 1, length(ul))]
