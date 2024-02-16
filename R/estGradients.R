@@ -29,7 +29,8 @@
 #'     coordVars = c('x', 'y'),
 #'     imageVars = c('day', 'root', 'section')
 #' )
-#' yangGrads <- estGradients(hypYang, features = getFeatures(hypYang)[seq_len(3)])
+#' yangGrads <- estGradients(hypYang[seq_len(10),], features = getFeatures(hypYang)[seq_len(2)],
+#' fixedEffects = "day", randomEffects = "root")
 #' #Gradients within cell
 #'data(Eng)
 #' hypEng <- buildHyperFrame(Eng, coordVars = c("x", "y"), imageVars = c("fov", "experiment"))

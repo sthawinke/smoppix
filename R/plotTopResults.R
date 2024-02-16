@@ -19,7 +19,7 @@
 #' @return A plot from plotCells or plotExplore, throws an error when no features meet the criteria
 #' @export
 #' @seealso \link{plotCells},\link{plotExplore},\link{fitLMMs}
-#'
+#' #TO DO: change smallPI to what = "far"/"close"!!
 #' @examples
 #' example(fitLMMs, 'spatrans')
 #' plotTopResults(hypYang, lmmModels, 'nn')
