@@ -33,14 +33,14 @@ plotTopResults <- function(hypFrame, results, pi, effect = "Intercept",
     sigLevel = 0.05, numFeats = 2, piThreshold = switch(effect, Intercept = 0.5, 0), ...) {
     stopifnot(is.hyperframe(hypFrame), is.character(what), sigLevel > 0,
               sigLevel < 1)
+    pi <- match.arg(pi, choices = c("nn", "nnPair", "edge", "centroid", "nnCell",
+        "nnPairCell"))
     what = match.arg(what, choices = c("close", "far", "regular", "aggregated", "antilocalized", "colocalized"))
     smallPI = if(what %in% c("far", "regular", "antilocalized")){
         FALSE
     } else if (what %in% c("close", "aggregated", "colocalized")){
         TRUE
-        }
-    pi <- match.arg(pi, choices = c("nn", "nnPair", "edge", "centroid", "nnCell",
-        "nnPairCell"))
+    }
     if (is.null(Res <- results[[pi]]$results)) {
         stop("PI not present in results object!")
     }
