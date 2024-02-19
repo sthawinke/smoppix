@@ -12,15 +12,15 @@ moransI(x, W)
 \item{W}{The matrix of weights, with dimensions equal to the lenght of x}
 }
 \value{
-The normalized Moran's I statistic
+A vector of length 2: the Moran's I statistic and its variance
 }
 \description{
-The normalized Moran's I test statistic is calculated, with standard normal
-distribution under the null hypothesis
+The Moran's I test statistic and its variance are calculated
 }
-\note{
+\details{
 The implementation is inspired on the one from ape::Moran.I, but more
- bare-bones faster and using less memory.
- @details Calculations are only correct for weight matrices as prepared by
+ bare-bones for a weight matrix with certain properties as prepared by buildMoransIWeightMat,
+ making it faster and using less memory.
+ @note Calculations are only correct for weight matrices as prepared by
  buildMoransIWeightMat!
 }

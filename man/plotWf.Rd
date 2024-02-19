@@ -28,11 +28,11 @@ hypYang <- buildHyperFrame(Yang,
     imageVars = c('day', 'root', 'section')
 )
 yangPims <- estPis(hypYang[c(seq_len(5), seq(25, 29)), ],
-    nPointsAll = 1e4,
+    nPointsAll = 1e3,
     pis = c('nn', 'nnPair')
 )
 # First Build the weighting function
-yangPims <- addWeightFunction(yangPims, designVars = c('day', 'root'), maxObs = 5e4 )
+yangPims <- addWeightFunction(yangPims, designVars = c('day', 'root'), maxObs = 1e4 )
 plotWf(yangPims, 'nn')
 plotWf(yangPims, 'nnPair')
 }

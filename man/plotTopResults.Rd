@@ -53,4 +53,5 @@ plotTopResults(hypYang, lmmModels, 'nn', effect = 'Intercept')
 }
 \seealso{
 \link{plotCells},\link{plotExplore},\link{fitLMMs}
+#TO DO: change smallPI to what = "far"/"close"!!
 }

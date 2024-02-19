@@ -152,11 +152,11 @@ fitLMMsSingle <- function(obj, pi, fixedVars, randomVars, verbose, returnModels,
         if (is.null(df) || sum(!is.na(df$pi)) < 3) {
             return(NULL)
         }
-        moranMod <- if (addMoransI)
-            {
-                finalDf <- buildDataFrame(piMat = df, gene = gene, pi = pi, moransI = TRUE,
-                  obj = obj, weightMats = weightMats)
-                fitPiModel(moranFormula, finalDf, contrastsMoran, Control, MM = MMmoran)
+        moranMod <- if (addMoransI) {
+            finalDf <- buildDataFrame(piMat = df, gene = gene, pi = pi,
+                 moransI = TRUE, obj = obj, weightMats = weightMats)
+            fitPiModel(moranFormula, finalDf, contrastsMoran, Control,
+                       MM = MMmoran, Weight = finalDf$weight)
             }  # Run this before nesting
         if (randomNested) {
             df <- nestRandom(df, randomVarsSplit, intersect(fixedVars, getPPPvars(obj)))

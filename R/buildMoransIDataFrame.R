@@ -9,10 +9,11 @@ buildMoransIDataFrame <- function(pi, piMat, weightMats) {
     } else {
         piMat
     }
-    moransIs <- vapply(unIm <- unique(dfMoran$image), FUN.VALUE = double(1), function(im) {
+    moransIs <- vapply(unIm <- unique(dfMoran$image), FUN.VALUE = double(2), function(im) {
         subDf <- dfMoran[dfMoran$image == im, ]
         moransI(subDf$pi, W = weightMats[[im]][subDf$cell, subDf$cell])
     })
-    cbind(MoransI = moransIs, piMat[match(unIm, piMat$image), setdiff(colnames(piMat),
-        "weight")])
+    W = 1/moransIs["VarMoransI",]
+    cbind(MoransI = moransIs["MoransI",], "weight" = W/sum(W, na.rm = TRUE),
+          piMat[match(unIm, piMat$image), setdiff(colnames(piMat), "weight")])
 }
