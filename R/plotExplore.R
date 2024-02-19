@@ -11,6 +11,7 @@
 #' @param maxPlot The maximum number of events plotted per point pattern
 #' @param Cex Point amplification factor
 #' @param plotWindows A boolean, should windows be plotted too?
+#' @param plotPoints A boolean, should the molecules be plotted as points?
 #' @param Cex.main Expansion factor for the title
 #' @param Mar the margins
 #' @param titleVar Image variable to be added to the title
@@ -18,6 +19,7 @@
 #' @param piColourCell PI by which to colour the cell
 #' @param piEsts Set of PI estimates, returned by estPis
 #' @param palCols Two extremes of the colour palette for colouring the cells
+#' @param border Passed on to plot.owin, and further to graphics::polygon
 #' @note palCols sets the pseudo-continuous scale to colour cells.
 #'
 #' @return Plots a facet of point patterns to output
@@ -34,9 +36,9 @@
 #' plotExplore(hypYang, titleVar = 'day')
 #' plotExplore(hypYang, features = c('SmRBRb', 'SmTMO5b', 'SmWER--SmAHK4f'))
 plotExplore <- function(hypFrame, features = getFeatures(hypFrame)[seq_len(6)], ppps,
-    maxPlot = 1e+05, Cex = 1, plotWindows = !is.null(hypFrame$owins), piEsts = NULL,
+    maxPlot = 1e+05, Cex = 1, plotWindows = !is.null(hypFrame$owins), plotPoints = TRUE, piEsts = NULL,
     Xlim = NULL, Ylim = NULL, Cex.main = 0.8, Mar = c(0.35, 0.1, 0.75, 0.1), titleVar = NULL,
-    piColourCell = NULL, palCols = c("blue", "yellow")) {
+    piColourCell = NULL, palCols = c("blue", "yellow"), border = NULL) {
     if (!is.hyperframe(hypFrame)) {
         hypFrame <- hypFrame$hypFrame
     }
@@ -45,7 +47,14 @@ plotExplore <- function(hypFrame, features = getFeatures(hypFrame)[seq_len(6)], 
     }
     stopifnot(is.hyperframe(hypFrame), is.character(features), is.numeric(maxPlot),
         is.null(titleVar) || titleVar %in% getPPPvars(hypFrame))
-    if (colourCells <- !is.null(piColourCell)) {
+    if(colourCells <- !is.null(piColourCell) || plotWindows){
+        featsplit <- sund(features)
+        piDf <- buildDataFrame(piEsts, gene = featsplit, pi = piColourCell)
+        if (piColourCell %in% c("edge", "centroid")) {
+            piDf <- aggregate(pi ~ cell, piDf, FUN = mean, na.rm = TRUE)
+        }
+    }
+    if (colourCells) {
         if (is.null(piEsts)) {
             stop("Supply list of PI estimates to lmms argument to colour cells")
         }
@@ -54,11 +63,6 @@ plotExplore <- function(hypFrame, features = getFeatures(hypFrame)[seq_len(6)], 
             "nnPairCell"))
         if (length(features) != 1) {
             stop("Supply single gene for colouring cells by univariate PI!")
-        }
-        featsplit <- sund(features)
-        piDf <- buildDataFrame(piEsts, gene = featsplit, pi = piColourCell)
-        if (piColourCell %in% c("edge", "centroid")) {
-            piDf <- aggregate(pi ~ cell, piDf, FUN = mean, na.rm = TRUE)
         }
         pal <- colorRampPalette(palCols)
         Order <- findInterval(piDf$pi, sort(piDf$pi))
@@ -92,14 +96,20 @@ plotExplore <- function(hypFrame, features = getFeatures(hypFrame)[seq_len(6)], 
         }), type = "n", cex.main = Cex.main, xaxt = "n", yaxt = "n", xaxs = "i",
             yaxs = "i", asp = 1, xlim = Xlim, ylim = Ylim)
         if (plotWindows) {
+            piDf2 = piDf[id <- (rownames(hypFrame)[i] == piDf$image),]
+            Palette2 = Palette[id]
             foo <- lapply(names(hypFrame$owins[[i]]), function(cell) {
                 plot.owin(hypFrame[i, "owins", drop = TRUE][[cell]], add = TRUE,
-                  col = if (colourCells && length(Col <- Palette[cell == piDf$cell]) && !all(is.na(Col))) {
+                  col = if (colourCells && length(Col <- Palette2[cell == piDf2$cell])
+                    && !is.na(Col)) {
                     Col
-                  })
+                  }, border = border)
             })
         }
-        points(cordMat[ordVec, ], pch = ".", col = colVec[ordVec], cex = Cex)
+        if(plotPoints){
+            points(cordMat[ordVec, ], pch = ".", col = colVec[ordVec], cex = Cex)
+        }
+
     })
     plot(c(0, 1), c(0, 1), type = "n", xlab = "", ylab = "", xaxt = "n", yaxt = "n")
     colPlot <- if (colourCells) {

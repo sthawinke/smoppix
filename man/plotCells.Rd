@@ -11,7 +11,7 @@ plotCells(
   Cex = 1.5,
   borderColVar = NULL,
   borderCols = rev(palette()),
-  Mar = c(3.5, 0.1, 0.75, 0.1),
+  Mar = c(0.5, 0.1, 0.75, 0.1),
   warnPosition = TRUE,
   summaryFun = "min",
   ...
@@ -53,5 +53,5 @@ is one of decreasing gene (pair) expression.
 \examples{
 example(addCell, 'spatrans')
 plotCells(hypFrame2, 'gene1')
-plotCells(hypFrame2, 'gene1', borderColVar = 'condition')
+plotCells(hypFrame2, 'gene1', borderColVar = 'condition', nCells = 10)
 }

@@ -11,6 +11,7 @@ plotExplore(
   maxPlot = 1e+05,
   Cex = 1,
   plotWindows = !is.null(hypFrame$owins),
+  plotPoints = TRUE,
   piEsts = NULL,
   Xlim = NULL,
   Ylim = NULL,
@@ -18,7 +19,8 @@ plotExplore(
   Mar = c(0.35, 0.1, 0.75, 0.1),
   titleVar = NULL,
   piColourCell = NULL,
-  palCols = c("blue", "yellow")
+  palCols = c("blue", "yellow"),
+  border = NULL
 )
 }
 \arguments{
@@ -35,6 +37,8 @@ Defaults to maximum 99.}
 
 \item{plotWindows}{A boolean, should windows be plotted too?}
 
+\item{plotPoints}{A boolean, should the molecules be plotted as points?}
+
 \item{piEsts}{Set of PI estimates, returned by estPis}
 
 \item{Xlim, Ylim}{plotting limits}
@@ -48,6 +52,8 @@ Defaults to maximum 99.}
 \item{piColourCell}{PI by which to colour the cell}
 
 \item{palCols}{Two extremes of the colour palette for colouring the cells}
+
+\item{border}{Passed on to plot.owin, and further to graphics::polygon}
 }
 \value{
 Plots a facet of point patterns to output

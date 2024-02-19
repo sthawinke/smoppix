@@ -9,7 +9,15 @@ plotTopResults(
   results,
   pi,
   effect = "Intercept",
-  smallPI = TRUE,
+  what = if (pi \%in\% c("nn", "nnCell")) {
+     "aggregated"
+ } else if (pi \%in\%
+    c("nnPair", "nnPairCell")) {
+     "colocalized"
+ } else if (pi \%in\% c("edge",
+    "centroid")) {
+     "close"
+ },
   sigLevel = 0.05,
   numFeats = 2,
   piThreshold = switch(effect, Intercept = 0.5, 0),
@@ -25,7 +33,7 @@ plotTopResults(
 
 \item{effect}{The name of the effect}
 
-\item{smallPI}{A boolean, should features with PI smaller than piThreshold be shown? See details.}
+\item{what}{Which features should be detected? See details.}
 
 \item{sigLevel}{The significance level}
 
@@ -43,15 +51,17 @@ Extract the most significant features for a certain PI and direction of effect,
 and plot them using an appropriate function.
 }
 \details{
-If smallPI is set to TRUE, features with aggregation, colocalization and vicinity to cell boundary or centroid are shown.
-If smallPI is set to FALSE, features with regularity, antilocalization and remoteness from cell boundary or centroid are shown.
+The "what" argument indicates if features far from or close to
+cell wall or centroid should be shown for pi "edge" or "centroid",
+aggregated or regular features for "nn" and "nnCell" and colocalized or
+antilocalized features for "nnPair" and "nnPairCell". Partial matching is allowed.
+Defaults to small probabilistic indices: proximity, aggregation and colocalization
 }
 \examples{
 example(fitLMMs, 'spatrans')
 plotTopResults(hypYang, lmmModels, 'nn')
-plotTopResults(hypYang, lmmModels, 'nn', effect = 'Intercept')
+plotTopResults(hypYang, lmmModels, 'nn', effect = 'Intercept', what = "reg")
 }
 \seealso{
 \link{plotCells},\link{plotExplore},\link{fitLMMs}
-#TO DO: change smallPI to what = "far"/"close"!!
 }

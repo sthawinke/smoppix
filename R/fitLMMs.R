@@ -155,8 +155,9 @@ fitLMMsSingle <- function(obj, pi, fixedVars, randomVars, verbose, returnModels,
         moranMod <- if (addMoransI) {
             finalDf <- buildDataFrame(piMat = df, gene = gene, pi = pi,
                  moransI = TRUE, obj = obj, weightMats = weightMats)
+            W = 1/finalDf$Variance
             fitPiModel(moranFormula, finalDf, contrastsMoran, Control,
-                       MM = MMmoran, Weight = finalDf$weight)
+                       MM = MMmoran, Weight = W/sum(W, na.rm = TRUE))
             }  # Run this before nesting
         if (randomNested) {
             df <- nestRandom(df, randomVarsSplit, intersect(fixedVars, getPPPvars(obj)))

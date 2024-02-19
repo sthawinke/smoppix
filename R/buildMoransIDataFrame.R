@@ -13,7 +13,6 @@ buildMoransIDataFrame <- function(pi, piMat, weightMats) {
         subDf <- dfMoran[dfMoran$image == im, ]
         moransI(subDf$pi, W = weightMats[[im]][subDf$cell, subDf$cell])
     })
-    W = 1/moransIs["VarMoransI",]
-    cbind(MoransI = moransIs["MoransI",], "weight" = W/sum(W, na.rm = TRUE),
+    cbind(MoransI = moransIs["MoransI",], "Variance" = moransIs["VarMoransI",],
           piMat[match(unIm, piMat$image), setdiff(colnames(piMat), "weight")])
 }

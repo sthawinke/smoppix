@@ -255,7 +255,7 @@ allModsNNcell <- fitLMMs(engPis, fixedVars = "experiment", addMoransI = TRUE)
 For the "edge" and "centroid" options, each individual RNA-molecule is an observation in the model, and random effects are added for both cell and image. For "nnCell" and "nnPairCell", the observations are averaged per cell, and so only a random effect common to all cells of a single image remains. Now we plot the genes with the strongest remoteness from the cell edge:
 
 ```{r plotEdgeEng, fig.height = 6.5}
-plotTopResults(hypEng, results = allModsNNcell, pi = "edge", smallPI = FALSE, numFeats = 1)
+plotTopResults(hypEng, results = allModsNNcell, pi = "edge", what = "far", numFeats = 1)
 ```
 
 Note that the cells are selected for high expression of the gene and are not shown in their original position! Use _plotExplore()_ for this purpose. Now plot the gene with strongest intracellular aggregation:
@@ -267,7 +267,7 @@ plotTopResults(hypEng, results = allModsNNcell, pi = "nnCell", numFeats = 1)
 And finally the gene pair with the strongest antilocalization:
 
 ```{r, fig.height = 6.5}
-plotTopResults(hypEng, results = allModsNNcell, pi = "nnPairCell", numFeats = 1, smallPI = FALSE)
+plotTopResults(hypEng, results = allModsNNcell, pi = "nnPairCell", numFeats = 1, what = "anti")
 ```
 
 We can see that the molecule distribution within the cell is all but uniform!
