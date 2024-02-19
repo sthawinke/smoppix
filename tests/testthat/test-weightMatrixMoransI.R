@@ -16,6 +16,6 @@ if (requireNamespace("ape")) {
     # Prepare matrix as comes out of buildMoransIWeightMat
     test_that("Our implementation and that of the ape package match", {
         moranIape <- ape::Moran.I(x, as.matrix(W), scaled = TRUE)
-        expect_equal(moransI(x, W)["MoransI"], (moranIape$observed - moranIape$expected))
+        expect_equal(unname(moransI(x, W)["MoransI"]), (moranIape$observed - moranIape$expected))
     })
 }
