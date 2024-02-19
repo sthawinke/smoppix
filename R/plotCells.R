@@ -28,7 +28,7 @@
 #' plotCells(hypFrame2, 'gene1')
 #' plotCells(hypFrame2, 'gene1', borderColVar = 'condition', nCells = 10)
 plotCells <- function(obj, features = getFeatures(obj)[seq_len(3)], nCells = 100,
-    Cex = 1.5, borderColVar = NULL, borderCols = rev(palette()), Mar = c(3.5, 0.1,
+    Cex = 1.5, borderColVar = NULL, borderCols = rev(palette()), Mar = c(0.5, 0.1,
         0.75, 0.1), warnPosition = TRUE, summaryFun = "min", ...) {
     if (!is.hyperframe(obj)) {
         obj <- obj$hypFrame
@@ -79,8 +79,8 @@ plotCells <- function(obj, features = getFeatures(obj)[seq_len(3)], nCells = 100
             unVals <- unique(unlist(lapply(obj$ppp, function(x) unique(marks(x, drop = FALSE)[[borderColVar]]))))
             names(borderCols)[seq_along(unVals)] <- unVals
             borderCols <- lapply(seq_along(tablesCell), function(x) {
-                borderCols[marks(obj$ppp[[x]])[[borderColVar]][match(marks(obj$ppp[[x]])$cell,
-                  names(tablesCell[[x]]))]]
+                borderCols[marks(obj$ppp[[x]])[[borderColVar]][match(names(tablesCell[[x]]),
+                                                                     marks(obj$ppp[[x]])$cell)]]
             })
         } else if (borderColVar %in% getPPPvars(obj)) {
             unVals <- unique(obj[[borderColVar]])
