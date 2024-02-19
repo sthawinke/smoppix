@@ -94,7 +94,7 @@ plotExplore <- function(hypFrame, features = getFeatures(hypFrame)[seq_len(6)], 
         if (plotWindows) {
             foo <- lapply(names(hypFrame$owins[[i]]), function(cell) {
                 plot.owin(hypFrame[i, "owins", drop = TRUE][[cell]], add = TRUE,
-                  col = if (colourCells && length(Col <- Palette[cell == piDf$cell])) {
+                  col = if (colourCells && length(Col <- Palette[cell == piDf$cell]) && !all(is.na(Col))) {
                     Col
                   })
             })
