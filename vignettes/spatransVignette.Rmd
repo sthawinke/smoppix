@@ -203,6 +203,13 @@ We find a significant positive intercept `r signif(summary(lmeModNN)$coef["(Inte
 head(getResults(allModsNN$nnPair, "Intercept"))
 ```
 
+The results can also be written to a spreadsheet for consultation outside R:
+
+```{r writeXlsxYang, eval = FALSE}
+writeToXlsx(allModsNN, file = "myfile.xlsx")
+```
+
+
 # Eng2019: Mouse brain cells
 
 A second dataset was published in a ["paper"](10.1038/s41586-019-1049-y) by Eng et al. (2019) on mouse fibroblast cells, which will serve to illustrate methods given knowledge of cell boundaries. The dataset was subset to the eight most expressed genes for memory reasons. The hyperframe is built as before:
@@ -287,6 +294,12 @@ getResults(allModsNNcell$edge, "Intercept", moransI = TRUE)[remEdge, ]
 ```
 
 Although the estimated Moran's I is positive indeed, indicating positive spatial autocorrelation, it is not significant over the different repeats.
+
+Writing the results to a spreadsheet again:
+
+```{r writeXlsxYang, eval = FALSE}
+writeToXlsx(allModsNNcell, file = "mysecondfile.xlsx")
+```
 
 ## Gradients
 
