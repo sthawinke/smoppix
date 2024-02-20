@@ -1,6 +1,6 @@
-#' Write linear modelling results to excel worksheet
+#' Write effect sizes and p-values results to excel worksheet
 #'
-#' The results are written to different tabs for every sign (PI smaller than or larger than 0.5) of every PI,
+#' The results of the linear models are written to different tabs for every sign (PI smaller than or larger than 0.5) of every PI,
 #' sorted by increasing p-value.
 #'
 #' @param obj The results of linear model fitting
