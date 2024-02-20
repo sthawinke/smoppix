@@ -65,6 +65,7 @@ writeToXlsx = function(obj, file, overwrite = FALSE, digits = 3, sigLevel = 0.05
     saveWorkbook(wb, file = file, overwrite = overwrite)
     message(length(getSheetNames(file)), " tabs successfully written to ", file)
 }
+#'@note Sheet names cannot exceed 31 characters
 makeSheetName = function(pi, effect, smallPI = TRUE){
     keyword = if(grepl("Pair", pi)){
         if(smallPI) "Colocalization" else "Antilocalization"
@@ -73,6 +74,10 @@ makeSheetName = function(pi, effect, smallPI = TRUE){
     } else {
         paste(if(smallPI) "Close to" else "Far from", pi)
     }
-    paste(keyword, "|", switch(effect, "Intercept" = "overall", effect))
+    if(grepl("Cell", pi)){
+        keyword = paste(keyword, "in cell")
+    }
+    out = paste0(keyword, "|", switch(effect, "Intercept" = "baseline", effect))
+    substr(out, 1, min(nchar(out), 31))
 }
 

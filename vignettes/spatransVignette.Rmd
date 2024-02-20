@@ -287,7 +287,7 @@ A side question that may arise is whether the measures of intracellular aggregat
 plotExplore(hypEng, piEsts = engPis, piColourCell = "edge", features = remEdge <- rownames(getResults(allModsNNcell$edge, "Intercept"))[1])
 ```
 
-The molecules are shown in red, while the yellow-blue scale indicates the PI estimate. It seems like in the central cells, the PI is smaller (molecules less remote from cell edge) than the outer cells. We test whether the Moran's I statistic, a measure for spatial aggregation of numeric variables, is significant over the different point patterns:
+The molecules are shown in red, while the yellow-blue scale indicates the PI estimate. It seems like in the central cells, the PI is smaller (molecules closer to the cell edge) than the outer cells. We test whether the Moran's I statistic, a measure for spatial aggregation of numeric variables, is significant over the different point patterns:
 
 ```{r testMoransI}
 getResults(allModsNNcell$edge, "Intercept", moransI = TRUE)[remEdge, ]
@@ -303,7 +303,7 @@ writeToXlsx(allModsNNcell, file = "mysecondfile.xlsx")
 
 ## Gradients
 
-Another biologically interesting spatial pattern are gradients. Again, they can be estimated image-wide or within cells. Parametric model fitting of Poisson point processes is provided in the ["spatstat.model package"](http://book.spatstat.org/) by Baddeley _et al._ 2015., we wrap it here for convenience. Detecting presence of gradients over different point patterns is done by fitting a model including interaction terms between x and y coordinates and image identifiers. If this interactions are significant, this implies existence of gradients in the different point patterns, albeit with different directions. 
+Another biologically interesting spatial pattern are gradients. Again, they can be estimated image-wide or within cells. Parametric model fitting of Poisson point processes is provided in the ["spatstat.model package"](http://book.spatstat.org/) by Baddeley _et al._ (2015), we wrap it here for convenience. Detecting presence of gradients over different point patterns is done by fitting a model including interaction terms between x and y coordinates and image identifiers. If this interactions are significant, this implies existence of gradients in the different point patterns, albeit with different directions. 
 
 The fitting process is quite computation intensive, so we limit ourselves to a subset of the data. By default both overall gradients and within-cell gradients are fitted
 
