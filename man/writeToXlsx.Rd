@@ -29,7 +29,9 @@ sorted by increasing p-value.
 }
 \details{
 If no feature exceeds the significance threshold for a certain pi and parameter combination,
-an empty tab is created. For fixed effects, a single tab is written for PI differences of any sign
+an empty tab is created. For fixed effects, a single tab is written for PI differences of any sign.
+The "baseline" tabs indicate the overall patterns, the other tabs are named after the fixed effects
+and indicate departure from this baseline depending on this fixed effect
 }
 \examples{
 example(fitLMMs, 'spatrans')

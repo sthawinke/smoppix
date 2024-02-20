@@ -12,7 +12,9 @@
 #' only features exceeding the threshold are written to the file. Set this parameter to 1 to write all features
 #'
 #' @details If no feature exceeds the significance threshold for a certain pi and parameter combination,
-#' an empty tab is created. For fixed effects, a single tab is written for PI differences of any sign
+#' an empty tab is created. For fixed effects, a single tab is written for PI differences of any sign.
+#' The "baseline" tabs indicate the overall patterns, the other tabs are named after the fixed effects
+#' and indicate departure from this baseline depending on this fixed effect
 #' @return Returns invisible with a message when writing operation successful,
 #' otherwise throws an error.
 #' @export
@@ -68,7 +70,11 @@ writeToXlsx = function(obj, file, overwrite = FALSE, digits = 3, sigLevel = 0.05
 #'@note Sheet names cannot exceed 31 characters
 makeSheetName = function(pi, effect, smallPI = TRUE){
     keyword = if(grepl("Pair", pi)){
-        if(smallPI) "Colocalization" else "Antilocalization"
+        if(effect!="Intercept"){
+            "Colocalization"
+            } else if(smallPI){
+                "Colocalized"
+            } else {"Antilocalized"}
     } else if(grepl("nn", pi)){
         if(smallPI) "Aggregation" else "Regularity"
     } else {
@@ -77,7 +83,7 @@ makeSheetName = function(pi, effect, smallPI = TRUE){
     if(grepl("Cell", pi)){
         keyword = paste(keyword, "in cell")
     }
-    out = paste0(keyword, "|", switch(effect, "Intercept" = "baseline", effect))
+    out = paste0(keyword, "_", switch(effect, "Intercept" = "baseline", effect))
     substr(out, 1, min(nchar(out), 31))
 }
 
