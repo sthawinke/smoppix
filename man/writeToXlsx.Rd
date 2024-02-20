@@ -4,7 +4,7 @@
 \alias{writeToXlsx}
 \title{Write linear modelling results to excel worksheet}
 \usage{
-writeToXlsx(obj, file, overwrite = FALSE, digits = 4, sigLevel = 0.05)
+writeToXlsx(obj, file, overwrite = FALSE, digits = 3, sigLevel = 0.05)
 }
 \arguments{
 \item{obj}{The results of linear model fitting}
@@ -29,10 +29,10 @@ sorted by increasing p-value.
 }
 \details{
 If no feature exceeds the significance threshold for a certain pi and parameter combination,
-no tab is created. For fixed effects, a single tab is written for PI differences of any sign
+an empty tab is created. For fixed effects, a single tab is written for PI differences of any sign
 }
 \examples{
 example(fitLMMs, 'spatrans')
-writeToXslx(yangObj, "tmpFile.xlsx")
+writeToXlsx(lmmModels, "tmpFile.xlsx")
 file.remove("tmpFile.xlsx")
 }

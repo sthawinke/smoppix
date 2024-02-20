@@ -297,7 +297,7 @@ Although the estimated Moran's I is positive indeed, indicating positive spatial
 
 Writing the results to a spreadsheet again:
 
-```{r writeXlsxYang, eval = FALSE}
+```{r writeXlsxEng, eval = FALSE}
 writeToXlsx(allModsNNcell, file = "mysecondfile.xlsx")
 ```
 
