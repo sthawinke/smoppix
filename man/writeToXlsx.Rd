@@ -4,12 +4,20 @@
 \alias{writeToXlsx}
 \title{Write linear modelling results to excel worksheet}
 \usage{
-writeToXlsx(obj, file, overwrite = FALSE)
+writeToXlsx(obj, file, overwrite = FALSE, digits = 4, sigLevel = 0.05)
 }
 \arguments{
 \item{obj}{The results of linear model fitting}
 
 \item{file}{The file to write the results to}
+
+\item{overwrite}{A boolean, should the file be overwritten if it exists already?}
+
+\item{digits}{An integer, the number of significant digits to retain for the PI,
+raw and adjusted p-values}
+
+\item{sigLevel}{The significance level threshold to use for the adjusted p-values,
+only features exceeding the threshold are written to the file. Set this parameter to 1 to write all features}
 }
 \value{
 Returns invisible with a message when writing operation successful,
@@ -19,8 +27,12 @@ otherwise throws an error.
 The results are written to different tabs for every sign (PI smaller than or larger than 0.5) of every PI,
 sorted by increasing p-value.
 }
+\details{
+If no feature exceeds the significance threshold for a certain pi and parameter combination,
+no tab is created. For fixed effects, a single tab is written for PI differences of any sign
+}
 \examples{
 example(fitLMMs, 'spatrans')
-writeToXslx(yangPims, "tmpFile.xlsx")
+writeToXslx(yangObj, "tmpFile.xlsx")
 file.remove("tmpFile.xlsx")
 }
