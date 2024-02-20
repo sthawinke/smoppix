@@ -55,7 +55,7 @@ is restricted to a random subset of the data through the maxObs and
 maxFeatures parameters.
 }
 \examples{
-example(estPis, 'spatrans')
+example(estPis, 'smoppix')
 yangObj <- addWeightFunction(yangPims, designVars = c('day', 'root'))
 # Alternative formulation with 'lowestLevelVar'
 yangObj2 <- addWeightFunction(yangPims,

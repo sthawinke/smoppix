@@ -1,4 +1,4 @@
-context("Test input spatrans package")
+context("Test input smoppix package")
 test_that("Reading in data proceeds without errors", {
     expect_message(buildHyperFrame(df, coordVars = c("x", "y"), imageVars = "fov"))
     # Should work also with single image variable

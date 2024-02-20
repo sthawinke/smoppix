@@ -20,7 +20,7 @@ data(Yang)
 }
 \description{
 Single-molecule spatial transcriptomics smFISH data of Selaginella moellendorffii roots of a
-replicated experiment by \insertCite{Yang2023}{spatrans}. Molecule locations, gene identity and design
+replicated experiment by \insertCite{Yang2023}{smoppix}. Molecule locations, gene identity and design
 variables are included. Only a subset of the data, consisting of roots 1-3 and sections 1-5 is included for computational and memory reasons.
 }
 \references{

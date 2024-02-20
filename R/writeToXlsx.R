@@ -20,7 +20,7 @@
 #' @export
 #'
 #' @examples
-#' example(fitLMMs, 'spatrans')
+#' example(fitLMMs, 'smoppix')
 #' writeToXlsx(lmmModels, "tmpFile.xlsx")
 #' file.remove("tmpFile.xlsx")
 #' @importFrom openxlsx createWorkbook writeData addWorksheet saveWorkbook getSheetNames

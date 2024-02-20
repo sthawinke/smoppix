@@ -2,7 +2,7 @@
 % Please edit documentation in R/writeToXlsx.R
 \name{writeToXlsx}
 \alias{writeToXlsx}
-\title{Write linear modelling results to excel worksheet}
+\title{Write effect sizes and p-values results to excel worksheet}
 \usage{
 writeToXlsx(obj, file, overwrite = FALSE, digits = 3, sigLevel = 0.05)
 }
@@ -24,7 +24,7 @@ Returns invisible with a message when writing operation successful,
 otherwise throws an error.
 }
 \description{
-The results are written to different tabs for every sign (PI smaller than or larger than 0.5) of every PI,
+The results of the linear models are written to different tabs for every sign (PI smaller than or larger than 0.5) of every PI,
 sorted by increasing p-value.
 }
 \details{
@@ -34,7 +34,7 @@ The "baseline" tabs indicate the overall patterns, the other tabs are named afte
 and indicate departure from this baseline depending on this fixed effect
 }
 \examples{
-example(fitLMMs, 'spatrans')
+example(fitLMMs, 'smoppix')
 writeToXlsx(lmmModels, "tmpFile.xlsx")
 file.remove("tmpFile.xlsx")
 }

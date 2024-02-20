@@ -1,6 +1,6 @@
-Package: spatrans
+Package: smoppix
 Type: Package
-Title: Analyze Spatial Transcriptomics and Other Spatial Omics Data on the Single Molecule Scale
+Title: Analyze Single Molecule Spatial Transcriptomics and Other Spatial Omics Data Using the Probabilistic Index
 Version: 0.1.0
 Authors@R: 
     c(person(given = "Stijn", family = "Hawinkel", 
@@ -9,7 +9,7 @@ Authors@R:
 Description: Test for univariate and multivariate spatial patterns in 
     spatial omics data with single-molecule resolution. The tests implemented 
     allow for analysis of nested designs and are automatically calibrated to different
-    biological specimens. Tests for aggregation, colocalization and vicinity to cell edge or centroid are provided.
+    biological specimens. Tests for aggregation, colocalization, gradients and vicinity to cell edge or centroid are provided.
 License: GPL-2
 Encoding: UTF-8
 Imports: spatstat.geom(>= 3.2.0),spatstat.random, methods,BiocParallel,SummarizedExperiment,SpatialExperiment,scam,Rdpack,stats,utils,extraDistr,lmerTest,lme4,ggplot2,graphics,grDevices,Rcpp (>= 1.0.11),Matrix,spatstat.model,openxlsx
@@ -19,6 +19,6 @@ RoxygenNote: 7.3.0
 biocViews: Transcriptomics, Spatial, SingleCell
 Depends: R (>= 4.3.0)
 VignetteBuilder: knitr
-BugReports: https://github.com/sthawinke/spatrans
-URL: https://github.com/sthawinke/spatrans
+BugReports: https://github.com/sthawinke/smoppix
+URL: https://github.com/sthawinke/smoppix
 LinkingTo: Rcpp

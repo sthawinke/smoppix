@@ -58,7 +58,7 @@ antilocalized features for "nnPair" and "nnPairCell". Partial matching is allowe
 Defaults to small probabilistic indices: proximity, aggregation and colocalization
 }
 \examples{
-example(fitLMMs, 'spatrans')
+example(fitLMMs, 'smoppix')
 plotTopResults(hypYang, lmmModels, 'nn')
 plotTopResults(hypYang, lmmModels, 'nn', effect = 'Intercept', what = "reg")
 }

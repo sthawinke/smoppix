@@ -1,5 +1,5 @@
 library(testthat)
-library(spatrans)
+library(smoppix)
 library(spatstat.random)
 library(BiocParallel)
 n <- 10000  # number of molecules
@@ -65,4 +65,4 @@ yangPims <- addWeightFunction(yangPims, lowestLevelVar = "section")
 data(Eng)
 hypEng <- buildHyperFrame(Eng, coordVars = c("x", "y"), imageVars = c("fov", "experiment"))
 hypEng <- addCell(hypEng, EngRois, verbose = FALSE)
-test_check("spatrans")
+test_check("smoppix")

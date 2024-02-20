@@ -12,7 +12,7 @@
 #' @return A list of vectors of estimated probabilistic indeces per event
 #' @importFrom spatstat.geom nncross edges nndist coords split.ppp crossdist
 #' @importFrom stats dist
-#' @details Analysis of the distance to the border was introduced by \insertCite{Joyner2013}{spatrans} in the form of the B-function.
+#' @details Analysis of the distance to the border was introduced by \insertCite{Joyner2013}{smoppix} in the form of the B-function.
 #' The independent evaluations of the B-functions per cell are here returned as realizations of the probabilistic index.
 #' @seealso \link{addCell}, \link{estPis}
 #' @references

@@ -39,7 +39,7 @@ A dataframe
 Build a data frame for a certain gene and PI, in preparation for mixed model building.
 }
 \examples{
-example(addWeightFunction, 'spatrans')
+example(addWeightFunction, 'smoppix')
 dfUniNN <- buildDataFrame(yangObj, gene = 'SmVND2', pi = 'nn')
 # Example analysis with linear mixed model
 library(lmerTest)

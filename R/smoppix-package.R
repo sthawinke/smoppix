@@ -1,6 +1,6 @@
-#' @useDynLib spatrans, .registration = TRUE
+#' @useDynLib smoppix, .registration = TRUE
 #' @importFrom Rcpp sourceCpp
 #' @docType package
-#' @name spatrans
+#' @name smoppix
 #' @keywords internal
 "_PACKAGE"

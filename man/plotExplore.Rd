@@ -69,7 +69,7 @@ so set that one to change the colour scheme.
 palCols sets the pseudo-continuous scale to colour cells.
 }
 \examples{
-example(buildHyperFrame, 'spatrans')
+example(buildHyperFrame, 'smoppix')
 plotExplore(hypYang)
 plotExplore(hypYang, titleVar = 'day')
 plotExplore(hypYang, features = c('SmRBRb', 'SmTMO5b', 'SmWER--SmAHK4f'))

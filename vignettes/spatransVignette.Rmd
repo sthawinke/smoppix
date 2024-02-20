@@ -1,5 +1,5 @@
 ---
-title: "Vignette of the spatrans package"
+title: "Vignette of the smoppix package"
 author: Stijn Hawinkel
 output: 
   rmarkdown::html_vignette:
@@ -7,7 +7,7 @@ output:
     number_sections: true
     keep_md: true
 vignette: >
-  %\VignetteIndexEntry{Vignette of the spatrans package}
+  %\VignetteIndexEntry{Vignette of the smoppix package}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -29,20 +29,20 @@ The package can be installed from Bioconductor as follows:
 
 ```{r install, eval = FALSE}
 library(Biocmanager)
-install("spatrans")
+install("smoppix")
 ```
 
 Alternatively, the latest version can be downloaded from github as:
 
 ```{r installAndLoadGitHub, eval = FALSE}
 library(devtools)
-install_github("sthawinke/spatrans")
+install_github("sthawinke/smoppix")
 ```
 
 Once installed, we can load the package:
 
 ```{r load}
-library(spatrans)
+library(smoppix)
 ```
 
 # Multithreading

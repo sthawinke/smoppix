@@ -2,10 +2,10 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 crossdistFastLocal <- function(m1, m2) {
-    .Call(`_spatrans_crossdistFastLocal`, m1, m2)
+    .Call(`_smoppix_crossdistFastLocal`, m1, m2)
 }
 
 findRanksDist <- function(coords, coordsLeft, squaredNNDist) {
-    .Call(`_spatrans_findRanksDist`, coords, coordsLeft, squaredNNDist)
+    .Call(`_smoppix_findRanksDist`, coords, coordsLeft, squaredNNDist)
 }
 

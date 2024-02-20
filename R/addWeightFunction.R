@@ -31,7 +31,7 @@
 #' @export
 #' @seealso \link{buildDataFrame}, \link{estPis}
 #' @examples
-#' example(estPis, 'spatrans')
+#' example(estPis, 'smoppix')
 #' yangObj <- addWeightFunction(yangPims, designVars = c('day', 'root'))
 #' # Alternative formulation with 'lowestLevelVar'
 #' yangObj2 <- addWeightFunction(yangPims,

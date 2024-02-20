@@ -12,7 +12,7 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 
 // crossdistFastLocal
 NumericMatrix crossdistFastLocal(NumericMatrix m1, NumericMatrix m2);
-RcppExport SEXP _spatrans_crossdistFastLocal(SEXP m1SEXP, SEXP m2SEXP) {
+RcppExport SEXP _smoppix_crossdistFastLocal(SEXP m1SEXP, SEXP m2SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -24,7 +24,7 @@ END_RCPP
 }
 // findRanksDist
 IntegerMatrix findRanksDist(NumericMatrix coords, NumericMatrix coordsLeft, NumericMatrix squaredNNDist);
-RcppExport SEXP _spatrans_findRanksDist(SEXP coordsSEXP, SEXP coordsLeftSEXP, SEXP squaredNNDistSEXP) {
+RcppExport SEXP _smoppix_findRanksDist(SEXP coordsSEXP, SEXP coordsLeftSEXP, SEXP squaredNNDistSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -37,12 +37,12 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_spatrans_crossdistFastLocal", (DL_FUNC) &_spatrans_crossdistFastLocal, 2},
-    {"_spatrans_findRanksDist", (DL_FUNC) &_spatrans_findRanksDist, 3},
+    {"_smoppix_crossdistFastLocal", (DL_FUNC) &_smoppix_crossdistFastLocal, 2},
+    {"_smoppix_findRanksDist", (DL_FUNC) &_smoppix_findRanksDist, 3},
     {NULL, NULL, 0}
 };
 
-RcppExport void R_init_spatrans(DllInfo *dll) {
+RcppExport void R_init_smoppix(DllInfo *dll) {
     R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
     R_useDynamicSymbols(dll, FALSE);
 }

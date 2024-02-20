@@ -14,7 +14,7 @@
 #' @importFrom scam predict.scam
 #' @seealso \link{addWeightFunction}
 #' @examples
-#' example(addWeightFunction, 'spatrans')
+#' example(addWeightFunction, 'smoppix')
 #' dfUniNN <- buildDataFrame(yangObj, gene = 'SmVND2', pi = 'nn')
 #' # Example analysis with linear mixed model
 #' library(lmerTest)

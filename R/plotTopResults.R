@@ -23,7 +23,7 @@
 #' @export
 #' @seealso \link{plotCells},\link{plotExplore},\link{fitLMMs}
 #' @examples
-#' example(fitLMMs, 'spatrans')
+#' example(fitLMMs, 'smoppix')
 #' plotTopResults(hypYang, lmmModels, 'nn')
 #' plotTopResults(hypYang, lmmModels, 'nn', effect = 'Intercept', what = "reg")
 plotTopResults <- function(hypFrame, results, pi, effect = "Intercept",

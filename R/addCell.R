@@ -31,7 +31,7 @@
 #' If this leads to excessive memory usage and crashes, try serial processing by
 #' setting register(SerialParam()).
 #' Different formats of windows are allowed, if the corresponding packages are installed.
-#' A dataframe of coordinates or a list of spatstat.geom owins is always allowed, as necessary packages are required by spatrans.
+#' A dataframe of coordinates or a list of spatstat.geom owins is always allowed, as necessary packages are required by smoppix.
 #' A 'SpatialPolygonsDataFrame' object is allowed if the polycub package is installed,
 #' and a lsit of 'ijroi' object or a single 'ijzip' of the 'RImageJROI' package is installed.
 #' @note By default, there is no checking for overlap between windows.

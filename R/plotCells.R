@@ -24,7 +24,7 @@
 #' @importFrom graphics points text
 #'
 #' @examples
-#' example(addCell, 'spatrans')
+#' example(addCell, 'smoppix')
 #' plotCells(hypFrame2, 'gene1')
 #' plotCells(hypFrame2, 'gene1', borderColVar = 'condition', nCells = 10)
 plotCells <- function(obj, features = getFeatures(obj)[seq_len(3)], nCells = 100,

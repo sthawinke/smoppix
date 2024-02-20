@@ -39,7 +39,7 @@
 #' @export
 #'
 #' @examples
-#' example(addWeightFunction, 'spatrans')
+#' example(addWeightFunction, 'smoppix')
 #' lmmModels <- fitLMMs(yangObj, fixedVars = 'day', randomVars = 'root')
 fitLMMs <- function(obj, pis = obj$pis, fixedVars = NULL, randomVars = NULL, verbose = TRUE,
     returnModels = FALSE, Formula = NULL, randomNested = TRUE, features = getFeatures(obj),
