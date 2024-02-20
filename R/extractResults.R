@@ -13,6 +13,12 @@
 #' @seealso \link{fitLMMs}, \link{p.adjust}
 extractResults <- function(models, hypFrame, subSet = "piMod", fixedVars = NULL,
     method = "BH") {
+    id <- vapply(models, FUN.VALUE = TRUE, function(x) {
+        is(x[[subSet]], "lmerModLmerTest") || is(x[[subSet]], "lm")
+    })
+    if(!any(id)){
+        return(list("Intercept" = NULL, "fixedEffects" = NULL))
+    }
     ints <- t(vapply(models, FUN.VALUE = double(3), function(x) {
         if (is.null(x[[subSet]]) || is(x[[subSet]], "try-error")) {
             c(Estimate = NA, `Std. Error` = NA, `Pr(>|t|)` = NA)
@@ -26,9 +32,6 @@ extractResults <- function(models, hypFrame, subSet = "piMod", fixedVars = NULL,
     intMat <- cbind(ints, pAdj = p.adjust(ints[, "pVal"], method = method))[order(ints[,
         "pVal"]), ]
     # Order by p-value
-    id <- vapply(models, FUN.VALUE = TRUE, function(x) {
-        is(x[[subSet]], "lmerModLmerTest") || is(x[[subSet]], "lm")
-    })
     AnovaTabs <- lapply(models[id], function(x) anova(x[[subSet]]))
     fixedOut <- lapply(fixedVars, function(Var) {
         unVals <- if (Var %in% getEventVars(hypFrame)) {
@@ -52,8 +55,7 @@ extractResults <- function(models, hypFrame, subSet = "piMod", fixedVars = NULL,
         })
         coefMat <- matrix(unlist(coefs), byrow = TRUE, nrow = length(pVal))
         colnames(coefMat) <- names(emptyCoef)
-        cbind(coefMat, pVal = pVal, pAdj = p.adjust(pVal, method = method))[order(pVal),
-            ]
+        cbind(coefMat, pVal = pVal, pAdj = p.adjust(pVal, method = method))[order(pVal),]
     })
     names(fixedOut) <- fixedVars
     list(Intercept = intMat, fixedEffects = fixedOut)
