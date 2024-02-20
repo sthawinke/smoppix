@@ -47,16 +47,14 @@ plotExplore <- function(hypFrame, features = getFeatures(hypFrame)[seq_len(6)], 
     }
     stopifnot(is.hyperframe(hypFrame), is.character(features), is.numeric(maxPlot),
         is.null(titleVar) || titleVar %in% getPPPvars(hypFrame))
-    if(colourCells <- !is.null(piColourCell) || plotWindows){
+    if (colourCells <- !is.null(piColourCell) && plotWindows) {
         featsplit <- sund(features)
+        if (is.null(piEsts)) {
+            stop("Supply list of PI estimates to lmms argument to colour cells")
+        }
         piDf <- buildDataFrame(piEsts, gene = featsplit, pi = piColourCell)
         if (piColourCell %in% c("edge", "centroid")) {
             piDf <- aggregate(pi ~ cell, piDf, FUN = mean, na.rm = TRUE)
-        }
-    }
-    if (colourCells) {
-        if (is.null(piEsts)) {
-            stop("Supply list of PI estimates to lmms argument to colour cells")
         }
         foo <- checkPi(piEsts, piColourCell)
         piColourCell <- match.arg(piColourCell, choices = c("edge", "centroid", "nnCell",
@@ -96,8 +94,10 @@ plotExplore <- function(hypFrame, features = getFeatures(hypFrame)[seq_len(6)], 
         }), type = "n", cex.main = Cex.main, xaxt = "n", yaxt = "n", xaxs = "i",
             yaxs = "i", asp = 1, xlim = Xlim, ylim = Ylim)
         if (plotWindows) {
-            piDf2 = piDf[id <- (rownames(hypFrame)[i] == piDf$image),]
-            Palette2 = Palette[id]
+            if(colourCells){
+                piDf2 = piDf[id <- (rownames(hypFrame)[i] == piDf$image),]
+                Palette2 = Palette[id]
+            }
             foo <- lapply(names(hypFrame$owins[[i]]), function(cell) {
                 plot.owin(hypFrame[i, "owins", drop = TRUE][[cell]], add = TRUE,
                   col = if (colourCells && length(Col <- Palette2[cell == piDf2$cell])
