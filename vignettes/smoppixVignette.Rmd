@@ -119,7 +119,7 @@ The first round of tests concerns the aggregation or regularity of individual tr
 
 ```{r estpisyang}
 nnObj <- estPis(hypYang,
-    pis = c("nn", "nnPair"), null = "background", features = getFeatures(hypYang)[seq_len(20)]
+    pis = c("nn", "nnPair"), null = "background", features = c("SmVND2", "SmPINR", getFeatures(hypYang)[seq_len(20)])
 )
 ```
 
