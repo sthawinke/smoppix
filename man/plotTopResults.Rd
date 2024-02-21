@@ -21,6 +21,7 @@ plotTopResults(
   sigLevel = 0.05,
   numFeats = 2,
   piThreshold = switch(effect, Intercept = 0.5, 0),
+  effectParameter = NULL,
   ...
 )
 }
@@ -41,6 +42,9 @@ plotTopResults(
 
 \item{piThreshold}{The threshold for PI, a minimum effect size}
 
+\item{effectParameter}{A character string, indicating which parameter to lool for when
+effecct is provided}
+
 \item{...}{passed onto plotting functions plotCells or plotExplore}
 }
 \value{
@@ -55,12 +59,16 @@ The "what" argument indicates if features far from or close to
 cell wall or centroid should be shown for pi "edge" or "centroid",
 aggregated or regular features for "nn" and "nnCell" and colocalized or
 antilocalized features for "nnPair" and "nnPairCell". Partial matching is allowed.
-Defaults to small probabilistic indices: proximity, aggregation and colocalization
+Defaults to small probabilistic indices: proximity, aggregation and colocalization.
+For fixed effects, provide the name of the parameter, in combination with what. For instance,
+what = "regular" and effectParameter = "Var1level1" will give features more regular at level1 of the variable than at baseline
 }
 \examples{
 example(fitLMMs, 'smoppix')
 plotTopResults(hypYang, lmmModels, 'nn')
 plotTopResults(hypYang, lmmModels, 'nn', effect = 'Intercept', what = "reg")
+#For the sake of illustration, set high signigicance level
+plotTopResults(hypYang, lmmModels, 'nn', effect = 'day', what = "reg", effectParameter ="dayday0", sigLevel = 0.9)
 }
 \seealso{
 \link{plotCells},\link{plotExplore},\link{fitLMMs}
