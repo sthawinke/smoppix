@@ -10,7 +10,7 @@ buildMoransIDataFrame <- function(pi, piMat, weightMats) {
         piMat
     }
     moransIs <- vapply(unIm <- unique(dfMoran$image), FUN.VALUE = double(2), function(im) {
-        subDf <- dfMoran[dfMoran$image == im, ]
+        subDf <- dfMoran[dfMoran$image == im & !is.na(dfMoran$pi), ]
         moransI(subDf$pi, W = weightMats[[im]][subDf$cell, subDf$cell, drop = FALSE])
     })
     cbind(MoransI = moransIs["MoransI",], "Variance" = moransIs["VarMoransI",],
