@@ -55,6 +55,15 @@ extractResults <- function(models, hypFrame, subSet = "piMod", fixedVars = NULL,
         })
         coefMat <- matrix(unlist(coefs), byrow = TRUE, nrow = length(pVal))
         colnames(coefMat) <- names(emptyCoef)
+        if(ncol(coefMat)==2){
+            #If two levels, the two coefficients are each other's opposite
+            #in sum coding, and NA can be replaced by the negative. For more than two
+            #levels, it's more complicated as NA may indicate that the parameter was not estimated
+            oneNA = which(rowSums(naMat <- is.na(coefMat))==1)
+            for(i in oneNA){
+                coefMat[i, naMat[i,]] = -coefMat[i, !naMat[i,]]
+            }
+        }
         cbind(coefMat, pVal = pVal, pAdj = p.adjust(pVal, method = method))[order(pVal),]
     })
     names(fixedOut) <- fixedVars

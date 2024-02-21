@@ -11,13 +11,17 @@
 #' @param numFeats The number of features to plot
 #' @param effect The name of the effect
 #' @param piThreshold The threshold for PI, a minimum effect size
+#' @param effectParameter A character string, indicating which parameter to lool for when
+#' effecct is provided
 #' @param ... passed onto plotting functions plotCells or plotExplore
 #'
 #' @details The "what" argument indicates if features far from or close to
 #' cell wall or centroid should be shown for pi "edge" or "centroid",
 #' aggregated or regular features for "nn" and "nnCell" and colocalized or
 #' antilocalized features for "nnPair" and "nnPairCell". Partial matching is allowed.
-#' Defaults to small probabilistic indices: proximity, aggregation and colocalization
+#' Defaults to small probabilistic indices: proximity, aggregation and colocalization.
+#' For fixed effects, provide the name of the parameter, in combination with what. For instance,
+#' what = "regular" and effectParameter = "Var1level1" will give features more regular at level1 of the variable than at baseline
 #'
 #' @return A plot from plotCells or plotExplore, throws an error when no features meet the criteria
 #' @export
@@ -26,11 +30,13 @@
 #' example(fitLMMs, 'smoppix')
 #' plotTopResults(hypYang, lmmModels, 'nn')
 #' plotTopResults(hypYang, lmmModels, 'nn', effect = 'Intercept', what = "reg")
+#' #For the sake of illustration, set high signigicance level
+#' plotTopResults(hypYang, lmmModels, 'nn', effect = 'day', what = "reg", effectParameter ="dayday0", sigLevel = 0.9)
 plotTopResults <- function(hypFrame, results, pi, effect = "Intercept",
                            what = if(pi %in% c("nn", "nnCell")){"aggregated"} else
                                if(pi %in% c("nnPair", "nnPairCell")){"colocalized"
                           } else if(pi %in% c("edge", "centroid")){"close"},
-    sigLevel = 0.05, numFeats = 2, piThreshold = switch(effect, Intercept = 0.5, 0), ...) {
+    sigLevel = 0.05, numFeats = 2, piThreshold = switch(effect, Intercept = 0.5, 0), effectParameter = NULL, ...) {
     stopifnot(is.hyperframe(hypFrame), is.character(what), sigLevel > 0,
               sigLevel < 1)
     pi <- match.arg(pi, choices = c("nn", "nnPair", "edge", "centroid", "nnCell",
@@ -44,16 +50,24 @@ plotTopResults <- function(hypFrame, results, pi, effect = "Intercept",
     if (is.null(Res <- results[[pi]]$results)) {
         stop("PI not present in results object!")
     }
-    if (is.null(subRes <- if (effectId <- effect == "Intercept") Res$Intercept else Res$fixedEffects[[effect]])) {
+    if (is.null(subRes <- if (interceptId <- effect == "Intercept") Res$Intercept else Res$fixedEffects[[effect]])) {
         stop("Effect ", effect, " was not estimated in the linear model!")
     }
+    if(!interceptId){
+        if(is.null(effectParameter)){
+            stop("Provide desired parameter for fixed effects!")
+        } else if(length(effectParameter)>1){
+            stop("Provide effect parameter of length 1")
+        } else if(!(effectParameter %in% colnames(subRes))){
+            stop("Effect parameter ", effectParameter, " not found in parameters\n",
+                 colnames(subRes)[seq_len(length(subRes)-2)])
+        }
+    }
     Fun <- match.fun(if (smallPI) {"<"} else {">"})
-    estId <- if (effectId) {
+    estId <- if (interceptId) {
         !is.na(subRes[, "Estimate"]) & Fun(subRes[, "Estimate"], piThreshold)
-    } else if (ncol(subRes) == 4) {
-        Fun(apply(subRes[, seq_len(2)], 1, max, na.rm = TRUE), piThreshold)
     } else {
-        TRUE
+        !is.na(subRes[, effectParameter]) & Fun(subRes[, effectParameter], piThreshold)
     }
     Feats <- rownames(subRes)[estId & subRes[, "pAdj"] < sigLevel][seq_len(numFeats)]
     if (all(is.na(Feats))) {
@@ -67,7 +81,7 @@ plotTopResults <- function(hypFrame, results, pi, effect = "Intercept",
     } else {
         plotCells
     }
-    plotFun(hypFrame, Feats, titleVar = if (!effectId && !nnId) {
+    plotFun(hypFrame, Feats, titleVar = if (!interceptId && !nnId) {
         effect
     }, ...)
 }
