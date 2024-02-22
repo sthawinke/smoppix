@@ -73,7 +73,7 @@ plotTopResults <- function(hypFrame, results, pi, effect = "Intercept",
     Feats <- rownames(subRes)[estId & subRes[, "pAdj"] < sigLevel][seq_len(numFeats)]
     if (all(is.na(Feats))) {
         stop("No significant features found for PI ", pi, " significance level ",
-            sigLevel, " and what ", what, "!")
+            sigLevel, " and what ", what, if(!interceptId) {paste("for", effectParameter)}, "!")
     } else {
         Feats <- Feats[!is.na(Feats)]
     }
