@@ -15,7 +15,7 @@
 #' to calculate distance to cell edge or centroid distribution
 #' @param minDiff An integer, the minimum number of events from other genes
 #'  needed for calculation of background distribution of distances
-#' @param minObsNN An integer, the minimum number of events before a gene is analysed before
+#' @param minObsNN An integer, the minimum number of events before a gene is analysed before. See details.
 #' @param features A character vector, for which features should the
 #' probabilistic indices be calculated?
 #' @return The hyperframe with the estimated PIs present in it
@@ -40,6 +40,9 @@
 #' 'edge' and 'centroid' calculate the distance to the edge respectively
 #'  the centroid of the windows added using the \link{addCell} function.
 #' The suffix 'Cell' indicates distances are being calculated within cells only.
+#'
+#' It can be useful to set the minObsNN higher than 1 for calculations within cells when the number of events is low,
+#' not to waste computation time on gene (pairs) with very little power.
 #' @seealso \link{estPisSingle}
 estPis <- function(hypFrame, pis = c("nn", "nnPair", "edge", "centroid", "nnCell",
     "nnPairCell"), verbose = TRUE, null = c("background", "CSR"), nPointsAll = switch(null,
