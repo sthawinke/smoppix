@@ -98,7 +98,6 @@ addCell <- function(hypFrame, owins, cellTypes = NULL, findOverlappingOwins = FA
         if (verbose) {
             message("Adding cell names for point pattern")
         }
-        hypFrame$centroids <- vector("list", nrow(hypFrame))
         for (nn in rownames(hypFrame)) {
             if (verbose) {
                 message(match(nn, rownames(hypFrame)), " of ", nrow(hypFrame))
@@ -108,9 +107,6 @@ addCell <- function(hypFrame, owins, cellTypes = NULL, findOverlappingOwins = FA
             if (any("cell" == names(marks(ppp, drop = FALSE)))) {
                 stop("Cell markers already present in point pattern ", nn)
             }
-            hypFrame[nn, "centroids"] <- lapply(owins[[nn]], function(y) {
-                centroid.owin(y, as.ppp = TRUE)
-            })  # Add centroids of the windows
             if (findOverlappingOwins) {
                 # Find overlap between cells
                 foo <- findOverlap(owins[[nn]], hypFrame[nn, "centroids"])
@@ -143,5 +139,10 @@ addCell <- function(hypFrame, owins, cellTypes = NULL, findOverlappingOwins = FA
         }
     }
     hypFrame$owins <- owins[rownames(hypFrame)]
+    if(is.null(hypFrame$centroids)){
+        hypFrame$centroids = lapply(owins, function(y) {
+            lapply(y, centroid.owin, as.ppp = TRUE)
+        })  # Add centroids of the windows is missing
+    }
     return(hypFrame)
 }
