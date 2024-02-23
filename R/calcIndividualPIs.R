@@ -22,7 +22,7 @@ calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null,
     # Divide the work over the available workers
     piList <- loadBalanceBplapply(loopFun = loopFun, iterator = features, func = function(feat) {
         pSub <- pSplit[[feat]]
-        if((NP <- npoints(pSub)) >= minObs){
+        if((NP <- npoints(pSub)) >= minObsNN){
             if (null == "background" && ((NPall - NP) < minDiff)) {
                 distMat <- NULL
                 calcNNsingle <- FALSE

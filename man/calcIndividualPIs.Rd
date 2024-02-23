@@ -16,7 +16,8 @@ calcIndividualPIs(
   ecdfAll,
   ecdfsCell,
   loopFun,
-  minDiff
+  minDiff,
+  minObsNN
 )
 }
 \arguments{
@@ -45,6 +46,8 @@ Defaults to bplapply except when looping over features within cells}
 
 \item{minDiff}{An integer, the minimum number of events from other genes
 needed for calculation of background distribution of distances}
+
+\item{minObsNN}{An integer, the minimum number of events before a gene is analysed before. See details.}
 }
 \value{
 A list containing PI entries per feature
