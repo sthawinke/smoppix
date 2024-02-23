@@ -161,7 +161,7 @@ your own formula through the __Formula__ argument, passed on to _lmer()_.
 allModsNN <- fitLMMs(nnObj, fixedVars = "day", randomVars = "root")
 ```
 
-Various errors may occur while fitting, e.g. insufficient non-missing observations. The function finishes silently but returns the error messages in the output. The results can now be viewed as follows, with the genes sorted by p-value.
+Various errors may occur while fitting, e.g. insufficient non-missing observations. The function finishes silently but returns the error messages in the output. The results can now be viewed as follows using the _getResults_ function, with the genes sorted by p-value.
 
 ```{r headgetresults}
 head(getResults(allModsNN$nn, "Intercept"))

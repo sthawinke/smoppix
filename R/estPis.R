@@ -15,6 +15,7 @@
 #' to calculate distance to cell edge or centroid distribution
 #' @param minDiff An integer, the minimum number of events from other genes
 #'  needed for calculation of background distribution of distances
+#' @param minObsNN An integer, the minimum number of events before a gene is analysed before
 #' @param features A character vector, for which features should the
 #' probabilistic indices be calculated?
 #' @return The hyperframe with the estimated PIs present in it
@@ -43,7 +44,7 @@
 estPis <- function(hypFrame, pis = c("nn", "nnPair", "edge", "centroid", "nnCell",
     "nnPairCell"), verbose = TRUE, null = c("background", "CSR"), nPointsAll = switch(null,
     background = 10000, CSR = 1000), nPointsAllWithinCell = switch(null, background = 10000,
-    CSR = 500), nPointsAllWin = 1000, minDiff = 20, features = getFeatures(hypFrame),
+    CSR = 500), nPointsAllWin = 1000, minDiff = 20, minObsNN = 1L, features = getFeatures(hypFrame),
     ...) {
     pis <- match.arg(pis, several.ok = TRUE)
     null <- match.arg(null)
@@ -65,7 +66,7 @@ estPis <- function(hypFrame, pis = c("nn", "nnPair", "edge", "centroid", "nnCell
             pis = pis, null = null, tabObs = hypFrame[[x, "tabObs"]], centroids = hypFrame[x,
                 "centroids", drop = TRUE], features = features, nPointsAll = nPointsAll,
             nPointsAllWithinCell = nPointsAllWithinCell, nPointsAllWin = nPointsAllWin,
-            minDiff = minDiff, ...)
+            minDiff = minDiff, minObsNN = minObsNN,...)
         return(out)
     })
     list(hypFrame = hypFrame, null = null, pis = pis)
@@ -92,7 +93,7 @@ estPis <- function(hypFrame, pis = c("nn", "nnPair", "edge", "centroid", "nnCell
 #' @seealso \link{estPis}
 estPisSingle <- function(p, pis, null, tabObs, owins = NULL, centroids = NULL, window = p$window,
     loopFun = "bplapply", features, nPointsAll, nPointsAllWithinCell, nPointsAllWin,
-    minDiff) {
+    minDiff, minObsNN) {
     if (!length(features)) {
         return(list(pointDists = NULL, windowDists = NULL, withinCellDists = NULL))
     }
@@ -114,7 +115,7 @@ estPisSingle <- function(p, pis, null, tabObs, owins = NULL, centroids = NULL, w
     piList <- if (!all(idCell <- grepl("Cell", pis))) {
         calcIndividualPIs(p = p, pSubLeft = pSubLeft, pis = pis, null = null, tabObs = tabObs,
             owins = owins, centroids = centroids, features = features, ecdfAll = ecdfAll,
-            ecdfsCell = ecdfsCell, minDiff = minDiff, loopFun = loopFun)
+            ecdfsCell = ecdfsCell, minDiff = minDiff, loopFun = loopFun, minObsNN = minObsNN)
     }
     nnPis <- if ("nn" %in% pis) {
         vapply(piList[intersect(features, names(tabObs[tabObs > 1]))], FUN.VALUE = double(1),
@@ -147,7 +148,7 @@ estPisSingle <- function(p, pis, null, tabObs, owins = NULL, centroids = NULL, w
             estPisSingle(pis = gsub("Cell", "", grep(value = TRUE, "Cell", pis)),
                 p = pSub, null = null, nPointsAll = nPointsAllWithinCell, window = owins[[nam]],
                 features = features, tabObs = table(marks(pSub, drop = FALSE)$gene),
-                loopFun = "lapply", minDiff = minDiff)$pointDists
+                loopFun = "lapply", minDiff = minDiff, minObsNN = minObsNN)$pointDists
         }, loopFun = loopFun)
         names(cellDists) <- unCells
         cellDists
