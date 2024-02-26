@@ -228,7 +228,7 @@ hypEng <- addCell(hypEng, EngRois, verbose = FALSE)
 
 Now plot the complete hyperframe with cell boundaries:
 
-```{r plotExpCell, fig.height=7}
+```{r plotExpCell, fig.height = 7}
 plotExplore(hypEng)
 ```
 

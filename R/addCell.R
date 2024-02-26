@@ -140,7 +140,7 @@ addCell <- function(hypFrame, owins, cellTypes = NULL, findOverlappingOwins = FA
     }
     hypFrame$owins <- owins[rownames(hypFrame)]
     if(is.null(hypFrame$centroids)){
-        hypFrame$centroids = lapply(owins, function(y) {
+        hypFrame$centroids = lapply(hypFrame$owins, function(y) {
             t(vapply(y, FUN.VALUE = double(2), function(x){
                 tmp = centroid.owin(x, as.ppp = FALSE)
                 c("x" = tmp$x, "y" = tmp$y)
