@@ -1,6 +1,6 @@
 context("Tests on Moran's I")
 library(Matrix)
-coordMat <- matrix(rnorm(40), ncol = 2)
+coordMat <- matrix(rnorm(40), ncol = 2, dimnames = list(NULL, c("x", "y")))
 numNNs <- 8
 test_that("Weight matrix is correctly constructed", {
     wMat <- buildMoransIWeightMat(coordMat, numNNs = numNNs)
