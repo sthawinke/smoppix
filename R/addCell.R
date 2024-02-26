@@ -141,7 +141,11 @@ addCell <- function(hypFrame, owins, cellTypes = NULL, findOverlappingOwins = FA
     hypFrame$owins <- owins[rownames(hypFrame)]
     if(is.null(hypFrame$centroids)){
         hypFrame$centroids = lapply(owins, function(y) {
-            lapply(y, centroid.owin, as.ppp = TRUE)
+            t(vapply(y, FUN.VALUE = double(2), function(x){
+                tmp = centroid.owin(x, as.ppp = FALSE)
+                c("x" = tmp$x, "y" = tmp$y)
+            }))
+            #Store as simple matrix for memory reasons
         })  # Add centroids of the windows is missing
     }
     return(hypFrame)

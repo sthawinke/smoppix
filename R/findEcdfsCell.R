@@ -5,7 +5,7 @@
 #'
 #' @inheritParams estPisSingle
 #' @importFrom spatstat.random runifpoint
-#' @importFrom spatstat.geom crossdist nncross
+#' @importFrom spatstat.geom nncross
 #' @return The list of ecdf functions
 #' @seealso \link{ecdf}
 findEcdfsCell <- function(p, owins, nPointsAllWin, centroids, null, pis, loopFun) {
@@ -17,7 +17,7 @@ findEcdfsCell <- function(p, owins, nPointsAllWin, centroids, null, pis, loopFun
             ecdf(nncross(pSub, edges(owins[[nam]]), what = "dist"))
         }
         centroid <- if (any(pis == "centroid")) {
-            ecdf(crossdist(pSub, centroids[[nam]]))
+            ecdf(crossdistFastLocal(getCoordsMat(pSub), centroids[nam,,drop = FALSE]))
         }
         list(edge = edge, centroid = centroid)
     }, loopFun = loopFun)
