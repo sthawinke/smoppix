@@ -4,10 +4,10 @@
 \alias{buildMoransIWeightMat}
 \title{Build a weight matrix for Moran's I calculations}
 \usage{
-buildMoransIWeightMat(coordList, numNNs)
+buildMoransIWeightMat(coordMat, numNNs)
 }
 \arguments{
-\item{coordList}{A list of coordinate matrices}
+\item{coordMat}{A matrix of centroid coordinates}
 
 \item{numNNs}{An integer, the number of nearest neighbours in the
 weight matrix for the calculation of the Moran's I statistic}
