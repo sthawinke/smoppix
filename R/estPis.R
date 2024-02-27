@@ -108,7 +108,7 @@ estPisSingle <- function(p, pis, null, tabObs, owins = NULL, centroids = NULL, w
             pSubLeft <- subSampleP(p, nPointsAll, returnId = TRUE)
         } else if (null == "CSR") {
             pSim <- runifpoint(nPointsAll, win = window)
-            ecdfAll <- ecdf(stats::dist(coords(pSim)))
+            ecdfAll <- ecdf(stats::dist(getCoordsMat(pSim)))
         }
     }
     if (any(pis %in% c("edge", "centroid"))) {
