@@ -8,7 +8,7 @@
 #' @return A list containing PI entries per feature
 #' @details For the single-feature nearest neighbour distances, the average
 #' is already calculated
-#' @importFrom spatstat.geom coords npoints nncross.ppp
+#' @importFrom spatstat.geom nndist npoints nncross.ppp
 calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null,
                               features, ecdfAll, ecdfsCell, loopFun, minDiff, minObsNN) {
     NPall <- switch(null,
