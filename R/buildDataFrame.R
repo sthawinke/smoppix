@@ -71,6 +71,7 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
         }
         piDfs <- lapply(seq_len(nrow(obj$hypFrame)), function(n) {
             nList = obj$hypFrame[n, , drop = TRUE]
+            class(nList) = "list" #Simplify things
             # Extract pi, and add counts and covariates
             if (cellId || windowId) {
                 Marks <- marks(nList$ppp, drop = FALSE)
