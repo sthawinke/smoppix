@@ -8,6 +8,8 @@
 #' @param moransI A boolean, should Moran's I be calculated
 #' in the linear mixed model
 #' @param weightMats List of weight matrices for Moran's I calculation
+#' @param pppDf Dataframe of point pattern-wise variables. It is precalculated
+#' in fitLMMsSingle for speed, but will be newly constructed when not provided
 #' @inheritParams fitLMMs
 #' @return A dataframe
 #' @export

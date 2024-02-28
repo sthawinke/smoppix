@@ -11,7 +11,8 @@ buildDataFrame(
   piMat,
   moransI = FALSE,
   numNNs = 8,
-  weightMats
+  weightMats,
+  pppDf
 )
 }
 \arguments{
@@ -31,6 +32,9 @@ in the linear mixed model}
 weight matrix for the calculation of the Moran's I statistic}
 
 \item{weightMats}{List of weight matrices for Moran's I calculation}
+
+\item{pppDf}{Dataframe of point pattern-wise variables. It is precalculated
+in fitLMMsSingle for speed, but will be newly constructed when not provided}
 }
 \value{
 A dataframe
