@@ -148,8 +148,9 @@ fitLMMsSingle <- function(obj, pi, fixedVars, randomVars, verbose, returnModels,
         tmp
     }) >= 1
     Features <- features[featIds]
+    pppDf = as.data.frame(obj$hypFrame[, c("image", getPPPvars(obj))])
     models <- loadBalanceBplapply(Features, function(gene) {
-        df <- buildDataFrame(obj, gene = gene, pi = pi)
+        df <- buildDataFrame(obj, gene = gene, pi = pi, pppDf = pppDf)
         if (is.null(df) || sum(!is.na(df$pi)) < 3) {
             return(NULL)
         }

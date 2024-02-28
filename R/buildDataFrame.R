@@ -26,9 +26,11 @@
 #' summary(mixedMod)
 #' # Evidence for aggregation
 buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
-    "nnCell", "nnPairCell"), piMat, moransI = FALSE, numNNs = 8, weightMats) {
+    "nnCell", "nnPairCell"), piMat, moransI = FALSE, numNNs = 8, weightMats, pppDf) {
     pi <- match.arg(pi)
-    pppDf = as.data.frame(obj$hypFrame[, c("image", getPPPvars(obj))])
+    if(missing(pppDf)){
+        pppDf = as.data.frame(obj$hypFrame[, c("image", getPPPvars(obj))])
+    }
     if (missing(piMat)) {
         stopifnot((lg <- length(gene)) %in% c(1, 2))
         foo <- checkPi(obj, pi)
