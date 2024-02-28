@@ -50,12 +50,12 @@ fitLMMs <- function(obj, pis = obj$pis, fixedVars = NULL, randomVars = NULL, ver
         weightMats <- lapply(getHypFrame(obj)$centroids, buildMoransIWeightMat, numNNs = numNNs)
         names(weightMats) <- getHypFrame(obj)$image
     }
-    prepDfs = prepareDataFrames(obj, pis, vars = c(fixedVars, randomVars))
+    #prepDfs = prepareDataFrames(obj, pis, vars = c(fixedVars, randomVars))
     out <- lapply(pis, function(pi) {
         fitLMMsSingle(obj, pi = pi, verbose = verbose, fixedVars = fixedVars, randomVars = randomVars,
             returnModels = returnModels, Formula = Formula, randomNested = randomNested,
             features = features, weightMats = weightMats, moranFormula = moranFormula,
-            addMoransI = addMoransI, prepDfs = prepDfs, ...)
+            addMoransI = addMoransI, ...)
     })
     names(out) <- pis
     return(out)

@@ -28,6 +28,7 @@
 buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
     "nnCell", "nnPairCell"), piMat, moransI = FALSE, numNNs = 8, weightMats) {
     pi <- match.arg(pi)
+    pppDf = as.data.frame(obj$hypFrame[, c("image", getPPPvars(obj))])
     if (missing(piMat)) {
         stopifnot((lg <- length(gene)) %in% c(1, 2))
         foo <- checkPi(obj, pi)
@@ -67,13 +68,13 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
             eventVars <- getEventVars(obj)
         }
         piDfs <- lapply(seq_len(nrow(obj$hypFrame)), function(n) {
-            x <- obj$hypFrame[n, "pimRes", drop = TRUE]
+            nList = obj$hypFrame[n, , drop = TRUE]
             # Extract pi, and add counts and covariates
             if (cellId || windowId) {
-                Marks <- marks(obj$hypFrame[n, "ppp", drop = TRUE], drop = FALSE)
+                Marks <- marks(nList$ppp, drop = FALSE)
             }
             df <- if (windowId) {
-                piEst <- if (is.null(vec <- getGp(x[[piListNameInner]], gene)[[pi]])) {
+                piEst <- if (is.null(vec <- getGp(nList$pimRes[[piListNameInner]], gene)[[pi]])) {
                   NULL
                 } else {
                   vec
@@ -88,7 +89,7 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
                 }
                 return(dfWin)
             } else if (cellId) {
-                piEst <- vapply(x[[piListNameInner]], FUN.VALUE = double(1), function(y) {
+                piEst <- vapply(nList$pimRes[[piListNameInner]], FUN.VALUE = double(1), function(y) {
                   if (is.null(vec <- getGp(y[[piSub]], gene))) {
                     NA
                   } else {
@@ -117,13 +118,12 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
                 }
                 data.frame(pi = piEst, cellCovars, npVec)
             } else {
-                piEst <- if (is.null(vec <- getGp(x[[piListNameInner]][[pi]], gene))) {
+                piEst <- if (is.null(vec <- getGp(nList$pimRes[[piListNameInner]][[pi]], gene))) {
                   NA
                 } else {
                   vec
                 }
-                npVec <- if (all(geneSplit %in% names(to <- obj$hypFrame[n, "tabObs",
-                  drop = TRUE]))) {
+                npVec <- if (all(geneSplit %in% names(to <- nList$tabObs))) {
                   to[geneSplit]
                 } else {
                   NA
@@ -140,7 +140,7 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
         }
         image <- rep(rownames(obj$hypFrame), times = Times)
         piDfsMat <- Reduce(piDfs, f = rbind)
-        piMat <- data.frame(piDfsMat, obj$hypFrame[image, c("image", getPPPvars(obj))])
+        piMat <- data.frame(piDfsMat, pppDf[image, ])
         if (!windowId && !moransI) {
             # Add weights
             weight <- evalWeightFunction(obj$Wfs[[pi]], newdata = piMat[, if (grepl("Pair",
