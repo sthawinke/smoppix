@@ -164,8 +164,8 @@ allModsNN <- fitLMMs(nnObj, fixedVars = "day", randomVars = "root")
 Various errors may occur while fitting, e.g. insufficient non-missing observations. The function finishes silently but returns the error messages in the output. The results can now be viewed as follows using the _getResults_ function, with the genes sorted by p-value.
 
 ```{r headgetresults}
-head(getResults(allModsNN$nn, "Intercept"))
-head(getResults(allModsNN$nn, "day"))
+head(getResults(allModsNN, "nn", "Intercept"))
+head(getResults(allModsNN, "nn", "day"))
 ```
 
 We see many genes with significant aggregation (PI estimate smaller than 0.5), but no significant differences between day 0 and 3.
@@ -200,7 +200,7 @@ summary(lmeModNN)
 We find a significant positive intercept `r signif(summary(lmeModNN)$coef["(Intercept)", "Estimate"], 3)`, indicating strong antilocalization (PI = `r signif(summary(lmeModNN)$coef["(Intercept)", "Estimate"], 3)+0.5`). And similarly, this process can be wrapped using _fitLMMs()_as before:
 
 ```{r fitlmmPair}
-head(getResults(allModsNN$nnPair, "Intercept"))
+head(getResults(allModsNN, "nnPair", "Intercept"))
 ```
 
 The results can also be written to a spreadsheet for consultation outside R:
@@ -284,13 +284,13 @@ We can see that the molecule distribution within the cell is all but uniform!
 A side question that may arise is whether the measures of intracellular aggregation have a global spatial patterning throughout the tissue. As a start, we can explore this graphically for the gene most significantly remote from the cell edge:
 
 ```{r exploreSpatCell, fig.height = 7}
-plotExplore(hypEng, piEsts = engPis, piColourCell = "edge", features = remEdge <- rownames(getResults(allModsNNcell$edge, "Intercept"))[1])
+plotExplore(hypEng, piEsts = engPis, piColourCell = "edge", features = remEdge <- rownames(getResults(allModsNNcell, "edge", "Intercept"))[1])
 ```
 
 The molecules are shown in red, while the yellow-blue scale indicates the PI estimate. It seems like in the central cells, the PI is smaller (molecules closer to the cell edge) than the outer cells. We test whether the Moran's I statistic, a measure for spatial aggregation of numeric variables, is significant over the different point patterns:
 
 ```{r testMoransI}
-getResults(allModsNNcell$edge, "Intercept", moransI = TRUE)[remEdge, ]
+getResults(allModsNNcell, "edge", "Intercept", moransI = TRUE)[remEdge, ]
 ```
 
 Although the estimated Moran's I is positive indeed, indicating positive spatial autocorrelation, it is not significant over the different repeats.

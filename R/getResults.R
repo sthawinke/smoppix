@@ -3,6 +3,7 @@
 #' from a linear model.
 #'
 #' @param obj The result object
+#' @param pi The desired PI
 #' @param parameter The desired parameter
 #' @param moransI A boolean, should results for the Moran's I be returned?
 #'
@@ -26,17 +27,17 @@
 #'     fixedVars = 'day', randomVars = 'root',
 #'     pi = 'nn'
 #' )
-#' res <- getResults(fittedModels, 'Intercept')
+#' res <- getResults(fittedModels, "nn", 'Intercept')
 #' head(res)
-getResults <- function(obj, parameter, moransI = FALSE) {
+getResults <- function(obj, pi, parameter, moransI = FALSE) {
     resChar <- if (moransI) {
         "resultsMoran"
     } else {
         "results"
     }
     if (parameter == "Intercept") {
-        obj[[resChar]][[parameter]]
+        obj[[pi]][[resChar]][[parameter]]
     } else {
-        obj[[resChar]]$fixedEffects[[parameter]]
+        obj[[pi]][[resChar]]$fixedEffects[[parameter]]
     }
 }

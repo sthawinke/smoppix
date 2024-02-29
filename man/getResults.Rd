@@ -4,10 +4,12 @@
 \alias{getResults}
 \title{Extract test results from the linear model}
 \usage{
-getResults(obj, parameter, moransI = FALSE)
+getResults(obj, pi, parameter, moransI = FALSE)
 }
 \arguments{
 \item{obj}{The result object}
+
+\item{pi}{The desired PI}
 
 \item{parameter}{The desired parameter}
 
@@ -38,6 +40,6 @@ fittedModels <- fitLMMs(yangObj,
     fixedVars = 'day', randomVars = 'root',
     pi = 'nn'
 )
-res <- getResults(fittedModels, 'Intercept')
+res <- getResults(fittedModels, "nn", 'Intercept')
 head(res)
 }
