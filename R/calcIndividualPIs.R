@@ -1,6 +1,6 @@
 #' Calculate individual PI entries
 #'
-#' @param pSubLeft The subsampled overall point pattern
+#' @param pSubLeft The subsampled overall point pattern returned by subSampleP
 #' @param ecdfAll,ecdfsCell Empirical cumulative distribution functions of all
 #' events and of cells within the cell, under the null
 #' @inheritParams estPisSingle
@@ -54,9 +54,10 @@ calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null,
                     "CSR" = matrix(ecdfAll(distMat), nrow = nrow(distMat))
                 )
                 approxRanks <- round((approxRanksTmp/(switch(null,
-                        background = (npoints(pSubLeft$Pout) -
+                        "background" = (npoints(pSubLeft$Pout) -
                                           which(marks(p, drop = FALSE)$gene == feat)
-                                      %in% pSubLeft$id), CSR = 1
+                                      %in% pSubLeft$id),
+                        "CSR" = 1
                 ))) * NPall)
                 # Correct for self distances by subtracting one. The C++ function only counts distances larger so
                 # self distances will be ignored in the numerator

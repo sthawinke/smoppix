@@ -24,7 +24,7 @@ IntegerMatrix findRanksDist(NumericMatrix coords, NumericMatrix coordsLeft, Nume
 /*** R
 coordsMat = matrix(rnorm(400), ncol = 2)
 coordsMatLeft = matrix(rnorm(600), ncol = 2)
-distMat = matrix(rnorm(1200), 200, 6)
+distMat = matrix(rnorm(1200, sd = 0.14), 200, 6)
 # Call new function
 out = findRanksDist(coordsMat, coordsMatLeft, distMat^2)
 tmp = crossdist(X = coordsMat[, 1], Y = coordsMat[, 2], x2 = coordsMatLeft[, 1], y2 = coordsMatLeft[, 2])^2
