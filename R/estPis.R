@@ -52,7 +52,12 @@ estPis <- function(hypFrame, pis = c("nn", "nnPair", "edge", "centroid", "nnCell
     pis <- match.arg(pis, several.ok = TRUE)
     null <- match.arg(null)
     stopifnot(is.hyperframe(hypFrame), is.numeric(nPointsAll), is.numeric(nPointsAllWithinCell),
-        is.numeric(nPointsAllWin), is.numeric(minDiff), is.character(features))
+        is.numeric(nPointsAllWin), is.numeric(minDiff), is.character(features),
+        )
+    if(any(vapply(hypFrame$ppp, function(x) is.unsorted(getCoordsMat(x)[, "x"])))){
+        stop("Point patterns must be sorted by x-coordinates!
+        Build the hyperframe by the buildHyperFrame function or presort!")
+    }
     if (any(pis %in% c("edge", "centroid", "nnCell")) && is.null(hypFrame$owins)) {
         stop("No window provided for distance to edge or centroid calculation. ",
             "Add it using the addCell() function")
