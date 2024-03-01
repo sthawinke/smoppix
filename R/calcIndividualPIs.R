@@ -60,7 +60,10 @@ calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null,
                         "CSR" = 1
                 ))) * NPall)
                 # Correct for self distances by subtracting one. The C++ function only counts distances larger so
-                # self distances will be ignored in the numerator
+                # self distances will be zero in the numerator
+                #The observed nearest neighbour distances remain part of the permutation,
+                #See Smyth "permutation p-values can never be zero"
+                #Need binomial here, and stop halfway the quantile in the negative hypergeometric?
                 # Get the order right to prevent integer overflow: first divide, then multiply
                 approxRanks[approxRanks == 0] <- 1
                 colnames(approxRanks) <- colnames(distMat)
