@@ -31,16 +31,20 @@
 #' head(res)
 getResults <- function(obj, pi, parameter, moransI = FALSE) {
     if(!(pi %in% names(obj))){
-        stop("PI ", pi, "not estimated! Run estPis() again with desired pi as argument")
+        stop("PI ", pi, " not estimated! Run estPis() again with desired pi as argument")
     }
     resChar <- if (moransI) {
         "resultsMoran"
     } else {
         "results"
     }
-    if (parameter == "Intercept") {
-        obj[[pi]][[resChar]][[parameter]]
+    Obj = if (parameter == "Intercept") {
+        obj[[pi]][[resChar]]
     } else {
-        obj[[pi]][[resChar]]$fixedEffects[[parameter]]
+        obj[[pi]][[resChar]]$fixedEffects
     }
+    if(!(parameter %in% names(Obj))){
+        stop("Parameter ", parameter, " not estimated in linear model!
+             Rerun fitLMMs with the correct variables or formula supplied.")
+    } else {Obj[[parameter]]}
 }
