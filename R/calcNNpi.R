@@ -7,7 +7,7 @@
 #' @param m the number of observed distances (white balls in the urn)
 #' @param r The rank of distances considered, r=1 is nearest neighbour distance
 #'
-#' @importFrom extraDistr pnhyper
+#' @importFrom extraDistr pnhyper dnhyper
 #' @return A vector of evaluations of the negative hypergeometric distribution
 #' function
 #' @seealso \link{pnhyper}, \link{calcIndividualPIs}

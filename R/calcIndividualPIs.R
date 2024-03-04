@@ -53,8 +53,9 @@ calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null,
                     ),
                     "CSR" = matrix(ecdfAll(distMat), nrow = nrow(distMat))
                 )
-                selfPoint = as.integer(which(marks(p, drop = FALSE)$gene == feat)
+                selfPoint = if(null=="background") {as.integer(which(marks(p, drop = FALSE)$gene == feat)
                                        %in% pSubLeft$id)
+                    } else {0}
                 approxRanks <- round((approxRanksTmp/(switch(null,
                         "background" = (npoints(pSubLeft$Pout) -
                                           selfPoint),

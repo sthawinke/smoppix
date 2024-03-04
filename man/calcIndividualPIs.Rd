@@ -27,7 +27,7 @@ calcIndividualPIs(
 
 \item{pis}{The probabilistic indices to be estimated}
 
-\item{pSubLeft}{The subsampled overall point pattern}
+\item{pSubLeft}{The subsampled overall point pattern returned by subSampleP}
 
 \item{owins, centroids}{The list of windows corresponding to cells,
 and their centroids}
