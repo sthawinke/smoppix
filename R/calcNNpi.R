@@ -12,10 +12,9 @@
 #' function
 #' @seealso \link{pnhyper}, \link{calcIndividualPIs}
 calcNNPI <- function(Ranks, n, m, r = 1) {
-    #Keep the remainder after division to split the quantile??
-
-    pnhyper(Ranks, n = n, m = m, r = r)
+    pnhyper(Ranks-1, n = n, m = m, r = r) + 0.5 *dnhyper(Ranks, n = n, m = m, r = r)
     # Exclude event itself, so NP - 1 m = N-1: White balls, number of other
     # events of the same gene n = n - (NP-1): black balls, number of events of
     # other genes in background r=1: Nearest neighbour so first occurrence
+    #Equalities are counted half
 }
