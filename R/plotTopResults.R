@@ -61,7 +61,7 @@ plotTopResults <- function(hypFrame, results, pi, effect = "Intercept",
             stop("Provide effect parameter of length 1")
         } else if(!(effectParameter %in% colnames(subRes))){
             stop("Effect parameter ", effectParameter, " not found in parameters\n",
-                 colnames(subRes)[seq_len(length(subRes)-2)])
+                 colnames(subRes)[seq_len(ncol(subRes)-2)])
         }
     }
     Fun <- match.fun(if (smallPI) {"<"} else {">"})
