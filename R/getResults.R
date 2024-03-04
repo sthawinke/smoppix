@@ -30,6 +30,9 @@
 #' res <- getResults(fittedModels, "nn", 'Intercept')
 #' head(res)
 getResults <- function(obj, pi, parameter, moransI = FALSE) {
+    if(!(pi %in% names(obj))){
+        stop("PI ", pi, "not estimated! Run estPis() again with desired pi as argument")
+    }
     resChar <- if (moransI) {
         "resultsMoran"
     } else {
