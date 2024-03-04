@@ -10,5 +10,5 @@ test_that("Calculating pims throws errors where appropriate", {
         features = c("gene200", "gene2")))
     hypFrameUnsorted = hypFrame2 #Unsort the x-coordinates
     coords(hypFrameUnsorted$ppp[[1]]) = coords(hypFrameUnsorted$ppp[[1]])[sample(npoints(hypFrameUnsorted$ppp[[1]])),]
-    expect_error(estPis(hypFrame2, pis = "nn"))
+    expect_error(estPis(hypFrameUnsorted, pis = "nn"))
 })
