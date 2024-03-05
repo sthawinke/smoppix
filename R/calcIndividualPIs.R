@@ -11,19 +11,20 @@
 #' @importFrom spatstat.geom nndist npoints nncross.ppp
 calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null,
                               features, ecdfAll, ecdfsCell, loopFun, minDiff, minObsNN) {
-    NPall <- switch(null,
-        "CSR" = max(tabObs) * 4,
+    NPall <- if(bg <- (null=="background")){
+        npoints(p)
+    } else if(null=="CSR"){
+        max(tabObs) * 4
         # NPall is arbitrary for CSR, make sure it is large enough,
         # while limiting computation time in evaluating the negative
-        # hypergreometric
-        "background" = npoints(p)
-    )
+        # hypergeometric
+    }
     pSplit <- split.ppp(p, f = factor(marks(p, drop = FALSE)$gene))
     # Divide the work over the available workers
     piList <- loadBalanceBplapply(loopFun = loopFun, iterator = features, func = function(feat) {
         pSub <- pSplit[[feat]]
         if((NP <- npoints(pSub)) >= minObsNN){
-            if (null == "background" && ((NPall - NP) < minDiff)) {
+            if (bg && ((NPall - NP) < minDiff)) {
                 distMat <- NULL
                 calcNNsingle <- FALSE
                 # If insufficient other events, do not calculate nn PIs for background
@@ -53,7 +54,8 @@ calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null,
                     ),
                     "CSR" = matrix(ecdfAll(distMat), nrow = nrow(distMat))
                 )
-                selfPoint = if(null=="background") {as.integer(which(marks(p, drop = FALSE)$gene == feat)
+                selfPoint = if(bg) {
+                    as.integer(which(marks(p, drop = FALSE)$gene == feat)
                                        %in% pSubLeft$id)
                     } else {0}
                 approxRanks <- round((approxRanksTmp/(switch(null,
@@ -65,19 +67,20 @@ calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null,
                 # self distances will be zero in the numerator
                 #The observed nearest neighbour distances (not the same as self distances) remain part of the permutation,
                 # Get the order right to prevent integer overflow: first divide, then multiply
-                approxRanks[approxRanks == 0] <- 1 #See Smyth "permutation p-values can never be zero"
+                approxRanks[approxRanks == 0] <- 1 #See Phipson2010 "permutation p-values can never be zero"
                 colnames(approxRanks) <- colnames(distMat)
             }
-            # Names may get lost in C++ function And then rearrange to get to the PIs
+            # Names may get lost in C++ function. Then rearrange to get to the PIs
             nnPI <- if (calcNNsingle && isMat) {
-                mean(calcNNPI(approxRanks[, "self"], NPall - (NP - 1), m = NP - 1, r = 1))
+                mean(calcNNPI(approxRanks[, "self"], NPall - (NP - 1) - bg, m = NP - 1, r = 1))
             } else {
                 NA
             }
+            #Minus bg subtracts self distances
             nnPIpair <- if ("nnPair" %in% pis && isMat) {
                 vapply(setdiff(colnames(approxRanks), "self"), FUN.VALUE = double(NP), function(g) {
-                    NP <- tabObs[g]
-                    calcNNPI(approxRanks[, g], n = NPall - NP, m = NP, r = 1)
+                    NP <- tabObs[g] #Number of other gene in the pair
+                    calcNNPI(approxRanks[, g], n = NPall - NP - bg, m = NP, r = 1)
                 })
             }
         } else {

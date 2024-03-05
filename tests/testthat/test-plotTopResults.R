@@ -6,9 +6,9 @@ test_that("Top results plotting proceeds without errors", {
     expect_silent(plotTopResults(results = linModsNNint, hypYang, "nn"))
     expect_silent(plotTopResults(results = linModsNNint, hypYang, "nnPair"))
     expect_silent(plotTopResults(results = linModsNNint, hypYang, "nnPair", effect = "day",
-        sigLevel = 0.99, effectParameter = "dayday0"))
+        sigLevel = 0.99, effectParameter = "day0"))
     expect_silent(plotTopResults(results = linModsNNint, hypYang, "nnPair", effect = "day",
-                                 sigLevel = 0.99, effectParameter = "dayday3"))
+                                 sigLevel = 0.99, effectParameter = "day3"))
     expect_silent(plotTopResults(results = linModsNNint, hypYang, "nnPair", what = "anti",
         sigLevel = 0.4))
 })
