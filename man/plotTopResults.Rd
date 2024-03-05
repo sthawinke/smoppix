@@ -69,7 +69,7 @@ plotTopResults(hypYang, lmmModels, 'nn')
 plotTopResults(hypYang, lmmModels, 'nn', effect = 'Intercept', what = "reg")
 #For the sake of illustration, set high signigicance level
 plotTopResults(hypYang, lmmModels, 'nn', effect = 'day', what = "reg",
-effectParameter ="dayday0", sigLevel = 0.9)
+effectParameter ="day0", sigLevel = 0.9)
 }
 \seealso{
 \link{plotCells},\link{plotExplore},\link{fitLMMs}

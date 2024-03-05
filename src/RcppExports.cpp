@@ -23,7 +23,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // findRanksDist
-IntegerMatrix findRanksDist(NumericMatrix coords, NumericMatrix coordsLeft, NumericMatrix squaredNNDist);
+NumericMatrix findRanksDist(NumericMatrix coords, NumericMatrix coordsLeft, NumericMatrix squaredNNDist);
 RcppExport SEXP _smoppix_findRanksDist(SEXP coordsSEXP, SEXP coordsLeftSEXP, SEXP squaredNNDistSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
