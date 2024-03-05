@@ -32,7 +32,7 @@
 #' plotTopResults(hypYang, lmmModels, 'nn', effect = 'Intercept', what = "reg")
 #' #For the sake of illustration, set high signigicance level
 #' plotTopResults(hypYang, lmmModels, 'nn', effect = 'day', what = "reg",
-#' effectParameter ="dayday0", sigLevel = 0.9)
+#' effectParameter ="day0", sigLevel = 0.9)
 plotTopResults <- function(hypFrame, results, pi, effect = "Intercept",
                            what = if(pi %in% c("nn", "nnCell")){"aggregated"} else
                                if(pi %in% c("nnPair", "nnPairCell")){"colocalized"
