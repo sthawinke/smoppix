@@ -21,3 +21,6 @@ A vector of design variables
 \description{
 Run checks on design variables, or construct them if missing
 }
+\seealso{
+\link{buildDataFrame}
+}

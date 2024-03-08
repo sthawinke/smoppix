@@ -14,11 +14,11 @@
 #' function
 #' @seealso \link{pnhyper}, \link{calcIndividualPIs}
 calcNNPI <- function(Ranks, n, m, ties, r = 1) {
-    tmp = pnhyper(Ranks-1, n = n, m = m, r = r)
+    tmp = pnhyper(Ranks, n = n, m = m, r = r)
     if(!is.null(ties)) {
-        tmp = tmp + 0.5 *vapply(seq_along(Ranks), FUN.VALUE = double(1), function(i){
-            sum(dnhyper(Ranks[i]+seq_len(ties[i]), n = n, m = m, r = r))
-        })
+        tmp = 0.5*(tmp + pnhyper(Ranks+ties, n = n, m = m, r = r))
+        #Everything up to Ranks counted twice, up to ties+Rankes counted once,
+        #so divide by 2
             }
     # Exclude event itself, so NP - 1 m = N-1: White balls, number of other
     # events of the same gene n = n - (NP-1): black balls, number of events of

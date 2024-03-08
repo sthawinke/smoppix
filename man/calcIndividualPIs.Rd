@@ -59,3 +59,6 @@ Calculate individual PI entries
 For the single-feature nearest neighbour distances, the average
 is already calculated
 }
+\seealso{
+\link{estPis}, \link{calcNNpi}
+}

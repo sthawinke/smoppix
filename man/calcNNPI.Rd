@@ -15,7 +15,8 @@ under consideration (the number of black balls in the urn)}
 
 \item{m}{the number of observed distances (white balls in the urn)}
 
-\item{ties}{The number of times the observed distance is equal to a null distance}
+\item{ties}{The number of times the observed distance is equal to a null distance,
+of the same lenght as Ranks}
 
 \item{r}{The rank of distances considered, r=1 is nearest neighbour distance}
 }
@@ -26,6 +27,9 @@ function
 \description{
 Estimate the PI for the nearest neighbour distances, given a set of ranks,
 using the negative hypergeometric distribution
+}
+\details{
+Ties are counted half to match the definition of the PI.
 }
 \seealso{
 \link{pnhyper}, \link{calcIndividualPIs}

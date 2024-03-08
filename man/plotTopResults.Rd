@@ -61,7 +61,8 @@ aggregated or regular features for "nn" and "nnCell" and colocalized or
 antilocalized features for "nnPair" and "nnPairCell". Partial matching is allowed.
 Defaults to small probabilistic indices: proximity, aggregation and colocalization.
 For fixed effects, provide the name of the parameter, in combination with what. For instance,
-what = "regular" and effectParameter = "Var1level1" will give features more regular at level1 of the variable than at baseline
+what = "regular", effect = "Var1" and effectParameter = "level1" will return
+features more regular at level1 of the variable than at baseline
 }
 \examples{
 example(fitLMMs, 'smoppix')

@@ -2,7 +2,7 @@
 % Please edit documentation in R/estGradients.R
 \name{estGradientsSingle}
 \alias{estGradientsSingle}
-\title{A wrapper function for the estimation of the different gradients on a hyperframe for a single feature}
+\title{Workhorse for \link{estGradients} on a single feature}
 \usage{
 estGradientsSingle(
   hypFrame,
