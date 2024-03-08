@@ -5,15 +5,17 @@
 \title{Estimate the PI for the nearest neighbour distances, given a set of ranks,
 using the negative hypergeometric distribution}
 \usage{
-calcNNPI(Ranks, n, m, r = 1)
+calcNNPI(Ranks, n, m, ties, r = 1)
 }
 \arguments{
-\item{Ranks}{The (approximate) ranks}
+\item{Ranks}{The (approximate) ranks, number of times observed distance is larger}
 
 \item{n}{the total number of observed distances minus the number of distances
 under consideration (the number of black balls in the urn)}
 
 \item{m}{the number of observed distances (white balls in the urn)}
+
+\item{ties}{The number of times the observed distance is equal to a null distance}
 
 \item{r}{The rank of distances considered, r=1 is nearest neighbour distance}
 }

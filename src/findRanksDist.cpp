@@ -2,12 +2,13 @@
 using namespace Rcpp;
 
 // [[Rcpp::export]]
-NumericMatrix findRanksDist(NumericMatrix coords, NumericMatrix coordsLeft, NumericMatrix squaredNNDist) {
+IntegerMatrix findRanksDist(NumericMatrix coords, NumericMatrix coordsLeft, NumericMatrix squaredNNDist) {
     int nrow = coords.nrow();
     int nrowLeft = coordsLeft.nrow();
     int nDist = squaredNNDist.ncol();
 
-    NumericMatrix out(nrow, nDist);
+    IntegerMatrix out(nrow*2, nDist);
+    //#First half for larger than, second for ties
     for (int r1 = 0; r1 < nrow; r1++) {//# Loop over events
         for (int r2 = 0; r2 < nrowLeft; r2++) {//# Loop over randomly drawn events
             double dist = pow(coords(r1, 0) - coordsLeft(r2, 0), 2) +
@@ -16,7 +17,8 @@ NumericMatrix findRanksDist(NumericMatrix coords, NumericMatrix coordsLeft, Nume
                 if(squaredNNDist(r1, r3) > dist){
                     out(r1, r3)++;
                 } else if(squaredNNDist(r1, r3) == dist){
-                    out(r1, r3) = out(r1, r3) + 0.5;
+                    out(r1+nrow, r3)++;
+                    //#Keep track of ties too
                 }
             }
         }
@@ -30,8 +32,9 @@ distMat = matrix(rpois(1200, 4), 200, 6)
 # Call new function
 out = findRanksDist(coordsMat, coordsMatLeft, distMat^2)
 tmp = crossdist(X = coordsMat[, 1], Y = coordsMat[, 2], x2 = coordsMatLeft[, 1], y2 = coordsMatLeft[, 2])^2
-out2 = vapply(seq_len(ncol(distMat)), FUN.VALUE = double(nrow(distMat)), function(x){
-    rowSums(distMat[,x]^2 > tmp) + 0.5*rowSums(distMat[,x]^2 == tmp)
+out2 = vapply(seq_len(ncol(distMat)), FUN.VALUE = matrix(0,nrow(distMat), 2), function(x){
+    cbind(rowSums(distMat[,x]^2 > tmp), rowSums(distMat[,x]^2 == tmp))
 })
+out2 = rbind(out2[,1,], out2[,2,])
 all(out==out2)
 */

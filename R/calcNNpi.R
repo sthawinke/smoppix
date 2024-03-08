@@ -3,18 +3,25 @@
 #'
 #' @param n the total number of observed distances minus the number of distances
 #' under consideration (the number of black balls in the urn)
-#' @param Ranks The (approximate) ranks
+#' @param Ranks The (approximate) ranks, number of times observed distance is larger
 #' @param m the number of observed distances (white balls in the urn)
 #' @param r The rank of distances considered, r=1 is nearest neighbour distance
+#' @param ties The number of times the observed distance is equal to a null distance
 #'
 #' @importFrom extraDistr pnhyper dnhyper
 #' @return A vector of evaluations of the negative hypergeometric distribution
 #' function
 #' @seealso \link{pnhyper}, \link{calcIndividualPIs}
-calcNNPI <- function(Ranks, n, m, r = 1) {
-    pnhyper(Ranks-1, n = n, m = m, r = r) + 0.5 *dnhyper(Ranks, n = n, m = m, r = r)
+calcNNPI <- function(Ranks, n, m, ties, r = 1) {
+    tmp = pnhyper(Ranks-1, n = n, m = m, r = r)
+    if(!is.null(ties)) {
+        tmp = tmp + 0.5 *vapply(seq_along(Ranks), FUN.VALUE = double(1), function(i){
+            sum(dnhyper(Ranks[i]+seq_len(ties[i]), n = n, m = m, r = r))
+        })
+            }
     # Exclude event itself, so NP - 1 m = N-1: White balls, number of other
     # events of the same gene n = n - (NP-1): black balls, number of events of
     # other genes in background r=1: Nearest neighbour so first occurrence
     #Equalities are counted half
+    return(tmp)
 }

@@ -47,13 +47,15 @@ calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null,
             }
 
             if (isMat <- is.matrix(distMat)) {
-                approxRanksTmp <- switch(null,
+                doubleMatrixRanks <- switch(null,
                     "background" = findRanksDist(
                         getCoordsMat(pSub), getCoordsMat(pSubLeft$Pout),
                         distMat^2
                     ),
                     "CSR" = matrix(ecdfAll(distMat), nrow = nrow(distMat))
                 )
+                approxRanksTmp = doubleMatrixRanks[seq_len(nrow(distMat)),,drop = FALSE]
+                tiesMat = doubleMatrixRanks[-seq_len(nrow(distMat)),,drop = FALSE]
                 selfPoint = if(bg) {
                     as.integer(which(marks(p, drop = FALSE)$gene == feat)
                                        %in% pSubLeft$id)
@@ -67,12 +69,13 @@ calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null,
                 # self distances will be zero in the numerator
                 #The observed nearest neighbour distances (not the same as self distances) remain part of the permutation,
                 # Get the order right to prevent integer overflow: first divide, then multiply
-                approxRanks[approxRanks == 0] <- 1 #See Phipson2010 "permutation p-values can never be zero"
-                colnames(approxRanks) <- colnames(distMat)
+                #approxRanks[approxRanks == 0] <- 1 #See Phipson2010 "permutation p-values can never be zero"
+                colnames(approxRanks) <- colnames(tiesMat) <- colnames(distMat)
             }
             # Names may get lost in C++ function. Then rearrange to get to the PIs
             nnPI <- if (calcNNsingle && isMat) {
-                mean(calcNNPI(approxRanks[, "self"], NPall - (NP - 1) - bg, m = NP - 1, r = 1))
+                mean(calcNNPI(approxRanks[, "self"], NPall - (NP - 1) - bg,
+                              m = NP - 1, r = 1, ties = if(null=="background") tiesMat[, "self"]))
             } else {
                 NA
             }
@@ -80,7 +83,8 @@ calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null,
             nnPIpair <- if ("nnPair" %in% pis && isMat) {
                 vapply(setdiff(colnames(approxRanks), "self"), FUN.VALUE = double(NP), function(g) {
                     NP <- tabObs[g] #Number of other gene in the pair
-                    calcNNPI(approxRanks[, g], n = NPall - NP - bg, m = NP, r = 1)
+                    calcNNPI(approxRanks[, g], n = NPall - NP - bg, m = NP,
+                             r = 1, ties = if(null=="background") tiesMat[, g])
                 })
             }
         } else {
