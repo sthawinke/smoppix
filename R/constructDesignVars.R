@@ -6,6 +6,7 @@
 #' @param resList The results list
 #'
 #' @return A vector of design variables
+#' @seealso \link{buildDataFrame}
 constructDesignVars <- function(designVars, lowestLevelVar, allCell, resList) {
     allVars <- getDesignVars(resList)
     if (missing(designVars) && missing(lowestLevelVar) && !allCell) {

@@ -9,6 +9,7 @@
 #' @details For the single-feature nearest neighbour distances, the average
 #' is already calculated
 #' @importFrom spatstat.geom nndist npoints nncross.ppp
+#' @seealso \link{estPis}, \link{calcNNpi}
 calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null,
                               features, ecdfAll, ecdfsCell, loopFun, minDiff, minObsNN) {
     NPall <- if(bg <- (null=="background")){

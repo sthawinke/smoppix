@@ -70,8 +70,6 @@ estGradients <- function(hypFrame, gradients = c("overall", if(!is.null(hypFrame
     names(grads) = features
     grads
 }
-#' A wrapper function for the estimation of the different gradients on a hyperframe for a single feature
-#'
 #' Workhorse for \link{estGradients} on a single feature
 #'
 #' @inheritParams estGradients
