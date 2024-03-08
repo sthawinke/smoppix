@@ -14,9 +14,13 @@
 #' function
 #' @seealso \link{pnhyper}, \link{calcIndividualPIs}
 calcNNPI <- function(Ranks, n, m, ties, r = 1) {
-    tmp = pnhyper(Ranks, n = n, m = m, r = r)
+    tmp = pnhyper(Ranks-1, n = n, m = m, r = r)
     if(!is.null(ties)) {
-        tmp = 0.5*(tmp + pnhyper(Ranks+ties, n = n, m = m, r = r))
+        tmp = 0.5*(tmp + pnhyper(Ranks-1+ties, n = n, m = m, r = r))
+        #vapply(seq_along(Ranks), FUN.VALUE = double(1), function(i){
+        #sum(dnhyper(Ranks[i]+seq_len(ties[i]), n = n, m = m, r = r))
+        #})
+        #Fix ME!
         #Everything up to Ranks counted twice, up to ties+Rankes counted once,
         #so divide by 2
             }
