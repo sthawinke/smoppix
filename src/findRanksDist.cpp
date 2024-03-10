@@ -14,9 +14,9 @@ IntegerMatrix findRanksDist(NumericMatrix coords, NumericMatrix coordsLeft, Nume
             double dist = pow(coords(r1, 0) - coordsLeft(r2, 0), 2) +
                 pow(coords(r1,1) - coordsLeft(r2, 1), 2);
             for (int r3 = 0; r3 < nDist; r3++) {//# Loop over distances
-                if(squaredNNDist(r1, r3) > dist){
+                if(dist < squaredNNDist(r1, r3)){
                     out(r1, r3)++;
-                } else if(squaredNNDist(r1, r3) == dist){
+                } else if(dist == squaredNNDist(r1, r3)){
                     out(r1+nrow, r3)++;
                     //#Keep track of ties too
                 }

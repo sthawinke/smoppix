@@ -9,19 +9,17 @@
 #' @param ties The number of times the observed distance is equal to a null distance,
 #' of the same lenght as Ranks
 #' @details Ties are counted half to match the definition of the PI.
-#' @importFrom extraDistr pnhyper dnhyper
+#' @importFrom extraDistr pnhyper
 #' @return A vector of evaluations of the negative hypergeometric distribution
 #' function
 #' @seealso \link{pnhyper}, \link{calcIndividualPIs}
 calcNNPI <- function(Ranks, n, m, ties, r = 1) {
-    tmp = pnhyper(Ranks-1, n = n, m = m, r = r)
+    tmp = pnhyper(Ranks, n = n, m = m, r = r)
     if(!is.null(ties)) {
-        tmp = 0.5*(tmp + pnhyper(Ranks-1+ties, n = n, m = m, r = r))
-        #vapply(seq_along(Ranks), FUN.VALUE = double(1), function(i){
-        #sum(dnhyper(Ranks[i]+seq_len(ties[i]), n = n, m = m, r = r))
-        #})
-        #Fix ME!
-        #Everything up to Ranks counted twice, up to ties+Rankes counted once,
+        id = ties > 0
+        tmp[id] = 0.5*(tmp[id] + pnhyper(Ranks[id]+ties[id], n = n, m = m, r = r))
+        #Fix ME! High number of white balls problem
+        #Everything up to Ranks counted twice, up to ties+Ranks counted once,
         #so divide by 2
             }
     # Exclude event itself, so NP - 1 m = N-1: White balls, number of other
