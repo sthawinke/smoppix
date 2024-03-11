@@ -57,16 +57,19 @@ calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null,
                 )
                 approxRanksTmp = doubleMatrixRanks[seq_len(nrow(distMat)),,drop = FALSE]
                 tiesMat = doubleMatrixRanks[-seq_len(nrow(distMat)),,drop = FALSE]
-                selfPoint = if(bg) {
-                    as.integer(which(marks(p, drop = FALSE)$gene == feat)
-                                       %in% pSubLeft$id)
-                    } else {0}
-                approxRanks <- round(((approxRanksTmp-selfPoint)/(switch(null,
-                        "background" = (npoints(pSubLeft$Pout) -
-                                          selfPoint),
-                        "CSR" = 1
-                ))) * (NPall-selfPoint)) #Different for NN, subtract 1
-                #Fix ME!
+                if(bg) {
+                    selfPoint = (which(marks(p, drop = FALSE)$gene == feat)
+                    %in% pSubLeft$id)
+                    selfPointRanks = selfPoint & distMat > 0
+                    selfPointTies = selfPoint & distMat == 0
+                    approxRanks <- round(((approxRanksTmp-selfPointRanks)/(npoints(pSubLeft$Pout) -selfPoint)
+                    ) * (NPall-selfPoint))
+                    tiesMat <- round(((tiesMat-selfPointTies)/(npoints(pSubLeft$Pout) - selfPoint)
+                    ) * (NPall-selfPoint))
+                } else {
+                    approxRanks <- round(approxRanksTmp*NPall)
+                }
+
                 # Correct for self distances by subtracting one everywhere.
                 #The observed nearest neighbour distances (not the same as self distances) remain part of the permutation,
                 # Get the order right to prevent integer overflow: first divide, then multiply
