@@ -18,7 +18,7 @@ knitr::opts_chunk$set(fig.heigh = 7, fig.width = 7)
 
 # Introduction
 
-This vignette demonstrates the use of the __spatrans__ package for statistical inference on single-molecule spatial transcriptomics datasets with replication.
+This vignette demonstrates the use of the __smoppix__ package for statistical inference on single-molecule spatial transcriptomics datasets with replication.
 
 \setcounter{tocdepth}{5}
 \tableofcontents
@@ -47,7 +47,7 @@ library(smoppix)
 
 # Multithreading
 
-The _spatrans_ package can be computationally intensive, especially for transcript pairs. For this reason we provide multithreading through the _BiocParallel_ package. 
+The _smoppix_ package can be computationally intensive, especially for transcript pairs. For this reason we provide multithreading through the _BiocParallel_ package. 
 
 ```{r}
 library(BiocParallel)
@@ -69,7 +69,7 @@ register(SerialParam())
 
 # Yang data: lycophyte roots
 
-As example dataset we use the data used in a ["manuscript"](doi:10.1016/j.cub.2023.08.030) by Yang et al. 2023. on _Selaginella moellendorffii_. Only a subset of the data, consisting of sections 1-5 of roots 1-3 is included for computational reasons. The data is loaded as follows.
+As example dataset we use the data used in a [manuscript](doi:10.1016/j.cub.2023.08.030) by Yang et al. 2023. on _Selaginella moellendorffii_. Only a subset of the data, consisting of sections 1-5 of roots 1-3 is included for computational reasons. The data is loaded as follows.
 
 ```{r}
 data(Yang)
@@ -81,7 +81,8 @@ It is a dataframe containing molecule locations (x- and y-variables), gene ident
 The first step in the analysis is to build a hyperframe as provided in the _spatstat_ package, which consists of all different point patterns and their covariates
 
 ```{r}
-hypYang <- buildHyperFrame(Yang, coordVars = c("x", "y"), imageVars = c("day", "root", "section"))
+hypYang <- buildHyperFrame(Yang, coordVars = c("x", "y"), 
+                           imageVars = c("day", "root", "section"))
 ```
 
 As printed by the code, `r nrow(hypYang)` images or point patterns were found. We take a closer look at the hyperframe
@@ -106,7 +107,7 @@ hypYang$ppp[[1]]
 As a final confirmation of successfully reading in the data, we can make an exploratory plot:
 
 ```{r plotExplore, fig.height = 6.5}
-plotExplore(hypYang)
+plotExplore(hypYang, Cex = 2)
 ```
 
 A few genes are shown as coloured dots as shown in the legend, all other genes' transcripts are shown in grey.
@@ -119,7 +120,8 @@ The first round of tests concerns the aggregation or regularity of individual tr
 
 ```{r estpisyang}
 nnObj <- estPis(hypYang,
-    pis = c("nn", "nnPair"), null = "background", features = c("SmVND2", "SmPINR", getFeatures(hypYang)[seq_len(20)])
+    pis = c("nn", "nnPair"), null = "background", verbose = FALSE,
+    features = c("SmVND2", "SmPINR", getFeatures(hypYang)[seq_len(20)])
 )
 ```
 
@@ -177,7 +179,7 @@ We see many genes with significant aggregation (PI estimate smaller than 0.5), b
 Tests for co/antilocalization are requested by supplying "nnPair" as PI. By default, all combinations of features into pairs are fitted. 
 Again we plot the weighting function, which is now a bivariate spline as a function of the minority and majority gene, i.e. the gene in the gene pair with least respectively most events:
 
-```{r plotwf, fig.height = 6}
+```{r plotwf, fig.height = 5}
 plotWf(nnObj, pi = "nnPair")
 ```
 
@@ -212,11 +214,12 @@ writeToXlsx(allModsNN, file = "myfile.xlsx")
 
 # Eng2019: Mouse brain cells
 
-A second dataset was published in a ["paper"](10.1038/s41586-019-1049-y) by Eng et al. (2019) on mouse fibroblast cells, which will serve to illustrate methods given knowledge of cell boundaries. The dataset was subset to the eight most expressed genes for memory reasons. The hyperframe is built as before:
+A second dataset was published in a [paper](10.1038/s41586-019-1049-y) by Eng et al. (2019) on mouse fibroblast cells, which will serve to illustrate methods given knowledge of cell boundaries. The dataset was subset to the eight most expressed genes for memory reasons. The hyperframe is built as before:
 
 ```{r readInEngData, warning=FALSE}
 data(Eng)
-hypEng <- buildHyperFrame(Eng, coordVars = c("x", "y"), imageVars = c("fov", "experiment"))
+hypEng <- buildHyperFrame(Eng, coordVars = c("x", "y"), 
+                          imageVars = c("fov", "experiment"))
 ```
 
 Next, the cell boundaries are added, as a list with names corresponding to the rownames of the hyperframe. Different formats are allowed to provide windows in case the correct packages are installed, see _?addCell_. Based on these cells, every event is assigned to a cell.
@@ -234,10 +237,11 @@ plotExplore(hypEng)
 
 ## Vicinity to cell edge or centroid, and other within-cell localization patterns
 
-First, we will test for vicinity of the RNA molecules to cell boundaries or centroids, and for localization patterns within the cell. For this we pass different PI arguments to the _estPis()_ function. As null hypothesis, we choose complete spatial randomness (CSR) within the cell, which seems most natural, although the "background" option is also available. The suffix "Cell" indicates that nearest neighbour distances are calculated within the same cell only.
+First, we will test for vicinity of the RNA molecules to cell boundaries or centroids, and for localization patterns within the cell. For this we pass different PI arguments to the _estPis()_ function. As null hypothesis, we choose complete spatial randomness (CSR) within the cell, which seems most natural, although the "background" option is also available. The suffix "Cell" indicates that aggregation and colocalization is tested within the same cell only, so not across the tissue.
 
 ```{r}
-engPis <- estPis(hypEng, pis = c("edge", "centroid", "nnCell", "nnPairCell"), null = "CSR")
+engPis <- estPis(hypEng, pis = c("edge", "centroid", "nnCell", "nnPairCell"), 
+                 null = "CSR", verbose = FALSE)
 ```
 
 As before, the weight function needs to be added for the nearest neighbour PIs.
@@ -262,7 +266,8 @@ allModsNNcell <- fitLMMs(engPis, fixedVars = "experiment", addMoransI = TRUE)
 For the "edge" and "centroid" options, each individual RNA-molecule is an observation in the model, and random effects are added for both cell and image. For "nnCell" and "nnPairCell", the observations are averaged per cell, and so only a random effect common to all cells of a single image remains. Now we plot the genes with the strongest remoteness from the cell edge:
 
 ```{r plotEdgeEng, fig.height = 6.5}
-plotTopResults(hypEng, results = allModsNNcell, pi = "edge", what = "far", numFeats = 1)
+plotTopResults(hypEng, results = allModsNNcell, pi = "edge", what = "far", 
+               numFeats = 1)
 ```
 
 Note that the cells are selected for high expression of the gene and are not shown in their original position! Use _plotExplore()_ for this purpose. Now plot the gene with strongest intracellular aggregation:
@@ -274,7 +279,8 @@ plotTopResults(hypEng, results = allModsNNcell, pi = "nnCell", numFeats = 1)
 And finally the gene pair with the strongest antilocalization:
 
 ```{r, fig.height = 6.5}
-plotTopResults(hypEng, results = allModsNNcell, pi = "nnPairCell", numFeats = 1, what = "anti")
+plotTopResults(hypEng, results = allModsNNcell, pi = "nnPairCell", numFeats = 1, 
+               what = "anti")
 ```
 
 We can see that the molecule distribution within the cell is all but uniform!
@@ -284,7 +290,8 @@ We can see that the molecule distribution within the cell is all but uniform!
 A side question that may arise is whether the measures of intracellular aggregation have a global spatial patterning throughout the tissue. As a start, we can explore this graphically for the gene most significantly remote from the cell edge:
 
 ```{r exploreSpatCell, fig.height = 7}
-plotExplore(hypEng, piEsts = engPis, piColourCell = "edge", features = remEdge <- rownames(getResults(allModsNNcell, "edge", "Intercept"))[1])
+plotExplore(hypEng, piEsts = engPis, piColourCell = "edge", features = 
+                remEdge <- rownames(getResults(allModsNNcell, "edge", "Intercept"))[1])
 ```
 
 The molecules are shown in red, while the yellow-blue scale indicates the PI estimate. It seems like in the central cells, the PI is smaller (molecules closer to the cell edge) than the outer cells. We test whether the Moran's I statistic, a measure for spatial aggregation of numeric variables, is significant over the different point patterns:
