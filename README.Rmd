@@ -19,12 +19,13 @@ Load the package
 library(smoppix)
 ```
 
-Load a dataset, and convert it to a _spatstat_ hyperframe.
+Load a dataset, convert it to a _spatstat_ hyperframe, adn make an explorative plot:
 
 ```{r loadYang}
 data(Yang)
 hypYang <- buildHyperFrame(Yang, coordVars = c("x", "y"), 
                            imageVars = c("day", "root", "section"))
+plotExplore(hypYang)
 ```
 
 Estimate the univariate nearest neighbour probabilistic index:

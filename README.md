@@ -21,7 +21,8 @@ Load the package
 library(smoppix)
 ```
 
-Load a dataset, and convert it to a *spatstat* hyperframe.
+Load a dataset, convert it to a *spatstat* hyperframe, adn make an
+explorative plot:
 
 ``` r
 data(Yang)
@@ -30,6 +31,12 @@ hypYang <- buildHyperFrame(Yang, coordVars = c("x", "y"),
 ```
 
     ## Found 29 unique images
+
+``` r
+plotExplore(hypYang)
+```
+
+![](README_files/figure-gfm/loadYang-1.png)<!-- -->
 
 Estimate the univariate nearest neighbour probabilistic index:
 
@@ -61,12 +68,12 @@ head(getResults(allModsNN, "nn", "Intercept"))
 ```
 
     ##             Estimate          SE         pVal         pAdj
-    ## SmBIRDa    0.2637957 0.006708042 4.197715e-24 3.358172e-22
-    ## SmAUX1a    0.3404423 0.005404623 4.353388e-22 1.741355e-20
-    ## SmCYCA1;1a 0.3481950 0.006805181 6.287441e-19 1.676651e-17
-    ## SmPFA2b    0.2274859 0.010084754 3.234472e-17 6.468944e-16
-    ## SmCYCD3;3a 0.3901479 0.005949646 7.648429e-17 1.223749e-15
-    ## SmSGNb     0.3401097 0.010919376 9.029209e-14 1.203895e-12
+    ## SmBIRDa    0.2638346 0.006757913 5.128128e-24 4.102502e-22
+    ## SmAUX1a    0.3404722 0.005479555 6.275770e-22 2.510308e-20
+    ## SmCYCA1;1a 0.3482532 0.006784812 5.879442e-19 1.567851e-17
+    ## SmPFA2b    0.2276867 0.010201285 4.104503e-17 8.209007e-16
+    ## SmCYCD3;3a 0.3904622 0.006009758 1.057280e-16 1.691648e-15
+    ## SmSGNb     0.3398192 0.010948443 9.202101e-14 1.226947e-12
 
 Finally write the results to a spreadsheet:
 
