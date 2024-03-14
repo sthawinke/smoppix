@@ -35,7 +35,7 @@ nnObj <- estPis(hypYang, pis = "nn", null = "background", verbose = FALSE)
 
 Add a variance weighting function and plot it
 
-```{r}
+```{r wf}
 nnObj <- addWeightFunction(nnObj, designVars = c("day", "root"))
 plotWf(nnObj, pi = "nn")
 ```
