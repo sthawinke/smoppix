@@ -1,0 +1,23 @@
+---
+output: github_document
+title: "SMOPPIX: Single-MOlecule sPatial omics data analysed using the Probabilistic IndeX"
+author: Stijn Hawinkel and Steven Maere
+---
+
+This repo provides code for analysing spatial transcriptomics and other omics data on the single-molecule level using probabilistic indices. A simple use-case is shown below, more extensive documentation can be found in the vignette
+
+The package can be installed from GitHub as follows:
+
+```{r installAndLoadGitHub, eval = FALSE}
+library(devtools)
+install_github("sthawinke/smoppix")
+```
+
+Load a dataset:
+
+```{r}
+hypYang <- buildHyperFrame(Yang, coordVars = c("x", "y"), 
+                           imageVars = c("day", "root", "section"))
+```
+
+
