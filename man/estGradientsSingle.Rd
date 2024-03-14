@@ -19,8 +19,8 @@ estGradientsSingle(
 
 \item{gradients}{The gradients indices to be estimated}
 
-\item{fixedForm, randomForm, fixedFormSimple}{Formulae for fixed effects, random effects and fixed effects without
-slopes respectively}
+\item{fixedForm, randomForm, fixedFormSimple}{Formulae for fixed effects,
+random effects and fixed effects without slopes respectively}
 
 \item{effects}{Character vector of fixed and random effects}
 

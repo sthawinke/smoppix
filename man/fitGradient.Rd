@@ -17,8 +17,8 @@ fitGradient(
 \arguments{
 \item{hypFrame}{the hyperframe}
 
-\item{fixedForm, randomForm, fixedFormSimple}{Formulae for fixed effects, random effects and fixed effects without
-slopes respectively}
+\item{fixedForm, randomForm, fixedFormSimple}{Formulae for fixed effects,
+random effects and fixed effects without slopes respectively}
 
 \item{returnModel}{A boolean, should the entire model be returned?
 Otherwise the p-value and coefficient vector are returned}

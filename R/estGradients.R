@@ -29,14 +29,17 @@
 #'     coordVars = c('x', 'y'),
 #'     imageVars = c('day', 'root', 'section')
 #' )
-#' yangGrads <- estGradients(hypYang[seq_len(10),], features = getFeatures(hypYang)[seq_len(2)],
+#' yangGrads <- estGradients(hypYang[seq_len(10),], features =
+#' getFeatures(hypYang)[seq_len(2)],
 #' fixedEffects = "day", randomEffects = "root")
 #' #Gradients within cell
 #'data(Eng)
-#' hypEng <- buildHyperFrame(Eng, coordVars = c("x", "y"), imageVars = c("fov", "experiment"))
+#' hypEng <- buildHyperFrame(Eng, coordVars = c("x", "y"),
+#' imageVars = c("fov", "experiment"))
 #' hypEng <- addCell(hypEng, EngRois, verbose = FALSE)
 #' #Limit number of cells for computational reasons
-#' engGrads <- estGradients(hypEng[seq_len(2),], features = feat <- getFeatures(hypEng)[seq_len(2)])
+#' engGrads <- estGradients(hypEng[seq_len(2),], features =
+#' feat <- getFeatures(hypEng)[seq_len(2)])
 #' @seealso \link{fitGradient}, \link{estGradientsSingle}
 estGradients <- function(hypFrame, gradients = c("overall", if(!is.null(hypFrame$owins)) "cell"),
                          fixedEffects = NULL, randomEffects = NULL,
@@ -54,17 +57,18 @@ estGradients <- function(hypFrame, gradients = c("overall", if(!is.null(hypFrame
     if (verbose) {
         message("Calculating gradients")
     }
-    fixedForm = buildFormula(outcome = "ppp", fixedVars = c(fixedEffects, "x:id", "y:id", "id"),
-                             randomVars = NULL)
+    fixedForm = buildFormula(outcome = "ppp", fixedVars =
+            c(fixedEffects, "x:id", "y:id", "id"), randomVars = NULL)
     fixedFormSimple = buildFormula(outcome = "ppp", fixedVars = c(fixedEffects, "id"),
                              randomVars = NULL)
     randomForm = if(!is.null(randomEffects))
         buildFormula(outcome = "", fixedVars = NULL, randomVars = randomEffects)
     grads <- loadBalanceBplapply(loopFun = loopFun, features, function(gene) {
-        hypFrame$ppp = lapply(hypFrame$ppp, function(x) x[marks(x, drop = FALSE)$gene == gene, ])
+        hypFrame$ppp = lapply(hypFrame$ppp, function(x) {
+            x[marks(x, drop = FALSE)$gene == gene, ]})
         out <- estGradientsSingle(hypFrame, gradients = gradients,
-                                  silent = silent, fixedForm = fixedForm,
-            randomForm = randomForm, fixedFormSimple = fixedFormSimple, effects = allEffects, ...)
+            silent = silent, fixedForm = fixedForm, randomForm = randomForm,
+            fixedFormSimple = fixedFormSimple, effects = allEffects, ...)
         return(out)
     })
     names(grads) = features
@@ -73,8 +77,8 @@ estGradients <- function(hypFrame, gradients = c("overall", if(!is.null(hypFrame
 #' Workhorse for \link{estGradients} on a single feature
 #'
 #' @inheritParams estGradients
-#' @param fixedForm,randomForm,fixedFormSimple Formulae for fixed effects, random effects and fixed effects without
-#' slopes respectively
+#' @param fixedForm,randomForm,fixedFormSimple Formulae for fixed effects,
+#'random effects and fixed effects without slopes respectively
 #' @param effects Character vector of fixed and random effects
 #' @param ... Passed onto fitGradient
 #'
@@ -84,7 +88,8 @@ estGradients <- function(hypFrame, gradients = c("overall", if(!is.null(hypFrame
 #' @importFrom Rdpack reprompt
 #' @importFrom spatstat.geom unmark cbind.hyperframe
 #' @seealso \link{estGradients}
-estGradientsSingle <- function(hypFrame, gradients, fixedForm, randomForm, fixedFormSimple, effects = NULL, ...) {
+estGradientsSingle <- function(hypFrame, gradients, fixedForm, randomForm,
+                               fixedFormSimple, effects = NULL, ...) {
     # Within cell: recurse into estGradientsSingle but now per cell
     cell <- if ("cell" %in% gradients) {
         hypSub = hyperframe("ppp" = unlist(recursive = FALSE,
@@ -111,4 +116,26 @@ estGradientsSingle <- function(hypFrame, gradients, fixedForm, randomForm, fixed
                     fixedFormSimple = fixedFormSimple,...)
     }
     list("overall" = overall, "cell" = cell)
+}
+#' Extract the p-values for gradient fitting
+#'
+#' @param res The fitted gradients
+#' @param gradient The gradient to be extracted, a character vector equal to
+#' "overall" or "cell".
+#' @param method Method of multiplicity correction, see \link{p.adjust}.
+#' Defaults to Benjamini-Hochberg
+#' @importFrom stats p.adjust
+#' @return A vector of p-values
+#' @export
+#'
+#' @examples
+#' example(estGradients, "smoppix")
+#' pVals = getPvaluesGradient(engGrads)
+getPvaluesGradient = function(res, gradient, method = "BH"){
+    gradient = match.arg(gradient, choices = c("cell", "overall"))
+    pVals = vapply(engGrads, FUN.VALUE = double(1), function(x){
+        x[[gradient]]$pVal
+    })
+    pAdj = p.adjust(pVals, method = metho)
+    return(pVals)
 }
