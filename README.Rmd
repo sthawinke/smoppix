@@ -1,7 +1,7 @@
 ---
 output: github_document
 title: "SMOPPIX: Single-MOlecule sPatial omics data analysed using the Probabilistic IndeX"
-author: Stijn Hawinkel and Steven Maere
+author: Stijn Hawinkel
 ---
 
 This repo provides code for analysing spatial transcriptomics and other omics data on the single-molecule level using probabilistic indices. A simple use-case is shown below, more extensive documentation can be found in the vignette
