@@ -316,15 +316,10 @@ The fitting process is quite computation intensive, so we limit ourselves to a s
 
 ```{r enggrads}
 engGrads <- estGradients(hypEng[seq_len(3),], features = feat <- getFeatures(hypEng)[seq_len(3)])
-pValsGrads = getPvaluesGradient(engGrads)
+pValsGrads = getPvaluesGradient(engGrads, "cell")
 ```
 
 Keep in mind though that a gradient that is significant for a computer may look very different from the human perspective; many types of spatial patterns can be captured by a gradient to some extent without providing a satisfactory fit.
-
-```{r showEngGrads}
-
-```
-
 
 # Troubleshooting
 
@@ -336,8 +331,8 @@ An error like
 > In parallel::mccollect(wait = FALSE, timeout = 1) :
 >  1 parallel job did not deliver a result
 
-often indicates insufficient memory. Try reducing the number of cores required with MultiCoreParam(),
-or switch to serial processing with register(SerialParam()).
+often indicates insufficient memory. Try reducing the number of cores requested with _MultiCoreParam()_,
+or switch to serial processing with _register(SerialParam())_.
  
 # Session info
 

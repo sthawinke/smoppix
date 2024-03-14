@@ -136,6 +136,6 @@ getPvaluesGradient = function(res, gradient, method = "BH"){
     pVals = vapply(engGrads, FUN.VALUE = double(1), function(x){
         x[[gradient]]$pVal
     })
-    pAdj = p.adjust(pVals, method = metho)
+    pAdj = p.adjust(pVals, method = method)
     return(pVals)
 }
