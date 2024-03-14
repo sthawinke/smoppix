@@ -23,5 +23,5 @@ Extract the p-values for gradient fitting
 }
 \examples{
 example(estGradients, "smoppix")
-pVals = getPvaluesGradient(engGrads)
+pVals = getPvaluesGradient(engGrads, "cell")
 }

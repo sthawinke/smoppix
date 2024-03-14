@@ -62,3 +62,6 @@ if (requireNamespace("polyCub")) {
         expect_is(marks(acDf$ppp[[1]])$cell, "character")
     })
 }
+test_that("Error is thrown in case of wrong window type", {
+    expect_error(addCell(hypFrame, list(w1 = rnorm, w2 = rpois)))
+})

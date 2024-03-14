@@ -31,7 +31,7 @@
 #' example(fitLMMs, 'smoppix')
 #' plotTopResults(hypYang, lmmModels, 'nn')
 #' plotTopResults(hypYang, lmmModels, 'nn', effect = 'Intercept', what = "reg")
-#' #For the sake of illustration, set high signigicance level
+#' #For the sake of illustration, set high significance level
 #' plotTopResults(hypYang, lmmModels, 'nn', effect = 'day', what = "reg",
 #' effectParameter ="day0", sigLevel = 0.9)
 plotTopResults <- function(hypFrame, results, pi, effect = "Intercept",

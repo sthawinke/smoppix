@@ -13,6 +13,8 @@ test_that("Top results plotting proceeds without errors", {
         sigLevel = 0.4))
 })
 test_that("Fitting linear mixed models throws errors where appropriate", {
+    expect_error(getResults(results = linModsNNint, hypYang, "centroid"))
+    expect_error(getResults(results = linModsNNint, hypYang, "nn", effect = "treatment"))
     expect_error(plotTopResults(results = linModsNNint, hypYang, "centroid"))
     expect_error(plotTopResults(results = linModsNNint, hypYang, "nn", effect = "treatment"))
     expect_error(plotTopResults(results = linModsMP, hypFrame, "centroid", sigLevel = 1e-05))
