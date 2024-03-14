@@ -54,7 +54,7 @@ plotExplore <- function(hypFrame, features = getFeatures(hypFrame)[seq_len(6)], 
         }
         piDf <- buildDataFrame(piEsts, gene = featsplit, pi = piColourCell)
         if (piColourCell %in% c("edge", "centroid")) {
-            piDf <- aggregate(pi ~ cell, piDf, FUN = mean, na.rm = TRUE)
+            piDf <- aggregate(pi ~ cell +image, piDf, FUN = mean, na.rm = TRUE)
         }
         foo <- checkPi(piEsts, piColourCell)
         piColourCell <- match.arg(piColourCell, choices = c("edge", "centroid", "nnCell",
