@@ -13,11 +13,48 @@ library(devtools)
 install_github("sthawinke/smoppix")
 ```
 
-Load a dataset:
+Load the package
 
 ```{r}
+library(smoppix)
+```
+
+Load a dataset, and convert it to a _spatstat_ hyperframe.
+
+```{r loadYang}
+data(Yang)
 hypYang <- buildHyperFrame(Yang, coordVars = c("x", "y"), 
                            imageVars = c("day", "root", "section"))
 ```
+
+Estimate the univariate nearest neighbour probabilistic index:
+
+```{r nn}
+nnObj <- estPis(hypYang, pis = "nn", null = "background", verbose = FALSE)
+```
+
+Add a variance weighting function and plot it
+
+```{r}
+nnObj <- addWeightFunction(nnObj, designVars = c("day", "root"))
+plotWf(nnObj, pi = "nn")
+```
+
+The inference step: fit linear mixed models, and show the most significant results:
+
+```{r inference}
+allModsNN <- fitLMMs(nnObj, fixedVars = "day", randomVars = "root")
+head(getResults(allModsNN, "nn", "Intercept"))
+```
+
+Finally write the results to a spreadsheet:
+
+```{r writeToSpreadsheet, eval = FALSE}
+writeToXlsx(allModsNN, file = "myfile.xlsx")
+```
+
+
+
+
 
 
