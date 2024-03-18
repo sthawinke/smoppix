@@ -20,6 +20,8 @@
 #' @param piEsts Set of PI estimates, returned by estPis
 #' @param palCols Two extremes of the colour palette for colouring the cells
 #' @param border Passed on to plot.owin, and further to graphics::polygon
+#' @param CexLegend,CexLegendMain Expansion factor for the legend and its title
+#' respectively
 #' @note palCols sets the pseudo-continuous scale to colour cells.
 #'
 #' @return Plots a facet of point patterns to output
@@ -37,8 +39,8 @@
 #' plotExplore(hypYang, features = c('SmRBRb', 'SmTMO5b', 'SmWER--SmAHK4f'))
 plotExplore <- function(hypFrame, features = getFeatures(hypFrame)[seq_len(6)], ppps,
     maxPlot = 1e+05, Cex = 1, plotWindows = !is.null(hypFrame$owins), plotPoints = TRUE, piEsts = NULL,
-    Xlim = NULL, Ylim = NULL, Cex.main = 0.8, Mar = c(0.35, 0.1, 0.75, 0.1), titleVar = NULL,
-    piColourCell = NULL, palCols = c("blue", "yellow"), border = NULL) {
+    Xlim = NULL, Ylim = NULL, Cex.main = 0.8, Mar = c(0.4, 0.1, 0.8, 0.1), titleVar = NULL,
+    piColourCell = NULL, palCols = c("blue", "yellow"), border = NULL, CexLegend = 1, CexLegendMain = 1.2) {
     if (!is.hyperframe(hypFrame)) {
         hypFrame <- hypFrame$hypFrame
     }
@@ -124,9 +126,9 @@ plotExplore <- function(hypFrame, features = getFeatures(hypFrame)[seq_len(6)], 
         paste("pi", piColourCell)
     } else {
         "Feature"
-    })
+    }, Cex = CexLegend, CexMain = CexLegendMain)
 }
-addLegend <- function(Cols, Shift = c(0, 0), Cex = 0.85, Pch = 20, Main = "") {
+addLegend <- function(Cols, Shift = c(0, 0), Cex = 0.85, Pch = 20, Main = "", CexMain = 1.2) {
     idCols <- which(Cols != "grey")
     li <- length(idCols)
     maxY <- 0.85 - 0.1 * (mainId <- Main != "")
@@ -134,7 +136,7 @@ addLegend <- function(Cols, Shift = c(0, 0), Cex = 0.85, Pch = 20, Main = "") {
         Shift[2], pch = Pch, col = Cols[idCols])
     text(x = rep(0.25, li) + Shift[1], SeqY, names(Cols)[idCols], adj = 0, cex = Cex)
     if (mainId) {
-        text(x = 0.4 + Shift[1], y = 0.95 + Shift[2], Main, cex = 1.2)
+        text(x = 0.4 + Shift[1], y = 0.95 + Shift[2], Main, cex = CexMain)
     }
 }
 makeCols <- function(features, hypFrame) {

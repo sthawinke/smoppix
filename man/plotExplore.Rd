@@ -20,7 +20,9 @@ plotExplore(
   titleVar = NULL,
   piColourCell = NULL,
   palCols = c("blue", "yellow"),
-  border = NULL
+  border = NULL,
+  CexLegend = 1,
+  CexLegendMain = 1.2
 )
 }
 \arguments{
@@ -54,6 +56,9 @@ Defaults to maximum 99.}
 \item{palCols}{Two extremes of the colour palette for colouring the cells}
 
 \item{border}{Passed on to plot.owin, and further to graphics::polygon}
+
+\item{CexLegend, CexLegendMain}{Expansion factor for the legend and its title
+respectively}
 }
 \value{
 Plots a facet of point patterns to output
