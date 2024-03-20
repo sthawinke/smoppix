@@ -46,7 +46,7 @@
 #' @seealso \link{estPisSingle}
 estPis <- function(hypFrame, pis = c("nn", "nnPair", "edge", "centroid", "nnCell",
     "nnPairCell"), verbose = TRUE, null = c("background", "CSR"), nPointsAll = switch(null,
-    background = 5e4, CSR = 1e4), nPointsAllWithinCell = switch(null, background = 10000,
+    background = 2e4, CSR = 1e4), nPointsAllWithinCell = switch(null, background = 10000,
     CSR = 1e3), nPointsAllWin = 1000, minDiff = 20, minObsNN = 1L, features = getFeatures(hypFrame),
     ...) {
     pis <- match.arg(pis, several.ok = TRUE)

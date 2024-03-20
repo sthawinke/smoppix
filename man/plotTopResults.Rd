@@ -42,8 +42,8 @@ plotTopResults(
 
 \item{piThreshold}{The threshold for PI, a minimum effect size}
 
-\item{effectParameter}{A character string, indicating which parameter to lool for when
-effecct is provided}
+\item{effectParameter}{A character string, indicating which parameter to look
+for when effect is provided}
 
 \item{...}{passed onto plotting functions plotCells or plotExplore}
 }
