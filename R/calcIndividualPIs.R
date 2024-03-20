@@ -66,6 +66,10 @@ calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null,
                     ) * (NPall-selfPoint))
                     tiesMat <- round(((tiesMat-selfPointTies)/(npoints(pSubLeft$Pout) - selfPoint)
                     ) * (NPall-selfPoint))
+                    tiesMat[tiesMat==0] = 1
+                    #Cfr permutation p-values can never be zero (Phipson 2010)
+                    #The observed distance is at least a tie
+
                 } else {
                     approxRanks <- round(approxRanksTmp*NPall)
                 }

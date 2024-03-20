@@ -11,8 +11,8 @@
 #' @param numFeats The number of features to plot
 #' @param effect The name of the effect
 #' @param piThreshold The threshold for PI, a minimum effect size
-#' @param effectParameter A character string, indicating which parameter to lool for when
-#' effecct is provided
+#' @param effectParameter A character string, indicating which parameter to look
+#'  for when effect is provided
 #' @param ... passed onto plotting functions plotCells or plotExplore
 #'
 #' @details The "what" argument indicates if features far from or close to
