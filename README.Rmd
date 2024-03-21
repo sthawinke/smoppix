@@ -15,7 +15,7 @@ install_github("sthawinke/smoppix")
 
 Load the package
 
-```{r}
+```{r loadSmoppix}
 library(smoppix)
 ```
 
@@ -47,6 +47,13 @@ The inference step: fit linear mixed models, and show the most significant resul
 allModsNN <- fitLMMs(nnObj, fixedVars = "day", randomVars = "root")
 head(getResults(allModsNN, "nn", "Intercept"))
 ```
+
+Let's make it visual and plot the most significant result;
+
+```{r plotTopRes}
+plotTopResults(hypYang, allModsNN, pi = "nn")
+```
+
 
 Finally write the results to a spreadsheet:
 

@@ -128,15 +128,15 @@ plotExplore <- function(hypFrame, features = getFeatures(hypFrame)[seq_len(6)], 
         "Feature"
     }, Cex = CexLegend, CexMain = CexLegendMain)
 }
-addLegend <- function(Cols, Shift = c(0, 0), Cex = 0.85, Pch = 20, Main = "", CexMain = 1.2) {
+addLegend <- function(Cols, Shift = c(0, 0), Cex = 0.95, Pch = 20, Main = "", CexMain = 1.3) {
     idCols <- which(Cols != "grey")
     li <- length(idCols)
-    maxY <- 0.85 - 0.1 * (mainId <- Main != "")
-    points(x = rep(0.15, li) + Shift[1], SeqY <- seq(maxY, 0.1, length.out = li) +
+    maxY <- 0.8 - 0.1 * (mainId <- Main != "")
+    points(x = rep(0.15, li) + Shift[1], SeqY <- seq(maxY, 0.2, length.out = li) +
         Shift[2], pch = Pch, col = Cols[idCols])
     text(x = rep(0.25, li) + Shift[1], SeqY, names(Cols)[idCols], adj = 0, cex = Cex)
     if (mainId) {
-        text(x = 0.4 + Shift[1], y = 0.95 + Shift[2], Main, cex = CexMain)
+        text(x = 0.4 + Shift[1], y = 0.9 + Shift[2], Main, cex = CexMain)
     }
 }
 makeCols <- function(features, hypFrame) {
