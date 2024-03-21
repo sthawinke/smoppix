@@ -74,28 +74,37 @@
 #' })
 #' names(wList) <- rownames(hypFrame) # Matching names is necessary
 #' hypFrame2 <- addCell(hypFrame, wList)
-addCell <- function(
-    hypFrame, owins, cellTypes = NULL, findOverlappingOwins = FALSE,
-    warnOut = TRUE, coords = c("x", "y"), verbose = TRUE, addCellMarkers = TRUE,
-    ...) {
+addCell <- function(hypFrame,
+                    owins,
+                    cellTypes = NULL,
+                    findOverlappingOwins = FALSE,
+                    warnOut = TRUE,
+                    coords = c("x", "y"),
+                    verbose = TRUE,
+                    addCellMarkers = TRUE,
+                    ...) {
     stopifnot(
-        nrow(hypFrame) == length(owins), all(rownames(hypFrame) %in% names(owins)),
-        is.hyperframe(hypFrame), is.null(cellTypes) || is.data.frame(cellTypes)
+        nrow(hypFrame) == length(owins),
+        all(rownames(hypFrame) %in% names(owins)),
+        is.hyperframe(hypFrame),
+        is.null(cellTypes) || is.data.frame(cellTypes)
     )
     if (verbose) {
         message("Converting windows to spatstat owins")
     }
     # Convert different types of windows to owins
-    owins <- loadBalanceBplapply(Nam <- names(owins), function(nam) {
-        convertToOwins(owins[[nam]], coords = coords, namePPP = nam, ...)
-    })
+    owins <-
+        loadBalanceBplapply(Nam <- names(owins), function(nam) {
+            convertToOwins(owins[[nam]], coords = coords, namePPP = nam, ...)
+        })
     names(owins) <- Nam
     if (addCellMarkers) {
         if (ct <- is.data.frame(cellTypes)) {
             if (!("cell" %in% names(cellTypes))) {
                 stop("Variable names 'cell' must be contained in cell types dataframe")
             }
-            otherCellNames <- names(cellTypes)[names(cellTypes) != "cell"]
+            otherCellNames <-
+                names(cellTypes)[names(cellTypes) != "cell"]
             # Names of the other covariates
         }
         if (verbose) {
@@ -108,17 +117,19 @@ addCell <- function(
             ppp <- hypFrame[[nn, "ppp"]]
             NP <- npoints(ppp)
             if (any("cell" == names(marks(ppp, drop = FALSE)))) {
-                stop("Cell markers already present in point pattern ", nn)
+                stop("Cell markers already present in point pattern ",
+                     nn)
             }
             if (findOverlappingOwins) {
                 # Find overlap between cells
-                foo <- findOverlap(owins[[nn]], hypFrame[nn, "centroids"])
+                foo <-
+                    findOverlap(owins[[nn]], hypFrame[nn, "centroids"])
             }
             # Assign events to cells
             cellOut <- rep("NA", NP)
             idLeft <- seq_len(NP)
             for (i in names(owins[[nn]])) {
-                idIn <- which(inside.owin(ppp[idLeft, ], w = owins[[nn]][[i]]))
+                idIn <- which(inside.owin(ppp[idLeft,], w = owins[[nn]][[i]]))
                 cellOut[idLeft[idIn]] <- i
                 # Don't overwrite, stick to first match, and do not detect
                 # overlap
@@ -126,22 +137,27 @@ addCell <- function(
             }
             if (NP == (nOut <- length(idLeft))) {
                 stop(
-                    "All points lie outside all windows for point pattern ", nn,
+                    "All points lie outside all windows for point pattern ",
+                    nn,
                     " check your input!"
                 )
             }
             if ((nOut > 0) && warnOut) {
-                warning(nOut, " points lie outside all windows for point pattern ",
-                    nn, " and were not assigned to a cell.\n",
+                warning(
+                    nOut,
+                    " points lie outside all windows for point pattern ",
+                    nn,
+                    " and were not assigned to a cell.\n",
                     immediate. = TRUE
                 )
             }
-            newmarks <- cbind(marks(ppp, drop = FALSE), cell = cellOut)
+            newmarks <-
+                cbind(marks(ppp, drop = FALSE), cell = cellOut)
             if (ct) {
-                newmarks <- cbind(newmarks, cellTypes[match(cellOut, cellTypes$cell),
-                    otherCellNames,
-                    drop = FALSE
-                ])
+                newmarks <-
+                    cbind(newmarks, cellTypes[match(cellOut, cellTypes$cell),
+                                              otherCellNames,
+                                              drop = FALSE])
             }
             marks(ppp) <- newmarks
             hypFrame[nn, "ppp"] <- ppp
