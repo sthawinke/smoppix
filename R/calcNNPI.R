@@ -14,17 +14,17 @@
 #' function
 #' @seealso \link{pnhyper}, \link{calcIndividualPIs}
 calcNNPI <- function(Ranks, n, m, ties, r = 1) {
-    tmp = pnhyper(Ranks, n = n, m = m, r = r)
-    if(!is.null(ties)) {
-        id = ties > 0
-        tmp[id] = 0.5*(tmp[id] + pnhyper(Ranks[id]+ties[id], n = n, m = m, r = r))
-        #Fix ME! High number of white balls problem
-        #Everything up to Ranks counted twice, up to ties+Ranks counted once,
-        #so divide by 2
-            }
+    tmp <- pnhyper(Ranks, n = n, m = m, r = r)
+    if (!is.null(ties)) {
+        id <- ties > 0
+        tmp[id] <- 0.5 * (tmp[id] + pnhyper(Ranks[id] + ties[id], n = n, m = m, r = r))
+        # Fix ME! High number of white balls problem
+        # Everything up to Ranks counted twice, up to ties+Ranks counted once,
+        # so divide by 2
+    }
     # Exclude event itself, so NP - 1 m = N-1: White balls, number of other
     # events of the same gene n = n - (NP-1): black balls, number of events of
     # other genes in background r=1: Nearest neighbour so first occurrence
-    #Equalities are counted half
+    # Equalities are counted half
     return(tmp)
 }

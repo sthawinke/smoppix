@@ -11,13 +11,17 @@ test_that("Adding the weight function works", {
     expect_true(all(vapply(objCSR$wfs, FUN.VALUE = TRUE, is, "scam")))
     expect_type(pred <- evalWeightFunction(objBG$Wfs[["nn"]]), "double")
     expect_true(all(pred > 0))
-    expect_type(predNew <- evalWeightFunction(objBG$Wfs[["nn"]], newdata = data.frame(NP = 5)),
-        "double")
+    expect_type(
+        predNew <- evalWeightFunction(objBG$Wfs[["nn"]], newdata = data.frame(NP = 5)),
+        "double"
+    )
     expect_true(predNew > evalWeightFunction(objBG$Wfs[["nn"]], newdata = data.frame(NP = 4)))
     # With information sharing across features
     expect_s3_class(dfBG1 <- buildDataFrame(objBG, gene = "gene1", pi = "nn"), "data.frame")
-    expect_s3_class(dfBG2 <- buildDataFrame(objBG, gene = "gene1--gene2", pi = "nnPair"),
-        "data.frame")
+    expect_s3_class(
+        dfBG2 <- buildDataFrame(objBG, gene = "gene1--gene2", pi = "nnPair"),
+        "data.frame"
+    )
     expect_warning(addWeightFunction(objBG2, lowestLevelVar = "fov"))
 })
 test_that("Weight function application throws errors where appropriate", {
@@ -25,8 +29,10 @@ test_that("Weight function application throws errors where appropriate", {
     expect_error(buildDataFrame(piEstsBG, gene = "gene1--gene2", pi = "nnPair"))
     expect_error(buildDataFrame(piEstsBG, gene = "gene1", pi = "nn"))
     expect_error(addWeightFunction(piEstsCSR, designVars = "condition", lowestLevelVar = "fov"))
-    expect_error(addWeightFunction(piEstsCSR, pi = "nn", lowestLevelVar = c("fov",
-        "condition")))
+    expect_error(addWeightFunction(piEstsCSR, pi = "nn", lowestLevelVar = c(
+        "fov",
+        "condition"
+    )))
     expect_error(addWeightFunction(piEstsCSR, pi = "nn", lowestLevelVar = "treatment"))
     expect_error(addWeightFunction(piEstsCSR, pi = "nn"))
     expect_error(addWeightFunction(piEstsCSR, pi = "centroid"))

@@ -75,6 +75,6 @@ It is by default assumed that random effects are nested within the point
  The weights for the Moran's I statistic are inversely proportional to the distance between cell centroids.
 }
 \examples{
-example(addWeightFunction, 'smoppix')
-lmmModels <- fitLMMs(yangObj, fixedVars = 'day', randomVars = 'root')
+example(addWeightFunction, "smoppix")
+lmmModels <- fitLMMs(yangObj, fixedVars = "day", randomVars = "root")
 }

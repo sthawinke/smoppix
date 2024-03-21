@@ -48,8 +48,10 @@ findOverlap <- function(owins, centroids = NULL, returnIds = FALSE, numCentroids
             if (returnIds) {
                 return(Overlap)
             } else if (Overlap) {
-                stop("Overlap detected between windows ", combs[1, i], " and ", combs[2,
-                  i], "!\nWindows must be non-overlapping.")
+                stop("Overlap detected between windows ", combs[1, i], " and ", combs[
+                    2,
+                    i
+                ], "!\nWindows must be non-overlapping.")
             }
         })
     })

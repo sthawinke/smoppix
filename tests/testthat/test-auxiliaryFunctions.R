@@ -4,8 +4,10 @@ test_that("sund yields correct result", {
     expect_identical("gene1", "gene1")
 })
 test_that("Make gene pairs works as expected", {
-    expect_identical(makePairs(paste0("gene", seq_len(3))), c("gene1--gene2", "gene1--gene3",
-        "gene2--gene3"))
+    expect_identical(makePairs(paste0("gene", seq_len(3))), c(
+        "gene1--gene2", "gene1--gene3",
+        "gene2--gene3"
+    ))
 })
 test_that("getGp does correct extraction", {
     geneMat <- matrix(rnorm(6), 3, 2)
@@ -18,8 +20,10 @@ test_that("Only fixed part of formula is extracted", {
     expect_equal(nobars(formula("outcome~fixed + (1|random)")), formula("outcome ~ fixed"))
 })
 test_that("Design variables are well constructed", {
-    expect_identical(makeDesignVar(data.frame(a = 1:3, b = LETTERS[1:3]), c("a",
-        "b")), c("1_A", "2_B", "3_C"))
+    expect_identical(makeDesignVar(data.frame(a = 1:3, b = LETTERS[1:3]), c(
+        "a",
+        "b"
+    )), c("1_A", "2_B", "3_C"))
 })
 test_that("Coordinate extraction works", {
     expect_is(mat <- getCoordsMat(hypYang$ppp[[1]]), "matrix")

@@ -28,25 +28,38 @@
 #' @export
 #' @seealso \link{plotCells},\link{plotExplore},\link{fitLMMs}
 #' @examples
-#' example(fitLMMs, 'smoppix')
-#' plotTopResults(hypYang, lmmModels, 'nn')
-#' plotTopResults(hypYang, lmmModels, 'nn', effect = 'Intercept', what = "reg")
-#' #For the sake of illustration, set high significance level
-#' plotTopResults(hypYang, lmmModels, 'nn', effect = 'day', what = "reg",
-#' effectParameter ="day0", sigLevel = 0.9)
+#' example(fitLMMs, "smoppix")
+#' plotTopResults(hypYang, lmmModels, "nn")
+#' plotTopResults(hypYang, lmmModels, "nn", effect = "Intercept", what = "reg")
+#' # For the sake of illustration, set high significance level
+#' plotTopResults(hypYang, lmmModels, "nn",
+#'     effect = "day", what = "reg",
+#'     effectParameter = "day0", sigLevel = 0.9
+#' )
 plotTopResults <- function(hypFrame, results, pi, effect = "Intercept",
-                           what = if(pi %in% c("nn", "nnCell")){"aggregated"} else
-                               if(pi %in% c("nnPair", "nnPairCell")){"colocalized"
-                          } else if(pi %in% c("edge", "centroid")){"close"},
-    sigLevel = 0.05, numFeats = 2, piThreshold = switch(effect, Intercept = 0.5, 0), effectParameter = NULL, ...) {
-    stopifnot(is.hyperframe(hypFrame), is.character(what), sigLevel > 0,
-              sigLevel < 1)
-    pi <- match.arg(pi, choices = c("nn", "nnPair", "edge", "centroid", "nnCell",
-        "nnPairCell"))
-    what = match.arg(what, choices = c("close", "far", "regular", "aggregated", "antilocalized", "colocalized"))
-    smallPI = if(what %in% c("far", "regular", "antilocalized")){
+                           what = if (pi %in% c("nn", "nnCell")) {
+                               "aggregated"
+                           } else if (pi %in% c("nnPair", "nnPairCell")) {
+                               "colocalized"
+                           } else if (pi %in% c("edge", "centroid")) {
+                               "close"
+                           },
+                           sigLevel = 0.05, numFeats = 2, piThreshold = switch(effect,
+                               Intercept = 0.5,
+                               0
+                           ), effectParameter = NULL, ...) {
+    stopifnot(
+        is.hyperframe(hypFrame), is.character(what), sigLevel > 0,
+        sigLevel < 1
+    )
+    pi <- match.arg(pi, choices = c(
+        "nn", "nnPair", "edge", "centroid", "nnCell",
+        "nnPairCell"
+    ))
+    what <- match.arg(what, choices = c("close", "far", "regular", "aggregated", "antilocalized", "colocalized"))
+    smallPI <- if (what %in% c("far", "regular", "antilocalized")) {
         FALSE
-    } else if (what %in% c("close", "aggregated", "colocalized")){
+    } else if (what %in% c("close", "aggregated", "colocalized")) {
         TRUE
     }
     if (is.null(Res <- results[[pi]]$results)) {
@@ -55,17 +68,23 @@ plotTopResults <- function(hypFrame, results, pi, effect = "Intercept",
     if (is.null(subRes <- if (interceptId <- effect == "Intercept") Res$Intercept else Res$fixedEffects[[effect]])) {
         stop("Effect ", effect, " was not estimated in the linear model!")
     }
-    if(!interceptId){
-        if(is.null(effectParameter)){
+    if (!interceptId) {
+        if (is.null(effectParameter)) {
             stop("Provide desired parameter for fixed effects!")
-        } else if(length(effectParameter)>1){
+        } else if (length(effectParameter) > 1) {
             stop("Provide effect parameter of length 1")
-        } else if(!((effectParameter <- paste0(effect, effectParameter)) %in% colnames(subRes))){
-            stop("Effect parameter ", effectParameter, " not found in parameters\n",
-                 colnames(subRes)[seq_len(ncol(subRes)-2)])
+        } else if (!((effectParameter <- paste0(effect, effectParameter)) %in% colnames(subRes))) {
+            stop(
+                "Effect parameter ", effectParameter, " not found in parameters\n",
+                colnames(subRes)[seq_len(ncol(subRes) - 2)]
+            )
         }
     }
-    Fun <- match.fun(if (smallPI) {"<"} else {">"})
+    Fun <- match.fun(if (smallPI) {
+        "<"
+    } else {
+        ">"
+    })
     estId <- if (interceptId) {
         !is.na(subRes[, "Estimate"]) & Fun(subRes[, "Estimate"], piThreshold)
     } else {
@@ -73,8 +92,12 @@ plotTopResults <- function(hypFrame, results, pi, effect = "Intercept",
     }
     Feats <- rownames(subRes)[estId & subRes[, "pAdj"] < sigLevel][seq_len(numFeats)]
     if (all(is.na(Feats))) {
-        stop("No significant features found for PI ", pi, " significance level ",
-            sigLevel, " and what ", what, if(!interceptId) {c("for", effectParameter)}, "!")
+        stop(
+            "No significant features found for PI ", pi, " significance level ",
+            sigLevel, " and what ", what, if (!interceptId) {
+                c("for", effectParameter)
+            }, "!"
+        )
     } else {
         Feats <- Feats[!is.na(Feats)]
     }

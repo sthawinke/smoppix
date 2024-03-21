@@ -18,23 +18,24 @@
 #' @importFrom stats formula coef
 #' @importFrom spatstat.model mppm anova.mppm
 #' @seealso \link{estGradients}
-fitGradient = function(hypFrame, fixedForm, randomForm, fixedFormSimple,
-                       returnModel = FALSE, silent, ...){
-    xyModel = try(mppm(data = hypFrame, fixedForm, random = randomForm, ...),
-                  silent = silent)
-     if(returnModel){
+fitGradient <- function(hypFrame, fixedForm, randomForm, fixedFormSimple,
+                        returnModel = FALSE, silent, ...) {
+    xyModel <- try(mppm(data = hypFrame, fixedForm, random = randomForm, ...),
+        silent = silent
+    )
+    if (returnModel) {
         return(xyModel)
-    } else if(is(xyModel, "try-error")){
+    } else if (is(xyModel, "try-error")) {
         return(list("pVal" = 1, "coef" = NULL))
-   } else {
-        intModel = try(mppm(data = hypFrame, fixedFormSimple, random = randomForm, ...), silent = silent)
-        pVal = if(is(intModel, "try-error") ){
+    } else {
+        intModel <- try(mppm(data = hypFrame, fixedFormSimple, random = randomForm, ...), silent = silent)
+        pVal <- if (is(intModel, "try-error")) {
             NA
         } else {
-            anovaRes = anova(xyModel, intModel, test = "Chisq")
+            anovaRes <- anova(xyModel, intModel, test = "Chisq")
             anovaRes$"Pr(>Chi)"[2]
         }
-        out = list("pVal" = pVal, "coef" = coef(xyModel))
+        out <- list("pVal" = pVal, "coef" = coef(xyModel))
         return(out)
     }
 }

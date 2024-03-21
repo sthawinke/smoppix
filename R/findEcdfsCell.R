@@ -10,14 +10,15 @@
 #' @seealso \link{ecdf}
 findEcdfsCell <- function(p, owins, nPointsAllWin, centroids, null, pis, loopFun) {
     ecdfsCell <- loadBalanceBplapply(names(owins), function(nam) {
-        pSub <- switch(null, CSR = runifpoint(nPointsAllWin, win = owins[[nam]]),
-            background = subSampleP(pCell <- p[marks(p, drop = FALSE)$cell == nam,
-                ], nPointsAllWin))
+        pSub <- switch(null,
+            CSR = runifpoint(nPointsAllWin, win = owins[[nam]]),
+            background = subSampleP(pCell <- p[marks(p, drop = FALSE)$cell == nam, ], nPointsAllWin)
+        )
         edge <- if (any(pis == "edge")) {
             ecdf(nncross(pSub, edges(owins[[nam]]), what = "dist"))
         }
         centroid <- if (any(pis == "centroid")) {
-            ecdf(crossdistFastLocal(getCoordsMat(pSub), centroids[nam,,drop = FALSE]))
+            ecdf(crossdistFastLocal(getCoordsMat(pSub), centroids[nam, , drop = FALSE]))
         }
         list(edge = edge, centroid = centroid)
     }, loopFun = loopFun)

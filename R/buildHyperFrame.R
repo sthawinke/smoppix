@@ -13,8 +13,8 @@
 #' @examples
 #' data(Yang)
 #' hypYang <- buildHyperFrame(Yang,
-#'     coordVars = c('x', 'y'),
-#'     imageVars = c('day', 'root', 'section')
+#'     coordVars = c("x", "y"),
+#'     imageVars = c("day", "root", "section")
 #' )
 setGeneric("buildHyperFrame", function(x, ...) standardGeneric("buildHyperFrame"))
 #'
@@ -25,10 +25,14 @@ setGeneric("buildHyperFrame", function(x, ...) standardGeneric("buildHyperFrame"
 #' define the separate point patterns (images)
 #' @param coVars Names of event-wise covariates such as gene or cell for each single point
 
-setMethod("buildHyperFrame", "data.frame", function(x, coordVars, imageVars, coVars = setdiff(names(x),
-    c(imageVars, coordVars)), ...) {
-    buildHyperFrame(as.matrix(x[, coordVars]), image = x[, imageVars, drop = FALSE],
-        covariates = x[, coVars, drop = FALSE], ...)
+setMethod("buildHyperFrame", "data.frame", function(x, coordVars, imageVars, coVars = setdiff(
+                                                        names(x),
+                                                        c(imageVars, coordVars)
+                                                    ), ...) {
+    buildHyperFrame(as.matrix(x[, coordVars]),
+        image = x[, imageVars, drop = FALSE],
+        covariates = x[, coVars, drop = FALSE], ...
+    )
 })
 #' @param matrix The input matrix
 #'
@@ -58,13 +62,17 @@ setMethod("buildHyperFrame", "matrix", function(x, imageVars, covariates, ...) {
     ppps <- tapply(seq_len(nrow(x)), designVec, simplify = FALSE, function(i) {
         i <- i[order(x[i, 1])]
         # Pre-order for nncross function
-        spatstat.geom::ppp(x = x[i, 1], y = x[i, 2], marks = covariates[i, , drop = FALSE],
-            xrange = range(x[i, 1]), yrange = range(x[i, 2]), drop = FALSE)
+        spatstat.geom::ppp(
+            x = x[i, 1], y = x[i, 2], marks = covariates[i, , drop = FALSE],
+            xrange = range(x[i, 1]), yrange = range(x[i, 2]), drop = FALSE
+        )
     })
     # Replace underscore in gene names => Used to build pairs
     hypFrame <- spatstat.geom::hyperframe(ppp = ppps, image = names(ppps))
-    desMat <- matrix(simplify2array(strsplit(names(ppps), "_")), nrow = nrow(hypFrame),
-        byrow = TRUE)
+    desMat <- matrix(simplify2array(strsplit(names(ppps), "_")),
+        nrow = nrow(hypFrame),
+        byrow = TRUE
+    )
     colnames(desMat) <- names(imageVars)
     hypFrame <- addTabObs(hypFrame, desMat)
     return(hypFrame)
@@ -77,7 +85,8 @@ setMethod("buildHyperFrame", "matrix", function(x, imageVars, covariates, ...) {
 #' @rdname buildHyperFrame
 #' @export
 #' @importFrom spatstat.geom is.ppp
-setMethod("buildHyperFrame", "list", function(x, coordVars = c("x", "y"), covariatesDf = NULL,
+setMethod("buildHyperFrame", "list", function(
+    x, coordVars = c("x", "y"), covariatesDf = NULL,
     idVar = NULL, ...) {
     stopifnot(is.null(covariatesDf) || (nrow(covariatesDf) == length(x)), is.null(idVar) ||
         idVar %in% names(covariatesDf))
@@ -100,8 +109,12 @@ setMethod("buildHyperFrame", "list", function(x, coordVars = c("x", "y"), covari
             }
             i <- order(z[, coordVars[1]])
             spatstat.geom::ppp(x = z[i, coordVars[1]], y = z[i, coordVars[2]], marks = z[i,
-                PPcovariates, drop = FALSE], xrange = range(z[, coordVars[1]]), yrange = range(z[,
-                coordVars[2]]), drop = FALSE)
+                PPcovariates,
+                drop = FALSE
+            ], xrange = range(z[, coordVars[1]]), yrange = range(z[
+                ,
+                coordVars[2]
+            ]), drop = FALSE)
         }), image = names(x))
     } else {
         stop("Supply a list of point patterns (ppp)", "or of dataframes or matrices")
@@ -113,9 +126,13 @@ setMethod("buildHyperFrame", "list", function(x, coordVars = c("x", "y"), covari
 #' @export
 #' @importFrom SpatialExperiment SpatialExperiment spatialCoords
 #' @importFrom SummarizedExperiment colData
-setMethod("buildHyperFrame", "SpatialExperiment", function(x, imageVars, coVars,
+setMethod("buildHyperFrame", "SpatialExperiment", function(
+    x, imageVars, coVars,
     ...) {
     buildHyperFrame(spatialCoords(x), image = as.data.frame(colData(x)[, imageVars,
-        drop = FALSE]), covariates = cbind(gene = rownames(colData(x)), as.data.frame(colData(x))[,
-        coVars, drop = FALSE]))
+        drop = FALSE
+    ]), covariates = cbind(gene = rownames(colData(x)), as.data.frame(colData(x))[,
+        coVars,
+        drop = FALSE
+    ]))
 })

@@ -23,8 +23,10 @@ Load a dataset, convert it to a _spatstat_ hyperframe, adn make an explorative p
 
 ```{r loadYang}
 data(Yang)
-hypYang <- buildHyperFrame(Yang, coordVars = c("x", "y"), 
-                           imageVars = c("day", "root", "section"))
+hypYang <- buildHyperFrame(Yang,
+    coordVars = c("x", "y"),
+    imageVars = c("day", "root", "section")
+)
 plotExplore(hypYang)
 ```
 

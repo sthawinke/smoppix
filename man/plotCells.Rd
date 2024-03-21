@@ -51,7 +51,7 @@ here, but the spatial location of the cells is lost! The choice and ranking of c
 is one of decreasing gene (pair) expression.
 }
 \examples{
-example(addCell, 'smoppix')
-plotCells(hypFrame2, 'gene1')
-plotCells(hypFrame2, 'gene1', borderColVar = 'condition', nCells = 10)
+example(addCell, "smoppix")
+plotCells(hypFrame2, "gene1")
+plotCells(hypFrame2, "gene1", borderColVar = "condition", nCells = 10)
 }

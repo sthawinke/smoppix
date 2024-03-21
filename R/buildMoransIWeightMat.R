@@ -13,9 +13,10 @@ buildMoransIWeightMat <- function(coordMat, numNNs) {
     # Maximum as many NN as there are neighbouring cells
     nns <- nnwhich(X = coordMat[, "x"], Y = coordMat[, "y"], k = seq.int(numNNs))
     # Assign non-zero slots to all numNNs nearest neighbours
-    sparseMatrix(i = rep(seq_len(nrow(coordMat)), numNNs), j = nns, x = 1/numNNs,
-        symmetric = FALSE, dimnames = list(rownames(coordMat), rownames(coordMat)))
+    sparseMatrix(
+        i = rep(seq_len(nrow(coordMat)), numNNs), j = nns, x = 1 / numNNs,
+        symmetric = FALSE, dimnames = list(rownames(coordMat), rownames(coordMat))
+    )
     # Sparse, but not symmetric, as nearest neighbours are not always
     # reciprocal
 }
-

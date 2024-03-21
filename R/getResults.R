@@ -16,21 +16,21 @@
 #' @examples
 #' data(Yang)
 #' hypYang <- buildHyperFrame(Yang,
-#'     coordVars = c('x', 'y'),
-#'     imageVars = c('day', 'root', 'section')
+#'     coordVars = c("x", "y"),
+#'     imageVars = c("day", "root", "section")
 #' )
-#' yangPims <- estPis(hypYang, pis = 'nn')
+#' yangPims <- estPis(hypYang, pis = "nn")
 #' # First build the weighting function
-#' yangObj <- addWeightFunction(yangPims, designVars = c('day', 'root'))
+#' yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))
 #' fittedModels <- fitLMMs(yangObj,
 #'     features = getFeatures(yangObj)[seq_len(10)],
-#'     fixedVars = 'day', randomVars = 'root',
-#'     pi = 'nn'
+#'     fixedVars = "day", randomVars = "root",
+#'     pi = "nn"
 #' )
-#' res <- getResults(fittedModels, "nn", 'Intercept')
+#' res <- getResults(fittedModels, "nn", "Intercept")
 #' head(res)
 getResults <- function(obj, pi, parameter, moransI = FALSE) {
-    if(!(pi %in% names(obj))){
+    if (!(pi %in% names(obj))) {
         stop("PI ", pi, " not estimated! Run estPis() again with desired pi as argument")
     }
     resChar <- if (moransI) {
@@ -38,13 +38,15 @@ getResults <- function(obj, pi, parameter, moransI = FALSE) {
     } else {
         "results"
     }
-    Obj = if (parameter == "Intercept") {
+    Obj <- if (parameter == "Intercept") {
         obj[[pi]][[resChar]]
     } else {
         obj[[pi]][[resChar]]$fixedEffects
     }
-    if(!(parameter %in% names(Obj))){
+    if (!(parameter %in% names(Obj))) {
         stop("Parameter ", parameter, " not estimated in linear model!
              Rerun fitLMMs with the correct variables or formula supplied.")
-    } else {Obj[[parameter]]}
+    } else {
+        Obj[[parameter]]
+    }
 }

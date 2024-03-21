@@ -23,62 +23,78 @@
 #' Random effects can lead to problems with fitting and are dissuaded.
 #' @return A list with the estimated gradients
 #' @examples
-#' #Overall Gradients
+#' # Overall Gradients
 #' data(Yang)
 #' hypYang <- buildHyperFrame(Yang,
-#'     coordVars = c('x', 'y'),
-#'     imageVars = c('day', 'root', 'section')
+#'     coordVars = c("x", "y"),
+#'     imageVars = c("day", "root", "section")
 #' )
-#' yangGrads <- estGradients(hypYang[seq_len(10),], features =
-#' getFeatures(hypYang)[seq_len(2)],
-#' fixedEffects = "day", randomEffects = "root")
-#' #Gradients within cell
-#'data(Eng)
-#' hypEng <- buildHyperFrame(Eng, coordVars = c("x", "y"),
-#' imageVars = c("fov", "experiment"))
+#' yangGrads <- estGradients(hypYang[seq_len(10), ],
+#'     features =
+#'         getFeatures(hypYang)[seq_len(2)],
+#'     fixedEffects = "day", randomEffects = "root"
+#' )
+#' # Gradients within cell
+#' data(Eng)
+#' hypEng <- buildHyperFrame(Eng,
+#'     coordVars = c("x", "y"),
+#'     imageVars = c("fov", "experiment")
+#' )
 #' hypEng <- addCell(hypEng, EngRois, verbose = FALSE)
-#' #Limit number of cells for computational reasons
-#' engGrads <- estGradients(hypEng[seq_len(2),], features =
-#' feat <- getFeatures(hypEng)[seq_len(2)])
+#' # Limit number of cells for computational reasons
+#' engGrads <- estGradients(hypEng[seq_len(2), ],
+#'     features =
+#'         feat <- getFeatures(hypEng)[seq_len(2)]
+#' )
 #' @seealso \link{fitGradient}, \link{estGradientsSingle}
-estGradients <- function(hypFrame, gradients = c("overall", if(!is.null(hypFrame$owins)) "cell"),
+estGradients <- function(hypFrame, gradients = c("overall", if (!is.null(hypFrame$owins)) "cell"),
                          fixedEffects = NULL, randomEffects = NULL,
                          verbose = FALSE, features = getFeatures(hypFrame), silent = TRUE, loopFun = "bplapply", ...) {
     gradients <- match.arg(gradients, several.ok = TRUE, choices = c("overall", "cell"))
     stopifnot(is.hyperframe(hypFrame), is.character(features))
     if (any(gradients == "cell") && is.null(hypFrame$owins)) {
-        stop("No window provided for gradient calculation within cell. ",
-            "Add it using the addCell() function")
+        stop(
+            "No window provided for gradient calculation within cell. ",
+            "Add it using the addCell() function"
+        )
     }
-    if(!all(id <- ((allEffects <- c(fixedEffects, randomEffects)) %in% getDesignVars(hypFrame)))){
+    if (!all(id <- ((allEffects <- c(fixedEffects, randomEffects)) %in% getDesignVars(hypFrame)))) {
         stop("Variables ", allEffects[!id], " not found in hyperframe.")
     }
-    foo = checkFeatures(hypFrame, features)
+    foo <- checkFeatures(hypFrame, features)
     if (verbose) {
         message("Calculating gradients")
     }
-    fixedForm = buildFormula(outcome = "ppp", fixedVars =
-            c(fixedEffects, "x:id", "y:id", "id"), randomVars = NULL)
-    fixedFormSimple = buildFormula(outcome = "ppp", fixedVars = c(fixedEffects, "id"),
-                             randomVars = NULL)
-    randomForm = if(!is.null(randomEffects))
+    fixedForm <- buildFormula(
+        outcome = "ppp", fixedVars =
+            c(fixedEffects, "x:id", "y:id", "id"), randomVars = NULL
+    )
+    fixedFormSimple <- buildFormula(
+        outcome = "ppp", fixedVars = c(fixedEffects, "id"),
+        randomVars = NULL
+    )
+    randomForm <- if (!is.null(randomEffects)) {
         buildFormula(outcome = "", fixedVars = NULL, randomVars = randomEffects)
+    }
     grads <- loadBalanceBplapply(loopFun = loopFun, features, function(gene) {
-        hypFrame$ppp = lapply(hypFrame$ppp, function(x) {
-            x[marks(x, drop = FALSE)$gene == gene, ]})
-        out <- estGradientsSingle(hypFrame, gradients = gradients,
+        hypFrame$ppp <- lapply(hypFrame$ppp, function(x) {
+            x[marks(x, drop = FALSE)$gene == gene, ]
+        })
+        out <- estGradientsSingle(hypFrame,
+            gradients = gradients,
             silent = silent, fixedForm = fixedForm, randomForm = randomForm,
-            fixedFormSimple = fixedFormSimple, effects = allEffects, ...)
+            fixedFormSimple = fixedFormSimple, effects = allEffects, ...
+        )
         return(out)
     })
-    names(grads) = features
+    names(grads) <- features
     grads
 }
 #' Workhorse for \link{estGradients} on a single feature
 #'
 #' @inheritParams estGradients
 #' @param fixedForm,randomForm,fixedFormSimple Formulae for fixed effects,
-#'random effects and fixed effects without slopes respectively
+#' random effects and fixed effects without slopes respectively
 #' @param effects Character vector of fixed and random effects
 #' @param ... Passed onto fitGradient
 #'
@@ -92,28 +108,34 @@ estGradientsSingle <- function(hypFrame, gradients, fixedForm, randomForm,
                                fixedFormSimple, effects = NULL, ...) {
     # Within cell: recurse into estGradientsSingle but now per cell
     cell <- if ("cell" %in% gradients) {
-        hypSub = hyperframe("ppp" = unlist(recursive = FALSE,
+        hypSub <- hyperframe("ppp" = unlist(
+            recursive = FALSE,
             lapply(rownames(hypFrame), function(rn) {
-                sp = split.ppp(hypFrame$ppp[[rn]], f = "cell")
-                sp = unmark(sp[names(sp)!="NA"])
-                for(nam in names(sp)){
-                    sp[[nam]]$window = hypFrame$owins[[rn]][[nam]]
+                sp <- split.ppp(hypFrame$ppp[[rn]], f = "cell")
+                sp <- unmark(sp[names(sp) != "NA"])
+                for (nam in names(sp)) {
+                    sp[[nam]]$window <- hypFrame$owins[[rn]][[nam]]
                 }
                 return(sp)
-                })))
-        if(!is.null(effects)){
-            hypSub = cbind(hypSub, hypFrame[rep(seq_len(nrow(hypFrame)), times = vapply(hypFrame$ppp, function(x) {
+            })
+        ))
+        if (!is.null(effects)) {
+            hypSub <- cbind(hypSub, hypFrame[rep(seq_len(nrow(hypFrame)), times = vapply(hypFrame$ppp, function(x) {
                 length(unique(marks(x)$cell))
             }, FUN.VALUE = integer(1))), effects, drop = FALSE])
         }
-       estGradientsSingle(gradients = "overall", hypFrame = hypSub, fixedForm = fixedForm,
-                          randomForm = randomForm, fixedFormSimple = fixedFormSimple, ...)$overall
+        estGradientsSingle(
+            gradients = "overall", hypFrame = hypSub, fixedForm = fixedForm,
+            randomForm = randomForm, fixedFormSimple = fixedFormSimple, ...
+        )$overall
     }
-    #Unmark for ppm.ppp
+    # Unmark for ppm.ppp
     overall <- if ("overall" %in% gradients) {
-        hypFrame$ppp = lapply(hypFrame$ppp, unmark)
-        fitGradient(hypFrame, fixedForm = fixedForm, randomForm = randomForm,
-                    fixedFormSimple = fixedFormSimple,...)
+        hypFrame$ppp <- lapply(hypFrame$ppp, unmark)
+        fitGradient(hypFrame,
+            fixedForm = fixedForm, randomForm = randomForm,
+            fixedFormSimple = fixedFormSimple, ...
+        )
     }
     list("overall" = overall, "cell" = cell)
 }
@@ -130,12 +152,12 @@ estGradientsSingle <- function(hypFrame, gradients, fixedForm, randomForm,
 #'
 #' @examples
 #' example(estGradients, "smoppix")
-#' pVals = getPvaluesGradient(engGrads, "cell")
-getPvaluesGradient = function(res, gradient, method = "BH"){
-    gradient = match.arg(gradient, choices = c("cell", "overall"))
-    pVals = vapply(engGrads, FUN.VALUE = double(1), function(x){
+#' pVals <- getPvaluesGradient(engGrads, "cell")
+getPvaluesGradient <- function(res, gradient, method = "BH") {
+    gradient <- match.arg(gradient, choices = c("cell", "overall"))
+    pVals <- vapply(engGrads, FUN.VALUE = double(1), function(x) {
         x[[gradient]]$pVal
     })
-    pAdj = p.adjust(pVals, method = method)
+    pAdj <- p.adjust(pVals, method = method)
     return(pVals)
 }

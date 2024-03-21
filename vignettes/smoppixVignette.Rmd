@@ -81,8 +81,10 @@ It is a dataframe containing molecule locations (x- and y-variables), gene ident
 The first step in the analysis is to build a hyperframe as provided in the _spatstat_ package, which consists of all different point patterns and their covariates
 
 ```{r}
-hypYang <- buildHyperFrame(Yang, coordVars = c("x", "y"), 
-                           imageVars = c("day", "root", "section"))
+hypYang <- buildHyperFrame(Yang,
+    coordVars = c("x", "y"),
+    imageVars = c("day", "root", "section")
+)
 ```
 
 As printed by the code, `r nrow(hypYang)` images or point patterns were found. We take a closer look at the hyperframe
@@ -218,8 +220,10 @@ A second dataset was published in a [paper](10.1038/s41586-019-1049-y) by Eng et
 
 ```{r readInEngData, warning=FALSE}
 data(Eng)
-hypEng <- buildHyperFrame(Eng, coordVars = c("x", "y"), 
-                          imageVars = c("fov", "experiment"))
+hypEng <- buildHyperFrame(Eng,
+    coordVars = c("x", "y"),
+    imageVars = c("fov", "experiment")
+)
 ```
 
 Next, the cell boundaries are added, as a list with names corresponding to the rownames of the hyperframe. Different formats are allowed to provide windows in case the correct packages are installed, see _?addCell_. Based on these cells, every event is assigned to a cell.
@@ -240,8 +244,10 @@ plotExplore(hypEng)
 First, we will test for vicinity of the RNA molecules to cell boundaries or centroids, and for localization patterns within the cell. For this we pass different PI arguments to the _estPis()_ function. As null hypothesis, we choose complete spatial randomness (CSR) within the cell, which seems most natural, although the "background" option is also available. The suffix "Cell" indicates that aggregation and colocalization is tested within the same cell only, so not across the tissue.
 
 ```{r}
-engPis <- estPis(hypEng, pis = c("edge", "centroid", "nnCell", "nnPairCell"), 
-                 null = "CSR", verbose = FALSE)
+engPis <- estPis(hypEng,
+    pis = c("edge", "centroid", "nnCell", "nnPairCell"),
+    null = "CSR", verbose = FALSE
+)
 ```
 
 As before, the weight function needs to be added for the nearest neighbour PIs.
@@ -266,8 +272,10 @@ allModsNNcell <- fitLMMs(engPis, fixedVars = "experiment", addMoransI = TRUE)
 For the "edge" and "centroid" options, each individual RNA-molecule is an observation in the model, and random effects are added for both cell and image. For "nnCell" and "nnPairCell", the observations are averaged per cell, and so only a random effect common to all cells of a single image remains. Now we plot the genes with the strongest remoteness from the cell edge:
 
 ```{r plotEdgeEng, fig.height = 6.5}
-plotTopResults(hypEng, results = allModsNNcell, pi = "edge", what = "far", 
-               numFeats = 1)
+plotTopResults(hypEng,
+    results = allModsNNcell, pi = "edge", what = "far",
+    numFeats = 1
+)
 ```
 
 Note that the cells are selected for high expression of the gene and are not shown in their original position! Use _plotExplore()_ for this purpose. Now plot the gene with strongest intracellular aggregation:
@@ -279,8 +287,10 @@ plotTopResults(hypEng, results = allModsNNcell, pi = "nnCell", numFeats = 1)
 And finally the gene pair with the strongest antilocalization:
 
 ```{r a, fig.height = 6.5}
-plotTopResults(hypEng, results = allModsNNcell, pi = "nnPairCell", numFeats = 1, 
-               what = "anti")
+plotTopResults(hypEng,
+    results = allModsNNcell, pi = "nnPairCell", numFeats = 1,
+    what = "anti"
+)
 ```
 
 We can see that the molecule distribution within the cell is all but uniform!
@@ -290,8 +300,10 @@ We can see that the molecule distribution within the cell is all but uniform!
 A side question that may arise is whether the measures of intracellular aggregation have a global spatial patterning throughout the tissue. As a start, we can explore this graphically for the gene most significantly remote from the cell edge:
 
 ```{r exploreSpatCell, fig.height = 7}
-plotExplore(hypEng, piEsts = engPis, piColourCell = "edge", features = 
-                remEdge <- rownames(getResults(allModsNNcell, "edge", "Intercept"))[1])
+plotExplore(hypEng,
+    piEsts = engPis, piColourCell = "edge", features =
+        remEdge <- rownames(getResults(allModsNNcell, "edge", "Intercept"))[1]
+)
 ```
 
 The molecules are shown in red, while the yellow-blue scale indicates the PI estimate. It seems like in the central cells, the PI is smaller (molecules closer to the cell edge) than the outer cells. We test whether the Moran's I statistic, a measure for spatial aggregation of numeric variables, is significant over the different point patterns:
@@ -315,8 +327,8 @@ Another biologically interesting spatial pattern are gradients. Again, they can 
 The fitting process is quite computation intensive, so we limit ourselves to a subset of the data. By default both overall gradients and within-cell gradients are fitted
 
 ```{r enggrads}
-engGrads <- estGradients(hypEng[seq_len(3),], features = feat <- getFeatures(hypEng)[seq_len(3)])
-pValsGrads = getPvaluesGradient(engGrads, "cell")
+engGrads <- estGradients(hypEng[seq_len(3), ], features = feat <- getFeatures(hypEng)[seq_len(3)])
+pValsGrads <- getPvaluesGradient(engGrads, "cell")
 ```
 
 Keep in mind though that a gradient that is significant for a computer may look very different from the human perspective; many types of spatial patterns can be captured by a gradient to some extent without providing a satisfactory fit.

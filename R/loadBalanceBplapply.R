@@ -15,11 +15,13 @@ loadBalanceBplapply <- function(iterator, func, loopFun = "bplapply") {
     } else if (loopFun == "bplapply") {
         splitFac <- rep(seq_len(bpparam()$workers), length.out = length(iterator))
         # Divide the work over the available workers
-        piList <- unsplit(f = splitFac, loopFunMatched(split(iterator, f = splitFac),
+        piList <- unsplit(f = splitFac, loopFunMatched(
+            split(iterator, f = splitFac),
             function(ss) {
                 out <- lapply(ss, func)
                 names(out) <- ss
                 return(out)
-            }))
+            }
+        ))
     }
 }

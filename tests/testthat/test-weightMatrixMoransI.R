@@ -12,7 +12,7 @@ if (requireNamespace("ape")) {
     coordMat <- matrix(rnorm(2 * m), ncol = 2)
     colnames(coordMat) <- c("x", "y")
     nns <- nnwhich(X = coordMat[, "x"], Y = coordMat[, "y"], k = seq.int(numNNs))
-    W <- sparseMatrix(i = rep(seq_len(nrow(coordMat)), numNNs), j = nns, x = 1/numNNs)
+    W <- sparseMatrix(i = rep(seq_len(nrow(coordMat)), numNNs), j = nns, x = 1 / numNNs)
     # Prepare matrix as comes out of buildMoransIWeightMat
     test_that("Our implementation and that of the ape package match", {
         moranIape <- ape::Moran.I(x, as.matrix(W), scaled = TRUE)

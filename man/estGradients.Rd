@@ -56,23 +56,29 @@ Random effects can lead to problems with fitting and are dissuaded.
 Fitting Poisson point processes is computation-intensive.
 }
 \examples{
-#Overall Gradients
+# Overall Gradients
 data(Yang)
 hypYang <- buildHyperFrame(Yang,
-    coordVars = c('x', 'y'),
-    imageVars = c('day', 'root', 'section')
+    coordVars = c("x", "y"),
+    imageVars = c("day", "root", "section")
 )
-yangGrads <- estGradients(hypYang[seq_len(10),], features =
-getFeatures(hypYang)[seq_len(2)],
-fixedEffects = "day", randomEffects = "root")
-#Gradients within cell
+yangGrads <- estGradients(hypYang[seq_len(10), ],
+    features =
+        getFeatures(hypYang)[seq_len(2)],
+    fixedEffects = "day", randomEffects = "root"
+)
+# Gradients within cell
 data(Eng)
-hypEng <- buildHyperFrame(Eng, coordVars = c("x", "y"),
-imageVars = c("fov", "experiment"))
+hypEng <- buildHyperFrame(Eng,
+    coordVars = c("x", "y"),
+    imageVars = c("fov", "experiment")
+)
 hypEng <- addCell(hypEng, EngRois, verbose = FALSE)
-#Limit number of cells for computational reasons
-engGrads <- estGradients(hypEng[seq_len(2),], features =
-feat <- getFeatures(hypEng)[seq_len(2)])
+# Limit number of cells for computational reasons
+engGrads <- estGradients(hypEng[seq_len(2), ],
+    features =
+        feat <- getFeatures(hypEng)[seq_len(2)]
+)
 }
 \seealso{
 \link{fitGradient}, \link{estGradientsSingle}

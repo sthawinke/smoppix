@@ -33,11 +33,12 @@
 #' @export
 #'
 #' @examples
-#' example(buildHyperFrame, 'smoppix')
+#' example(buildHyperFrame, "smoppix")
 #' plotExplore(hypYang)
-#' plotExplore(hypYang, titleVar = 'day')
-#' plotExplore(hypYang, features = c('SmRBRb', 'SmTMO5b', 'SmWER--SmAHK4f'))
-plotExplore <- function(hypFrame, features = getFeatures(hypFrame)[seq_len(6)], ppps,
+#' plotExplore(hypYang, titleVar = "day")
+#' plotExplore(hypYang, features = c("SmRBRb", "SmTMO5b", "SmWER--SmAHK4f"))
+plotExplore <- function(
+    hypFrame, features = getFeatures(hypFrame)[seq_len(6)], ppps,
     maxPlot = 1e+05, Cex = 1, plotWindows = !is.null(hypFrame$owins), plotPoints = TRUE, piEsts = NULL,
     Xlim = NULL, Ylim = NULL, Cex.main = 0.8, Mar = c(0.4, 0.1, 0.8, 0.1), titleVar = NULL,
     piColourCell = NULL, palCols = c("blue", "yellow"), border = NULL, CexLegend = 1, CexLegendMain = 1.2) {
@@ -47,8 +48,10 @@ plotExplore <- function(hypFrame, features = getFeatures(hypFrame)[seq_len(6)], 
     if (plotWindows && is.null(hypFrame$owins)) {
         warning("No windows present in hyperframe object")
     }
-    stopifnot(is.hyperframe(hypFrame), is.character(features), is.numeric(maxPlot),
-        is.null(titleVar) || titleVar %in% getPPPvars(hypFrame))
+    stopifnot(
+        is.hyperframe(hypFrame), is.character(features), is.numeric(maxPlot),
+        is.null(titleVar) || titleVar %in% getPPPvars(hypFrame)
+    )
     if (colourCells <- !is.null(piColourCell) && plotWindows) {
         featsplit <- sund(features)
         if (is.null(piEsts)) {
@@ -56,11 +59,13 @@ plotExplore <- function(hypFrame, features = getFeatures(hypFrame)[seq_len(6)], 
         }
         piDf <- buildDataFrame(piEsts, gene = featsplit, pi = piColourCell)
         if (piColourCell %in% c("edge", "centroid")) {
-            piDf <- aggregate(pi ~ cell +image, piDf, FUN = mean, na.rm = TRUE)
+            piDf <- aggregate(pi ~ cell + image, piDf, FUN = mean, na.rm = TRUE)
         }
         foo <- checkPi(piEsts, piColourCell)
-        piColourCell <- match.arg(piColourCell, choices = c("edge", "centroid", "nnCell",
-            "nnPairCell"))
+        piColourCell <- match.arg(piColourCell, choices = c(
+            "edge", "centroid", "nnCell",
+            "nnPairCell"
+        ))
         if (length(features) != 1) {
             stop("Supply single gene for colouring cells by univariate PI!")
         }
@@ -80,7 +85,7 @@ plotExplore <- function(hypFrame, features = getFeatures(hypFrame)[seq_len(6)], 
     on.exit(par(old.par))
     LL <- length(ppps)
     Nrow <- ceiling(sqrt(LL))
-    Ncol <- (LL%/%Nrow) + 1
+    Ncol <- (LL %/% Nrow) + 1
     par(mfrow = c(Nrow, Ncol), mar = Mar)
     baa <- lapply(ppps, function(i) {
         PPPsub <- subSampleP(if (colourCells) {
@@ -91,33 +96,37 @@ plotExplore <- function(hypFrame, features = getFeatures(hypFrame)[seq_len(6)], 
         colVec <- Cols[marks(PPPsub, drop = FALSE)$gene]
         cordMat <- coords(PPPsub)
         ordVec <- order(colVec != "grey")
-        plot(cordMat[ordVec, ], main = paste(hypFrame$image[i], if (!is.null(titleVar)) {
-            hypFrame[[i, titleVar]]
-        }), type = "n", cex.main = Cex.main, xaxt = "n", yaxt = "n", xaxs = "i",
-            yaxs = "i", asp = 1, xlim = Xlim, ylim = Ylim)
+        plot(cordMat[ordVec, ],
+            main = paste(hypFrame$image[i], if (!is.null(titleVar)) {
+                hypFrame[[i, titleVar]]
+            }), type = "n", cex.main = Cex.main, xaxt = "n", yaxt = "n", xaxs = "i",
+            yaxs = "i", asp = 1, xlim = Xlim, ylim = Ylim
+        )
         if (plotWindows) {
-            if(colourCells){
-                piDf2 = piDf[id <- (rownames(hypFrame)[i] == piDf$image),]
-                Palette2 = Palette[id]
+            if (colourCells) {
+                piDf2 <- piDf[id <- (rownames(hypFrame)[i] == piDf$image), ]
+                Palette2 <- Palette[id]
             }
             foo <- lapply(names(hypFrame$owins[[i]]), function(cell) {
-                plot.owin(hypFrame[i, "owins", drop = TRUE][[cell]], add = TRUE,
-                  col = if (colourCells && length(Col <- Palette2[cell == piDf2$cell])
-                    && !is.na(Col)) {
-                    Col
-                  }, border = border)
+                plot.owin(hypFrame[i, "owins", drop = TRUE][[cell]],
+                    add = TRUE,
+                    col = if (colourCells && length(Col <- Palette2[cell == piDf2$cell]) &&
+                        !is.na(Col)) {
+                        Col
+                    }, border = border
+                )
             })
         }
-        if(plotPoints){
+        if (plotPoints) {
             points(cordMat[ordVec, ], pch = ".", col = colVec[ordVec], cex = Cex)
         }
-
     })
     plot(c(0, 1), c(0, 1), type = "n", xlab = "", ylab = "", xaxt = "n", yaxt = "n")
     colPlot <- if (colourCells) {
         tmp <- pal(6)
         names(tmp) <- signif(seq(min(piDf$pi, na.rm = TRUE), max(piDf$pi, na.rm = TRUE),
-            length.out = 6), 2)
+            length.out = 6
+        ), 2)
         tmp
     } else {
         Cols

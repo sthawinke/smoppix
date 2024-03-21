@@ -72,10 +72,10 @@ not to waste computation time on gene (pairs) with very little power.
 \examples{
 data(Yang)
 hypYang <- buildHyperFrame(Yang,
-    coordVars = c('x', 'y'),
-    imageVars = c('day', 'root', 'section')
+    coordVars = c("x", "y"),
+    imageVars = c("day", "root", "section")
 )
-yangPims <- estPis(hypYang, pis = 'nn')
+yangPims <- estPis(hypYang, pis = "nn")
 # Univariate nearest neighbour distances
 }
 \seealso{

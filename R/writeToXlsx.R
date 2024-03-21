@@ -20,46 +20,53 @@
 #' @export
 #'
 #' @examples
-#' example(fitLMMs, 'smoppix')
+#' example(fitLMMs, "smoppix")
 #' writeToXlsx(lmmModels, "tmpFile.xlsx")
 #' file.remove("tmpFile.xlsx")
 #' @importFrom openxlsx createWorkbook writeData addWorksheet saveWorkbook getSheetNames
-writeToXlsx = function(obj, file, overwrite = FALSE, digits = 3, sigLevel = 0.05){
+writeToXlsx <- function(obj, file, overwrite = FALSE, digits = 3, sigLevel = 0.05) {
     stopifnot(is.logical(overwrite), is.character(file), is.numeric(digits), is.numeric(sigLevel))
-    if(!grepl("\\.xlsx", file)){
+    if (!grepl("\\.xlsx", file)) {
         message("Adding .xlsx extension to file")
-        file = paste0(file, ".xlsx")
+        file <- paste0(file, ".xlsx")
     }
-    if(file.exists(file)){
-        if(overwrite){
+    if (file.exists(file)) {
+        if (overwrite) {
             message("Overwriting existing file")
         } else {
             stop("File ", file, " already exists! Set overwrite = TRUE to overwrite")
         }
     }
-    pis = names(obj)
-    fixedEffects = names(obj[[1]]$results$fixedEffects)
-    wb = createWorkbook()
-    for(pi in pis){
-        for(effect in c("Intercept", fixedEffects)){
-            mat = switch(effect, "Intercept" = obj[[pi]]$results$Intercept,
-                         obj[[pi]]$results$fixedEffects[[effect]])
-            mat = mat[!is.na(mat[, "pAdj"]),,drop = FALSE]
-            #Only significant features
-            subMat = mat[mat[, "pAdj"] < sigLevel,,drop = FALSE]
-            #Rounding
-            for(i in c("pVal", "pAdj")){
-                subMat[, i] = signif(subMat[, i], digits)
+    pis <- names(obj)
+    fixedEffects <- names(obj[[1]]$results$fixedEffects)
+    wb <- createWorkbook()
+    for (pi in pis) {
+        for (effect in c("Intercept", fixedEffects)) {
+            mat <- switch(effect,
+                "Intercept" = obj[[pi]]$results$Intercept,
+                obj[[pi]]$results$fixedEffects[[effect]]
+            )
+            mat <- mat[!is.na(mat[, "pAdj"]), , drop = FALSE]
+            # Only significant features
+            subMat <- mat[mat[, "pAdj"] < sigLevel, , drop = FALSE]
+            # Rounding
+            for (i in c("pVal", "pAdj")) {
+                subMat[, i] <- signif(subMat[, i], digits)
             }
-            for(i in setdiff(colnames(subMat), c("pVal", "pAdj"))){
-                subMat[, i] = round(subMat[, i], digits)
+            for (i in setdiff(colnames(subMat), c("pVal", "pAdj"))) {
+                subMat[, i] <- round(subMat[, i], digits)
             }
-            for(smallPI in switch(effect, "Intercept" = c(TRUE, FALSE), TRUE)){
-                sheetName = makeSheetName(pi, effect, smallPI)
-                subMat2 = if(effect == "Intercept") {
-                    subMat[match.fun(if (smallPI) "<" else ">")(subMat[, "Estimate"], 0.5),,drop = FALSE]
-                    } else subMat
-                addWorksheet(wb, sheetName) #Create sheet and write data to it
+            for (smallPI in switch(effect,
+                "Intercept" = c(TRUE, FALSE),
+                TRUE
+            )) {
+                sheetName <- makeSheetName(pi, effect, smallPI)
+                subMat2 <- if (effect == "Intercept") {
+                    subMat[match.fun(if (smallPI) "<" else ">")(subMat[, "Estimate"], 0.5), , drop = FALSE]
+                } else {
+                    subMat
+                }
+                addWorksheet(wb, sheetName) # Create sheet and write data to it
                 writeData(wb, sheet = sheetName, x = data.frame(subMat2), colNames = TRUE, rowNames = TRUE)
             }
         }
@@ -67,23 +74,27 @@ writeToXlsx = function(obj, file, overwrite = FALSE, digits = 3, sigLevel = 0.05
     saveWorkbook(wb, file = file, overwrite = overwrite)
     message(length(getSheetNames(file)), " tabs successfully written to ", file)
 }
-#'@note Sheet names cannot exceed 31 characters
-makeSheetName = function(pi, effect, smallPI = TRUE){
-    keyword = if(grepl("Pair", pi)){
-        if(effect!="Intercept"){
+#' @note Sheet names cannot exceed 31 characters
+makeSheetName <- function(pi, effect, smallPI = TRUE) {
+    keyword <- if (grepl("Pair", pi)) {
+        if (effect != "Intercept") {
             "Colocalization"
-            } else if(smallPI){
-                "Colocalized"
-            } else {"Antilocalized"}
-    } else if(grepl("nn", pi)){
-        if(smallPI) "Aggregation" else "Regularity"
+        } else if (smallPI) {
+            "Colocalized"
+        } else {
+            "Antilocalized"
+        }
+    } else if (grepl("nn", pi)) {
+        if (smallPI) "Aggregation" else "Regularity"
     } else {
-        paste(if(smallPI) "Close to" else "Far from", pi)
+        paste(if (smallPI) "Close to" else "Far from", pi)
     }
-    if(grepl("Cell", pi)){
-        keyword = paste(keyword, "in cell")
+    if (grepl("Cell", pi)) {
+        keyword <- paste(keyword, "in cell")
     }
-    out = paste0(keyword, "_", switch(effect, "Intercept" = "baseline", effect))
+    out <- paste0(keyword, "_", switch(effect,
+        "Intercept" = "baseline",
+        effect
+    ))
     substr(out, 1, min(nchar(out), 31))
 }
-

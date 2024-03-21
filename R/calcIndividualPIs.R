@@ -12,9 +12,9 @@
 #' @seealso \link{estPis}, \link{calcNNPI}
 calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null,
                               features, ecdfAll, ecdfsCell, loopFun, minDiff, minObsNN) {
-    NPall <- if(bg <- (null=="background")){
+    NPall <- if (bg <- (null == "background")) {
         npoints(p)
-    } else if(null=="CSR"){
+    } else if (null == "CSR") {
         max(tabObs) * 4
         # NPall is arbitrary for CSR, make sure it is large enough,
         # while limiting computation time in evaluating the negative
@@ -24,7 +24,7 @@ calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null,
     # Divide the work over the available workers
     piList <- loadBalanceBplapply(loopFun = loopFun, iterator = features, func = function(feat) {
         pSub <- pSplit[[feat]]
-        if((NP <- npoints(pSub)) >= minObsNN){
+        if ((NP <- npoints(pSub)) >= minObsNN) {
             if (bg && ((NPall - NP) < minDiff)) {
                 distMat <- NULL
                 calcNNsingle <- FALSE
@@ -46,7 +46,7 @@ calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null,
                 })
             }
             if (isMat <- is.matrix(distMat)) {
-                featId = which(marks(p, drop = FALSE)$gene == feat)
+                featId <- which(marks(p, drop = FALSE)$gene == feat)
                 # cd = crossdistWrapper(pSub, pSubLeft$Pout)
                 # approxRanksNew = rowSums(distMat[, "self"] > cd)
                 # tiesMatNew = rowSums(distMat[, "self"] == cd)
@@ -57,48 +57,51 @@ calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null,
                     ),
                     "CSR" = matrix(ecdfAll(distMat), nrow = nrow(distMat))
                 )
-                approxRanksTmp = doubleMatrixRanks[seq_len(nrow(distMat)),,drop = FALSE]
-                tiesMat = doubleMatrixRanks[-seq_len(nrow(distMat)),,drop = FALSE]
-                #Leave out found nearest neighbour distance in calculation,
-                #and add 1 to ties
-                if(bg) {
-                    selfPoint = (featId %in% pSubLeft$id)
-                    selfPointRanks = selfPoint & distMat > 0
-                    selfPointTies = selfPoint & distMat == 0
-                    approxRanks <- round(((approxRanksTmp-selfPointRanks)/(npoints(pSubLeft$Pout) -selfPoint)
-                    ) * (NPall-selfPoint))
-                    tiesMat <- round(((tiesMat-selfPointTies)/(npoints(pSubLeft$Pout) - selfPoint)
-                    ) * (NPall-selfPoint))
-                    tiesMat[tiesMat==0] = 1
-                    #Cfr permutation p-values can never be zero (Phipson 2010)
-                    #The observed distance is at least a tie.
-                    #Adding 1 to the denominator too will not make a big difference
+                approxRanksTmp <- doubleMatrixRanks[seq_len(nrow(distMat)), , drop = FALSE]
+                tiesMat <- doubleMatrixRanks[-seq_len(nrow(distMat)), , drop = FALSE]
+                # Leave out found nearest neighbour distance in calculation,
+                # and add 1 to ties
+                if (bg) {
+                    selfPoint <- (featId %in% pSubLeft$id)
+                    selfPointRanks <- selfPoint & distMat > 0
+                    selfPointTies <- selfPoint & distMat == 0
+                    approxRanks <- round(((approxRanksTmp - selfPointRanks) / (npoints(pSubLeft$Pout) - selfPoint)
+                    ) * (NPall - selfPoint))
+                    tiesMat <- round(((tiesMat - selfPointTies) / (npoints(pSubLeft$Pout) - selfPoint)
+                    ) * (NPall - selfPoint))
+                    tiesMat[tiesMat == 0] <- 1
+                    # Cfr permutation p-values can never be zero (Phipson 2010)
+                    # The observed distance is at least a tie.
+                    # Adding 1 to the denominator too will not make a big difference
                 } else {
-                    approxRanks <- round(approxRanksTmp*NPall)
+                    approxRanks <- round(approxRanksTmp * NPall)
                 }
 
                 # Correct for self distances by subtracting one everywhere.
-                #The observed nearest neighbour distances (not the same as self distances) remain part of the permutation,
+                # The observed nearest neighbour distances (not the same as self distances) remain part of the permutation,
                 # Get the order right to prevent integer overflow: first divide, then multiply
                 colnames(approxRanks) <- colnames(tiesMat) <- colnames(distMat)
             }
             # Names may get lost in C++ function. Then rearrange to get to the PIs
             nnPI <- if (calcNNsingle && isMat) {
                 mean(calcNNPI(approxRanks[, "self"], NPall - (NP - 1) - bg,
-                              m = NP - 1, r = 1, ties = if(bg) tiesMat[, "self"]))
+                    m = NP - 1, r = 1, ties = if (bg) tiesMat[, "self"]
+                ))
             } else {
                 NA
             }
-            #Minus bg subtracts self distances
+            # Minus bg subtracts self distances
             nnPIpair <- if ("nnPair" %in% pis && isMat) {
                 vapply(setdiff(colnames(approxRanks), "self"), FUN.VALUE = double(NP), function(g) {
-                    NP <- tabObs[g] #Number of other gene in the pair
-                    calcNNPI(approxRanks[, g], n = NPall - NP - bg, m = NP,
-                             r = 1, ties = if(bg) tiesMat[, g])
+                    NP <- tabObs[g] # Number of other gene in the pair
+                    calcNNPI(approxRanks[, g],
+                        n = NPall - NP - bg, m = NP,
+                        r = 1, ties = if (bg) tiesMat[, g]
+                    )
                 })
             }
         } else {
-            nnPI = nnPIpair = NA
+            nnPI <- nnPIpair <- NA
         }
         ## Window related distances
         edgeDistPI <- if (any(pis == "edge")) {

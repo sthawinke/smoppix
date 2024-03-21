@@ -65,12 +65,14 @@ what = "regular", effect = "Var1" and effectParameter = "level1" will return
 features more regular at level1 of the variable than at baseline
 }
 \examples{
-example(fitLMMs, 'smoppix')
-plotTopResults(hypYang, lmmModels, 'nn')
-plotTopResults(hypYang, lmmModels, 'nn', effect = 'Intercept', what = "reg")
-#For the sake of illustration, set high significance level
-plotTopResults(hypYang, lmmModels, 'nn', effect = 'day', what = "reg",
-effectParameter ="day0", sigLevel = 0.9)
+example(fitLMMs, "smoppix")
+plotTopResults(hypYang, lmmModels, "nn")
+plotTopResults(hypYang, lmmModels, "nn", effect = "Intercept", what = "reg")
+# For the sake of illustration, set high significance level
+plotTopResults(hypYang, lmmModels, "nn",
+    effect = "day", what = "reg",
+    effectParameter = "day0", sigLevel = 0.9
+)
 }
 \seealso{
 \link{plotCells},\link{plotExplore},\link{fitLMMs}

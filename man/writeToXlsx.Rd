@@ -34,7 +34,7 @@ The "baseline" tabs indicate the overall patterns, the other tabs are named afte
 and indicate departure from this baseline depending on this fixed effect
 }
 \examples{
-example(fitLMMs, 'smoppix')
+example(fitLMMs, "smoppix")
 writeToXlsx(lmmModels, "tmpFile.xlsx")
 file.remove("tmpFile.xlsx")
 }
