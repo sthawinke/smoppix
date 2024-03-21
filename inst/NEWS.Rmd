@@ -3,3 +3,9 @@ output: github_document
 ---
 
 # 0.1.0
+
+- Published on github
+
+# 0.1.1
+
+ - Faster and numerically more stable way to calculate nearest neighbour PIs

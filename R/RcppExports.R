@@ -5,7 +5,7 @@ crossdistFastLocal <- function(m1, m2) {
     .Call(`_smoppix_crossdistFastLocal`, m1, m2)
 }
 
-findRanksDist <- function(coords, coordsLeft, squaredNNDist) {
-    .Call(`_smoppix_findRanksDist`, coords, coordsLeft, squaredNNDist)
+findRanksDist <- function(coords, coordsLeft, NNDist) {
+    .Call(`_smoppix_findRanksDist`, coords, coordsLeft, NNDist)
 }
 

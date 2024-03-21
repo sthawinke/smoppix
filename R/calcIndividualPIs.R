@@ -48,18 +48,23 @@ calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null,
             }
 
             if (isMat <- is.matrix(distMat)) {
+                featId = which(marks(p, drop = FALSE)$gene == feat)
+                # cd = crossdistWrapper(pSub, pSubLeft$Pout)
+                # approxRanksNew = rowSums(distMat[, "self"] > cd)
+                # tiesMatNew = rowSums(distMat[, "self"] == cd)
                 doubleMatrixRanks <- switch(null,
                     "background" = findRanksDist(
                         getCoordsMat(pSub), getCoordsMat(pSubLeft$Pout),
-                        distMat^2
+                        distMat
                     ),
                     "CSR" = matrix(ecdfAll(distMat), nrow = nrow(distMat))
                 )
                 approxRanksTmp = doubleMatrixRanks[seq_len(nrow(distMat)),,drop = FALSE]
                 tiesMat = doubleMatrixRanks[-seq_len(nrow(distMat)),,drop = FALSE]
+                #Leave out found nearest neighbour distance in calculation,
+                #and add 1 to ties
                 if(bg) {
-                    selfPoint = (which(marks(p, drop = FALSE)$gene == feat)
-                    %in% pSubLeft$id)
+                    selfPoint = (featId %in% pSubLeft$id)
                     selfPointRanks = selfPoint & distMat > 0
                     selfPointTies = selfPoint & distMat == 0
                     approxRanks <- round(((approxRanksTmp-selfPointRanks)/(npoints(pSubLeft$Pout) -selfPoint)

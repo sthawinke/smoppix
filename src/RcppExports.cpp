@@ -23,15 +23,15 @@ BEGIN_RCPP
 END_RCPP
 }
 // findRanksDist
-IntegerMatrix findRanksDist(NumericMatrix coords, NumericMatrix coordsLeft, NumericMatrix squaredNNDist);
-RcppExport SEXP _smoppix_findRanksDist(SEXP coordsSEXP, SEXP coordsLeftSEXP, SEXP squaredNNDistSEXP) {
+IntegerMatrix findRanksDist(NumericMatrix coords, NumericMatrix coordsLeft, NumericMatrix NNDist);
+RcppExport SEXP _smoppix_findRanksDist(SEXP coordsSEXP, SEXP coordsLeftSEXP, SEXP NNDistSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericMatrix >::type coords(coordsSEXP);
     Rcpp::traits::input_parameter< NumericMatrix >::type coordsLeft(coordsLeftSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type squaredNNDist(squaredNNDistSEXP);
-    rcpp_result_gen = Rcpp::wrap(findRanksDist(coords, coordsLeft, squaredNNDist));
+    Rcpp::traits::input_parameter< NumericMatrix >::type NNDist(NNDistSEXP);
+    rcpp_result_gen = Rcpp::wrap(findRanksDist(coords, coordsLeft, NNDist));
     return rcpp_result_gen;
 END_RCPP
 }
