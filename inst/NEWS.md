@@ -1,2 +1,9 @@
 
 # 0.1.0
+
+- Published on github
+
+# 0.1.1
+
+- Use regular rather than squared distances to calculate nearest
+  neighbour PIs

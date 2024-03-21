@@ -8,4 +8,4 @@ output: github_document
 
 # 0.1.1
 
- - Faster and numerically more stable way to calculate nearest neighbour PIs
+ - Use regular rather than squared distances to calculate nearest neighbour PIs
