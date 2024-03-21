@@ -43,10 +43,8 @@ calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null,
                             # Point patterns have been pre-sorted in hyperframe function
                         })), nrow = NP, dimnames = list(NULL, names(pSplit)[id]))
                     }
-                    # Cross-distances
                 })
             }
-
             if (isMat <- is.matrix(distMat)) {
                 featId = which(marks(p, drop = FALSE)$gene == feat)
                 # cd = crossdistWrapper(pSub, pSubLeft$Pout)
