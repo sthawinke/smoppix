@@ -68,12 +68,21 @@ head(getResults(allModsNN, "nn", "Intercept"))
 ```
 
     ##             Estimate          SE         pVal         pAdj
-    ## SmBIRDa    0.2638346 0.006757913 5.128128e-24 4.102502e-22
-    ## SmAUX1a    0.3404722 0.005479555 6.275770e-22 2.510308e-20
-    ## SmCYCA1;1a 0.3482532 0.006784812 5.879442e-19 1.567851e-17
-    ## SmPFA2b    0.2276867 0.010201285 4.104503e-17 8.209007e-16
-    ## SmCYCD3;3a 0.3904622 0.006009758 1.057280e-16 1.691648e-15
-    ## SmSGNb     0.3398192 0.010948443 9.202101e-14 1.226947e-12
+    ## SmBIRDa    0.2632099 0.006737347 4.411919e-24 3.529535e-22
+    ## SmAUX1a    0.3397982 0.005362210 3.185737e-22 1.274295e-20
+    ## SmCYCA1;1a 0.3470148 0.006696203 3.403850e-19 9.076935e-18
+    ## SmCYB2;4   0.3207545 0.008760854 5.720660e-18 1.144132e-16
+    ## SmPFA2b    0.2269031 0.009902372 2.173412e-17 3.477459e-16
+    ## SmCYCD3;3a 0.3905425 0.005855202 5.601827e-17 7.469103e-16
+
+Let’s make it visual and plot the most significantly aggregated
+transcripts:
+
+``` r
+plotTopResults(hypYang, allModsNN, pi = "nn")
+```
+
+![](README_files/figure-gfm/plotTopRes-1.png)<!-- -->
 
 Finally write the results to a spreadsheet:
 

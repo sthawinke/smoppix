@@ -48,12 +48,11 @@ allModsNN <- fitLMMs(nnObj, fixedVars = "day", randomVars = "root")
 head(getResults(allModsNN, "nn", "Intercept"))
 ```
 
-Let's make it visual and plot the most significant result;
+Let's make it visual and plot the most significantly aggregated transcripts:
 
 ```{r plotTopRes}
 plotTopResults(hypYang, allModsNN, pi = "nn")
 ```
-
 
 Finally write the results to a spreadsheet:
 
