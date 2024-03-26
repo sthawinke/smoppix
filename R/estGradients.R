@@ -153,9 +153,9 @@ estGradientsSingle <- function(hypFrame, gradients, fixedForm, randomForm,
 #' @examples
 #' example(estGradients, "smoppix")
 #' pVals <- getPvaluesGradient(engGrads, "cell")
-getPvaluesGradient <- function(res, gradient, method = "BH") {
+getPvaluesGradient <- function(res, gradient, method = "BH"){
     gradient <- match.arg(gradient, choices = c("cell", "overall"))
-    pVals <- vapply(engGrads, FUN.VALUE = double(1), function(x) {
+    pVals <- vapply(res, FUN.VALUE = double(1), function(x) {
         x[[gradient]]$pVal
     })
     pAdj <- p.adjust(pVals, method = method)
