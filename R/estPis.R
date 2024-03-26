@@ -52,7 +52,7 @@ estPis <- function(
         background = 2e4,
         CSR = 5e3
     ), nPointsAllWithinCell = switch(null,
-        background = 1000,
+        background = 2e3,
         CSR = 5e2
     ), nPointsAllWin = 1000, minDiff = 20, minObsNN = 1L,
     features = getFeatures(hypFrame), ...) {
