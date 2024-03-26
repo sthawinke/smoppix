@@ -9,3 +9,7 @@ output: github_document
 # 0.1.1
 
  - Use regular rather than squared distances to calculate nearest neighbour PIs
+ 
+# 0.99.0
+
+ - Submission to BioConductor

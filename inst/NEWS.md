@@ -7,3 +7,7 @@
 
 - Use regular rather than squared distances to calculate nearest
   neighbour PIs
+
+# 0.99.0
+
+- Submission to BioConductor
