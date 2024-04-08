@@ -18,7 +18,7 @@ knitr::opts_chunk$set(fig.heigh = 7, fig.width = 7)
 
 # Introduction
 
-This vignette demonstrates the use of the __smoppix__ package for statistical inference on single-molecule spatial transcriptomics datasets with replication.
+This vignette demonstrates the use of the __smoppix__ package: Single MOlecule sPatial omics data analysed through the Probabilistic IndeX. It unifies methods for statistical inference on single-molecule spatial transcriptomics datasets with replication in a single framework using probabilistic indices (PIs). Tests provided include univariate testing for vicinity to fixed objects such as cell walls or nuclei, univariate aggregation tests as well as bivariate tests for co- or antilocalization. Two different null hypothesis can be tested against: complete spatial randomness (also known as homogeneous Poisson process), but also the background distribution of molecules of all other genes can be a useful reference null. In addition, differences between treatments in terms of any of these univariate and bivariate PIs can be tested for using mixed models. The methods is scalable to large number of molecules and genes thanks to an exact permutation null distribution, and an adequate variance weighting scheme is implemented to account for heteroscedasticity. The _smoppix_ package is also applicable to cell type data, or other types of single-molecule omics data such as spatial proteomics or metabolomics.
 
 \setcounter{tocdepth}{5}
 \tableofcontents
