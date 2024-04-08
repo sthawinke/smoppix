@@ -40,8 +40,8 @@
 plotExplore <- function(
     hypFrame, features = getFeatures(hypFrame)[seq_len(6)], ppps,
     maxPlot = 1e+05, Cex = 1, plotWindows = !is.null(hypFrame$owins), plotPoints = TRUE, piEsts = NULL,
-    Xlim = NULL, Ylim = NULL, Cex.main = 0.8, Mar = c(0.4, 0.1, 0.8, 0.1), titleVar = NULL,
-    piColourCell = NULL, palCols = c("blue", "yellow"), border = NULL, CexLegend = 1, CexLegendMain = 1.2) {
+    Xlim = NULL, Ylim = NULL, Cex.main = 1.1, Mar = c(0.4, 0.1, 0.8, 0.1), titleVar = NULL,
+    piColourCell = NULL, palCols = c("blue", "yellow"), border = NULL, CexLegend = 1.4, CexLegendMain = 1.7) {
     if (!is.hyperframe(hypFrame)) {
         hypFrame <- hypFrame$hypFrame
     }

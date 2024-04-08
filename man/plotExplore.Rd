@@ -15,14 +15,14 @@ plotExplore(
   piEsts = NULL,
   Xlim = NULL,
   Ylim = NULL,
-  Cex.main = 0.8,
+  Cex.main = 1.1,
   Mar = c(0.4, 0.1, 0.8, 0.1),
   titleVar = NULL,
   piColourCell = NULL,
   palCols = c("blue", "yellow"),
   border = NULL,
-  CexLegend = 1,
-  CexLegendMain = 1.2
+  CexLegend = 1.4,
+  CexLegendMain = 1.7
 )
 }
 \arguments{
