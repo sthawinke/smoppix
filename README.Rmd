@@ -19,7 +19,7 @@ Load the package
 library(smoppix)
 ```
 
-Load a dataset, convert it to a _spatstat_ hyperframe, adn make an explorative plot:
+Load a dataset, convert it to a _spatstat_ hyperframe, and make an exploratory plot:
 
 ```{r loadYang}
 data(Yang)
@@ -61,9 +61,3 @@ Finally write the results to a spreadsheet:
 ```{r writeToSpreadsheet, eval = FALSE}
 writeToXlsx(allModsNN, file = "myfile.xlsx")
 ```
-
-
-
-
-
-

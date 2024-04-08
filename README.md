@@ -21,13 +21,15 @@ Load the package
 library(smoppix)
 ```
 
-Load a dataset, convert it to a *spatstat* hyperframe, adn make an
-explorative plot:
+Load a dataset, convert it to a *spatstat* hyperframe, and make an
+exploratory plot:
 
 ``` r
 data(Yang)
-hypYang <- buildHyperFrame(Yang, coordVars = c("x", "y"), 
-                           imageVars = c("day", "root", "section"))
+hypYang <- buildHyperFrame(Yang,
+    coordVars = c("x", "y"),
+    imageVars = c("day", "root", "section")
+)
 ```
 
     ## Found 29 unique images
