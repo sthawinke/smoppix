@@ -9,7 +9,7 @@ estPis(
   pis = c("nn", "nnPair", "edge", "centroid", "nnCell", "nnPairCell"),
   verbose = TRUE,
   null = c("background", "CSR"),
-  nPointsAll = switch(null, background = 20000, CSR = 5000),
+  nPointsAll = switch(null, background = 20000, CSR = 1000),
   nPointsAllWithinCell = switch(null, background = 2000, CSR = 500),
   nPointsAllWin = 1000,
   minDiff = 20,
