@@ -50,7 +50,7 @@ estPis <- function(
         "nnPairCell"), verbose = TRUE, null = c("background", "CSR"),
     nPointsAll = switch(null,
         background = 2e4,
-        CSR = 5e3
+        CSR = 1e3
     ), nPointsAllWithinCell = switch(null,
         background = 2e3,
         CSR = 5e2

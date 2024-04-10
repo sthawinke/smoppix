@@ -22,9 +22,9 @@
 #'     pis = c("nn", "nnPair")
 #' )
 #' # First Build the weighting function
-#' yangPims <- addWeightFunction(yangPims, designVars = c("day", "root"), maxObs = 1e4)
+#' yangPims <- addWeightFunction(yangPims, designVars = c("day", "root"), maxObs = 1e3)
 #' plotWf(yangPims, "nn")
-#' plotWf(yangPims, "nnPair")
+#' \dontrun{plotWf(yangPims, "nnPair")}
 plotWf <- function(obj, pi = obj$pis[1]) {
     pi <- match.arg(pi, choices = c("nn", "nnPair", "nnCell", "nnPairCell"))
     if (is.null(obj$Wfs)) {
