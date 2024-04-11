@@ -30,11 +30,11 @@
 #' @examples
 #' example(fitLMMs, "smoppix")
 #' plotTopResults(hypYang, lmmModels, "nn")
-#' plotTopResults(hypYang, lmmModels, "nn", effect = "Intercept", what = "reg")
-#' # For the sake of illustration, set high significance level
+#' # For the sake of illustration, set high significance level, as example dataset is small
+#' plotTopResults(hypYang, lmmModels, "nn", effect = "Intercept", what = "reg", sigLevel = 0.2)
 #' plotTopResults(hypYang, lmmModels, "nn",
 #'     effect = "day", what = "reg",
-#'     effectParameter = "day0", sigLevel = 0.9
+#'     effectParameter = "day0", sigLevel = 1-1e-10
 #' )
 plotTopResults <- function(hypFrame, results, pi, effect = "Intercept",
                            what = if (pi %in% c("nn", "nnCell")) {
@@ -95,7 +95,7 @@ plotTopResults <- function(hypFrame, results, pi, effect = "Intercept",
         stop(
             "No significant features found for PI ", pi, " significance level ",
             sigLevel, " and what ", what, if (!interceptId) {
-                c("for", effectParameter)
+                c(" for ", effectParameter)
             }, "!"
         )
     } else {

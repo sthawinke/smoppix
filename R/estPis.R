@@ -25,7 +25,7 @@
 #'     coordVars = c("x", "y"),
 #'     imageVars = c("day", "root", "section")
 #' )
-#' yangPims <- estPis(hypYang, pis = "nn", hypYang[c(seq_len(4), seq(25, 28)), ],
+#' yangPims <- estPis(hypYang[c(seq_len(6), seq(25, 29)), ], pis = "nn",
 #'     nPointsAll = 5e2)
 #' # Univariate nearest neighbour distances
 #' @details
