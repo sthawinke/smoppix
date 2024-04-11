@@ -22,17 +22,6 @@ scatterplot of majority gene as a function of minority gene, with the weight rep
 The minority respectively majority gene are the genes in the gene pair with least and most events
 }
 \examples{
-data(Yang)
-hypYang <- buildHyperFrame(Yang,
-    coordVars = c("x", "y"),
-    imageVars = c("day", "root", "section")
-)
-yangPims <- estPis(hypYang[c(seq_len(5), seq(25, 29)), ],
-    nPointsAll = 1e3,
-    pis = c("nn", "nnPair")
-)
-# First Build the weighting function
-yangPims <- addWeightFunction(yangPims, designVars = c("day", "root"), maxObs = 1e3)
-plotWf(yangPims, "nn")
-\dontrun{plotWf(yangPims, "nnPair")}
+example(addWeightFunction, "smoppix")
+plotWf(yangObj, "nn")
 }

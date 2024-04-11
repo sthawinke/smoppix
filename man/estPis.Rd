@@ -75,7 +75,8 @@ hypYang <- buildHyperFrame(Yang,
     coordVars = c("x", "y"),
     imageVars = c("day", "root", "section")
 )
-yangPims <- estPis(hypYang, pis = "nn")
+yangPims <- estPis(hypYang, pis = "nn", hypYang[c(seq_len(4), seq(25, 28)), ],
+    nPointsAll = 5e2)
 # Univariate nearest neighbour distances
 }
 \seealso{

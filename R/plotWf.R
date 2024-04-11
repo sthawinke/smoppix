@@ -12,19 +12,8 @@
 #' @export
 #'
 #' @examples
-#' data(Yang)
-#' hypYang <- buildHyperFrame(Yang,
-#'     coordVars = c("x", "y"),
-#'     imageVars = c("day", "root", "section")
-#' )
-#' yangPims <- estPis(hypYang[c(seq_len(5), seq(25, 29)), ],
-#'     nPointsAll = 1e3,
-#'     pis = c("nn", "nnPair")
-#' )
-#' # First Build the weighting function
-#' yangPims <- addWeightFunction(yangPims, designVars = c("day", "root"), maxObs = 1e3)
-#' plotWf(yangPims, "nn")
-#' \donttest{plotWf(yangPims, "nnPair")}
+#' example(addWeightFunction, "smoppix")
+#' plotWf(yangObj, "nn")
 plotWf <- function(obj, pi = obj$pis[1]) {
     pi <- match.arg(pi, choices = c("nn", "nnPair", "nnCell", "nnPairCell"))
     if (is.null(obj$Wfs)) {
