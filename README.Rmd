@@ -4,13 +4,26 @@ title: "SMOPPIX: Single-MOlecule sPatial omics data analysed using the Probabili
 author: Stijn Hawinkel
 ---
 
-This repo provides code for analysing spatial transcriptomics and other omics data on the single-molecule level using probabilistic indices. A simple use-case is shown below, more extensive documentation can be found in the vignette
+```{r, echo=FALSE}
+htmltools::img(src = knitr::image_uri("inst/Smoppix.png"), 
+               alt = 'logo', 
+               style = 'position:absolute; top:0; right:0; padding:10px;',
+               width = "160px",
+               heigth = "160px")
+```
+
+This repo provides code for analyzing spatial transcriptomics and other omics data on the single-molecule level using probabilistic indices. A simple use-case is shown below, more extensive documentation can be found in the vignette
 
 The package can be installed from GitHub as follows:
 
 ```{r installAndLoadGitHub, eval = FALSE}
 library(devtools)
 install_github("sthawinke/smoppix")
+```
+
+```{r install, eval = FALSE}
+library(Biocmanager)
+install("smoppix")
 ```
 
 Load the package

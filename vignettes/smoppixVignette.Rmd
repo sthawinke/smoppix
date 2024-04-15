@@ -12,6 +12,14 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+```{r, echo=FALSE}
+htmltools::img(src = knitr::image_uri("inst/Smoppix.png"), 
+               alt = 'logo', 
+               style = 'position:absolute; top:0; right:0; padding:10px;',
+               width = "200px",
+               heigth = "200px")
+```
+
 ```{r setup, include=FALSE, echo=FALSE}
 knitr::opts_chunk$set(fig.heigh = 7, fig.width = 7)
 ```
