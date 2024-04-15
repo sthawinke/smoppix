@@ -1,6 +1,7 @@
 context("Test plotExplore function")
 test_that("Plotting hyperframes proceeds without errors", {
     expect_silent(plotExplore(hypYang))
+    expect_silent(plotExplore(hypYang, features = getFeatures(hypYang)[seq_len(2)], numPps = 5))
     expect_silent(plotExplore(hypFrame2))
     expect_silent(plotExplore(hypFrame2,
         piEsts = objCSR, piColourCell = "edge",

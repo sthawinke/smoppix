@@ -8,6 +8,8 @@
 #' @param features A small number of features to be fitted. Defaults to the first 5
 #' @param ppps The rownames or indices of the point patterns to be plotted.
 #' Defaults to maximum 99.
+#' @param numPps The number of point patterns with highest expression to be shown.
+#' Ignored is pps is given, and throws an error when more than 2 features provided
 #' @param maxPlot The maximum number of events plotted per point pattern
 #' @param Cex Point amplification factor
 #' @param plotWindows A boolean, should windows be plotted too?
@@ -38,7 +40,7 @@
 #' plotExplore(hypYang, titleVar = "day")
 #' plotExplore(hypYang, features = c("SmRBRb", "SmTMO5b", "SmWER--SmAHK4f"))
 plotExplore <- function(
-    hypFrame, features = getFeatures(hypFrame)[seq_len(6)], ppps,
+    hypFrame, features = getFeatures(hypFrame)[seq_len(6)], ppps, numPps,
     maxPlot = 1e+05, Cex = 1, plotWindows = !is.null(hypFrame$owins), plotPoints = TRUE, piEsts = NULL,
     Xlim = NULL, Ylim = NULL, Cex.main = 1.1, Mar = c(0.4, 0.1, 0.8, 0.1), titleVar = NULL,
     piColourCell = NULL, palCols = c("blue", "yellow"), border = NULL, CexLegend = 1.4, CexLegendMain = 1.7) {
@@ -50,7 +52,8 @@ plotExplore <- function(
     }
     stopifnot(
         is.hyperframe(hypFrame), is.character(features), is.numeric(maxPlot),
-        is.null(titleVar) || titleVar %in% getPPPvars(hypFrame)
+        is.null(titleVar) || titleVar %in% getPPPvars(hypFrame),
+        missing(numPps) || (length(numPps) == 1 && length(features) <= 2)
     )
     if (colourCells <- !is.null(piColourCell) && plotWindows) {
         featsplit <- sund(features)
@@ -76,7 +79,14 @@ plotExplore <- function(
     features <- unique(unlist(lapply(features, sund)))
     npp <- nrow(hypFrame)
     if (missing(ppps)) {
-        ppps <- seq_len(min(99, npp))
+        ppps <- if(missing(numPps)){
+            seq_len(min(99, npp))
+        } else {
+            #Select point patterns with highest expression
+            order(decreasing = TRUE, sapply(hypFrame$tabObs, function(x) {
+                sum(sapply(sund(features), function(y) {if(is.null(tmp <- getGp(x, y))) NA else tmp}))
+            }))[seq_len(numPps)]
+        }
     } else if (is.character(ppps)) {
         ppps <- match(ppps, rownames(hypFrame))
     }

@@ -8,6 +8,7 @@ plotExplore(
   hypFrame,
   features = getFeatures(hypFrame)[seq_len(6)],
   ppps,
+  numPps,
   maxPlot = 1e+05,
   Cex = 1,
   plotWindows = !is.null(hypFrame$owins),
@@ -32,6 +33,9 @@ plotExplore(
 
 \item{ppps}{The rownames or indices of the point patterns to be plotted.
 Defaults to maximum 99.}
+
+\item{numPps}{The number of point patterns with highest expression to be shown.
+Ignored is pps is given, and throws an error when more than 2 features provided}
 
 \item{maxPlot}{The maximum number of events plotted per point pattern}
 
