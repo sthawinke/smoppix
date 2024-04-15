@@ -13,7 +13,7 @@ vignette: >
 ---
 
 ```{r, echo=FALSE}
-htmltools::img(src = knitr::image_uri("inst/Smoppix.png"), 
+htmltools::img(src = knitr::image_uri("../inst/Smoppix.png"), 
                alt = 'logo', 
                style = 'position:absolute; top:0; right:0; padding:10px;',
                width = "200px",

@@ -67,7 +67,6 @@ features more regular at level1 of the variable than at baseline
 \examples{
 example(fitLMMs, "smoppix")
 plotTopResults(hypYang, lmmModels, "nn")
-# For the sake of illustration, set high significance level, as example dataset is small
 plotTopResults(hypYang, lmmModels, "nn", effect = "Intercept", what = "reg", sigLevel = 0.2)
 plotTopResults(hypYang, lmmModels, "nn",
     effect = "day", what = "reg",
