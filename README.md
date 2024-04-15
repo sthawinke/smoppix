@@ -1,4 +1,4 @@
-<img src='inst/Smoppix.jpg' align='centre' height='20%' width='20%'/>SMOPPIX:
+<img src='inst/Smoppix.jpg' align='centre' height='15%' width='15%'/>SMOPPIX:
 Single-MOlecule sPatial omics data analysed using the Probabilistic
 IndeX
 ================
