@@ -2,7 +2,6 @@
 Single-MOlecule sPatial omics data analysed using the Probabilistic
 IndeX
 ================
-Stijn Hawinkel
 
 
 
