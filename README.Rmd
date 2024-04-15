@@ -5,7 +5,7 @@ author: Stijn Hawinkel
 ---
 
 ```{r, echo=FALSE}
-htmltools::img(src = knitr::image_uri("inst/Smoppix.png"), 
+htmltools::img(src = knitr::image_uri("inst/Smoppix.jpg"), 
                alt = 'logo', 
                style = 'position:absolute; top:0; right:0; padding:10px;',
                width = "160px",
