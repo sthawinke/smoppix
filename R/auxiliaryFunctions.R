@@ -18,11 +18,7 @@ sund <- function(x, sep = "--") {
 #'
 #' @return a vector of design levels
 makeDesignVar <- function(x, designVars, sep = "_") {
-    if (NCOL(x) != 1) {
         apply(x[, designVars, drop = FALSE], 1, paste, collapse = sep)
-    } else {
-        c(x)
-    }
 }
 #' An aux function to build gene pairs
 #'
