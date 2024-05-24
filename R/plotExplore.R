@@ -24,6 +24,7 @@
 #' @param border Passed on to plot.owin, and further to graphics::polygon
 #' @param CexLegend,CexLegendMain Expansion factor for the legend and its title
 #' respectively
+#' @param Nrow Number of rows of the facet plot. Will be calculated if missing
 #' @note palCols sets the pseudo-continuous scale to colour cells.
 #'
 #' @return Plots a facet of point patterns to output
@@ -43,7 +44,7 @@ plotExplore <- function(
     hypFrame, features = getFeatures(hypFrame)[seq_len(6)], ppps, numPps,
     maxPlot = 1e+05, Cex = 1, plotWindows = !is.null(hypFrame$owins), plotPoints = TRUE, piEsts = NULL,
     Xlim = NULL, Ylim = NULL, Cex.main = 1.1, Mar = c(0.4, 0.1, 0.8, 0.1), titleVar = NULL,
-    piColourCell = NULL, palCols = c("blue", "yellow"), border = NULL, CexLegend = 1.4, CexLegendMain = 1.7) {
+    piColourCell = NULL, palCols = c("blue", "yellow"), border = NULL, CexLegend = 1.4, CexLegendMain = 1.7, Nrow) {
     if (!is.hyperframe(hypFrame)) {
         hypFrame <- hypFrame$hypFrame
     }
@@ -94,7 +95,8 @@ plotExplore <- function(
     old.par <- par(no.readonly = TRUE)
     on.exit(par(old.par))
     LL <- length(ppps)
-    Nrow <- ceiling(sqrt(LL))
+    if(missing(Nrow))
+        Nrow <- ceiling(sqrt(LL))
     Ncol <- (LL %/% Nrow) + 1
     par(mfrow = c(Nrow, Ncol), mar = Mar)
     baa <- lapply(ppps, function(i) {
