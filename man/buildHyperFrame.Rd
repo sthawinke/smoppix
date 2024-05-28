@@ -18,13 +18,14 @@ buildHyperFrame(x, ...)
   ...
 )
 
-\S4method{buildHyperFrame}{matrix}(x, imageVars, covariates, ...)
+\S4method{buildHyperFrame}{matrix}(x, imageVars, covariates, featureName = "gene", ...)
 
 \S4method{buildHyperFrame}{list}(
   x,
   coordVars = c("x", "y"),
   covariatesDf = NULL,
   idVar = NULL,
+  featureName = "gene",
   ...
 )
 

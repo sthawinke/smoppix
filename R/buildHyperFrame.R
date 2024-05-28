@@ -38,7 +38,7 @@ setMethod("buildHyperFrame", "data.frame", function(x, coordVars, imageVars, coV
 #'
 #' @rdname buildHyperFrame
 #' @export
-setMethod("buildHyperFrame", "matrix", function(x, imageVars, covariates, ...) {
+setMethod("buildHyperFrame", "matrix", function(x, imageVars, covariates, featureName = "gene", ...) {
     if (length(intersect(names(imageVars), names(covariates)))) {
         stop("Overlap detected between 'imageVars' and 'coVars'.
         The combination of the first separates the images,
@@ -52,10 +52,10 @@ setMethod("buildHyperFrame", "matrix", function(x, imageVars, covariates, ...) {
         stop("Number of rows of imageVars and coordinate matrix must match")
     }
     designVec <- makeDesignVar(imageVars)
-    if (!any("gene" == colnames(covariates))) {
-        stop("Gene identity must be supplied in covariate matrix")
+    if (!any(featureName == colnames(covariates))) {
+        stop("Gene or cell identity\n", featureName, "\nmust be supplied in covariate matrix")
     } else {
-        covariates$gene <- as.character(covariates$gene)
+        covariates$gene <- as.character(covariates[[featureName]])
     }
     stopifnot(is.null(covariates) || nrow(x) == NROW(covariates))
     message("Found ", length(unDesignFactors <- unique(designVec)), " unique images")
@@ -87,7 +87,7 @@ setMethod("buildHyperFrame", "matrix", function(x, imageVars, covariates, ...) {
 #' @importFrom spatstat.geom is.ppp
 setMethod("buildHyperFrame", "list", function(
     x, coordVars = c("x", "y"), covariatesDf = NULL,
-    idVar = NULL, ...) {
+    idVar = NULL, featureName = "gene", ...) {
     stopifnot(is.null(covariatesDf) || (nrow(covariatesDf) == length(x)), is.null(idVar) ||
         idVar %in% names(covariatesDf))
     if (!is.null(names(x)) && !is.null(idVar)) {
@@ -104,8 +104,8 @@ setMethod("buildHyperFrame", "list", function(
     }, FUN.VALUE = TRUE))) {
         hypFrame <- spatstat.geom::hyperframe(ppp = lapply(x, function(z) {
             PPcovariates <- setdiff(colnames(z), coordVars)
-            if (!("gene" %in% PPcovariates)) {
-                stop("Gene marker is missing in at least one point pattern")
+            if (!(featureName %in% PPcovariates)) {
+                stop("Gene or cell marker\n", featureName, "\nis missing in at least one point pattern")
             }
             i <- order(z[, coordVars[1]])
             spatstat.geom::ppp(x = z[i, coordVars[1]], y = z[i, coordVars[2]], marks = z[i,
