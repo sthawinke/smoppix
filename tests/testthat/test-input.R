@@ -8,10 +8,10 @@ test_that("Reading in data proceeds without errors", {
     )))
     expect_s3_class(hypFrame, c("hyperframe", "list"))
     expect_message(buildHyperFrame(as.matrix(df[, c("x", "y")]),
-        image = df$fov,
+        imageVars = df$fov,
         covariates = df[, c("gene", "condition"), drop = FALSE]
     ))
-    expect_message(hypFrame2 <- buildHyperFrame(as.matrix(df[, c("x", "y")]), image = df[
+    expect_message(hypFrame2 <- buildHyperFrame(as.matrix(df[, c("x", "y")]), imageVars = df[
         ,
         c("fov", "condition")
     ], covariates = df[, "gene", drop = FALSE]))
@@ -30,7 +30,7 @@ library(SpatialExperiment)
 library(DropletUtils)
 example(read10xVisium)
 test_that("Reading in SpatialExperiment class proceeds without errors", {
-    expect_message(hypFrame4 <- buildHyperFrame(spe, imageVars = "sample_id", coVars = "in_tissue"))
+    expect_message(hypFrame4 <- buildHyperFrame(spe, imageVars = "sample_id", covariates = "in_tissue"))
 })
 
 test_that("Adding regions of interest works", {

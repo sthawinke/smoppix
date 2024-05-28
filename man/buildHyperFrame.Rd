@@ -13,12 +13,21 @@ buildHyperFrame(x, ...)
 \S4method{buildHyperFrame}{data.frame}(
   x,
   coordVars,
+  imageIdentifier = NULL,
   imageVars,
-  coVars = setdiff(names(x), c(imageVars, coordVars)),
+  pointVars = setdiff(names(x), c(imageVars, imageIdentifier, coordVars, featureName)),
+  featureName = "gene",
   ...
 )
 
-\S4method{buildHyperFrame}{matrix}(x, imageVars, covariates, featureName = "gene", ...)
+\S4method{buildHyperFrame}{matrix}(
+  x,
+  imageVars,
+  imageIdentifier = NULL,
+  covariates,
+  featureName = "gene",
+  ...
+)
 
 \S4method{buildHyperFrame}{list}(
   x,
@@ -29,7 +38,7 @@ buildHyperFrame(x, ...)
   ...
 )
 
-\S4method{buildHyperFrame}{SpatialExperiment}(x, imageVars, coVars, ...)
+\S4method{buildHyperFrame}{SpatialExperiment}(x, imageVars, covariates, imageIdentifier = NULL, ...)
 }
 \arguments{
 \item{x}{the input object, see methods('buildHyperFrame')}
@@ -38,10 +47,15 @@ buildHyperFrame(x, ...)
 
 \item{coordVars}{Names of coordinates}
 
-\item{imageVars}{A character vector of variables whose unique combinations
+\item{imageIdentifier}{A character vector of variables whose unique combinations
 define the separate point patterns (images)}
 
-\item{coVars}{Names of event-wise covariates such as gene or cell for each single point}
+\item{imageVars}{Covariates belonging to the point patterns}
+
+\item{pointVars}{Names of event-wise covariates such as gene or cell for each single point}
+
+\item{featureName}{The name of the feature identifier for the molecules.
+Defaults to "gene"}
 
 \item{covariates}{A vector of covariates}
 

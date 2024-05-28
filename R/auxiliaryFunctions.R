@@ -18,7 +18,11 @@ sund <- function(x, sep = "--") {
 #'
 #' @return a vector of design levels
 makeDesignVar <- function(x, designVars, sep = "_") {
+    if(NCOL(x)==1){
+        c(x)
+    } else {
         apply(x[, designVars, drop = FALSE], 1, paste, collapse = sep)
+    }
 }
 #' An aux function to build gene pairs
 #'
@@ -155,4 +159,14 @@ splitWindow <- function(x) {
 #' @return a matrix of cross distances
 crossdistWrapper <- function(x, y) {
     crossdistFastLocal(getCoordsMat(x), getCoordsMat(y))
+}
+#' Center numeric variables
+#'
+#' @param x The dataframe whose numeric variables are being centered
+#'
+#' @return The adapeted dataframe
+centerNumeric = function(x){
+    numId = vapply(x, FUN.VALUE = TRUE, is.numeric)
+    x[, numId] = scale(x[,numId], center = TRUE, scale = FALSE)
+    x
 }

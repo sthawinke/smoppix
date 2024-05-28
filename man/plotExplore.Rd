@@ -23,7 +23,8 @@ plotExplore(
   palCols = c("blue", "yellow"),
   border = NULL,
   CexLegend = 1.4,
-  CexLegendMain = 1.7
+  CexLegendMain = 1.7,
+  Nrow
 )
 }
 \arguments{
@@ -63,6 +64,8 @@ Ignored is pps is given, and throws an error when more than 2 features provided}
 
 \item{CexLegend, CexLegendMain}{Expansion factor for the legend and its title
 respectively}
+
+\item{Nrow}{Number of rows of the facet plot. Will be calculated if missing}
 }
 \value{
 Plots a facet of point patterns to output

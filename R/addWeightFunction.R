@@ -55,7 +55,7 @@ addWeightFunction <- function(
         warning("Overwriting pre-existing weight function!")
     }
     pis <- match.arg(pis, choices = c("nn", "nnPair", "nnCell", "nnPairCell"), several.ok = TRUE)
-    isNested <- length(getPPPvars(resList)) >= 1 # Is there a nested structure in the design
+    isNested <- !(missing(designVars) && missing(lowestLevelVar)) # Is there a nested structure in the design
     allCell <- all(grepl("Cell", pis))
     if (isNested) {
         designVars <- constructDesignVars(designVars, lowestLevelVar, allCell, resList = resList)
@@ -182,8 +182,8 @@ addWeightFunction <- function(
             "NP"
         })))
         # Build matrix with variance entries and number of events
-        varElMat <- varElMat[!is.na(varElMat[, "quadDeps"]) & varElMat[, "quadDeps"] !=
-            0, ]
+        varElMat <- varElMat[!is.na(varElMat[, "quadDeps"]) &
+                                 varElMat[, "quadDeps"] != 0, ]
         if (nrow(varElMat) > maxObs) {
             varElMat <- varElMat[sample(nrow(varElMat), maxObs), ]
         }

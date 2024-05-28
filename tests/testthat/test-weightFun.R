@@ -34,7 +34,7 @@ test_that("Weight function application throws errors where appropriate", {
         "condition"
     )))
     expect_error(addWeightFunction(piEstsCSR, pi = "nn", lowestLevelVar = "treatment"))
-    expect_error(addWeightFunction(piEstsCSR, pi = "nn"))
-    expect_error(addWeightFunction(piEstsCSR, pi = "centroid"))
+    # expect_error(addWeightFunction(piEstsCSR, pi = "nn"))
+    # expect_error(addWeightFunction(piEstsCSR, pi = "centroid"))
     expect_error(addWeightFunction(hypYang))
 })

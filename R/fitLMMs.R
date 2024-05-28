@@ -81,9 +81,7 @@ fitLMMsSingle <- function(
     obj, pi, fixedVars, randomVars, verbose, returnModels,
     Formula, randomNested, features, addMoransI, weightMats, moranFormula) {
     pi <- match.arg(pi, choices = c(
-        "nn", "nnPair", "edge", "centroid", "nnCell",
-        "nnPairCell"
-    ))
+        "nn", "nnPair", "edge", "centroid", "nnCell", "nnPairCell"))
     noWeight <- pi %in% c("edge", "centroid")
     if (noWeight) {
         randomVars <- setdiff(union(randomVars, "image/cell"), c("image", "cell"))
@@ -151,8 +149,7 @@ fitLMMsSingle <- function(
         features <- makePairs(features)
         vapply(features, FUN.VALUE = double(nrow(obj$hypFrame)), function(gene) {
             vapply(obj$hypFrame$tabObs, FUN.VALUE = double(1), function(x) {
-                all(x[sund(gene)] >=
-                    1)
+                all(x[sund(gene)] >= 1)
             })
         })
     } else {
@@ -167,7 +164,7 @@ fitLMMsSingle <- function(
         tmp
     }) >= 1
     Features <- features[featIds]
-    pppDf <- as.data.frame(obj$hypFrame[, c("image", getPPPvars(obj))])
+    pppDf <- centerNumeric(as.data.frame(obj$hypFrame[, c("image", getPPPvars(obj))]))
     models <- loadBalanceBplapply(Features, function(gene) {
         df <- buildDataFrame(obj, gene = gene, pi = pi, pppDf = pppDf)
         if (is.null(df) || sum(!is.na(df$pi)) < 3) {
@@ -186,7 +183,9 @@ fitLMMsSingle <- function(
         if (randomNested) {
             df <- nestRandom(df, randomVarsSplit, intersect(fixedVars, getPPPvars(obj)))
         }
-        piMod <- fitPiModel(Formula, df, contrasts, Control, MM = MM, Weight = df$weight)
+        contrasts = contrasts[!names(contrasts) %in% vapply(df, FUN.VALUE = TRUE, is.numeric)]
+        piMod <- fitPiModel(Formula, df, contrasts,
+                            Control, MM = MM, Weight = df$weight)
         return(list(piMod = piMod, moranMod = moranMod))
     })
     names(models) <- Features

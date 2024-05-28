@@ -9,6 +9,8 @@
 #' @param x the input object, see methods('buildHyperFrame')
 #' @param ... additional constructor arguments
 #' @param covariates A vector of covariates
+#' @param featureName The name of the feature identifier for the molecules.
+#' Defaults to "gene"
 #' @return An object of class 'hyperframe' from the 'spatstat.geom' package
 #' @examples
 #' data(Yang)
@@ -21,26 +23,27 @@ setGeneric("buildHyperFrame", function(x, ...) standardGeneric("buildHyperFrame"
 #' @rdname buildHyperFrame
 #' @export
 #' @param coordVars Names of coordinates
-#' @param imageVars A character vector of variables whose unique combinations
+#' @param imageIdentifier A character vector of variables whose unique combinations
 #' define the separate point patterns (images)
-#' @param coVars Names of event-wise covariates such as gene or cell for each single point
-
-setMethod("buildHyperFrame", "data.frame", function(x, coordVars, imageVars, coVars = setdiff(
+#' @param imageVars Covariates belonging to the point patterns
+#' @param pointVars Names of event-wise covariates such as gene or cell for each single point
+setMethod("buildHyperFrame", "data.frame", function(x, coordVars, imageIdentifier = NULL, imageVars, pointVars = setdiff(
                                                         names(x),
-                                                        c(imageVars, coordVars)
-                                                    ), ...) {
-    buildHyperFrame(as.matrix(x[, coordVars]),
-        image = x[, imageVars, drop = FALSE],
-        covariates = x[, coVars, drop = FALSE], ...
+                                                        c(imageVars, imageIdentifier, coordVars, featureName)
+                                                    ), featureName = "gene", ...) {
+    buildHyperFrame(as.matrix(x[, coordVars]), imageIdentifier = x[,imageIdentifier],
+                    imageVars = x[,imageVars],
+        covariates = x[, c(pointVars, featureName), drop = FALSE], featureName = featureName,  ...
     )
 })
 #' @param matrix The input matrix
 #'
 #' @rdname buildHyperFrame
 #' @export
-setMethod("buildHyperFrame", "matrix", function(x, imageVars, covariates, featureName = "gene", ...) {
+setMethod("buildHyperFrame", "matrix", function(x, imageVars, imageIdentifier = NULL,
+                                                covariates, featureName = "gene", ...) {
     if (length(intersect(names(imageVars), names(covariates)))) {
-        stop("Overlap detected between 'imageVars' and 'coVars'.
+        stop("Overlap detected between 'imageVars' and 'covariates'.
         The combination of the first separates the images,
              wheras the second defines point-specific data such as
              gene identifiers.")
@@ -51,11 +54,18 @@ setMethod("buildHyperFrame", "matrix", function(x, imageVars, covariates, featur
     if (nrow(x) != NROW(imageVars)) {
         stop("Number of rows of imageVars and coordinate matrix must match")
     }
-    designVec <- makeDesignVar(imageVars)
+    if(NCOL(imageIdentifier)>=0 && NCOL(imageIdentifier) >1){
+        stop("imageIdentifier must be a vector-type!")
+    }
+    designVec <- if(NCOL(imageIdentifier)==0)
+        makeDesignVar(imageVars)
+    else
+        imageIdentifier
     if (!any(featureName == colnames(covariates))) {
         stop("Gene or cell identity\n", featureName, "\nmust be supplied in covariate matrix")
     } else {
-        covariates$gene <- as.character(covariates[[featureName]])
+        covariates <- data.frame("gene" =  as.character(covariates[[featureName]]),
+                            covariates[, setdiff(colnames(covariates), featureName)])
     }
     stopifnot(is.null(covariates) || nrow(x) == NROW(covariates))
     message("Found ", length(unDesignFactors <- unique(designVec)), " unique images")
@@ -127,12 +137,10 @@ setMethod("buildHyperFrame", "list", function(
 #' @importFrom SpatialExperiment SpatialExperiment spatialCoords
 #' @importFrom SummarizedExperiment colData
 setMethod("buildHyperFrame", "SpatialExperiment", function(
-    x, imageVars, coVars,
+    x, imageVars, covariates, imageIdentifier = NULL,
     ...) {
-    buildHyperFrame(spatialCoords(x), image = as.data.frame(colData(x)[, imageVars,
-        drop = FALSE
-    ]), covariates = cbind(gene = rownames(colData(x)), as.data.frame(colData(x))[,
-        coVars,
-        drop = FALSE
-    ]))
+    buildHyperFrame(spatialCoords(x),
+                    imageVars = as.data.frame(colData(x)[, imageVars, drop = FALSE]),
+                    imageIdentifier = as.data.frame(colData(x)[, imageIdentifier,drop = FALSE]),
+                    covariates = cbind("gene" = rownames(colData(x)), as.data.frame(colData(x))[,covariates,drop = FALSE]))
 })
