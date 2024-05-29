@@ -19,7 +19,7 @@ sund <- function(x, sep = "--") {
 #' @return a vector of design levels
 makeDesignVar <- function(x, designVars, sep = "_") {
     if(NCOL(x)==1){
-        c(x)
+        unlist(x)
     } else {
         apply(x[, designVars, drop = FALSE], 1, paste, collapse = sep)
     }
@@ -75,7 +75,6 @@ named.contr.sum <- function(x, ...) {
 #' and add design varibales
 #'
 #' @param hypFrame The hyperframe
-#' @param desMat The design matrix
 #'
 #' @return The hyperframe with tabObs added
 #' @importFrom spatstat.geom marks
@@ -89,6 +88,7 @@ addTabObs <- function(hypFrame) {
 #'
 #' @param hypFrame The hyperframe
 #' @param desMat The design matrix
+#' @param designVec The design vector
 #'
 #' @return The hyperframe with design variables added
 addDesign = function(hypFrame, desMat, designVec){

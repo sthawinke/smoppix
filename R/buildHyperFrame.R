@@ -55,11 +55,11 @@ setMethod("buildHyperFrame", "matrix", function(x, imageVars, imageIdentifier = 
         stop("Number of rows of imageVars and coordinate matrix must match")
     }
     designVec <- makeDesignVar(imageIdentifier)
+    covariates = as.data.frame(covariates)
     if (!any(featureName == colnames(covariates))) {
         stop("Gene or cell identity\n", featureName, "\nmust be supplied in covariate matrix")
     } else {
-        covariates <- data.frame("gene" =  as.character(covariates[[featureName]]),
-                            covariates[, setdiff(colnames(covariates), featureName)])
+        covariates$gene <- as.character(covariates[[featureName]])
     }
     stopifnot(is.null(covariates) || nrow(x) == NROW(covariates))
     message("Found ", length(unDesignFactors <- unique(designVec)), " unique images")
@@ -124,7 +124,8 @@ setMethod("buildHyperFrame", "list", function(
     } else {
         stop("Supply a list of point patterns (ppp)", "or of dataframes or matrices")
     }
-    hypFrame <- addTabObs(hypFrame, covariatesDf)
+    hypFrame <- addTabObs(hypFrame)
+    hypFrame <- addDesign(hypFrame, covariatesDf, hypFrame$image)
     return(hypFrame)
 })
 #' @rdname buildHyperFrame
@@ -132,7 +133,7 @@ setMethod("buildHyperFrame", "list", function(
 #' @importFrom SpatialExperiment SpatialExperiment spatialCoords
 #' @importFrom SummarizedExperiment colData
 setMethod("buildHyperFrame", "SpatialExperiment", function(
-    x, imageVars, covariates, imageIdentifier = NULL,
+    x, imageVars, covariates, imageIdentifier = imageVars,
     ...) {
     buildHyperFrame(spatialCoords(x),
                     imageVars = as.data.frame(colData(x)[, imageVars, drop = FALSE]),

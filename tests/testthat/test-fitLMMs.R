@@ -58,7 +58,7 @@ test_that("Fitting linear mixed models proceeds without errors", {
         features = getFeatures(objBG)[1:5],
         fixedVars = c("condition", "age"), pi = "edge"
     ), "list")
-    expect_identical(ncol(getResults(linModsEdge, "edge", "age")), 3)
+    expect_identical(ncol(getResults(linModsEdge, "edge", "age")), 3L)
     # Including cell (type) either as fixed or random effect E.g. test for
     # differences between cell types
     expect_is(linModsMPcell <- fitLMMs(objBG,

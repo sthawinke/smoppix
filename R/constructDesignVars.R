@@ -8,7 +8,7 @@
 #' @return A vector of design variables
 #' @seealso \link{buildDataFrame}
 constructDesignVars <- function(designVars, lowestLevelVar, allCell, resList) {
-    allVars <- getDesignVars(resList)
+    allVars <- getDiscreteVars(resList)
     if (missing(designVars) && missing(lowestLevelVar) && !allCell) {
         stop("Provide either designVars or lowestLevelVar for measures ", "not on cell level!")
     }
@@ -26,7 +26,7 @@ constructDesignVars <- function(designVars, lowestLevelVar, allCell, resList) {
             stop("lowestLevelVar must be part of the design,
                     see getFeatures(resList)")
         }
-        designVars <- setdiff(getPPPvars(resList), lowestLevelVar)
+        designVars <- setdiff(intersect(allVars, getPPPvars(resList)), lowestLevelVar)
         # If missing take everything but the ones that are obviously no design
         # variables
     }

@@ -3,16 +3,15 @@ test_that("Reading in data proceeds without errors", {
     expect_message(buildHyperFrame(df, coordVars = c("x", "y"), imageVars = "fov"))
     # Should work also with single image variable
     expect_message(hypFrame <- buildHyperFrame(df, coordVars = c("x", "y"), imageVars = c(
-        "fov",
-        "condition"
-    )))
+        "fov", "condition", "age"
+    ), imageIdentifier = c("fov", "condition")))
     expect_s3_class(hypFrame, c("hyperframe", "list"))
     expect_message(buildHyperFrame(as.matrix(df[, c("x", "y")]),
         imageVars = df$fov,
-        covariates = df[, c("gene", "condition"), drop = FALSE]
+        covariates = df[, c("gene", "condition", "age"), drop = FALSE]
     ))
-    expect_message(hypFrame2 <- buildHyperFrame(as.matrix(df[, c("x", "y")]), imageVars = df[
-        ,c("fov", "condition")
+    expect_message(hypFrame2 <- buildHyperFrame(as.matrix(df[, c("x", "y")]), imageIdentifier = df[,c("fov", "condition")], imageVars = df[
+        ,c("fov", "condition", "age")
     ], covariates = df[, "gene", drop = FALSE]))
     expect_identical(hypFrame, hypFrame2)
     expect_silent(hypFrame3 <- buildHyperFrame(lapply(listPPP, identity)))
