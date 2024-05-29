@@ -10,6 +10,8 @@ addDesign(hypFrame, desMat, designVec)
 \item{hypFrame}{The hyperframe}
 
 \item{desMat}{The design matrix}
+
+\item{designVec}{The design vector}
 }
 \value{
 The hyperframe with design variables added

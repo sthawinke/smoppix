@@ -38,7 +38,7 @@ buildHyperFrame(x, ...)
   ...
 )
 
-\S4method{buildHyperFrame}{SpatialExperiment}(x, imageVars, covariates, imageIdentifier = NULL, ...)
+\S4method{buildHyperFrame}{SpatialExperiment}(x, imageVars, covariates, imageIdentifier = imageVars, ...)
 }
 \arguments{
 \item{x}{the input object, see methods('buildHyperFrame')}

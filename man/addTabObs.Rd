@@ -9,8 +9,6 @@ addTabObs(hypFrame)
 }
 \arguments{
 \item{hypFrame}{The hyperframe}
-
-\item{desMat}{The design matrix}
 }
 \value{
 The hyperframe with tabObs added
