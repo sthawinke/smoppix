@@ -12,13 +12,15 @@ y <- runif(n)
 # assign each molecule to some gene-cell pair
 gs <- paste0("gene", seq(ng))
 gene <- sample(gs, n, TRUE)
-fov <- sample(nfov, n, TRUE)
-condition <- sample(conditions, n, TRUE)
+fov <- as.character(sample(nfov, n, TRUE))
+condition <- as.character(sample(conditions, n, TRUE))
+f = paste(fov, condition, sep = "_")
+age = unsplit(lapply(split(integer(n), f = f), function(x) {rep(runif(1, 18, 98))}), f = f)
 # construct data.frame of molecule coordinates
-df <- data.frame(gene, x, y, fov, condition = condition)
+df <- data.frame(gene, x, y, fov, condition = condition, age = age)
 # A list of point patterns
 listPPP <- tapply(seq(nrow(df)), df$fov, function(i) {
-    ppp(x = df$x[i], y = df$y[i], marks = df[i, c("gene", "condition", "fov"), drop = FALSE])
+    ppp(x = df$x[i], y = df$y[i], marks = df[i, c("gene", "condition", "fov", "age"), drop = FALSE])
 }, simplify = FALSE)
 # Regions of interest (roi): Diamond in the center plus four triangles
 w1 <- owin(poly = list(x = c(0, 0.5, 1, 0.5), y = c(0.5, 0, 0.5, 1)))
@@ -28,9 +30,8 @@ w4 <- owin(poly = list(x = c(1, 1, 0.5), y = c(0.5, 1, 1)))
 w5 <- owin(poly = list(x = c(1, 1, 0.5), y = c(0, 0.5, 0)))
 wWrong <- owin(poly = list(x = c(0, 1, 1, 0), y = c(0.75, 0.5, 0.75, 1)))
 hypFrame <- buildHyperFrame(df, coordVars = c("x", "y"), imageVars = c(
-    "condition",
-    "fov"
-))
+    "condition", "fov", "age"
+), imageIdentifier = c("fov", "condition"))
 nDesignFactors <- length(unique(hypFrame$image))
 wList <- lapply(seq_len(nDesignFactors), function(x) {
     Li <- list(w1 = w1, w2 = w2, w3 = w3, w4 = w4, w5 = w5)
@@ -64,8 +65,7 @@ objCSR <- addWeightFunction(piEstsCSR, designVars = "condition")
 # Fit Yang models too
 data(Yang)
 hypYang <- buildHyperFrame(Yang, coordVars = c("x", "y"), imageVars = c(
-    "day", "root",
-    "section"
+    "day", "root", "section"
 ))
 yangPims <- estPis(hypYang, features = getFeatures(hypYang)[seq_len(10)], pis = c(
     "nn",

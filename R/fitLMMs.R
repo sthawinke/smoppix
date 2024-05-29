@@ -139,12 +139,6 @@ fitLMMsSingle <- function(
         check.conv.hess = .makeCC(action = "ignore", tol = 1e-06)
     )
     # convergence checking options
-    if (is.null(fixedVars)) {
-        contrasts <- NULL
-    } else {
-        names(fixedVars) <- fixedVars
-        contrasts <- lapply(fixedVars, function(x) named.contr.sum)
-    }
     tmp <- if (grepl("Pair", pi)) {
         features <- makePairs(features)
         vapply(features, FUN.VALUE = double(nrow(obj$hypFrame)), function(gene) {
@@ -165,6 +159,13 @@ fitLMMsSingle <- function(
     }) >= 1
     Features <- features[featIds]
     pppDf <- centerNumeric(as.data.frame(obj$hypFrame[, c("image", getPPPvars(obj))]))
+    if (is.null(fixedVars)) {
+        contrasts <- NULL
+    } else {
+        discreteVars = intersect(getDiscreteVars(obj), fixedVars)
+        names(discreteVars) <- discreteVars
+        contrasts <- lapply(discreteVars, function(x) named.contr.sum)
+    }
     models <- loadBalanceBplapply(Features, function(gene) {
         df <- buildDataFrame(obj, gene = gene, pi = pi, pppDf = pppDf)
         if (is.null(df) || sum(!is.na(df$pi)) < 3) {

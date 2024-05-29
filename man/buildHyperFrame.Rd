@@ -13,7 +13,7 @@ buildHyperFrame(x, ...)
 \S4method{buildHyperFrame}{data.frame}(
   x,
   coordVars,
-  imageIdentifier = NULL,
+  imageIdentifier = imageVars,
   imageVars,
   pointVars = setdiff(names(x), c(imageVars, imageIdentifier, coordVars, featureName)),
   featureName = "gene",
@@ -23,7 +23,7 @@ buildHyperFrame(x, ...)
 \S4method{buildHyperFrame}{matrix}(
   x,
   imageVars,
-  imageIdentifier = NULL,
+  imageIdentifier = imageVars,
   covariates,
   featureName = "gene",
   ...

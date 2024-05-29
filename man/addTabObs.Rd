@@ -5,7 +5,7 @@
 \title{Add tables with gene counts to the hyperframe, presort by gene and x-ccordinate
 and add design varibales}
 \usage{
-addTabObs(hypFrame, desMat)
+addTabObs(hypFrame)
 }
 \arguments{
 \item{hypFrame}{The hyperframe}

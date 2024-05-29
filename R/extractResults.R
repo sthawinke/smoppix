@@ -42,24 +42,33 @@ extractResults <- function(
     # Order by p-value
     AnovaTabs <- lapply(models[id], function(x) anova(x[[subSet]]))
     fixedOut <- lapply(fixedVars, function(Var) {
-        unVals <- if (Var %in% getEventVars(hypFrame)) {
-            unique(unlist(lapply(hypFrame$ppp, function(x) {
-                marks(x, drop = FALSE)[[Var]]
-            })))
+        if(discr <- Var %in% getDiscreteVars(hypFrame)){
+            unVals <- if (Var %in% getEventVars(hypFrame)) {
+                unique(unlist(lapply(hypFrame$ppp, function(x) {
+                    marks(x, drop = FALSE)[[Var]]
+                })))
+            } else {
+                unique(hypFrame[[Var]])
+            }
+            emptyCoef <- rep_len(NA, length(unVals))
+            names(emptyCoef) <- paste0(Var, unVals) # Prepare empty coefficient
         } else {
-            unique(hypFrame[[Var]])
+            emptyCoef = double(1)
+            names(emptyCoef) = Var
         }
-        emptyCoef <- rep_len(NA, length(unVals))
-        names(emptyCoef) <- paste0(Var, unVals) # Prepare empty coefficient
         pVal <- vapply(AnovaTabs, FUN.VALUE = double(1), function(x) x[Var, "Pr(>F)"])
         coefs <- lapply(models[id], function(x) {
             # Prepare the empty coefficient vector with all levels present. If
             # outcome is NA for all levels, the factor level gets dropped,
             # causing problems downstream.
             coefObj <- summary(x[[subSet]])$coef
-            rn <- intersect(names(emptyCoef), rownames(coefObj))
-            emptyCoef[rn] <- coefObj[rn, "Estimate"]
-            emptyCoef
+            if(discr){
+                rn <- intersect(names(emptyCoef), rownames(coefObj))
+                emptyCoef[rn] <- coefObj[rn, "Estimate"]
+                emptyCoef
+            } else {
+                coefObj[Var, "Estimate"]
+            }
         })
         coefMat <- matrix(unlist(coefs), byrow = TRUE, nrow = length(pVal))
         colnames(coefMat) <- names(emptyCoef)

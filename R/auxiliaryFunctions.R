@@ -79,13 +79,23 @@ named.contr.sum <- function(x, ...) {
 #'
 #' @return The hyperframe with tabObs added
 #' @importFrom spatstat.geom marks
-addTabObs <- function(hypFrame, desMat) {
+addTabObs <- function(hypFrame) {
     hypFrame$tabObs <- lapply(hypFrame$ppp, function(x) {
         table(marks(x, drop = FALSE)$gene)
     })
+    hypFrame
+}
+#' Add design variables to hyperframe
+#'
+#' @param hypFrame The hyperframe
+#' @param desMat The design matrix
+#'
+#' @return The hyperframe with design variables added
+addDesign = function(hypFrame, desMat, designVec){
     # Add design variables
+    id = match(hypFrame$image, designVec)
     for (i in colnames(desMat)) {
-        hypFrame[, i] <- desMat[, i]
+        hypFrame[, i] <- desMat[id, i]
     }
     rownames(hypFrame) <- hypFrame$image
     hypFrame
@@ -167,6 +177,8 @@ crossdistWrapper <- function(x, y) {
 #' @return The adapeted dataframe
 centerNumeric = function(x){
     numId = vapply(x, FUN.VALUE = TRUE, is.numeric)
-    x[, numId] = scale(x[,numId], center = TRUE, scale = FALSE)
+    for(i in which(numId)){
+        x[,i] = x[,i] - mean(x[,i])
+    }
     x
 }

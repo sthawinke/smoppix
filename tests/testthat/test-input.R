@@ -12,8 +12,7 @@ test_that("Reading in data proceeds without errors", {
         covariates = df[, c("gene", "condition"), drop = FALSE]
     ))
     expect_message(hypFrame2 <- buildHyperFrame(as.matrix(df[, c("x", "y")]), imageVars = df[
-        ,
-        c("fov", "condition")
+        ,c("fov", "condition")
     ], covariates = df[, "gene", drop = FALSE]))
     expect_identical(hypFrame, hypFrame2)
     expect_silent(hypFrame3 <- buildHyperFrame(lapply(listPPP, identity)))

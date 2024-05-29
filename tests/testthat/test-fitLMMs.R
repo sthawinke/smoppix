@@ -56,8 +56,9 @@ test_that("Fitting linear mixed models proceeds without errors", {
     expect_s4_class(linModsMP[["centroid"]]$models[[1]]$piMod, "lmerModLmerTest")
     expect_is(linModsEdge <- fitLMMs(objBG,
         features = getFeatures(objBG)[1:5],
-        fixedVars = "condition", pi = "edge"
+        fixedVars = c("condition", "age"), pi = "edge"
     ), "list")
+    expect_identical(ncol(getResults(linModsEdge, "edge", "age")), 3)
     # Including cell (type) either as fixed or random effect E.g. test for
     # differences between cell types
     expect_is(linModsMPcell <- fitLMMs(objBG,

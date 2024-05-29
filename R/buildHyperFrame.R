@@ -27,7 +27,7 @@ setGeneric("buildHyperFrame", function(x, ...) standardGeneric("buildHyperFrame"
 #' define the separate point patterns (images)
 #' @param imageVars Covariates belonging to the point patterns
 #' @param pointVars Names of event-wise covariates such as gene or cell for each single point
-setMethod("buildHyperFrame", "data.frame", function(x, coordVars, imageIdentifier = NULL, imageVars, pointVars = setdiff(
+setMethod("buildHyperFrame", "data.frame", function(x, coordVars, imageIdentifier = imageVars, imageVars, pointVars = setdiff(
                                                         names(x),
                                                         c(imageVars, imageIdentifier, coordVars, featureName)
                                                     ), featureName = "gene", ...) {
@@ -40,7 +40,7 @@ setMethod("buildHyperFrame", "data.frame", function(x, coordVars, imageIdentifie
 #'
 #' @rdname buildHyperFrame
 #' @export
-setMethod("buildHyperFrame", "matrix", function(x, imageVars, imageIdentifier = NULL,
+setMethod("buildHyperFrame", "matrix", function(x, imageVars, imageIdentifier = imageVars,
                                                 covariates, featureName = "gene", ...) {
     if (length(intersect(names(imageVars), names(covariates)))) {
         stop("Overlap detected between 'imageVars' and 'covariates'.
@@ -54,13 +54,7 @@ setMethod("buildHyperFrame", "matrix", function(x, imageVars, imageIdentifier = 
     if (nrow(x) != NROW(imageVars)) {
         stop("Number of rows of imageVars and coordinate matrix must match")
     }
-    if(NCOL(imageIdentifier)>=0 && NCOL(imageIdentifier) >1){
-        stop("imageIdentifier must be a vector-type!")
-    }
-    designVec <- if(NCOL(imageIdentifier)==0)
-        makeDesignVar(imageVars)
-    else
-        imageIdentifier
+    designVec <- makeDesignVar(imageIdentifier)
     if (!any(featureName == colnames(covariates))) {
         stop("Gene or cell identity\n", featureName, "\nmust be supplied in covariate matrix")
     } else {
@@ -79,12 +73,13 @@ setMethod("buildHyperFrame", "matrix", function(x, imageVars, imageIdentifier = 
     })
     # Replace underscore in gene names => Used to build pairs
     hypFrame <- spatstat.geom::hyperframe(ppp = ppps, image = names(ppps))
-    desMat <- matrix(simplify2array(strsplit(names(ppps), "_")),
-        nrow = nrow(hypFrame),
-        byrow = TRUE
-    )
-    colnames(desMat) <- names(imageVars)
-    hypFrame <- addTabObs(hypFrame, desMat)
+    # desMat <- matrix(simplify2array(strsplit(names(ppps), "_")),
+    #     nrow = nrow(hypFrame),
+    #     byrow = TRUE
+    # )
+    # colnames(desMat) <- names(imageVars)
+    hypFrame <- addTabObs(hypFrame)
+    hypFrame <- addDesign(hypFrame, imageVars, designVec)
     return(hypFrame)
 })
 #' @param list A list of matrices or of point patterns of class 'ppp'
