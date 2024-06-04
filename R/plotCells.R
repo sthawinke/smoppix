@@ -129,7 +129,7 @@ plotCells <- function(
     addLegend(Cols, shiftVec(counter, Ceils[1]))
     if (colourBorder) {
         borderCols <- unique(unlist(borderCols))
-        names(borderCols) <- unVals
+        names(borderCols)[seq_along(unVals)] <- unVals
         addLegend(borderCols, shiftVec(counter + 1, Ceils[1]),
             Pch = 5, Main = borderColVar,
             Cex = 0.7
