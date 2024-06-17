@@ -162,7 +162,7 @@ fitLMMsSingle <- function(
     if (is.null(fixedVars)) {
         contrasts <- NULL
     } else {
-        discreteVars = intersect(getDiscreteVars(obj), fixedVars)
+        discreteVars <- intersect(getDiscreteVars(obj), fixedVars)
         names(discreteVars) <- discreteVars
         contrasts <- lapply(discreteVars, function(x) named.contr.sum)
     }
@@ -184,7 +184,7 @@ fitLMMsSingle <- function(
         if (randomNested) {
             df <- nestRandom(df, randomVarsSplit, intersect(fixedVars, getPPPvars(obj)))
         }
-        contrasts = contrasts[!names(contrasts) %in% vapply(df, FUN.VALUE = TRUE, is.numeric)]
+        contrasts <- contrasts[!names(contrasts) %in% vapply(df, FUN.VALUE = TRUE, is.numeric)]
         piMod <- fitPiModel(Formula, df, contrasts,
                             Control, MM = MM, Weight = df$weight)
         return(list(piMod = piMod, moranMod = moranMod))

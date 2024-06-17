@@ -53,8 +53,8 @@ extractResults <- function(
             emptyCoef <- rep_len(NA, length(unVals))
             names(emptyCoef) <- paste0(Var, unVals) # Prepare empty coefficient
         } else {
-            emptyCoef = double(1)
-            names(emptyCoef) = Var
+            emptyCoef <- double(1)
+            names(emptyCoef) <- Var
         }
         pVal <- vapply(AnovaTabs, FUN.VALUE = double(1), function(x) x[Var, "Pr(>F)"])
         coefs <- lapply(models[id], function(x) {

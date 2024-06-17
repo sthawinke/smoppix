@@ -84,8 +84,8 @@ plotExplore <- function(
             seq_len(min(99, npp))
         } else {
             #Select point patterns with highest expression
-            order(decreasing = TRUE, sapply(hypFrame$tabObs, function(x) {
-                sum(sapply(sund(features), function(y) {if(is.null(tmp <- getGp(x, y))) NA else tmp}))
+            order(decreasing = TRUE, vapply(hypFrame$tabObs, FUN.VALUE = double(1), function(x) {
+                sum(vapply(sund(features), FUN.VALUE = double(1), function(y) {if(is.null(tmp <- getGp(x, y))) NA else tmp}))
             }))[seq_len(numPps)]
         }
     } else if (is.character(ppps)) {

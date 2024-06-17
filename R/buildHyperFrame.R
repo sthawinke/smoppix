@@ -55,7 +55,7 @@ setMethod("buildHyperFrame", "matrix", function(x, imageVars, imageIdentifier = 
         stop("Number of rows of imageVars and coordinate matrix must match")
     }
     designVec <- makeDesignVar(imageIdentifier)
-    covariates = as.data.frame(covariates)
+    covariates <- as.data.frame(covariates)
     if (!any(featureName == colnames(covariates))) {
         stop("Gene or cell identity\n", featureName, "\nmust be supplied in covariate matrix")
     } else {
