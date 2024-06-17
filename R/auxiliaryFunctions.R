@@ -91,7 +91,7 @@ addTabObs <- function(hypFrame) {
 #' @param designVec The design vector
 #'
 #' @return The hyperframe with design variables added
-addDesign = function(hypFrame, desMat, designVec){
+addDesign <- function(hypFrame, desMat, designVec){
     # Add design variables
     id <- match(hypFrame$image, designVec)
     for (i in colnames(desMat)) {
@@ -175,7 +175,7 @@ crossdistWrapper <- function(x, y) {
 #' @param x The dataframe whose numeric variables are being centered
 #'
 #' @return The adapeted dataframe
-centerNumeric = function(x){
+centerNumeric <- function(x){
     numId <- vapply(x, FUN.VALUE = TRUE, is.numeric)
     for(i in which(numId)){
         x[,i] <- x[,i] - mean(x[,i])

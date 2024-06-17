@@ -30,7 +30,7 @@ getEventVars <- function(x, exclude = c("x", "y", "z")) {
         names(marks(ppp, drop = FALSE))
     }))), exclude)
 }
-getDiscreteVars = function(x){
+getDiscreteVars <- function(x){
     eventVars <- unique(unlist(lapply(getHypFrame(x)$ppp, function(ppp) {
         names(marks(ppp, drop = FALSE))[!vapply(marks(ppp, drop = FALSE), FUN.VALUE = TRUE, is.numeric)]
     })))
