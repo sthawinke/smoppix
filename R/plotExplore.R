@@ -161,7 +161,8 @@ addLegend <- function(Cols, Shift = c(0, 0), Cex = 0.95, Pch = 20, Main = "", Ce
     }
 }
 makeCols <- function(features, hypFrame) {
-    Cols <- setdiff(c("red", "blue", rev(palette("Set1"))), "black")
+    Cols <- setdiff(c("red", "blue", rev(palette("Set1"))[-1]), "black")
+    #Leave out grey here
     if (length(Cols) > length(features)) {
         Cols <- Cols[seq_along(features)]
     }
