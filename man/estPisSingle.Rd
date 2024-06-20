@@ -52,7 +52,7 @@ to calculate distance to cell edge or centroid distribution}
 \item{minDiff}{An integer, the minimum number of events from other genes
 needed for calculation of background distribution of distances}
 
-\item{minObsNN}{An integer, the minimum number of events before a gene is analysed before. See details.}
+\item{minObsNN}{An integer, the minimum number of events before a gene is analysed See details.}
 }
 \value{
 A list of data frames with estimated PIs per gene and/or gene pair:

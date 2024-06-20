@@ -13,7 +13,7 @@ estPis(
   nPointsAllWithinCell = switch(null, background = 2000, CSR = 500),
   nPointsAllWin = 1000,
   minDiff = 20,
-  minObsNN = 1L,
+  minObsNN = 5L,
   features = getFeatures(hypFrame),
   ...
 )
@@ -38,7 +38,7 @@ to calculate distance to cell edge or centroid distribution}
 \item{minDiff}{An integer, the minimum number of events from other genes
 needed for calculation of background distribution of distances}
 
-\item{minObsNN}{An integer, the minimum number of events before a gene is analysed before. See details.}
+\item{minObsNN}{An integer, the minimum number of events before a gene is analysed See details.}
 
 \item{features}{A character vector, for which features should the
 probabilistic indices be calculated?}
@@ -66,7 +66,7 @@ testing for co- and antilocalization are being used.
  the centroid of the windows added using the \link{addCell} function.
 The suffix 'Cell' indicates distances are being calculated within cells only.
 
-It can be useful to set the minObsNN higher than 1 for calculations within cells when the number of events is low,
+It can be useful to set the minObsNN higher than teh default of 5 for calculations within cells when the number of events is low,
 not to waste computation time on gene (pairs) with very little power.
 }
 \examples{
