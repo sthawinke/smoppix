@@ -341,6 +341,57 @@ pValsGrads <- getPvaluesGradient(engGrads, "cell")
 
 Keep in mind though that a gradient that is significant for a computer may look very different from the human perspective; many types of spatial patterns can be captured by a gradient to some extent without providing a satisfactory fit.
 
+# Predicting tumor types with probabilistic indices as predictor
+
+Probabilistic indices are features extracted from point patterns that can serve purposes other than hypothesis testing too. Here we demonstrate their use as interpretable predictors for predicting tumor type from cell type locations on a breast cancer dataset by \textcite{Keren2018}, previously analysed by \textcite{Vanderdoes2023}.
+
+```{r loadTNBC}
+if(reqFunky <- require(funkycells)){
+    data("TNBC_pheno")
+    data("TNBC_meta")
+    TNBC_pheno$age <- TNBC_meta$Age[match(TNBC_pheno$Person, TNBC_meta$Person)]
+    TNBC_pheno$Class <- ifelse(TNBC_pheno$Class=="0", "mixed", "compartentalised")
+    hypTNBC <- buildHyperFrame(TNBC_pheno, coordVars = c("cellx", "celly"), imageVars = c("Person", "Class", "age"), featureName = "Phenotype")
+    hypTNBC <- hypTNBC[order(hypTNBC$Class),] #Order by class for plots
+}
+```
+
+```{r plotTNBC, fig.cap = "Explorative plot of triple negative breast cancer dataset.\\parencite{Keren2018}"}
+if(reqFunky){
+    plotExplore(hypTNBC, Cex.main = 0.7, features = c("Tumor", "Macrophage", "CD8T"), CexLegend = 0.85)
+}
+```
+
+```{r analyseTNBC}
+if(reqFunky){
+    #Select feature through hypothesis tests
+    pisTNBC = estPis(hypTNBC, pis = c("nn", "nnPair"), null = "background")
+    pisTNBC = addWeightFunction(pisTNBC)
+    TNBClmms = fitLMMs(pisTNBC, fixedVars = c("age", "Class"))
+    #Extract PIs of significant features
+    nnRes = getResults(TNBClmms, "nn", "Class")
+    sigLevel = 0.05
+    nnSig = rownames(nnRes)[nnRes[, "pAdj"]<sigLevel]
+    nnPairRes = getResults(TNBClmms, "nnPair", "Class")
+    nnPairSig = rownames(nnPairRes)[nnPairRes[, "pAdj"]<sigLevel & !is.na(nnPairRes[, "pAdj"])]
+    nnPis = t(vapply(pisTNBC$hypFrame$pimRes, FUN.VALUE = double(length(nnSig)+ length(nnPairSig)), function(x){
+        c(if(length(length(nnSig))) x$pointDists$nn[nnSig],
+          if(length(length(nnPairSig))) vapply(nnPairSig, FUN.VALUE = 1, function(y) {
+              tmp = getGp(gp = y, x$pointDists$nnPair)
+              if(is.null(tmp)) NA else tmp
+          }))
+    }))
+    colnames(nnPis) = c(nnSig, nnPairSig)
+    nnPis[is.na(nnPis)] = 0.5 #Replace missing values by 0.5
+    if(require(glmnet)){
+        set.seed(20062024)
+        lassoModel = cv.glmnet(factor(hypTNBC$Class), x = cbind("Age" = hypTNBC$Age, nnPis), family = "binomial", alpha = 1, nfolds = 10, type.measure = "class")
+        lassoModel #In-sample misclassification error of 9,1%
+    }
+}
+```
+
+
 # Troubleshooting
 
 An error like 
