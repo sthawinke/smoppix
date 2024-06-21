@@ -30,12 +30,11 @@
 #' @examples
 #' example(fitLMMs, "smoppix")
 #' plotTopResults(hypYang, lmmModels, "nn")
-# For the sake of illustration, set high significance level, as example dataset is small
-#' plotTopResults(hypYang, lmmModels, "nn", effect = "Intercept", what = "reg", sigLevel = 0.2)
+#' #For the sake of illustration, set high significance level, as example dataset is small
+#' plotTopResults(hypYang, lmmModels, "nn", effect = "Intercept", what = "reg", sigLevel = 1-1e-10)
 #' plotTopResults(hypYang, lmmModels, "nn",
 #'     effect = "day", what = "reg",
-#'     effectParameter = "day0", sigLevel = 1-1e-10
-#' )
+#'     effectParameter = "day0", sigLevel = 1-1e-10)
 plotTopResults <- function(hypFrame, results, pi, effect = "Intercept",
                            what = if (pi %in% c("nn", "nnCell")) {
                                "aggregated"
