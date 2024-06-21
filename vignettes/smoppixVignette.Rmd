@@ -367,7 +367,7 @@ if(reqFunky){
     #Select feature through hypothesis tests
     pisTNBC = estPis(hypTNBC, pis = c("nn", "nnPair"), null = "background", verbose = FALSE)
     pisTNBC = addWeightFunction(pisTNBC)
-    TNBClmms = fitLMMs(pisTNBC, fixedVars = c("age", "Class"))
+    TNBClmms = fitLMMs(pisTNBC, fixedVars = c("age", "Class"), verbose = TRUE)
     #Extract PIs of significant features
     nnRes = getResults(TNBClmms, "nn", "Class")
     sigLevel = 0.05
