@@ -356,7 +356,7 @@ if(reqFunky <- require(funkycells)){
 }
 ```
 
-```{r plotTNBC, fig.cap = "Explorative plot of triple negative breast cancer dataset.\\parencite{Keren2018}"}
+```{r plotTNBC, fig.cap = "Explorative plot of triple negative breast cancer dataset.\\parencite{Keren2018}", fig.height = 8}
 if(reqFunky){
     plotExplore(hypTNBC, Cex.main = 0.7, features = c("Tumor", "Macrophage", "CD8T"), CexLegend = 0.85)
 }
@@ -365,7 +365,7 @@ if(reqFunky){
 ```{r analyseTNBC}
 if(reqFunky){
     #Select feature through hypothesis tests
-    pisTNBC = estPis(hypTNBC, pis = c("nn", "nnPair"), null = "background")
+    pisTNBC = estPis(hypTNBC, pis = c("nn", "nnPair"), null = "background", verbose = FALSE)
     pisTNBC = addWeightFunction(pisTNBC)
     TNBClmms = fitLMMs(pisTNBC, fixedVars = c("age", "Class"))
     #Extract PIs of significant features
@@ -383,10 +383,10 @@ if(reqFunky){
     }))
     colnames(nnPis) = c(nnSig, nnPairSig)
     nnPis[is.na(nnPis)] = 0.5 #Replace missing values by 0.5
-    if(require(glmnet)){
+    if(require(glmnet, quietly = TRUE)){
         set.seed(20062024)
         lassoModel = cv.glmnet(factor(hypTNBC$Class), x = cbind("Age" = hypTNBC$Age, nnPis), family = "binomial", alpha = 1, nfolds = 10, type.measure = "class")
-        lassoModel #In-sample misclassification error of 9,1%
+        lassoModel #In-sample misclassification error is quite low
     }
 }
 ```
