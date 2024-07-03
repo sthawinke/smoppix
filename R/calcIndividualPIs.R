@@ -47,9 +47,6 @@ calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null,
             }
             if (isMat <- is.matrix(distMat)) {
                 featId <- which(marks(p, drop = FALSE)$gene == feat)
-                # cd = crossdistWrapper(pSub, pSubLeft$Pout)
-                # approxRanksNew = rowSums(distMat[, "self"] > cd)
-                # tiesMatNew = rowSums(distMat[, "self"] == cd)
                 doubleMatrixRanks <- switch(null,
                     "background" = findRanksDist(
                         getCoordsMat(pSub), getCoordsMat(pSubLeft$Pout),

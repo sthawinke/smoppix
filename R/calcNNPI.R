@@ -18,7 +18,6 @@ calcNNPI <- function(Ranks, n, m, ties, r = 1) {
     if (!is.null(ties)) {
         id <- ties > 0
         tmp[id] <- 0.5 * (tmp[id] + pnhyper(Ranks[id] + ties[id], n = n, m = m, r = r))
-        # Fix ME! High number of white balls problem
         # Everything up to Ranks counted twice, up to ties+Ranks counted once,
         # so divide by 2
     }
