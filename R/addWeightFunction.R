@@ -77,9 +77,7 @@ addWeightFunction <- function(
             ordDesign <- seq_len(nrow(resList$hypFrame))
         } else {
             designVec <- apply(as.data.frame(resList$hypFrame[, designVars, drop = FALSE]),
-                1, paste,
-                collapse = "_"
-            )
+                1, paste, collapse = "_")
             ordDesign <- order(designVec) # Ensure correct ordering for tapply
         }
         varEls <- lapply(features, function(gene) {
@@ -174,10 +172,7 @@ addWeightFunction <- function(
         } else {
             2
         }, byrow = TRUE, dimnames = list(NULL, c("quadDeps", if (pairId) {
-            c(
-                "minP",
-                "maxP"
-            )
+            c("minP", "maxP")
         } else {
             "NP"
         })))
@@ -202,5 +197,4 @@ addWeightFunction <- function(
         Wfs = Wfs,
         designVars = designVars
     )))
-    # Overwrite preexisting Wfs
 }

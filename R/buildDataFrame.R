@@ -27,8 +27,7 @@
 #' )
 #' summary(mixedMod)
 #' # Evidence for aggregation
-buildDataFrame <- function(obj, gene, pi = c(
-                               "nn", "nnPair", "edge", "centroid",
+buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
                                "nnCell", "nnPairCell"
                            ), piMat, moransI = FALSE, numNNs = 8, weightMats, pppDf) {
     pi <- match.arg(pi)
