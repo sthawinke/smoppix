@@ -9,10 +9,10 @@ IndeX
 
 
 
-This repo provides code for analyzing spatial transcriptomics and other
-omics data on the single-molecule level using probabilistic indices. A
-simple use-case is shown below, more extensive documentation can be
-found in the vignette
+This repo provides code for analyzing single-molecule spatial omics data
+and cell type location data using probabilistic indices. A simple
+use-case is shown below, more extensive documentation can be found in
+the vignette
 
 The package can be installed from GitHub as follows:
 
@@ -21,19 +21,14 @@ library(devtools)
 install_github("sthawinke/smoppix")
 ```
 
-``` r
-library(Biocmanager)
-install("smoppix")
-```
-
-Load the package
+Once installed, you can load the package
 
 ``` r
 library(smoppix)
 ```
 
-Load a dataset, convert it to a *spatstat* hyperframe, and make an
-exploratory plot:
+We will now load an example dataset, contained in the package. It is in
+table format, so we first convert it to a *spatstat* hyperframe.
 
 ``` r
 data(Yang)
@@ -45,19 +40,25 @@ hypYang <- buildHyperFrame(Yang,
 
     ## Found 29 unique images
 
+The number of unique images found is printed, make sure that this is
+what you expected. Now to make completely sure the software has
+understood us, we make an exploratory plot:
+
 ``` r
 plotExplore(hypYang)
 ```
 
-![](README_files/figure-gfm/loadYang-1.png)<!-- -->
+![](README_files/figure-gfm/explPlot-1.png)<!-- -->
 
-Estimate the univariate nearest neighbour probabilistic index:
+As an example analysis, we estimate the univariate nearest neighbour
+probabilistic index as a measure of aggregation (clustering):
 
 ``` r
 nnObj <- estPis(hypYang, pis = "nn", null = "background", verbose = FALSE)
 ```
 
-Add a variance weighting function and plot it
+We add a variance weighting function to prepare for analysis and plot
+it:
 
 ``` r
 nnObj <- addWeightFunction(nnObj, designVars = c("day", "root"))
@@ -66,8 +67,12 @@ plotWf(nnObj, pi = "nn")
 
 ![](README_files/figure-gfm/wf-1.png)<!-- -->
 
-The inference step: fit linear mixed models, and show the most
-significant results:
+As expected, the weight allotted to the point pattern increases with the
+number of molecules in it: denser patterns provide more precise
+estimates of localization patterns.
+
+Next is the inference step: we fit linear mixed models, and show the
+most significant results:
 
 ``` r
 allModsNN <- fitLMMs(nnObj, fixedVars = "day", randomVars = "root")
@@ -81,12 +86,12 @@ head(getResults(allModsNN, "nn", "Intercept"))
 ```
 
     ##             Estimate          SE         pVal         pAdj
-    ## SmBIRDa    0.2632099 0.006737347 4.411919e-24 3.529535e-22
-    ## SmAUX1a    0.3397982 0.005362210 3.185737e-22 1.274295e-20
-    ## SmCYCA1;1a 0.3470148 0.006696203 3.403850e-19 9.076935e-18
-    ## SmCYB2;4   0.3207545 0.008760854 5.720660e-18 1.144132e-16
-    ## SmPFA2b    0.2269031 0.009902372 2.173412e-17 3.477459e-16
-    ## SmCYCD3;3a 0.3905425 0.005855202 5.601827e-17 7.469103e-16
+    ## SmBIRDa    0.2631158 0.006767943 4.921471e-24 3.149742e-22
+    ## SmAUX1a    0.3399689 0.005377353 3.527626e-22 1.128840e-20
+    ## SmCYCA1;1a 0.3469608 0.006665333 2.995103e-19 6.389552e-18
+    ## SmCYB2;4   0.3208844 0.008700097 4.881928e-18 7.811084e-17
+    ## SmCYCD3;3a 0.3904109 0.005865331 5.676583e-17 7.266026e-16
+    ## SmPFA2b    0.2250736 0.009834860 1.186476e-15 1.265574e-14
 
 Let’s make it visual and plot the most significantly aggregated
 transcripts:

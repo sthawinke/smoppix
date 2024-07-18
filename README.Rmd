@@ -16,7 +16,7 @@ htmltools::img(src = knitr::image_uri(),
                heigth = "160px")
 ```
 
-This repo provides code for analyzing spatial transcriptomics and other omics data on the single-molecule level using probabilistic indices. A simple use-case is shown below, more extensive documentation can be found in the vignette
+This repo provides code for analyzing single-molecule spatial omics data and cell type location data using probabilistic indices. A simple use-case is shown below, more extensive documentation can be found in the vignette
 
 The package can be installed from GitHub as follows:
 
@@ -25,18 +25,18 @@ library(devtools)
 install_github("sthawinke/smoppix")
 ```
 
-```{r install, eval = FALSE}
+```{r install, eval = FALSE, echo = FALSE}
 library(Biocmanager)
 install("smoppix")
 ```
 
-Load the package
+Once installed, you can load the package
 
 ```{r loadSmoppix}
 library(smoppix)
 ```
 
-Load a dataset, convert it to a _spatstat_ hyperframe, and make an exploratory plot:
+We will now load an example dataset, contained in the package. It is in table format, so we first convert it to a _spatstat_ hyperframe. 
 
 ```{r loadYang}
 data(Yang)
@@ -44,23 +44,30 @@ hypYang <- buildHyperFrame(Yang,
     coordVars = c("x", "y"),
     imageVars = c("day", "root", "section")
 )
+```
+
+The number of unique images found is printed, make sure that this is what you expected. Now to make completely sure the software has understood us, we make an exploratory plot:
+
+```{r explPlot, fig.height = 6}
 plotExplore(hypYang)
 ```
 
-Estimate the univariate nearest neighbour probabilistic index:
+As an example analysis, we estimate the univariate nearest neighbour probabilistic index as a measure of aggregation (clustering):
 
 ```{r nn}
 nnObj <- estPis(hypYang, pis = "nn", null = "background", verbose = FALSE)
 ```
 
-Add a variance weighting function and plot it
+We add a variance weighting function to prepare for analysis and plot it:
 
 ```{r wf}
 nnObj <- addWeightFunction(nnObj, designVars = c("day", "root"))
 plotWf(nnObj, pi = "nn")
 ```
 
-The inference step: fit linear mixed models, and show the most significant results:
+As expected, the weight allotted to the point pattern increases with the number of molecules in it: denser patterns provide more precise estimates of localization patterns.
+
+Next is the inference step: we fit linear mixed models, and show the most significant results:
 
 ```{r inference}
 allModsNN <- fitLMMs(nnObj, fixedVars = "day", randomVars = "root")
