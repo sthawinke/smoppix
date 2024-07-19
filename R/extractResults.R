@@ -1,4 +1,4 @@
-#' Extract results from a list of fitted LMMs
+#' Extract results from a list of fitted LMMs. For internal use mainly.
 #'
 #' @param models The models
 #' @param hypFrame The original hyperframe

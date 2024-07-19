@@ -1,16 +1,15 @@
-#' Estimate gradients over multiple single-molecule point patterns
-#' @description Estimate gradients on all point patterns of a hyperframe,
+#' Estimate gradients over multiple point patterns
+#' @description Estimate gradients on all single-molecule point patterns of a hyperframe
 #' @export
 #' @param ... additional arguments, passed on to \link{fitGradient}.
-#' @param gradients The gradients indices to be estimated
+#' @param gradients The gradients types to be estimated: "overall" or within cell ("cell")
 #' @param features A character vector, for which features should the
 #' gradients indices be calculated?
 #' @param silent A boolean, should error messages from spatstat.model::mppm be printed?
 #' @param fixedEffects,randomEffects Character vectors of fixed and random effects present in the hyperframe,
 #' modifying the baseline intensity. See details.
 #' @param loopFun The function to use to loop over the features.
-#' @inheritParams estPis
-#' @inheritParams estPisSingle
+#' @inheritParams estPis,estPisSingle
 #' @note Fitting Poisson point processes is computation-intensive.
 #' @details The test for existence of a gradient revolves around interaction terms
 #' between x and y coordinates and image identifiers. If this interactions are
@@ -41,7 +40,7 @@
 #'     imageVars = c("fov", "experiment")
 #' )
 #' hypEng <- addCell(hypEng, EngRois, verbose = FALSE)
-#' # Limit number of cells for computational reasons
+#' # Limit number of cells and genes for computational reasons
 #' engGrads <- estGradients(hypEng[seq_len(2), ],
 #'     features =
 #'         feat <- getFeatures(hypEng)[seq_len(2)]

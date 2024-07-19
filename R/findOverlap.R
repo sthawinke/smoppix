@@ -20,7 +20,7 @@
 #'     yrange = runif(1) + c(0, 0.1)
 #' ), simplify = FALSE)
 #' idOverlap <- findOverlap(owins, returnIds = TRUE)
-findOverlap <- function(owins, centroids = NULL, returnIds = FALSE, numCentroids = 50) {
+findOverlap <- function(owins, centroids = NULL, returnIds = FALSE, numCentroids = 30) {
     stopifnot(all(vapply(owins, is.owin, FUN.VALUE = TRUE)), is.null(centroids) ||
         all(vapply(centroids, is.ppp, FUN.VALUE = TRUE)))
     if (is.null(centroids)) {

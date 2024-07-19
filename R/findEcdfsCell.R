@@ -1,12 +1,14 @@
 #' Construct empirical cumulative distribution functions (ecdfs) for distances within the cell
 #' @description The distance distribution under the null hypothesis of complete spatial randomness (CSR)
 #' within the cell is the same for all genes. This function precalculates this distribution using Monte-Carlo simulation under CSR,
-#' and summarizes it in a ecdf object
+#' and summarizes it in an ecdf object
 #'
 #' @inheritParams estPisSingle
 #' @importFrom spatstat.random runifpoint
 #' @importFrom spatstat.geom nncross
 #' @return The list of ecdf functions
+#' @param null A character vector, indicating how the null distribution is
+#'  defined. See details of \link{estPis}.
 #' @seealso \link{ecdf}
 findEcdfsCell <- function(p, owins, nPointsAllWin, centroids, null, pis, loopFun) {
     ecdfsCell <- loadBalanceBplapply(names(owins), function(nam) {
