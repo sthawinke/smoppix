@@ -32,13 +32,13 @@ buildHyperFrame(x, ...)
 \S4method{buildHyperFrame}{list}(
   x,
   coordVars = c("x", "y"),
-  covariatesDf = NULL,
+  covariates = NULL,
   idVar = NULL,
   featureName = "gene",
   ...
 )
 
-\S4method{buildHyperFrame}{SpatialExperiment}(x, imageVars, covariates, imageIdentifier = imageVars, ...)
+\S4method{buildHyperFrame}{SpatialExperiment}(x, imageVars, pointVars, imageIdentifier = imageVars, ...)
 }
 \arguments{
 \item{x}{the input object, see methods('buildHyperFrame')}
@@ -54,19 +54,14 @@ define the separate point patterns (images)}
 
 \item{pointVars}{Names of event-wise covariates such as gene or cell for each single point}
 
-\item{featureName}{The name of the feature identifier for the molecules.
-Defaults to "gene"}
+\item{featureName}{The name of the feature identifier for the molecules.}
 
-\item{covariates}{A vector of covariates}
+\item{covariates}{A matrix or dataframe of covariates}
 
-\item{covariatesDf}{A data frame or matrix of covariates}
+\item{idVar}{An optional id variable present in covariates, that is matched
+with the names of covariates}
 
-\item{idVar}{An optional id variable present in covariatesDf, that is matched
-with the names of covariatesDf}
-
-\item{matrix}{The input matrix}
-
-\item{list}{A list of matrices or of point patterns of class 'ppp'}
+\item{list}{A list of matrices or of point patterns of class 'spatstat.geom::ppp'}
 }
 \value{
 An object of class 'hyperframe' from the 'spatstat.geom' package
@@ -81,4 +76,7 @@ hypYang <- buildHyperFrame(Yang,
     coordVars = c("x", "y"),
     imageVars = c("day", "root", "section")
 )
+}
+\seealso{
+\link[spatstat.geom]{hyperframe}
 }

@@ -1,4 +1,4 @@
-#' Calculate individual PI entries
+#' Calculate individual PI entries of a single point pattern
 #'
 #' @param pSubLeft The subsampled overall point pattern returned by subSampleP
 #' @param ecdfAll,ecdfsCell Empirical cumulative distribution functions of all
@@ -6,8 +6,8 @@
 #' @inheritParams estPisSingle
 #'
 #' @return A list containing PI entries per feature
-#' @details For the single-feature nearest neighbour distances, the average
-#' is already calculated
+#' @details For the single-feature nearest neighbour distances, the PI is average
+#' over the point pattern
 #' @importFrom spatstat.geom nndist npoints nncross.ppp
 #' @seealso \link{estPis}, \link{calcNNPI}
 calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null,

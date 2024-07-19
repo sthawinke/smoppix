@@ -7,15 +7,22 @@
 buildMoransIDataFrame(pi, piMat, weightMats)
 }
 \arguments{
-\item{pi}{character string indicating the desired PI as outcome}
+\item{pi}{character string indicating the desired PI}
 
-\item{piMat}{A data frame. Will be constructed if not provided}
+\item{piMat}{A data frame. Will be constructed if not provided, for internal use}
 
 \item{weightMats}{List of weight matrices for Moran's I calculation}
 }
 \value{
-A modified data frame
+A modified data frame, containing the estimated Moran's I and its variance
 }
 \description{
 Build a data frame with Moran's I as outcome variable
+}
+\note{
+The choice of numNN nearest neighbours is far less memory-glutton than
+a weight decaying continuously with distance
+}
+\seealso{
+\link[ape]{Moran.I}, \link{buildMoransIWeightMat}
 }

@@ -2,9 +2,9 @@
 #' using the negative hypergeometric distribution
 #'
 #' @param n the total number of observed distances minus the number of distances
-#' under consideration (the number of black balls in the urn)
+#' under consideration (the number of failures or black balls in the urn)
 #' @param Ranks The (approximate) ranks, number of times observed distance is larger
-#' @param m the number of observed distances (white balls in the urn)
+#' @param m the number of observed distances (successes or white balls in the urn)
 #' @param r The rank of distances considered, r=1 is nearest neighbour distance
 #' @param ties The number of times the observed distance is equal to a null distance,
 #' of the same lenght as Ranks

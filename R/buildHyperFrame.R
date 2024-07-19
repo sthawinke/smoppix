@@ -7,11 +7,11 @@
 #' @importFrom methods setGeneric setMethod
 #' @export
 #' @param x the input object, see methods('buildHyperFrame')
-#' @param covariates A vector of covariates
+#' @param covariates A matrix or dataframe of covariates
 #' @param featureName The name of the feature identifier for the molecules.
 #' @param ... additional constructor arguments
 #' @return An object of class 'hyperframe' from the 'spatstat.geom' package
-#' @seealso \link[spatstat]{hyperframe}
+#' @seealso \link[spatstat.geom]{hyperframe}
 #' @examples
 #' data(Yang)
 #' hypYang <- buildHyperFrame(Yang,
@@ -36,8 +36,6 @@ setMethod("buildHyperFrame", "data.frame", function(x, coordVars, imageIdentifie
         covariates = x[, c(pointVars, featureName), drop = FALSE], featureName = featureName,  ...
     )
 })
-#' @param matrix The input matrix
-#'
 #' @rdname buildHyperFrame
 #' @export
 setMethod("buildHyperFrame", "matrix", function(x, imageVars, imageIdentifier = imageVars,
@@ -71,29 +69,27 @@ setMethod("buildHyperFrame", "matrix", function(x, imageVars, imageIdentifier = 
             xrange = range(x[i, 1]), yrange = range(x[i, 2]), drop = FALSE
         )
     })
-    # Replace underscore in gene names => Used to build pairs
     hypFrame <- spatstat.geom::hyperframe(ppp = ppps, image = names(ppps))
     hypFrame <- addTabObs(hypFrame)
     hypFrame <- addDesign(hypFrame, imageVars, designVec)
     return(hypFrame)
 })
-#' @param list A list of matrices or of point patterns of class 'ppp'
-#' @param covariatesDf A data frame or matrix of covariates
-#' @param idVar An optional id variable present in covariatesDf, that is matched
-#' with the names of covariatesDf
+#' @param list A list of matrices or of point patterns of class 'spatstat.geom::ppp'
+#' @param idVar An optional id variable present in covariates, that is matched
+#' with the names of covariates
 #'
 #' @rdname buildHyperFrame
 #' @export
 #' @importFrom spatstat.geom is.ppp
 setMethod("buildHyperFrame", "list", function(
-    x, coordVars = c("x", "y"), covariatesDf = NULL,
+    x, coordVars = c("x", "y"), covariates = NULL,
     idVar = NULL, featureName = "gene", ...) {
-    stopifnot(is.null(covariatesDf) || (nrow(covariatesDf) == length(x)), is.null(idVar) ||
-        idVar %in% names(covariatesDf))
+    stopifnot(is.null(covariates) || (nrow(covariates) == length(x)), is.null(idVar) ||
+        idVar %in% names(covariates))
     if (!is.null(names(x)) && !is.null(idVar)) {
-        covariatesDf <- covariatesDf[match(names(x), covariatesDf[, idVar]), ]
+        covariates <- covariates[match(names(x), covariates[, idVar]), ]
         # Match the ranking
-    } else if (!is.null(covariatesDf)) {
+    } else if (!is.null(covariates)) {
         message("No matching information supplied, matching point patterns ", "and covariates based on order.")
     }
 
@@ -120,7 +116,7 @@ setMethod("buildHyperFrame", "list", function(
         stop("Supply a list of point patterns (ppp)", "or of dataframes or matrices")
     }
     hypFrame <- addTabObs(hypFrame)
-    hypFrame <- addDesign(hypFrame, covariatesDf, hypFrame$image)
+    hypFrame <- addDesign(hypFrame, covariates, hypFrame$image)
     return(hypFrame)
 })
 #' @rdname buildHyperFrame
@@ -128,10 +124,10 @@ setMethod("buildHyperFrame", "list", function(
 #' @importFrom SpatialExperiment SpatialExperiment spatialCoords
 #' @importFrom SummarizedExperiment colData
 setMethod("buildHyperFrame", "SpatialExperiment", function(
-    x, imageVars, covariates, imageIdentifier = imageVars,
+    x, imageVars, pointVars, imageIdentifier = imageVars,
     ...) {
     buildHyperFrame(spatialCoords(x),
                     imageVars = as.data.frame(colData(x)[, imageVars, drop = FALSE]),
                     imageIdentifier = as.data.frame(colData(x)[, imageIdentifier,drop = FALSE]),
-                    covariates = cbind("gene" = rownames(colData(x)), as.data.frame(colData(x))[,covariates,drop = FALSE]))
+                    covariates = cbind("gene" = rownames(colData(x)), as.data.frame(colData(x))[,pointVars,drop = FALSE]))
 })

@@ -16,14 +16,14 @@ buildDataFrame(
 )
 }
 \arguments{
-\item{obj}{A results object, for nearest neighbour distances,
-the result of a call to \link{addWeightFunction}}
+\item{obj}{A results object. For distances to fixed objects, the result of a call to \link{estPis}();
+for nearest neighbour distances, the result of a call to \link{addWeightFunction}}
 
-\item{gene}{A character string indicating the desired gene or gene pair}
+\item{gene}{A character string indicating the desired gene or gene pair (gene separated by double hyphens)}
 
-\item{pi}{character string indicating the desired PI as outcome}
+\item{pi}{character string indicating the desired PI}
 
-\item{piMat}{A data frame. Will be constructed if not provided}
+\item{piMat}{A data frame. Will be constructed if not provided, for internal use}
 
 \item{moransI}{A boolean, should Moran's I be calculated
 in the linear mixed model}
@@ -37,7 +37,7 @@ weight matrix for the calculation of the Moran's I statistic}
 in fitLMMsSingle for speed, but will be newly constructed when not provided}
 }
 \value{
-A dataframe
+A dataframe with estimated PIs and covariates
 }
 \description{
 Build a data frame for a certain gene and PI, in preparation for mixed model building.
@@ -47,7 +47,6 @@ example(addWeightFunction, "smoppix")
 dfUniNN <- buildDataFrame(yangObj, gene = "SmVND2", pi = "nn")
 # Example analysis with linear mixed model
 library(lmerTest)
-# Use sum coding for day to maintain interpretability of the intercept
 mixedMod <- lmer(pi - 0.5 ~ day + (1 | root),
     weight = weight, data = dfUniNN,
     contrasts = list("day" = "contr.sum")
@@ -56,5 +55,5 @@ summary(mixedMod)
 # Evidence for aggregation
 }
 \seealso{
-\link{addWeightFunction}
+\link{addWeightFunction}, \link{buildMoransIDataFrame}
 }

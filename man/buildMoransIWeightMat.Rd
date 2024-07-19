@@ -19,3 +19,6 @@ for the numNNs nearest neighbours and zero otherwise
 \description{
 Build a weight matrix for Moran's I calculations
 }
+\seealso{
+\link{buildMoransIDataFrame}, \link[ape]{Moran.I}
+}

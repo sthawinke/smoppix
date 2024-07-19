@@ -25,29 +25,30 @@ addWeightFunction(
 
 \item{lowestLevelVar}{The design variable at the lowest level of nesting,
 often separating technical replicates. The conditional variance is calculated
-within the groups of PIs defined by this variable}
+within the groups of PIs defined by this variable.}
 
 \item{maxObs, maxFeatures}{The maximum number of observations respectively
 features for fitting the weighting function. See details}
 
 \item{minNumVar}{The minimum number of observations needed to calculate a
-variance}
+variance. Groups with fewer replicates are ignored.}
 
-\item{...}{Additional arguments passed on to the scam::scam function.}
+\item{...}{Additional arguments passed on to the scam::scam function, fitting the spline}
 }
 \value{
-The input object with a slot 'Wfs' added containing the weighting
+The input object 'resList' with a slot 'Wfs' added containing the weighting
 functions.
 }
 \description{
-Build a weighting function based on the data by fitting a
-non-increasing spline of variance as a function of number of events.
+Add a weighting function based on the data to the object by modeling variance as a
+non-increasing spline as a function of number of events.
 }
 \details{
-Provide either 'designVars' or 'lowestLevelVar'. In the latter case, the
+Provide either 'designVars' or 'lowestLevelVar'. The 'designVars' are 
+usually the same as the regressors in the linear model. In case 'lowestLevelVar' is provided, the
 design variables are set to all imageVars in the hypFrame object except
-lowestLevelVar. When the PI is calculated on the cell level,
-this the lowest nesting level so inputs will be ignored for these PIs.
+lowestLevelVar. When the PI is calculated on the cell level ("nnCell" or "nnPairCell"),
+the cell is always the lowest nesting level, and inputs to 'designVars' or 'lowestLevelVar' will be ignored for these PIs.
 The registered parallel backend will be used for fitting the trends of the
 different PIs.
 For computational and memory reasons, for large datasets the trend fitting
@@ -58,10 +59,8 @@ maxFeatures parameters.
 example(estPis, "smoppix")
 yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))
 # Alternative formulation with 'lowestLevelVar'
-yangObj2 <- addWeightFunction(yangPims,
-    lowestLevelVar = "section",
-    pi = "nn"
-)
+yangObj2 <- addWeightFunction(yangPims, lowestLevelVar = "section", 
+pi = "nn")
 }
 \seealso{
 \link{buildDataFrame}, \link{estPis}

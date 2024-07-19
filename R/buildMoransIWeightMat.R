@@ -5,6 +5,7 @@
 #' for the numNNs nearest neighbours and zero otherwise
 #' @importFrom Matrix sparseMatrix
 #' @importFrom spatstat.geom nnwhich
+#' @seealso \link{buildMoransIDataFrame}, \link[ape]{Moran.I}
 buildMoransIWeightMat <- function(coordMat, numNNs) {
     numNNs <- min(numNNs, nrow(coordMat) - 3)
     if (numNNs < 0) {

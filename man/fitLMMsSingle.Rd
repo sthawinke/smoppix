@@ -20,10 +20,10 @@ fitLMMsSingle(
 )
 }
 \arguments{
-\item{obj}{A results object, for nearest neighbour distances,
-the result of a call to \link{addWeightFunction}}
+\item{obj}{A results object. For distances to fixed objects, the result of a call to \link{estPis}();
+for nearest neighbour distances, the result of a call to \link{addWeightFunction}}
 
-\item{pi}{character string indicating the desired PI as outcome}
+\item{pi}{character string indicating the desired PI}
 
 \item{fixedVars}{Names of fixed effects}
 

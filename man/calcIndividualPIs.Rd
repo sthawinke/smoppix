@@ -2,7 +2,7 @@
 % Please edit documentation in R/calcIndividualPIs.R
 \name{calcIndividualPIs}
 \alias{calcIndividualPIs}
-\title{Calculate individual PI entries}
+\title{Calculate individual PI entries of a single point pattern}
 \usage{
 calcIndividualPIs(
   p,
@@ -53,11 +53,11 @@ needed for calculation of background distribution of distances}
 A list containing PI entries per feature
 }
 \description{
-Calculate individual PI entries
+Calculate individual PI entries of a single point pattern
 }
 \details{
-For the single-feature nearest neighbour distances, the average
-is already calculated
+For the single-feature nearest neighbour distances, the PI is average
+over the point pattern
 }
 \seealso{
 \link{estPis}, \link{calcNNPI}
