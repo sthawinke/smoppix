@@ -7,7 +7,7 @@
 #' @param hypFrame the hyperframe
 #' @param returnModel A boolean, should the entire model be returned?
 #' Otherwise the p-value and coefficient vector are returned
-#' @param ... passed onto \link{spatstat.model::mppm}
+#' @param ... passed onto \link[spatstat.model]{mppm}
 #' @inheritParams estGradientsSingle
 #' @inheritParams estGradients
 #'

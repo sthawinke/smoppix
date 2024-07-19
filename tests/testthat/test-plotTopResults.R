@@ -2,7 +2,7 @@ context("Plotting of top results")
 linModsMP <- fitLMMs(objBG, returnModels = TRUE, features = getFeatures(objBG)[1:5],
     fixedVars = "condition", pi = "centroid"
 )
-linModsNNint <- fitLMMs(yangPims, fixedVars = "day", randomVars = "root", features = getFeatures(yangPims)[seq_len(10)])
+linModsNNint <- fitLMMs(yangPims, fixedVars = "day", randomVars = "root", features = getFeatures(yangPims))
 test_that("Top results plotting proceeds without errors", {
     expect_silent(plotTopResults(results = linModsNNint, hypYang, "nn"))
     expect_silent(plotTopResults(results = linModsNNint, hypYang, "nnPair"))

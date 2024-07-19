@@ -1,4 +1,7 @@
-#' Helper function to get gene pair or order reversed from a vector or list
+#' Helper function to get gene pair from a vector or list
+#'
+#'When provided with argument "geneA--geneB", looks for this gene pair as well as for
+#'"geneB--geneA" in the provided object.
 #'
 #' @param x The object in which to look
 #' @param gp A character string describing the gene pair

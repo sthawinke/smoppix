@@ -23,7 +23,7 @@ The matrix with results, with p-values in ascending order
 \item{pAdj}{The Benjamini-Hochberg adjusted p-value}
 }
 \description{
-Extract effect size estimates and p-values for a certain parameter
+Extract effect size estimates, standard errors and adjusted p-values for a certain parameter
 from a linear model.
 }
 \examples{

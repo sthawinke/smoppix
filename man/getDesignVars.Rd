@@ -8,10 +8,10 @@ level of the event}
 getDesignVars(x)
 }
 \arguments{
-\item{x}{The results list}
+\item{x}{The results list, output from estPis}
 }
 \value{
-A vector of likely design variables
+A vector of design variables
 }
 \description{
 Return all design variables, both at the level of the point pattern and the

@@ -1,11 +1,15 @@
-#' Plot the hyperframe for exploratory purposes
-#' @description A subset of point patterns is plotted that fit in the window, highlighting some features.
+#' Plot the hyperframe with chosen features highlighted
+#' @description All points of the hyperframe are plotted in grey, with a subset fearures highlighted.
+#' A selection of point patterns is plotted that fit in the window, highlighting some features.
 #' This function is meant for exploratory purposes as well as for visual confirmation of findings.
-#' @note The colour palette is taken from the output of palette(),
+#' @details When cell-specific PIs are calculated ("nnCell', "nnCellPair", "edge", "centroid"),
+#' the cells can be coloured by them to investigate their spatial distribution,
+#' for instance those discovered through Moran's I statistic
+#' The colour palette is taken from the output of palette(),
 #' so set that one to change the colour scheme.
 #'
 #' @param hypFrame The hyperframe
-#' @param features A small number of features to be fitted. Defaults to the first 5
+#' @param features A small number of features to be highlighted Defaults to the first 5.
 #' @param ppps The rownames or indices of the point patterns to be plotted.
 #' Defaults to maximum 99.
 #' @param numPps The number of point patterns with highest expression to be shown.

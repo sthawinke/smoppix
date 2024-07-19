@@ -1,8 +1,8 @@
-#' Plot the n cells with highest abundance of a feature, breaking their spatial orientation.
+#' Plot the n cells with highest abundance of a feature
 #' @description After testing for within-cell patterns, it may be useful to
 #' look at the cells with the most events for certain genes. These are plotted
-#' here, but the spatial location of the cells is lost! The choice and ranking of cells
-#' is one of decreasing gene (pair) expression.
+#' here, but the spatial location of the cells in the point pattern is lost! 
+#' The choice and ranking of cells is one of decreasing gene (pair) expression.
 #'
 #' @param obj A hyperframe, or an object containing one
 #' @param features The features to be plotted, a character vector
@@ -12,8 +12,8 @@
 #' @param borderCols Colour palette for the borders
 #' @param warnPosition A boolean, should a warning be printed on the
 #'  image that cells are not in their original location?
-#' @param summaryFun A function to summarize the gene-cell table in case multiple genes are plotted
-#' Choose "min" to choose the cells with the highest minimum, or "sum" for highest total expression
+#' @param summaryFun A function to summarize the gene-cell table in case multiple genes are plotted.
+#' Choose "min" for cells with the highest minimum, or "sum" for highest total expression
 #' of the combination of genes
 #' @param ... Additional arguments, currently ignored
 #' @inheritParams plotExplore

@@ -10,7 +10,7 @@ getPPPvars(
 )
 }
 \arguments{
-\item{x}{The results list}
+\item{x}{The results list, output from estPis}
 
 \item{exclude}{variables to exclude}
 }

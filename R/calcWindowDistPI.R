@@ -8,7 +8,7 @@
 #' @return A list of vectors of estimated probabilistic indeces per event
 #' @importFrom spatstat.geom nncross edges split.ppp
 #' @details Analysis of the distance to the border was introduced by \insertCite{Joyner2013}{smoppix} in the form of the B-function.
-#' The independent evaluations of the B-functions under the null hypothesis represented by \textit{ecdfAll} 
+#' The independent evaluations of the B-functions under the null hypothesis represented by \emph{ecdfAll} 
 #' per cell are here returned as realizations of the probabilistic index.
 #' @seealso \link{addCell}, \link{estPis}
 #' @references

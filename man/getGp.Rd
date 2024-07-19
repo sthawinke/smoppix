@@ -2,7 +2,7 @@
 % Please edit documentation in R/getGp.R
 \name{getGp}
 \alias{getGp}
-\title{Helper function to get gene pair or order reversed from a vector or list}
+\title{Helper function to get gene pair from a vector or list}
 \usage{
 getGp(x, gp, drop = TRUE, Collapse = "--")
 }
@@ -19,7 +19,8 @@ getGp(x, gp, drop = TRUE, Collapse = "--")
 The element sought
 }
 \description{
-Helper function to get gene pair or order reversed from a vector or list
+When provided with argument "geneA--geneB", looks for this gene pair as well as for
+"geneB--geneA" in the provided object.
 }
 \examples{
 mat <- t(cbind(

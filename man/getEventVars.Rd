@@ -7,7 +7,7 @@
 getEventVars(x, exclude = c("x", "y", "z"))
 }
 \arguments{
-\item{x}{The results list}
+\item{x}{The results list, output from estPis}
 
 \item{exclude}{variables to exclude}
 }

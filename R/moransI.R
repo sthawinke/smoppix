@@ -2,13 +2,14 @@
 #'
 #' The Moran's I test statistic and its variance are calculated
 #' @details The implementation is inspired on the one from ape::Moran.I, but more
-#'  bare-bones for a weight matrix with certain properties as prepared by buildMoransIWeightMat,
+#'  bare-bones for a sparse weight matrix with certain properties as prepared by buildMoransIWeightMat,
 #'  making it faster and using less memory.
-#'  @note Calculations are only correct for weight matrices as prepared by
+#' @note Calculations are only correct for weight matrices as prepared by
 #'  buildMoransIWeightMat!
 #'
 #' @param x A vector of outcomes
 #' @param W The matrix of weights, with dimensions equal to the lenght of x
+#' @seealso \link[ape]{Moran.I}
 #'
 #' @return A vector of length 2: the Moran's I statistic and its variance
 #' @importFrom Matrix tcrossprod colSums t

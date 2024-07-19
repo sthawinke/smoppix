@@ -9,7 +9,8 @@
 #' @param fixedEffects,randomEffects Character vectors of fixed and random effects present in the hyperframe,
 #' modifying the baseline intensity. See details.
 #' @param loopFun The function to use to loop over the features.
-#' @inheritParams estPis,estPisSingle
+#' @inheritParams estPis
+#' @inheritParams estPisSingle
 #' @note Fitting Poisson point processes is computation-intensive.
 #' @details The test for existence of a gradient revolves around interaction terms
 #' between x and y coordinates and image identifiers. If this interactions are

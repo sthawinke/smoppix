@@ -17,10 +17,14 @@ estGradients(
 )
 }
 \arguments{
+\item{hypFrame}{A hyperframe}
+
 \item{gradients}{The gradients types to be estimated: "overall" or within cell ("cell")}
 
 \item{fixedEffects, randomEffects}{Character vectors of fixed and random effects present in the hyperframe,
 modifying the baseline intensity. See details.}
+
+\item{verbose}{A boolean, whether to report on progress of the fitting process.}
 
 \item{features}{A character vector, for which features should the
 gradients indices be calculated?}

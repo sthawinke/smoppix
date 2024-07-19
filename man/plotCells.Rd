@@ -2,7 +2,7 @@
 % Please edit documentation in R/plotCells.R
 \name{plotCells}
 \alias{plotCells}
-\title{Plot the n cells with highest abundance of a feature, breaking their spatial orientation.}
+\title{Plot the n cells with highest abundance of a feature}
 \usage{
 plotCells(
   obj,
@@ -35,8 +35,8 @@ plotCells(
 \item{warnPosition}{A boolean, should a warning be printed on the
 image that cells are not in their original location?}
 
-\item{summaryFun}{A function to summarize the gene-cell table in case multiple genes are plotted
-Choose "min" to choose the cells with the highest minimum, or "sum" for highest total expression
+\item{summaryFun}{A function to summarize the gene-cell table in case multiple genes are plotted.
+Choose "min" for cells with the highest minimum, or "sum" for highest total expression
 of the combination of genes}
 
 \item{...}{Additional arguments, currently ignored}
@@ -47,8 +47,8 @@ Plots cells with highest expression to the plotting window, returns invisible
 \description{
 After testing for within-cell patterns, it may be useful to
 look at the cells with the most events for certain genes. These are plotted
-here, but the spatial location of the cells is lost! The choice and ranking of cells
-is one of decreasing gene (pair) expression.
+here, but the spatial location of the cells in the point pattern is lost! 
+The choice and ranking of cells is one of decreasing gene (pair) expression.
 }
 \examples{
 example(addCell, "smoppix")

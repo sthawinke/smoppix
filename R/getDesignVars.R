@@ -1,9 +1,9 @@
 #' Return all design variables, both at the level of the point pattern and the
 #' level of the event
 #'
-#' @param x The results list
+#' @param x The results list, output from estPis
 #'
-#' @return A vector of likely design variables
+#' @return A vector of design variables
 #' @details getDesignVars() returns all design variables, \link{getPPPvars} returns
 #' design variables related to the different images and \link{getEventVars} returns
 #' design variables related to the individual events

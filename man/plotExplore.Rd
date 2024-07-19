@@ -2,7 +2,7 @@
 % Please edit documentation in R/plotExplore.R
 \name{plotExplore}
 \alias{plotExplore}
-\title{Plot the hyperframe for exploratory purposes}
+\title{Plot the hyperframe with chosen features highlighted}
 \usage{
 plotExplore(
   hypFrame,
@@ -30,7 +30,7 @@ plotExplore(
 \arguments{
 \item{hypFrame}{The hyperframe}
 
-\item{features}{A small number of features to be fitted. Defaults to the first 5}
+\item{features}{A small number of features to be highlighted Defaults to the first 5.}
 
 \item{ppps}{The rownames or indices of the point patterns to be plotted.
 Defaults to maximum 99.}
@@ -71,13 +71,18 @@ respectively}
 Plots a facet of point patterns to output
 }
 \description{
-A subset of point patterns is plotted that fit in the window, highlighting some features.
+All points of the hyperframe are plotted in grey, with a subset fearures highlighted.
+A selection of point patterns is plotted that fit in the window, highlighting some features.
 This function is meant for exploratory purposes as well as for visual confirmation of findings.
 }
-\note{
+\details{
+When cell-specific PIs are calculated ("nnCell', "nnCellPair", "edge", "centroid"),
+the cells can be coloured by them to investigate their spatial distribution,
+for instance those discovered through Moran's I statistic
 The colour palette is taken from the output of palette(),
 so set that one to change the colour scheme.
-
+}
+\note{
 palCols sets the pseudo-continuous scale to colour cells.
 }
 \examples{

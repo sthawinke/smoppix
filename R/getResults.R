@@ -1,5 +1,5 @@
 #' Extract test results from the linear model
-#' @description Extract effect size estimates and p-values for a certain parameter
+#' @description Extract effect size estimates, standard errors and adjusted p-values for a certain parameter
 #' from a linear model.
 #'
 #' @param obj The result object
