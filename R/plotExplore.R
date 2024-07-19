@@ -4,7 +4,7 @@
 #' This function is meant for exploratory purposes as well as for visual confirmation of findings.
 #' @details When cell-specific PIs are calculated ("nnCell', "nnCellPair", "edge", "centroid"),
 #' the cells can be coloured by them to investigate their spatial distribution,
-#' for instance those discovered through Moran's I statistic
+#' for instance those discovered through Moran's I statistic.
 #' The colour palette is taken from the output of palette(),
 #' so set that one to change the colour scheme.
 #'

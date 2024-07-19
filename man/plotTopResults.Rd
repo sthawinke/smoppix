@@ -34,7 +34,7 @@ plotTopResults(
 
 \item{effect}{The name of the effect}
 
-\item{what}{Which features should be detected? See details.}
+\item{what}{Which features should be detected? Can be abbreviated, see details.}
 
 \item{sigLevel}{The significance level}
 
@@ -52,7 +52,8 @@ A plot from plotCells or plotExplore, throws an error when no features meet the 
 }
 \description{
 Extract the most significant features for a certain PI and direction of effect,
-and plot them using an appropriate function.
+and plot them using an appropriate function: either \link{plotExplore} or
+\link{plotCells}
 }
 \details{
 The "what" argument indicates if features far from or close to

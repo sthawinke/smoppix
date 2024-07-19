@@ -6,7 +6,7 @@ Authors@R:
     c(person(given = "Stijn", family = "Hawinkel", 
     email = "stijn.hawinkel@psb.ugent.be", 
     role=c("cre", "aut"), comment = c(ORCID = "0000-0002-4501-5180")))
-Description: Test for univariate and multivariate spatial patterns in 
+Description: Test for univariate and bivariate spatial patterns in 
     spatial omics data with single-molecule resolution. The tests implemented 
     allow for analysis of nested designs and are automatically calibrated to different
     biological specimens. Tests for aggregation, colocalization, gradients and vicinity to cell edge or centroid are provided.

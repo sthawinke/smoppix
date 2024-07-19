@@ -6,7 +6,7 @@
 \alias{smoppix}
 \title{smoppix: Analyze Single Molecule Spatial Transcriptomics and Other Spatial Omics Data Using the Probabilistic Index}
 \description{
-Test for univariate and multivariate spatial patterns in spatial omics data with single-molecule resolution. The tests implemented allow for analysis of nested designs and are automatically calibrated to different biological specimens. Tests for aggregation, colocalization, gradients and vicinity to cell edge or centroid are provided.
+Test for univariate and bivariate spatial patterns in spatial omics data with single-molecule resolution. The tests implemented allow for analysis of nested designs and are automatically calibrated to different biological specimens. Tests for aggregation, colocalization, gradients and vicinity to cell edge or centroid are provided.
 }
 \seealso{
 Useful links:

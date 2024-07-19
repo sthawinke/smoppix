@@ -4,8 +4,8 @@
 #' scatterplot of majority gene as a function of minority gene, with the weight represented as a colour scale.
 #' The minority respectively majority gene are the genes in the gene pair with least and most events
 #'
-#' @inheritParams buildDataFrame
 #' @param pi The PI for which to plot the weighting function
+#' @param obj The result of a call to \link{addWeightFunction}
 #'
 #' @return For univariate PI, returns a line plot; for bivariate PI a ggplot object
 #' @importFrom ggplot2 ggplot geom_point scale_colour_gradient xlab ylab ggtitle aes

@@ -1,12 +1,13 @@
 #' Plot the most significant findings for a certain PI
 #'
 #' Extract the most significant features for a certain PI and direction of effect,
-#' and plot them using an appropriate function.
+#' and plot them using an appropriate function: either \link{plotExplore} or
+#' \link{plotCells}
 #'
 #' @param hypFrame The hyperframe with the data
 #' @param results The results frame
 #' @param pi A character string, specifying the probabilistic index
-#' @param what Which features should be detected? See details.
+#' @param what Which features should be detected? Can be abbreviated, see details.
 #' @param sigLevel The significance level
 #' @param numFeats The number of features to plot
 #' @param effect The name of the effect
@@ -42,11 +43,9 @@ plotTopResults <- function(hypFrame, results, pi, effect = "Intercept",
                                "colocalized"
                            } else if (pi %in% c("edge", "centroid")) {
                                "close"
-                           },
-                           sigLevel = 0.05, numFeats = 2, piThreshold = switch(effect,
-                               Intercept = 0.5,
-                               0
-                           ), effectParameter = NULL, ...) {
+                           }, sigLevel = 0.05, numFeats = 2, 
+                           piThreshold = switch(effect, Intercept = 0.5, 0), 
+                           effectParameter = NULL, ...) {
     stopifnot(
         is.hyperframe(hypFrame), is.character(what), sigLevel > 0,
         sigLevel < 1
