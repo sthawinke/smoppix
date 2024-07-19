@@ -1,4 +1,6 @@
-#' Run checks on design variables, or construct them if missing
+#' Check for or construct design matrix
+#' 
+#' Run checks on design variables, or construct them as vector them if missing
 #'
 #' @param designVars The initial design variables
 #' @param lowestLevelVar Variable indicating the lowest level of nesting

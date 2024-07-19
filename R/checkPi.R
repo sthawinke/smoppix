@@ -1,4 +1,4 @@
-#' Check if the required pi's are present in the object
+#' Check if the required PI's are present in the object
 #'
 #' @param x The result of the PI calculation, or a weighting function
 #' @param pi A character string indicating the desired PI
@@ -15,7 +15,7 @@ checkPi <- function(x, pi) {
 #'
 #' @inheritParams estPis
 #'
-#' @return Throws errorwhen features not found
+#' @return Throws error when features not found
 checkFeatures <- function(hypFrame, features) {
     if (any(id <- !(features %in% getFeatures(hypFrame)))) {
         stop("Features ", features[id], " not found in hyperframe")

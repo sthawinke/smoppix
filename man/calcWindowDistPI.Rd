@@ -2,19 +2,9 @@
 % Please edit documentation in R/calcWindowDistPI.R
 \name{calcWindowDistPI}
 \alias{calcWindowDistPI}
-\title{Estimate the PI for the distance to a fixed region of interest}
+\title{Estimate the PI for the distance to a fixed object of interest, such as a cell wall or centroid}
 \usage{
-calcWindowDistPI(
-  pSub,
-  owins,
-  centroids,
-  ecdfAll,
-  pi,
-  null,
-  ecdfs,
-  cellAndGene,
-  feat
-)
+calcWindowDistPI(pSub, owins, centroids, ecdfAll, pi)
 }
 \arguments{
 \item{pSub}{The subset point pattern containing only a single gene}
@@ -25,22 +15,12 @@ and their centroids}
 \item{ecdfAll}{the cumulative distribution function under the null}
 
 \item{pi}{The type of PI to calculate}
-
-\item{null}{A character vector, indicating how the null distribution is
-defined. See details.}
-
-\item{ecdfs}{The ecdfs of the distances of every single point in the cell}
-
-\item{cellAndGene}{The marks dataframe with cell and gene, used to match the
-observations with the ecdfs}
-
-\item{feat}{The feature}
 }
 \value{
 A list of vectors of estimated probabilistic indeces per event
 }
 \description{
-Estimate the PI for the distance to a fixed region of interest
+Estimate the PI for the distance to a fixed object of interest, such as a cell wall or centroid
 }
 \details{
 Analysis of the distance to the border was introduced by \insertCite{Joyner2013}{smoppix} in the form of the B-function.

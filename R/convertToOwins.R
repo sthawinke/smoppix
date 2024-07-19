@@ -1,5 +1,5 @@
-#' Convert windows in different formats to spatstat.geom owin format
-#' @description Convert a list of differently formatted windows to owins, for
+#' Convert windows to spatstat.geom owin format
+#' @description Convert a list of windows in different possible formats to owins, for
 #' addition to a hyperframe.
 #'
 #' @param windows The list of windows
@@ -13,7 +13,7 @@
 #' @return A list of owins
 #' @importFrom spatstat.geom is.owin owin as.owin
 #' @importFrom methods slot is
-#' @seealso \link{addCell}
+#' @seealso \link{addCell}, \link[spatstat.geom]{as.owin}
 convertToOwins <- function(windows, namePPP, coords, ...) {
     if (is(windows, "SpatialPolygonsDataFrame")) {
         if (requireNamespace("polyCub", quietly = TRUE)) {

@@ -15,7 +15,7 @@ test_that("Reading in data proceeds without errors", {
     ], covariates = df[, "gene", drop = FALSE]))
     expect_identical(hypFrame, hypFrame2)
     expect_silent(hypFrame3 <- buildHyperFrame(lapply(listPPP, identity)))
-    expect_message(hypFrame4 <- buildHyperFrame(split(df, f = apply(df[, c("fov","condition")], 1, paste, collapse = "_")), 
+    expect_silent(hypFrame4 <- buildHyperFrame(split(df, f = apply(df[, c("fov","condition")], 1, paste, collapse = "_")), 
                                                 covariatesDf = df[!duplicated(df[,c("fov", "condition")]), c("fov", "condition")]))
 })
 # Read in spatial experiment
@@ -23,9 +23,8 @@ library(SpatialExperiment)
 library(DropletUtils)
 example(read10xVisium)
 test_that("Reading in SpatialExperiment class proceeds without errors", {
-    expect_message(hypFrame4 <- buildHyperFrame(spe, imageVars = "sample_id", covariates = "in_tissue"))
+    expect_message(hypFrame4 <- buildHyperFrame(spe, imageVars = "sample_id", pointVars = "in_tissue"))
 })
-
 test_that("Adding regions of interest works", {
     expect_s3_class(hypFrame5 <- addCell(hypFrame, wList), "hyperframe")
     expect_s3_class(

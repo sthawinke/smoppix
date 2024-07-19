@@ -11,9 +11,9 @@ calcNNPI(Ranks, n, m, ties, r = 1)
 \item{Ranks}{The (approximate) ranks, number of times observed distance is larger}
 
 \item{n}{the total number of observed distances minus the number of distances
-under consideration (the number of black balls in the urn)}
+under consideration (the number of failures or black balls in the urn)}
 
-\item{m}{the number of observed distances (white balls in the urn)}
+\item{m}{the number of observed distances (successes or white balls in the urn)}
 
 \item{ties}{The number of times the observed distance is equal to a null distance,
 of the same lenght as Ranks}
