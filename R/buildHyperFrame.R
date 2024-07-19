@@ -7,11 +7,11 @@
 #' @importFrom methods setGeneric setMethod
 #' @export
 #' @param x the input object, see methods('buildHyperFrame')
-#' @param ... additional constructor arguments
 #' @param covariates A vector of covariates
 #' @param featureName The name of the feature identifier for the molecules.
-#' Defaults to "gene"
+#' @param ... additional constructor arguments
 #' @return An object of class 'hyperframe' from the 'spatstat.geom' package
+#' @seealso \link[spatstat]{hyperframe}
 #' @examples
 #' data(Yang)
 #' hypYang <- buildHyperFrame(Yang,
@@ -73,11 +73,6 @@ setMethod("buildHyperFrame", "matrix", function(x, imageVars, imageIdentifier = 
     })
     # Replace underscore in gene names => Used to build pairs
     hypFrame <- spatstat.geom::hyperframe(ppp = ppps, image = names(ppps))
-    # desMat <- matrix(simplify2array(strsplit(names(ppps), "_")),
-    #     nrow = nrow(hypFrame),
-    #     byrow = TRUE
-    # )
-    # colnames(desMat) <- names(imageVars)
     hypFrame <- addTabObs(hypFrame)
     hypFrame <- addDesign(hypFrame, imageVars, designVec)
     return(hypFrame)

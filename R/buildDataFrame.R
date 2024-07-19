@@ -1,26 +1,25 @@
 #' Build a data frame for a certain gene and PI, in preparation for mixed model building.
 #'
-#' @param obj A results object, for nearest neighbour distances,
-#' the result of a call to \link{addWeightFunction}
-#' @param gene A character string indicating the desired gene or gene pair
-#' @param pi character string indicating the desired PI as outcome
-#' @param piMat A data frame. Will be constructed if not provided
+#' @param obj A results object. For distances to fixed objects, the result of a call to \link{estPis}();
+#' for nearest neighbour distances, the result of a call to \link{addWeightFunction}
+#' @param gene A character string indicating the desired gene or gene pair (gene separated by double hyphens)
+#' @param pi character string indicating the desired PI
+#' @param piMat A data frame. Will be constructed if not provided, for internal use
 #' @param moransI A boolean, should Moran's I be calculated
 #' in the linear mixed model
 #' @param weightMats List of weight matrices for Moran's I calculation
 #' @param pppDf Dataframe of point pattern-wise variables. It is precalculated
 #' in fitLMMsSingle for speed, but will be newly constructed when not provided
 #' @inheritParams fitLMMs
-#' @return A dataframe
+#' @return A dataframe with estimated PIs and covariates
 #' @export
 #' @importFrom scam predict.scam
-#' @seealso \link{addWeightFunction}
+#' @seealso \link{addWeightFunction}, \link{buildMoransIDataFrame}
 #' @examples
 #' example(addWeightFunction, "smoppix")
 #' dfUniNN <- buildDataFrame(yangObj, gene = "SmVND2", pi = "nn")
 #' # Example analysis with linear mixed model
 #' library(lmerTest)
-#' # Use sum coding for day to maintain interpretability of the intercept
 #' mixedMod <- lmer(pi - 0.5 ~ day + (1 | root),
 #'     weight = weight, data = dfUniNN,
 #'     contrasts = list("day" = "contr.sum")

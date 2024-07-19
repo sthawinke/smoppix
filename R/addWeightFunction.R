@@ -1,30 +1,31 @@
 #' Add a variance weighting function
-#' @description Build a weighting function based on the data by fitting a
-#' non-increasing spline of variance as a function of number of events.
+#' @description Add a weighting function based on the data to the object by modeling variance as a
+#' non-increasing spline as a function of number of events.
 #'
 #' @param resList A results list, from a call to estPis().
 #' @param designVars A character vector containing all design factors
 #' (both fixed and random), that are also present as variables in hypFrame.
-#' @param ... Additional arguments passed on to the scam::scam function.
+#' @param ... Additional arguments passed on to the scam::scam function, fitting the spline
 #' @param maxObs,maxFeatures The maximum number of observations respectively
 #' features for fitting the weighting function. See details
 #' @param pis The PIs for which weighting functions are constructed
 #' @param lowestLevelVar The design variable at the lowest level of nesting,
 #' often separating technical replicates. The conditional variance is calculated
-#' within the groups of PIs defined by this variable
+#' within the groups of PIs defined by this variable.
 #' @param minNumVar The minimum number of observations needed to calculate a
-#' variance
-#' @details Provide either 'designVars' or 'lowestLevelVar'. In the latter case, the
+#' variance. Groups with fewer replicates are ignored.
+#' @details Provide either 'designVars' or 'lowestLevelVar'. The 'designVars' are 
+#' usually the same as the regressors in the linear model. In case 'lowestLevelVar' is provided, the
 #' design variables are set to all imageVars in the hypFrame object except
-#' lowestLevelVar. When the PI is calculated on the cell level,
-#' this the lowest nesting level so inputs will be ignored for these PIs.
+#' lowestLevelVar. When the PI is calculated on the cell level ("nnCell" or "nnPairCell"),
+#' the cell is always the lowest nesting level, and inputs to 'designVars' or 'lowestLevelVar' will be ignored for these PIs.
 #' The registered parallel backend will be used for fitting the trends of the
 #' different PIs.
 #' For computational and memory reasons, for large datasets the trend fitting
 #' is restricted to a random subset of the data through the maxObs and
 #' maxFeatures parameters.
 #'
-#' @return The input object with a slot 'Wfs' added containing the weighting
+#' @return The input object 'resList' with a slot 'Wfs' added containing the weighting
 #' functions.
 #' @importFrom scam scam
 #' @importFrom stats formula
@@ -34,10 +35,8 @@
 #' example(estPis, "smoppix")
 #' yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))
 #' # Alternative formulation with 'lowestLevelVar'
-#' yangObj2 <- addWeightFunction(yangPims,
-#'     lowestLevelVar = "section",
-#'     pi = "nn"
-#' )
+#' yangObj2 <- addWeightFunction(yangPims, lowestLevelVar = "section", 
+#' pi = "nn")
 addWeightFunction <- function(
     resList, pis = resList$pis, designVars, lowestLevelVar,
     maxObs = 1e+05, maxFeatures = 1000, minNumVar = 3, ...) {
