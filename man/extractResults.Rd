@@ -2,7 +2,7 @@
 % Please edit documentation in R/extractResults.R
 \name{extractResults}
 \alias{extractResults}
-\title{Extract results from a list of fitted LMMs}
+\title{Extract results from a list of fitted LMMs. For internal use mainly.}
 \usage{
 extractResults(
   models,
@@ -28,7 +28,7 @@ A list of matrices, all containing estimate, standard error,
 p-value and ajdusted p-value
 }
 \description{
-Extract results from a list of fitted LMMs
+Extract results from a list of fitted LMMs. For internal use mainly.
 }
 \seealso{
 \link{fitLMMs}, \link{p.adjust}

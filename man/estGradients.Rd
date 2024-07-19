@@ -2,7 +2,7 @@
 % Please edit documentation in R/estGradients.R
 \name{estGradients}
 \alias{estGradients}
-\title{Estimate gradients over multiple single-molecule point patterns}
+\title{Estimate gradients over multiple point patterns}
 \usage{
 estGradients(
   hypFrame,
@@ -17,14 +17,10 @@ estGradients(
 )
 }
 \arguments{
-\item{hypFrame}{A hyperframe}
-
-\item{gradients}{The gradients indices to be estimated}
+\item{gradients}{The gradients types to be estimated: "overall" or within cell ("cell")}
 
 \item{fixedEffects, randomEffects}{Character vectors of fixed and random effects present in the hyperframe,
 modifying the baseline intensity. See details.}
-
-\item{verbose}{A boolean, whether to report on progress of the fitting process.}
 
 \item{features}{A character vector, for which features should the
 gradients indices be calculated?}
@@ -39,7 +35,7 @@ gradients indices be calculated?}
 A list with the estimated gradients
 }
 \description{
-Estimate gradients on all point patterns of a hyperframe,
+Estimate gradients on all single-molecule point patterns of a hyperframe
 }
 \details{
 The test for existence of a gradient revolves around interaction terms
@@ -74,7 +70,7 @@ hypEng <- buildHyperFrame(Eng,
     imageVars = c("fov", "experiment")
 )
 hypEng <- addCell(hypEng, EngRois, verbose = FALSE)
-# Limit number of cells for computational reasons
+# Limit number of cells and genes for computational reasons
 engGrads <- estGradients(hypEng[seq_len(2), ],
     features =
         feat <- getFeatures(hypEng)[seq_len(2)]

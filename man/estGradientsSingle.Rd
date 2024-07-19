@@ -15,9 +15,7 @@ estGradientsSingle(
 )
 }
 \arguments{
-\item{hypFrame}{A hyperframe}
-
-\item{gradients}{The gradients indices to be estimated}
+\item{gradients}{The gradients types to be estimated: "overall" or within cell ("cell")}
 
 \item{fixedForm, randomForm, fixedFormSimple}{Formulae for fixed effects,
 random effects and fixed effects without slopes respectively}

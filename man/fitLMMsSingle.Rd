@@ -27,8 +27,7 @@ for nearest neighbour distances, the result of a call to \link{addWeightFunction
 
 \item{fixedVars}{Names of fixed effects}
 
-\item{randomVars}{Names of random variables, possibly in a single vector to
-reflect nesting structure, see details.}
+\item{randomVars}{Names of random variables}
 
 \item{verbose}{A boolean, should the formula be printed?}
 

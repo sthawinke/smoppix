@@ -21,14 +21,13 @@ fitLMMs(
 )
 }
 \arguments{
-\item{obj}{The result object}
+\item{obj}{The result object, from a call to \link{estPis} of \link{addWeightFunction}}
 
 \item{pis}{Optional, the pis required. Defaults to all pis in the object}
 
 \item{fixedVars}{Names of fixed effects}
 
-\item{randomVars}{Names of random variables, possibly in a single vector to
-reflect nesting structure, see details.}
+\item{randomVars}{Names of random variables}
 
 \item{verbose}{A boolean, should the formula be printed?}
 
@@ -65,16 +64,22 @@ and PI.
 Genes or gene pairs with insufficient observations will be silently
 omitted. When randomVars is provided as a vector, independent random
 intercepts are fitted for them by default. Providing them separated by '\' or
-':' as in the lmer formulas is also allowed to reflect nesting structure.
+':' as in the lmer formulas is also allowed to reflect nesting structure, 
+but the safest is to construct the formula yourself and pass it onto fitLMMs.
 
 It is by default assumed that random effects are nested within the point
  patterns. This means for instance that cells with the same name but from
  different point patterns are assigned to different random effects. Set
  'randomNested' to FALSE to override this behaviour.
 
- The weights for the Moran's I statistic are inversely proportional to the distance between cell centroids.
+ The Moran's I statistic is used to test whether cell-wise PIs ("nnCell", "nnCellPair", "edge" and "centroid") 
+ are spatially autocorrelated across the images. The numeric value of the PI is assigned to the 
+ centroid location, and then Moran's I is calculated with a fixed number of numNNs nearest neighbours with equal weights.
 }
 \examples{
 example(addWeightFunction, "smoppix")
 lmmModels <- fitLMMs(yangObj, fixedVars = "day", randomVars = "root")
+}
+\seealso{
+\link{buildMoransIDataFrame}
 }

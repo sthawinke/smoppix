@@ -2,7 +2,7 @@
 % Please edit documentation in R/checkPi.R
 \name{checkPi}
 \alias{checkPi}
-\title{Check if the required pi's are present in the object}
+\title{Check if the required PI's are present in the object}
 \usage{
 checkPi(x, pi)
 }
@@ -15,5 +15,5 @@ checkPi(x, pi)
 Throws an error when the PIs are not found, otherwise returns invisible
 }
 \description{
-Check if the required pi's are present in the object
+Check if the required PI's are present in the object
 }

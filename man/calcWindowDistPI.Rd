@@ -24,7 +24,8 @@ Estimate the PI for the distance to a fixed object of interest, such as a cell w
 }
 \details{
 Analysis of the distance to the border was introduced by \insertCite{Joyner2013}{smoppix} in the form of the B-function.
-The independent evaluations of the B-functions per cell are here returned as realizations of the probabilistic index.
+The independent evaluations of the B-functions under the null hypothesis represented by \textit{ecdfAll} 
+per cell are here returned as realizations of the probabilistic index.
 }
 \references{
 \insertAllCited{}

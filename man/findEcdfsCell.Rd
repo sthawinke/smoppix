@@ -16,7 +16,7 @@ and their centroids}
 to calculate distance to cell edge or centroid distribution}
 
 \item{null}{A character vector, indicating how the null distribution is
-defined. See details.}
+defined. See details of \link{estPis}.}
 
 \item{pis}{The probabilistic indices to be estimated}
 
@@ -29,7 +29,7 @@ The list of ecdf functions
 \description{
 The distance distribution under the null hypothesis of complete spatial randomness (CSR)
 within the cell is the same for all genes. This function precalculates this distribution using Monte-Carlo simulation under CSR,
-and summarizes it in a ecdf object
+and summarizes it in an ecdf object
 }
 \seealso{
 \link{ecdf}

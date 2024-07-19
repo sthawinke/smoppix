@@ -43,14 +43,15 @@ Defaults to bplapply except when looping over features within cells}
 probabilistic indices be calculated?}
 
 \item{nPointsAll, nPointsAllWithinCell}{How many points to subsample or simulate to calculate the
-overall distance distribution under the null hypothesis.
+overall nearest neighbour distance distribution under the null hypothesis.
 The second argument (nPointsAllWithinCell) applies to within cell calculations, where a lower number usually suffises.}
 
 \item{nPointsAllWin}{How many points to subsample or simulate
 to calculate distance to cell edge or centroid distribution}
 
 \item{minDiff}{An integer, the minimum number of events from other genes
-needed for calculation of background distribution of distances}
+needed for calculation of background distribution of distances. 
+Matters mainly for within-cell calculations: cells with too few events are skipped}
 
 \item{minObsNN}{An integer, the minimum number of events before a gene is analysed See details.}
 }

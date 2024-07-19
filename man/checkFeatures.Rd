@@ -13,7 +13,7 @@ checkFeatures(hypFrame, features)
 probabilistic indices be calculated?}
 }
 \value{
-Throws errorwhen features not found
+Throws error when features not found
 }
 \description{
 Check if features are present in hyperframe

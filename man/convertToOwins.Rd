@@ -2,12 +2,12 @@
 % Please edit documentation in R/convertToOwins.R
 \name{convertToOwins}
 \alias{convertToOwins}
-\title{Convert windows in different formats to spatstat.geom owin format}
+\title{Convert windows to spatstat.geom owin format}
 \usage{
 convertToOwins(windows, namePPP, coords, ...)
 }
 \arguments{
-\item{windows}{The list of windows}
+\item{windows}{The list of windows. See \link{addCell} for accepted formats.}
 
 \item{namePPP}{the name of the point pattern, will be added to the cell names}
 
@@ -19,14 +19,13 @@ convertToOwins(windows, namePPP, coords, ...)
 A list of owins
 }
 \description{
-Convert a list of differently formatted windows to owins, for
+Convert a list of windows in different possible formats to owins, for
 addition to a hyperframe.
 }
 \details{
 Order of traversion of polygons may differ between data types.
 Where applicable, different orders are tried before throwing an error.
-See \link{addCell} for accepted formats.
 }
 \seealso{
-\link{addCell}
+\link{addCell}, \link[spatstat.geom]{as.owin}
 }
