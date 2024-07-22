@@ -26,7 +26,7 @@ knitr::opts_chunk$set(fig.heigh = 7, fig.width = 7)
 
 # Introduction
 
-This vignette demonstrates the use of the _smoppix_ package: Single MOlecule sPatial omics data analysed through the Probabilistic IndeX. It unifies methods for statistical inference on single-molecule spatial transcriptomics datasets with replication in a single framework using probabilistic indices (PIs). Tests provided include univariate testing for vicinity to fixed objects such as cell walls or nuclei, univariate aggregation tests as well as bivariate tests for co- or antilocalization. Two different null hypothesis can be tested against: complete spatial randomness (also known as homogeneous Poisson process), but also the background distribution of molecules of all other genes can be a useful reference null. In addition, differences between treatments in terms of any of these univariate and bivariate PIs can be tested for, while accounting for complex design structures using mixed models. _smoppix_ is scalable to large numbers of molecules and genes thanks to an exact permutation null distribution in combination with a C++ implementation for the calculation of the PIs. An adequate variance weighting scheme is implemented by leveraging from the high-dimensionality of the data to account for heteroscedasticity. The _smoppix_ package is also applicable to cell type data, or other types of single-molecule omics data such as spatial proteomics or metabolomics.
+This vignette demonstrates the use of the _smoppix_ package: Single MOlecule sPatial omics data analysed through the Probabilistic IndeX. It unifies methods for statistical inference on single-molecule spatial transcriptomics datasets with replication in a single framework using probabilistic indices (PIs). Tests provided include univariate testing for vicinity to fixed objects such as cell walls or nuclei, univariate aggregation tests as well as bivariate tests for co- or antilocalization. Two different null hypothesis can be tested against: complete spatial randomness (CSR, also known as homogeneous Poisson process), but also the background distribution of molecules of all other genes can be a useful null. In addition, differences between treatments in terms of any of these univariate and bivariate PIs can be tested for, while accounting for complex design structures using mixed models. _smoppix_ is scalable to large numbers of molecules and genes thanks to an exact permutation null distribution in combination with a custom C++ implementation. An adequate variance weighting scheme harnesses the high-dimensionality of the data to account for heteroscedasticity. The _smoppix_ package is also applicable to cell type data, or other types of single-molecule omics data such as spatial proteomics or metabolomics.
 
 \setcounter{tocdepth}{5}
 \tableofcontents
@@ -81,6 +81,11 @@ As example dataset we use the data used in a [manuscript](doi:10.1016/j.cub.2023
 
 ```{r}
 data(Yang)
+```
+
+A quick glimpse ...
+
+```{r}
 head(Yang)
 ```
 
@@ -120,18 +125,18 @@ As a final confirmation of successfully reading in the data, we can make an expl
 plotExplore(hypYang, Cex = 2)
 ```
 
-A few genes are shown as coloured dots as shown in the legend, all other genes' transcripts are shown in grey.
+A couple of most expressed genes are shown as coloured dots as shown in the legend, all other genes' transcripts are shown in grey.
 
 ## Univariate tests
 
 ### Tests for univariate aggregation or regularity: nearest neighbour distances
 
-The first round of tests concerns the aggregation or regularity of individual transcripts. We choose to work with nearest neighbour distances here (pi = 'nn'). Since the shape and size differs strongly between the roots, we choose the background of all other transcripts as null distribution, i.e. we look for transcripts aggregated _with respect to_ all other transcripts. As this is computationally most efficient, we also fit the PI for the bivariate analysis in this step ('nnPair', see below). For computation reasons, we limit the analysis to 20 genes.
+The first round of tests concerns the aggregation or regularity of individual transcripts,for which we look ath the distribution of nearest neighbour distances (pi = 'nn'). Since the shape and size differ strongly between the roots, we choose the background of all other transcripts as null distribution, i.e. we look for transcripts aggregated _with respect to_ all other transcripts. As this is computationally most efficient, we also fit the PI for the bivariate analysis in this step ('nnPair', see below). For computation reasons, we limit the analysis to 20 genes.
 
 ```{r estpisyang}
 nnObj <- estPis(hypYang,
     pis = c("nn", "nnPair"), null = "background", verbose = FALSE,
-    features = c("SmVND2", "SmPINR", getFeatures(hypYang)[seq_len(20)])
+    features = c("SmVND2", "SmPINR", getFeatures(hypYang)[seq_len(18)])
 )
 ```
 
@@ -167,7 +172,7 @@ summary(lmeMod)
 Alternatively, a wrapper function is available that fits such LMMs 
 for every transcript. A simple random intercept is assumed 
 for every random effect, for more complex designs it is better to supply
-your own formula through the __Formula__ argument, passed on to _lmer()_.
+your own formula through the __Formula__ argument.
 
 ```{r fitLmms, include = FALSE}
 allModsNN <- fitLMMs(nnObj, fixedVars = "day", randomVars = "root")
@@ -176,11 +181,11 @@ allModsNN <- fitLMMs(nnObj, fixedVars = "day", randomVars = "root")
 Various errors may occur while fitting, e.g. insufficient non-missing observations. The function finishes silently but returns the error messages in the output. The results can now be viewed as follows using the _getResults_ function, with the genes sorted by p-value.
 
 ```{r headgetresults}
-head(getResults(allModsNN, "nn", "Intercept"))
-head(getResults(allModsNN, "nn", "day"))
+head(getResults(allModsNN, "nn", "Intercept"), 4)
+head(getResults(allModsNN, "nn", "day"), 4)
 ```
 
-We see many genes with significant aggregation (PI estimate smaller than 0.5), but no significant differences between day 0 and 3.
+We see many genes with significant aggregation (intercept estimate smaller than 0.5), but no significant differences between day 0 and 3.
 
 ## Bivariate tests
 
@@ -193,7 +198,7 @@ Again we plot the weighting function, which is now a bivariate spline as a funct
 plotWf(nnObj, pi = "nnPair")
 ```
 
-The least expressed gene or minority gene has the strongest influence on the weight. The dataframe is built in a similar way as before, separating the gene pair through a double dash:
+The least expressed gene or minority gene has the strongest influence on the weight. The dataframe is built in a similar way as before, separating the gene pair through a double hyphen:
 
 ```{r builddf}
 dfBiNN <- buildDataFrame(nnObj, gene = "SmVND2--SmPINR", pi = "nnPair")
@@ -221,10 +226,9 @@ The results can also be written to a spreadsheet for consultation outside R:
 writeToXlsx(allModsNN, file = "myfile.xlsx")
 ```
 
-
 # Eng2019: Mouse brain cells
 
-A second dataset was published in a [paper](10.1038/s41586-019-1049-y) by Eng et al. (2019) on mouse fibroblast cells, which will serve to illustrate methods given knowledge of cell boundaries. The dataset was subset to the eight most expressed genes for memory reasons. The hyperframe is built as before:
+A second dataset was published in a [paper](https://www.nature.com/articles/s41586-019-1049-y) by Eng et al. (2019) on mouse fibroblast cells, which will serve to illustrate methods given knowledge of cell boundaries. The dataset was subset to the eight most expressed genes for memory reasons. The hyperframe is built as before:
 
 ```{r readInEngData, warning=FALSE}
 data(Eng)
@@ -233,6 +237,13 @@ hypEng <- buildHyperFrame(Eng,
     imageVars = c("fov", "experiment")
 )
 ```
+
+Plotting an overviwe
+
+```{r engNoCells}
+plotExplore(hypEng)
+```
+
 
 Next, the cell boundaries are added, as a list with names corresponding to the rownames of the hyperframe. Different formats are allowed to provide windows in case the correct packages are installed, see _?addCell_. Based on these cells, every event is assigned to a cell.
 
@@ -249,7 +260,7 @@ plotExplore(hypEng)
 
 ## Vicinity to cell edge or centroid, and other within-cell localization patterns
 
-First, we will test for vicinity of the RNA molecules to cell boundaries or centroids, and for localization patterns within the cell. For this we pass different PI arguments to the _estPis()_ function. As null hypothesis, we choose complete spatial randomness (CSR) within the cell, which seems most natural, although the "background" option is also available. The suffix "Cell" indicates that aggregation and colocalization is tested within the same cell only, so not across the tissue.
+First, we test for vicinity of the RNA molecules to cell boundaries or centroids, and for localization patterns within the cell. For this we pass different PI arguments to the _estPis()_ function. As null hypothesis, we choose complete spatial randomness (CSR) within the cell, which seems most natural, although the "background" option is also available. The suffix "Cell" indicates that aggregation and colocalization is tested within the same cell only, so not across the tissue.
 
 ```{r}
 engPis <- estPis(hypEng,
@@ -265,7 +276,7 @@ The lowest level variable defaults to "cell" in this case, so there is no need t
 engPis <- addWeightFunction(engPis)
 ```
 
-We can now plot the bivariate weight function for instance:
+We the bivariate weight function as an example:
 
 ```{r, fig.height = 5}
 plotWf(engPis, "nnPairCell")
@@ -286,7 +297,7 @@ plotTopResults(hypEng,
 )
 ```
 
-Note that the cells are selected for high expression of the gene and are not shown in their original position! Use _plotExplore()_ for this purpose. Now plot the gene with strongest intracellular aggregation:
+Note that the cells are selected for high expression of the gene and are not shown in their original position! Now plot the gene with strongest intracellular aggregation:
 
 ```{r plotnnCellEng, fig.height = 6.5}
 plotTopResults(hypEng, results = allModsNNcell, pi = "nnCell", numFeats = 1)
@@ -343,7 +354,7 @@ Keep in mind though that a gradient that is significant for a computer may look 
 
 # Predicting tumor types with probabilistic indices as predictor
 
-Probabilistic indices are features extracted from point patterns that can serve purposes other than hypothesis testing too. Here we demonstrate their use as interpretable predictors for predicting tumor type from cell type locations on a breast cancer dataset by \textcite{Keren2018}, previously analysed by \textcite{Vanderdoes2023}.
+Probabilistic indices are features extracted from point patterns that can serve purposes other than hypothesis testing. Here we demonstrate their use as interpretable predictors for predicting tumor type from cell type locations on a breast cancer dataset by Keren _et al._ (2018), previously analysed by Vanderdoes _et al._ (2023). Make sure to install the _funkycells_ package to access the data.
 
 ```{r loadTNBC}
 if(reqFunky <- require(funkycells)){
@@ -361,6 +372,8 @@ if(reqFunky){
     plotExplore(hypTNBC, Cex.main = 0.7, features = c("Tumor", "Macrophage", "CD8T"), CexLegend = 0.85)
 }
 ```
+
+Fit a penalised regression model, and estimate its predictive accuracy through cross-validation.
 
 ```{r analyseTNBC}
 if(reqFunky){
@@ -391,7 +404,6 @@ if(reqFunky){
 }
 ```
 
-
 # Troubleshooting
 
 An error like 
@@ -404,6 +416,8 @@ An error like
 
 often indicates insufficient memory. Try reducing the number of cores requested with _MultiCoreParam()_,
 or switch to serial processing with _register(SerialParam())_.
+ 
+\printbibliography 
  
 # Session info
 
