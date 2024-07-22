@@ -14,7 +14,7 @@
 #' @param nPointsAllWin How many points to subsample or simulate
 #' to calculate distance to cell edge or centroid distribution
 #' @param minDiff An integer, the minimum number of events from other genes
-#'  needed for calculation of background distribution of distances. 
+#'  needed for calculation of background distribution of distances.
 #'  Matters mainly for within-cell calculations: cells with too few events are skipped
 #' @param minObsNN An integer, the minimum number of events before a gene is analysed See details.
 #' @param features A character vector, for which features should the
@@ -118,10 +118,10 @@ estPisSingle <- function(
     p, pis, null, tabObs, owins = NULL, centroids = NULL, window = p$window,
     loopFun = "bplapply", features, nPointsAll, nPointsAllWithinCell, nPointsAllWin,
     minDiff, minObsNN) {
-    if (!length(features)) {
+    features <- sample(intersect(features, names(tabObs)))
+    if(!length(features)){
         return(list(pointDists = NULL, windowDists = NULL, withinCellDists = NULL))
     }
-    features <- sample(intersect(features, names(tabObs)))
     # Scramble to ensure equal calculation times in multithreading
     if (any(pis %in% c("nn", "nnPair"))) {
         if (null == "background") {
