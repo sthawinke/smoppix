@@ -356,7 +356,7 @@ Keep in mind though that a gradient that is significant for a computer may look 
 
 # Predicting tumor types with probabilistic indices as predictor
 
-Probabilistic indices are features extracted from point patterns that can serve purposes other than hypothesis testing. Here we demonstrate their use as interpretable predictors for predicting tumor type from cell type locations on a breast cancer dataset from a [publication](https://doi.org/10.1016/j.cell.2018.08.039) by @Keren2018, previously analysed by @Vanderdoes2023. Make sure to install the _funkycells_ package to access the data.
+Probabilistic indices are features extracted from point patterns that can serve purposes other than hypothesis testing. Here we demonstrate their use as interpretable predictors for predicting tumor type from cell type locations on a breast cancer dataset from a [publication](https://doi.org/10.1016/j.cell.2018.08.039) by @Keren2018, previously analysed by @VanderDoes2023. Make sure to install the _funkycells_ package to access the data.
 
 ```{r loadTNBC}
 if(reqFunky <- require(funkycells)){
