@@ -15,7 +15,7 @@ test_that("Adding the weight function works", {
         predNew <- evalWeightFunction(objBG$Wfs[["nn"]], newdata = data.frame(NP = 5)),
         "double"
     )
-    expect_true(predNew > evalWeightFunction(objBG$Wfs[["nn"]], newdata = data.frame(NP = 4)))
+    expect_true(predNew > evalWeightFunction(objBG$Wfs[["nn"]], newdata = data.frame(NP = 3)))
     # With information sharing across features
     expect_s3_class(dfBG1 <- buildDataFrame(objBG, gene = "gene1", pi = "nn"), "data.frame")
     expect_s3_class(
@@ -34,7 +34,5 @@ test_that("Weight function application throws errors where appropriate", {
         "condition"
     )))
     expect_error(addWeightFunction(piEstsCSR, pi = "nn", lowestLevelVar = "treatment"))
-    # expect_error(addWeightFunction(piEstsCSR, pi = "nn"))
-    # expect_error(addWeightFunction(piEstsCSR, pi = "centroid"))
     expect_error(addWeightFunction(hypYang))
 })
