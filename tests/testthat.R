@@ -67,7 +67,7 @@ data(Yang)
 hypYang <- buildHyperFrame(Yang, coordVars = c("x", "y"), imageVars = c(
     "day", "root", "section"
 ))
-yangPims <- estPis(hypYang, features = getFeatures(hypYang)[15:20], 
+yangPims <- estPis(hypYang, features = getFeatures(hypYang)[12:20], 
                    pis = c("nn", "nnPair"), verbose = FALSE, nPointsAll = 5000)
 yangPims <- addWeightFunction(yangPims, lowestLevelVar = "section")
 data(Eng)
