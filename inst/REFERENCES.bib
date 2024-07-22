@@ -1,9 +1,16 @@
 @article{Yang2023,
 title        = {{Spatial transcriptomics of a lycophyte root sheds light on root evolution}},
-author       = {X. Yang and W. Poelmans and C. Grones and A. Lakehal and J. Pevernagie and M. Van Bel and M. Njo and L. Xu and H. Nelissen and B. De Rybel and others},
+author       = {X. Yang and W. Poelmans and C. Grones and A. Lakehal and J. Pevernagie and M. Van Bel and M. Njo and L. Xu and H. Nelissen and B. De Rybel and H. Motte and T. Beeckman},
 journal      = {Curr. Biol.},
+pages        = {4069 - 4084},
+volume       = {33},
+number       = {19},
 year         = {2023},
-publisher    = {Elsevier}
+abstract     = {Summary Plant roots originated independently in lycophytes and euphyllophytes, whereas early vascular plants were rootless. The organization of the root apical meristem in euphyllophytes is well documented, especially in the model plant Arabidopsis. However, little is known about lycophyte roots and their molecular innovations during evolution. In this study, spatial transcriptomics was used to detect 97 root-related genes in the roots of the lycophyte Selaginella moellendorffii. A high number of genes showed expression patterns similar to what has been reported for seed plants, supporting the idea of a highly convergent evolution of mechanisms to control root development. Interaction and complementation data of SHORTROOT (SHR) and SCARECROW (SCR) homologs, furthermore, support a comparable regulation of the ground tissue (GT) between euphyllophytes and lycophytes. Root cap formation, in contrast, appears to be differently regulated. Several experiments indicated an important role of the WUSCHEL-RELATED HOMEOBOX13 gene SmWOX13a in Selaginella root cap formation. In contrast to multiple Arabidopsis WOX paralogs, SmWOX13a is able to induce root cap cells in Arabidopsis and has functionally conserved homologs in the fern Ceratopteris richardii. Lycophytes and a part of the euphyllophytes, therefore, may share a common mechanism regulating root cap formation, which was diversified or lost during seed plant evolution. In summary, we here provide a new spatial data resource for the Selaginella root, which in general advocates for conserved mechanisms to regulate root development but shows a clear divergence in the control of root cap formation, with a novel putative role of WOX genes in root cap formation in non-seed plants.},
+keywords     = {spatial transcriptomics, evolution, lycophyte, selaginella, roots, root cap, wox, shr, scr, endodermis},
+issn         = {0960-9822},
+doi          = {10.1016/j.cub.2023.08.030},
+url          = {https://www.sciencedirect.com/science/article/pii/S0960982223010746}
 }
 @article{Joyner2013,
 title        = {{Distance to the border in spatial point patterns}},
@@ -30,5 +37,29 @@ year         = {2019},
 abstract     = {Imaging the transcriptome in situ with high accuracy has been a major challenge in single-cell biology, which is particularly hindered by the limits of optical resolution and the density of transcripts in single cells1--5. Here we demonstrate an evolution of sequential fluorescence in situ hybridization (seqFISH+). We show that seqFISH+ can image mRNAs for 10,000 genes in single cells---with high accuracy and sub-diffraction-limit resolution---in the cortex, subventricular zone and olfactory bulb of mouse brain, using a standard confocal microscope. The transcriptome-level profiling of seqFISH+ allows unbiased identification of cell classes and their spatial organization in tissues. In addition, seqFISH+ reveals subcellular mRNA localization patterns in cells and ligand--receptor pairs across neighbouring cells. This technology demonstrates the ability to generate spatial cell atlases and to perform discovery-driven studies of biological processes in situ.},
 issn         = {1476-4687},
 doi          = {10.1038/s41586-019-1049-y}
+}
+@article{Keren2018,
+title        = {{A Structured Tumor-Immune Microenvironment in Triple Negative Breast Cancer Revealed by Multiplexed Ion Beam Imaging.}},
+author       = {L. Keren and M. Bosse and D. Marquez and R. Angoshtari and S. Jain and S. Varma and S.-R. Yang and A. Kurian and D. Van Valen and R. West and S. C. Bendall and M. Angelo},
+journal      = {Cell},
+pages        = {1373 - 1387 - e19},
+volume       = {174},
+number       = {6},
+year         = {2018},
+abstract     = {The immune system is critical in modulating cancer progression, but knowledge of immune composition, phenotype, and interactions with tumor is limited. We used multiplexed ion beam imaging by time-of-flight (MIBI-TOF) to simultaneously quantify in situ expression of 36 proteins covering identity, function, and immune regulation at sub-cellular resolution in 41 triple-negative breast cancer patients. Multi-step processing, including deep-learning-based segmentation, revealed variability in the composition of tumor-immune populations across individuals, reconciled by overall immune infiltration and enriched co-occurrence of immune subpopulations and checkpoint expression. Spatial enrichment analysis showed immune mixed and compartmentalized tumors, coinciding with expression of PD1, PD-L1, and IDO in a cell-type- and location-specific manner. Ordered immune structures along the tumor-immune border were associated with compartmentalization and linked to survival. These data demonstrate organization in the tumor-immune microenvironment that is structured in cellular composition, spatial arrangement, and regulatory-protein expression and provide a framework to apply multiplexed imaging to immune oncology.},
+keywords     = {antigens, cd, b7-h1 antigen, cluster analysis, female, humans, indoleamine-pyrrole 2, 3, -dioxygenase, kaplan-meier estimate, lymphocytes, machine learning, mass spectrometry, principal component analysis, programmed cell death 1 receptor, spatial analysis, triple negative breast neoplasms, tumor microenvironment, lymphocyte activation gene 3 protein},
+doi          = {10.1016/j.cell.2018.08.039},
+url          = {https://pubmed.ncbi.nlm.nih.gov/30914819}
+}
+@article{VanderDoes2023,
+title        = {{Using random forests to uncover the predictive power of distance{\textendash}varying cell interactions in tumor microenvironments}},
+author       = {J. VanderDoes and C. Marceaux and K. Yokote and M.-L. Asselin-Labat and G. Rice and J. D. Hywood},
+journal      = {bioRxiv},
+year         = {2023},
+publisher    = {Cold Spring Harbor Laboratory},
+abstract     = {Tumor microenvironments (TMEs) contain vast amounts of information on patient{\textquoteright}s cancer through their cellular composition and the spatial distribution of tumor cells and immune cell populations. Exploring variations in TMEs among patients and cancer types, as well as determining the extent to which this information can predict variables such as patient survival or treatment success with emerging immunotherapies, is of great interest. Moreover, in the face of a large number of potential spatial cell interactions to consider, we often wish to identify specific interactions that are useful in making such predictions. We present an approach to achieve these goals based on summarizing spatial relationships in the TME using spatial K functions, and then applying functional data analysis and random forest models to both predict outcomes of interest and identify important spatial relationships. This approach is shown to be effective in simulation experiments. We further used the proposed approach to interrogate two real data sets of Multiplexed Ion Beam Images of TMEs in triple negative breast cancer and lung cancer patients. The methods proposed are publicly available in a companion R package funkycells.Author summary Spatial data on the tumor microenvironment (TME) are becoming more prevalent. Existing methods to interrogate such data often have several deficiencies: (1) they rely on estimating the spatial relationships among cells by examining simple counts of cells within a single radius, (2) they do not come with ways to evaluate the statistical significance of any findings, or (3) they consider multiple individual interactions resulting in overly optimistic estimates of interaction importances. Our approach, which leverages techniques in spatial statistics and uses a benchmark ensemble machine learning method addresses (1), since the K functions used encode the relative densities of cells over all radii up to a user-selected maximum radius, and (2) we have developed a custom approach based on permutation and cross-validation to evaluate the statistical significance of any findings of significant spatial interactions in the TME, (3) over potentially multiple interactions. Our approach is also freely available with an R implementation called funkycells. In the analysis of two real data sets, we have seen that the method performs well, and gives the expected results. We think this will be a robust tool to add to the toolbox for researchers looking to interrogate, what can be sometimes unwieldy, TME data.Competing Interest StatementThe authors have declared no competing interest.},
+doi          = {10.1101/2023.07.18.549619},
+eprint       = {https://www.biorxiv.org/content/early/2023/07/19/2023.07.18.549619.full.pdf},
+url          = {https://www.biorxiv.org/content/early/2023/07/19/2023.07.18.549619}
 }
 
