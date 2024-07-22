@@ -1,7 +1,7 @@
 Package: smoppix
 Type: Package
 Title: Analyze Single Molecule Spatial Transcriptomics and Other Spatial Omics Data Using the Probabilistic Index
-Version: 0.99.10
+Version: 0.99.11
 Authors@R: 
     c(person(given = "Stijn", family = "Hawinkel", 
     email = "stijn.hawinkel@psb.ugent.be", 
