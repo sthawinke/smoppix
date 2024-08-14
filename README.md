@@ -27,8 +27,14 @@ Once installed, you can load the package
 library(smoppix)
 ```
 
-We will now load an example dataset, contained in the package. It is in
-table format, so we first convert it to a *spatstat* hyperframe.
+Patterns that can be detected by *smoppix*:
+
+<img src='inst/CSR.jpg' align='centre' height='55%' width='55%'/>
+<img src='inst/CSRbi.jpg' align='centre' height='55%' width='55%'/>
+
+For illustration, we now load an example dataset, contained in the
+package. It is in table format, so we first convert it to a *spatstat*
+hyperframe.
 
 ``` r
 data(Yang)

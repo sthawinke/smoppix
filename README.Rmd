@@ -28,7 +28,12 @@ Once installed, you can load the package
 library(smoppix)
 ```
 
-We will now load an example dataset, contained in the package. It is in table format, so we first convert it to a _spatstat_ hyperframe. 
+Patterns that can be detected by _smoppix_:
+
+<img src='inst/CSR.jpg' align='centre' height='55%' width='55%'/>
+<img src='inst/CSRbi.jpg' align='centre' height='55%' width='55%'/>
+
+For illustration, we now load an example dataset, contained in the package. It is in table format, so we first convert it to a _spatstat_ hyperframe. 
 
 ```{r loadYang}
 data(Yang)
@@ -43,6 +48,7 @@ The number of unique images found is printed, make sure that this is what you ex
 ```{r explPlot, fig.height = 6}
 plotExplore(hypYang)
 ```
+
 
 As an example analysis, we estimate the univariate nearest neighbour probabilistic index as a measure of aggregation (clustering):
 
