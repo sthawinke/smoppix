@@ -13,7 +13,7 @@ estPis(
   nPointsAllWithinCell = switch(null, background = 2000, CSR = 500),
   nPointsAllWin = 1000,
   minDiff = 20,
-  minObsNN = 5L,
+  minObsNN = 1L,
   features = getFeatures(hypFrame),
   ...
 )
