@@ -44,10 +44,10 @@ makePairs <- function(genes) {
 #'
 #' @return A point pattern, subsampled if necessary
 subSampleP <- function(p, nSims, returnId = FALSE) {
-    if (tooBig <- (NP <- npoints(p)) > nSims) {
-        Pout <- p[id <- sample(NP, nSims), ,drop = FALSE]
+    Pout <- if (tooBig <- (NP <- npoints(p)) > nSims) {
+        p[id <- sample(NP, nSims), ,drop = FALSE]
     } else {
-        Pout <- p
+        p
     }
     if (!tooBig && returnId) {
         id <- seq_len(npoints(p))
