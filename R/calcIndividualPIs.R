@@ -56,9 +56,7 @@ calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null,
                 approxRanks <- doubleMatrixRanks[seq_len(nrow(distMat)), , drop = FALSE]
                 tiesMat <- doubleMatrixRanks[-seq_len(nrow(distMat)), , drop = FALSE]
                 if (bg) {
-                   featId <- match(feat, if(is.character(marks(pSubLeft$Pout, drop = FALSE))) {
-                      marks(pSubLeft$Pout)
-                   } else {marks(pSubLeft$Pout, drop = FALSE)$gene})
+                   featId <- match(feat, marks(p, drop = FALSE)$gene)
                    #Indices of feature in subsampled ppp
                     selfPoint <- (featId %in% pSubLeft$id)
                     # Correct for self distances,when point itself is part of the permutation, 
