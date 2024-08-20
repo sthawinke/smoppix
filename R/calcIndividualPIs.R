@@ -23,12 +23,12 @@ calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null,
     pSplit <- split.ppp(p, f = factor(marks(p, drop = FALSE)$gene))
     # Divide the work over the available workers
     piList <- loadBalanceBplapply(loopFun = loopFun, iterator = features, func = function(feat) {
-        pSub <- pSplit[[feat]]
+        pSub <- pSplit[[feat]] #ppp-object of a single feature
         if ((NP <- npoints(pSub)) >= minObsNN) {
             if (bg && ((NPall - NP) < minDiff)) {
                 distMat <- NULL
                 calcNNsingle <- FALSE
-                # If insufficient other events, do not calculate nn PIs for background
+                # If insufficient number of other events, do not calculate nn PIs for background
             } else {
                 distMat <- cbind(self = if (calcNNsingle <- (NP > 1 && ("nn" %in% pis))) {
                     nndist(pSub)
@@ -43,10 +43,11 @@ calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null,
                             # Point patterns have been pre-sorted in hyperframe function
                         })), nrow = NP, dimnames = list(NULL, names(pSplit)[id]))
                     }
-                })
+                }) #Observed distances
             }
             if (isMat <- is.matrix(distMat)) {
-                featId <- which(marks(p, drop = FALSE)$gene == feat)
+                featId <- match(feat, marks(pSubLeft$Pout, drop = FALSE)$gene)
+                #Indices of feature in subsampled ppp
                 doubleMatrixRanks <- switch(null,
                     "background" = findRanksDist(
                         getCoordsMat(pSub), getCoordsMat(pSubLeft$Pout),
@@ -54,16 +55,18 @@ calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null,
                     ),
                     "CSR" = matrix(ecdfAll(distMat), nrow = nrow(distMat))
                 )
-                approxRanksTmp <- doubleMatrixRanks[seq_len(nrow(distMat)), , drop = FALSE]
+                approxRanks <- doubleMatrixRanks[seq_len(nrow(distMat)), , drop = FALSE]
                 tiesMat <- doubleMatrixRanks[-seq_len(nrow(distMat)), , drop = FALSE]
-                # Leave out found nearest neighbour distance in calculation,
-                # and add 1 to ties
                 if (bg) {
                     selfPoint <- (featId %in% pSubLeft$id)
+                    # Correct for self distances,when point itself is part of the permutation, 
+                    # leading to distance 0, by subtracting one everywhere.
+                    # The observed nearest neighbour distances (not the same as self distances) remain part of the permutation
                     selfPointRanks <- selfPoint & distMat > 0
                     selfPointTies <- selfPoint & distMat == 0
-                    approxRanks <- round(((approxRanksTmp - selfPointRanks) / (npoints(pSubLeft$Pout) - selfPoint)
+                    approxRanks <- round(((approxRanks - selfPointRanks) / (npoints(pSubLeft$Pout) - selfPoint)
                     ) * (NPall - selfPoint))
+                    # Get the order right to prevent integer overflow: first divide, then multiply
                     tiesMat <- round(((tiesMat - selfPointTies) / (npoints(pSubLeft$Pout) - selfPoint)
                     ) * (NPall - selfPoint))
                     tiesMat[tiesMat == 0] <- 1
@@ -73,13 +76,9 @@ calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null,
                 } else {
                     approxRanks <- round(approxRanksTmp * NPall)
                 }
-
-                # Correct for self distances by subtracting one everywhere.
-                # The observed nearest neighbour distances (not the same as self distances) remain part of the permutation,
-                # Get the order right to prevent integer overflow: first divide, then multiply
                 colnames(approxRanks) <- colnames(tiesMat) <- colnames(distMat)
+                # Names get lost in C++ function.
             }
-            # Names may get lost in C++ function. Then rearrange to get to the PIs
             nnPI <- if (calcNNsingle && isMat) {
                 mean(calcNNPI(approxRanks[, "self"], NPall - (NP - 1) - bg,
                     m = NP - 1, r = 1, ties = if (bg) tiesMat[, "self"]

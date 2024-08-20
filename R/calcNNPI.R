@@ -1,13 +1,13 @@
 #' Estimate the PI for the nearest neighbour distances, given a set of ranks,
 #' using the negative hypergeometric distribution
 #'
+#' @param Ranks The (approximate) ranks, number of times observed distance is larger
 #' @param n the total number of observed distances minus the number of distances
 #' under consideration (the number of failures or black balls in the urn)
-#' @param Ranks The (approximate) ranks, number of times observed distance is larger
 #' @param m the number of observed distances (successes or white balls in the urn)
 #' @param r The rank of distances considered, r=1 is nearest neighbour distance
 #' @param ties The number of times the observed distance is equal to a null distance,
-#' of the same lenght as Ranks
+#' of the same length as Ranks
 #' @details Ties are counted half to match the definition of the PI.
 #' @importFrom extraDistr pnhyper
 #' @return A vector of evaluations of the negative hypergeometric distribution
