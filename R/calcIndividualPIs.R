@@ -46,8 +46,6 @@ calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null,
                 }) #Observed distances
             }
             if (isMat <- is.matrix(distMat)) {
-                featId <- match(feat, marks(pSubLeft$Pout, drop = FALSE)$gene)
-                #Indices of feature in subsampled ppp
                 doubleMatrixRanks <- switch(null,
                     "background" = findRanksDist(
                         getCoordsMat(pSub), getCoordsMat(pSubLeft$Pout),
@@ -58,6 +56,10 @@ calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null,
                 approxRanks <- doubleMatrixRanks[seq_len(nrow(distMat)), , drop = FALSE]
                 tiesMat <- doubleMatrixRanks[-seq_len(nrow(distMat)), , drop = FALSE]
                 if (bg) {
+                   featId <- match(feat, if(is.character(marks(pSubLeft$Pout, drop = FALSE))) {
+                      marks(pSubLeft$Pout)
+                   } else {marks(pSubLeft$Pout, drop = FALSE)$gene})
+                   #Indices of feature in subsampled ppp
                     selfPoint <- (featId %in% pSubLeft$id)
                     # Correct for self distances,when point itself is part of the permutation, 
                     # leading to distance 0, by subtracting one everywhere.
@@ -67,13 +69,13 @@ calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null,
                     approxRanks <- round(((approxRanks - selfPointRanks) / (npoints(pSubLeft$Pout) - selfPoint)
                     ) * (NPall - selfPoint))
                     # Get the order right to prevent integer overflow: first divide, then multiply
-                    tiesMat <- round(((tiesMat - selfPointTies) / (npoints(pSubLeft$Pout) - selfPoint)
-                    ) * (NPall - selfPoint))
-                    tiesMat[tiesMat == 0] <- 1
+                    tiesMatCor <- tiesMat - selfPointTies
+                    tiesMatCorId <- tiesMatCor == 0
                     # Cfr permutation p-values can never be zero (Phipson 2010)
                     # The observed distance is at least a tie.
-                    # Adding 1 to the denominator too will not make a big difference
-                } else {
+                    tiesMat <- round(((tiesMatCor+tiesMatCorId) / (npoints(pSubLeft$Pout) - selfPoint + tiesMatCorId)
+                    ) * (NPall - selfPoint))
+                  } else {
                     approxRanks <- round(approxRanks * NPall)
                 }
                 colnames(approxRanks) <- colnames(tiesMat) <- colnames(distMat)
