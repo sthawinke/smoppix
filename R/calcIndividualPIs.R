@@ -67,15 +67,15 @@ calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null,
                     approxRanks <- round(((approxRanks - selfPointRanks) / (npoints(pSubLeft$Pout) - selfPoint)
                     ) * (NPall - selfPoint))
                     # Get the order right to prevent integer overflow: first divide, then multiply
-                    # tiesMatCor <- tiesMat - selfPointTies
-                    # tiesMatCorId <- tiesMatCor == 0
-                    # # Cfr permutation p-values can never be zero (Phipson 2010)
-                    # # The observed distance is at least a tie.
-                    # tiesMat <- round(((tiesMatCor+tiesMatCorId) / (npoints(pSubLeft$Pout) - selfPoint + tiesMatCorId)
-                    # ) * (NPall - selfPoint))
-                    tiesMat <- round(((tiesMat - selfPointTies) / (npoints(pSubLeft$Pout) - selfPoint)
-                                      ) * (NPall - selfPoint))
-                    tiesMat[tiesMat==0] <- 1 
+                    tiesMatCor <- tiesMat - selfPointTies
+                    tiesMatCorId <- tiesMatCor == 0
+                    # Cfr permutation p-values can never be zero (Phipson 2010)
+                    # The observed distance is at least a tie.
+                    tiesMat <- round(((tiesMatCor+tiesMatCorId) / (npoints(pSubLeft$Pout) - selfPoint + tiesMatCorId)
+                    ) * (NPall - selfPoint))
+                    # tiesMat <- round(((tiesMat - selfPointTies) / (npoints(pSubLeft$Pout) - selfPoint)
+                    #                   ) * (NPall - selfPoint))
+                    # tiesMat[tiesMat==0] <- 1 
                   } else {
                     approxRanks <- round(approxRanks * NPall)
                 }
