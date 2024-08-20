@@ -55,7 +55,7 @@ estPis <- function(
     ), nPointsAllWithinCell = switch(null,
         background = 2e3,
         CSR = 5e2
-    ), nPointsAllWin = 1000, minDiff = 20, minObsNN = 5L,
+    ), nPointsAllWin = 1000, minDiff = 20, minObsNN = 1L,
     features = getFeatures(hypFrame), ...) {
     pis <- match.arg(pis, several.ok = TRUE)
     null <- match.arg(null)
