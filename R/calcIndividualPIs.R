@@ -55,7 +55,7 @@ calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null,
                     ),
                     "CSR" = matrix(ecdfAll(distMat), nrow = nrow(distMat))
                 )
-                approxRanksTmp <- doubleMatrixRanks[seq_len(nrow(distMat)), , drop = FALSE]
+                approxRanks <- doubleMatrixRanks[seq_len(nrow(distMat)), , drop = FALSE]
                 tiesMat <- doubleMatrixRanks[-seq_len(nrow(distMat)), , drop = FALSE]
                 if (bg) {
                     selfPoint <- (featId %in% pSubLeft$id)
@@ -64,7 +64,7 @@ calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null,
                     # The observed nearest neighbour distances (not the same as self distances) remain part of the permutation
                     selfPointRanks <- selfPoint & distMat > 0
                     selfPointTies <- selfPoint & distMat == 0
-                    approxRanks <- round(((approxRanksTmp - selfPointRanks) / (npoints(pSubLeft$Pout) - selfPoint)
+                    approxRanks <- round(((approxRanks - selfPointRanks) / (npoints(pSubLeft$Pout) - selfPoint)
                     ) * (NPall - selfPoint))
                     # Get the order right to prevent integer overflow: first divide, then multiply
                     tiesMat <- round(((tiesMat - selfPointTies) / (npoints(pSubLeft$Pout) - selfPoint)
@@ -74,7 +74,7 @@ calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null,
                     # The observed distance is at least a tie.
                     # Adding 1 to the denominator too will not make a big difference
                 } else {
-                    approxRanks <- round(approxRanksTmp * NPall)
+                    approxRanks <- round(approxRanks * NPall)
                 }
                 colnames(approxRanks) <- colnames(tiesMat) <- colnames(distMat)
                 # Names get lost in C++ function.

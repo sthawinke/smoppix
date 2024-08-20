@@ -16,7 +16,7 @@ under consideration (the number of failures or black balls in the urn)}
 \item{m}{the number of observed distances (successes or white balls in the urn)}
 
 \item{ties}{The number of times the observed distance is equal to a null distance,
-of the same lenght as Ranks}
+of the same length as Ranks}
 
 \item{r}{The rank of distances considered, r=1 is nearest neighbour distance}
 }
