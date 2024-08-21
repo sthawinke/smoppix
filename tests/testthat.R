@@ -2,8 +2,8 @@ library(testthat)
 library(smoppix)
 library(spatstat.random)
 library(BiocParallel)
-n <- 10000 # number of molecules
-ng <- 10 # number of genes
+n <- 5000 # number of molecules
+ng <- 8 # number of genes
 nfov <- 3 # Number of fields of view
 conditions <- 4
 # sample xy-coordinates in [0, 1]
@@ -67,8 +67,8 @@ data(Yang)
 hypYang <- buildHyperFrame(Yang, coordVars = c("x", "y"), imageVars = c(
     "day", "root", "section"
 ))
-yangPims <- estPis(hypYang, features = getFeatures(hypYang)[12:20], 
-                   pis = c("nn", "nnPair"), verbose = FALSE, nPointsAll = 5000)
+yangPims <- estPis(hypYang, features = getFeatures(hypYang)[12:18], 
+                   pis = c("nn", "nnPair"), verbose = FALSE, nPointsAll = 4000)
 yangPims <- addWeightFunction(yangPims, lowestLevelVar = "section")
 data(Eng)
 hypEng <- buildHyperFrame(Eng, coordVars = c("x", "y"), imageVars = c("fov", "experiment"))

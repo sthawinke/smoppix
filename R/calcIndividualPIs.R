@@ -59,7 +59,7 @@ calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null,
                    featId <- match(feat, marks(p, drop = FALSE)$gene)
                    #Indices of feature in subsampled ppp
                     selfPoint <- (featId %in% pSubLeft$id)
-                    # Correct for self distances,when point itself is part of the permutation, 
+                    # Correct for self distances, when point itself is part of the permutation, 
                     # leading to distance 0, by subtracting one everywhere.
                     # The observed nearest neighbour distances (not the same as self distances) remain part of the permutation
                     selfPointRanks <- selfPoint & distMat > 0
