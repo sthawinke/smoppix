@@ -30,10 +30,8 @@
 #'     imageVars = c("day", "root", "section")
 #' )
 #' yangGrads <- estGradients(hypYang[seq_len(2), ],
-#'     features =
-#'         getFeatures(hypYang)[seq_len(2)],
-#'     fixedEffects = "day", randomEffects = "root"
-#' )
+#'     features = getFeatures(hypYang)[1],
+#'     fixedEffects = "day", randomEffects = "root")
 #' # Gradients within cell
 #' data(Eng)
 #' hypEng <- buildHyperFrame(Eng, 
@@ -42,10 +40,8 @@
 #' )
 #' hypEng <- addCell(hypEng, EngRois, verbose = FALSE)
 #' # Limit number of cells and genes for computational reasons
-#' engGrads <- estGradients(hypEng[seq_len(2), ],
-#'     features =
-#'         feat <- getFeatures(hypEng)[seq_len(2)]
-#' )
+#' engGrads <- estGradients(hypEng[seq_len(2),],
+#'     features = feat <- getFeatures(hypEng)[1])
 #' @seealso \link{fitGradient}, \link{estGradientsSingle}
 estGradients <- function(hypFrame, gradients = c("overall", if (!is.null(hypFrame$owins)) "cell"),
                          fixedEffects = NULL, randomEffects = NULL,

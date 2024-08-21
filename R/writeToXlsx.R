@@ -24,8 +24,10 @@
 #' writeToXlsx(lmmModels, "tmpFile.xlsx")
 #' file.remove("tmpFile.xlsx")
 #' @importFrom openxlsx createWorkbook writeData addWorksheet saveWorkbook getSheetNames
-writeToXlsx <- function(obj, file, overwrite = FALSE, digits = 3, sigLevel = 0.05) {
-    stopifnot(is.logical(overwrite), is.character(file), is.numeric(digits), is.numeric(sigLevel))
+writeToXlsx <- function(obj, file, overwrite = FALSE, digits = 3, 
+                        sigLevel = 0.05) {
+    stopifnot(is.logical(overwrite), is.character(file), is.numeric(digits), 
+              is.numeric(sigLevel))
     if (!grepl("\\.xlsx", file)) {
         message("Adding .xlsx extension to file")
         file <- paste0(file, ".xlsx")
