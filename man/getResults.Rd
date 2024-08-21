@@ -32,11 +32,11 @@ hypYang <- buildHyperFrame(Yang,
     coordVars = c("x", "y"),
     imageVars = c("day", "root", "section")
 )
-yangPims <- estPis(hypYang, pis = "nn", features = getFeatures(hypYang)[15:20])
+yangPims <- estPis(hypYang, pis = "nn", features = getFeatures(hypYang)[16:20])
 # First build the weighting function
 yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))
 fittedModels <- fitLMMs(yangObj,
-    features = getFeatures(yangObj)[seq_len(10)],
+    features = getFeatures(yangObj)[seq_len(8)],
     fixedVars = "day", randomVars = "root",
     pi = "nn"
 )
