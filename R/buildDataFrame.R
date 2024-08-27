@@ -149,7 +149,7 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
         }
         image <- rep(rownames(obj$hypFrame), times = Times)
         piDfsMat <- Reduce(piDfs, f = rbind)
-        piMat <- data.frame(piDfsMat, pppDf[image, ])
+        piMat <- data.frame(piDfsMat, pppDf[image, ,drop = FALSE])
         if (!windowId && !moransI) {
             # Add weights
             weight <- evalWeightFunction(obj$Wfs[[pi]], newdata = piMat[, if (grepl(
