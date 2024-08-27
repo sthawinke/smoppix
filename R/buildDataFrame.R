@@ -31,7 +31,7 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
                            ), piMat, moransI = FALSE, numNNs = 8, weightMats, pppDf) {
     pi <- match.arg(pi)
     if (missing(pppDf)) {
-        pppDf <- as.data.frame(obj$hypFrame[, c("image", getPPPvars(obj))])
+        pppDf <- as.data.frame(obj$hypFrame[, c("image", getPPPvars(obj)), drop = FALSE])
     }
     if (missing(piMat)) {
         stopifnot((lg <- length(gene)) %in% c(1, 2))
