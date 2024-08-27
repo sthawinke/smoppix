@@ -130,10 +130,12 @@ addCell <- function(hypFrame,
             idLeft <- seq_len(NP)
             for (i in names(owins[[nn]])) {
                 idIn <- which(inside.owin(ppp[idLeft,], w = owins[[nn]][[i]]))
-                cellOut[idLeft[idIn]] <- i
-                # Don't overwrite, stick to first match, and do not detect
-                # overlap
-                idLeft <- idLeft[-idIn]
+                if(length(IdIn)){
+                    cellOut[idLeft[idIn]] <- i
+                    # Don't overwrite, stick to first match, and do not detect
+                    # overlap
+                    idLeft <- idLeft[-idIn]
+                }
             }
             if (NP == (nOut <- length(idLeft))) {
                 stop(
