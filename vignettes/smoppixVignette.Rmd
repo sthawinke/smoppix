@@ -247,7 +247,7 @@ plotExplore(hypEng)
 ```
 
 
-Next, the cell boundaries are added, as a list with names corresponding to the rownames of the hyperframe. Different formats are allowed to provide windows in case the correct packages are installed, see _?addCell_. Based on these cells, every event is assigned to a cell.
+Next, the cell boundaries are added, as a list with names corresponding to the rownames of the hyperframe. Different formats are allowed to provide windows in case the correct packages are installed, see _?addCell_. Based on these cells, every event is assigned to a cell. Not available for this dataset, but also nuclei can be added analogously via the _addNuclei_ functions.
 
 ```{r CellEngData}
 # Add cell identifiers
