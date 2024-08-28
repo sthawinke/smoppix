@@ -13,6 +13,7 @@ plotExplore(
   Cex = 1,
   plotWindows = !is.null(hypFrame$owins),
   plotPoints = TRUE,
+  plotNuclei = !is.null(hypFrame$nuclei),
   piEsts = NULL,
   Xlim = NULL,
   Ylim = NULL,
@@ -21,6 +22,7 @@ plotExplore(
   titleVar = NULL,
   piColourCell = NULL,
   palCols = c("blue", "yellow"),
+  nucCol = "lightblue",
   border = NULL,
   CexLegend = 1.4,
   CexLegendMain = 1.7,
@@ -45,6 +47,8 @@ Ignored is pps is given, and throws an error when more than 2 features provided}
 \item{plotWindows}{A boolean, should windows be plotted too?}
 
 \item{plotPoints}{A boolean, should the molecules be plotted as points?}
+
+\item{plotNuclei}{A boolean, should the nuclei be plotted?}
 
 \item{piEsts}{Set of PI estimates, returned by estPis}
 
