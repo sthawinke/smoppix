@@ -56,10 +56,14 @@ n4 <- owin(poly = list(x = c(1, 1, .6), y = c(.7, .9, .9)))
 n5 <- owin(poly = list(x = c(.95, .95, .7), y = c(.1, .4, .1)))
 nLarge <- owin(poly = list(x = c(1.1, 1.1, .7), y = c(.1, .4, .1)))
 nList <- lapply(seq_len(nDesignFactors), function(x) {
-    list("w1" = n1, "w2" = n2, "w3" = n3, "w4" = n4, "w5" = n5)
+    Li <- list("w1" = n1, "w2" = n2, "w3" = n3, "w4" = n4, "w5" = n5)
+    names(Li) <- paste0(names(Li), "_", x)
+    Li
 })
 nList2 <- lapply(seq_len(nDesignFactors), function(x) {
-  list("w1" = n1, "w2" = n2, "w3" = n3, "w4" = n4, "w5" = nLarge)
+    Li <- list("w1" = n1, "w2" = n2, "w3" = n3, "w4" = n4, "w5" = nLarge)
+    names(Li) <- paste0(names(Li), "_", x)
+    Li
 })
 names(nList) <- names(nList2) <- rownames(hypFrame) # Matching names is necessary
 hypFrame2 <- addNuclei(hypFrame2, nList, verbose = FALSE)

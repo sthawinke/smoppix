@@ -82,7 +82,7 @@ addNuclei <- function(hypFrame, nucleiList, checkSubset = TRUE,
             convertToOwins(nucleiList[[nam]], coords = coords, namePPP = nam, ...)
         })
     names(nucleiList) <- Nam
-    hypFrame$nuclei <- nucleiList[[i]][rownames(hypFrame)]
+    hypFrame$nuclei <- nucleiList[rownames(hypFrame)]
     if(checkSubset){
       if(is.null(hypFrame$owins)){
         stop("No cells present in hyperframe so I cannot check if nuclei are encompassed by them!")
@@ -93,7 +93,7 @@ addNuclei <- function(hypFrame, nucleiList, checkSubset = TRUE,
         }))
       })
       if(any(vapply(noSubSet, FUN.VALUE = integer(1), length) > 0)){
-        message("Not all nuclei are completely contained in their cells")
+        warning("Not all nuclei are completely contained in their cells")
       }
     }
     return(hypFrame)

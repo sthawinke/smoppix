@@ -47,10 +47,10 @@ test_that("Adding cells throws errors when appropriate", {
     expect_error(addCell(hypFrame, wListNoNames))
 })
 test_that("Adding nuclei works", {
-  expect_s3_class(hypFrame5 <- addNuclei(hypFrame, nList), "hyperframe")
-  expect_warning(addNuclei(hypFrame, nList2)) # Detect overlap
-  expect_s3_class(addNuclei(hypFrame, nList2, checkSubSet = FALSE)) # Detect overlap
-  expect_s3_class(addNuclei(hypFrame, nList, checkSubSet = FALSE))
+  expect_s3_class(hypFrame5 <- addNuclei(hypFrame2, nList), "hyperframe")
+  expect_warning(addNuclei(hypFrame2, nList2)) # Detect overlap
+  expect_s3_class(addNuclei(hypFrame, nList2, checkSubset = FALSE), "hyperframe") # Detect overlap
+  expect_s3_class(addNuclei(hypFrame, nList, checkSubset = FALSE), "hyperframe")
 })
 test_that("Adding nuclei throws errors when appropriate", {
  expect_error(addNuclei(hypFrame, nList, verbose = FALSE))

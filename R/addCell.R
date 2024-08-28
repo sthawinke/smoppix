@@ -117,13 +117,11 @@ addCell <- function(hypFrame,
             ppp <- hypFrame[[nn, "ppp"]]
             NP <- npoints(ppp)
             if (any("cell" == names(marks(ppp, drop = FALSE)))) {
-                stop("Cell markers already present in point pattern ",
-                     nn)
+                stop("Cell markers already present in point pattern ", nn)
             }
             if (findOverlappingOwins) {
                 # Find overlap between cells
-                foo <-
-                    findOverlap(owins[[nn]], hypFrame[nn, "centroids"])
+                foo <- findOverlap(owins[[nn]], hypFrame[nn, "centroids"])
             }
             # Assign events to cells
             cellOut <- rep("NA", NP)
@@ -140,8 +138,7 @@ addCell <- function(hypFrame,
             if (NP == (nOut <- length(idLeft))) {
                 stop(
                     "All points lie outside all windows for point pattern ",
-                    nn,
-                    " check your input!"
+                    nn, " check your input!"
                 )
             }
             if ((nOut > 0) && warnOut) {
