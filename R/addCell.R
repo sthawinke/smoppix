@@ -110,7 +110,7 @@ addCell <- function(hypFrame,
         if (verbose) {
             message("Adding cell names for point pattern")
         }
-        for (nn in rownames(hypFrame)) {
+        hypFrame$ppp <- loadBalanceBplapply(rownames(hypFrame), function(nn){
             if (verbose) {
                 message(match(nn, rownames(hypFrame)), " of ", nrow(hypFrame))
             }
@@ -159,8 +159,8 @@ addCell <- function(hypFrame,
                                               drop = FALSE])
             }
             marks(ppp) <- newmarks
-            hypFrame[nn, "ppp"] <- ppp
-        }
+            return(ppp)
+        })
     }
     hypFrame$owins <- owins[rownames(hypFrame)]
     if (is.null(hypFrame$centroids)) {
