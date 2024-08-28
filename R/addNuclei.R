@@ -77,8 +77,7 @@ addNuclei <- function(hypFrame, nucleiList, checkSubset = TRUE,
         message("Converting nuclei to spatstat owins")
     }
     # Convert different types of windows to owins
-    nucleiList <-
-        loadBalanceBplapply(Nam <- names(nucleiList), function(nam) {
+    nucleiList <- loadBalanceBplapply(Nam <- names(nucleiList), function(nam){
             convertToOwins(nucleiList[[nam]], coords = coords, namePPP = nam, ...)
         })
     names(nucleiList) <- Nam
