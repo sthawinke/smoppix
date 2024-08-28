@@ -64,6 +64,8 @@ Ignored is pps is given, and throws an error when more than 2 features provided}
 
 \item{palCols}{Two extremes of the colour palette for colouring the cells}
 
+\item{nucCol}{The colour for the nucleus window}
+
 \item{border}{Passed on to plot.owin, and further to graphics::polygon}
 
 \item{CexLegend, CexLegendMain}{Expansion factor for the legend and its title

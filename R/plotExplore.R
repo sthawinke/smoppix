@@ -29,6 +29,7 @@
 #' @param CexLegend,CexLegendMain Expansion factor for the legend and its title
 #' respectively
 #' @param plotNuclei A boolean, should the nuclei be plotted?
+#' @param nucCol The colour for the nucleus window
 #' @param Nrow Number of rows of the facet plot. Will be calculated if missing
 #' @note palCols sets the pseudo-continuous scale to colour cells.
 #'
