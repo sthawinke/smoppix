@@ -82,11 +82,12 @@ addNuclei <- function(hypFrame, nucleiList, checkSubset = TRUE,
             convertToOwins(nucleiList[[nam]], coords = coords, namePPP = nam, ...)
         })
     names(nucleiList) <- Nam
-    hypFrame$nuclei = lapply(rownames(hypFrame), function(i){
-      nucleiList[[i]][intersect(names(hypFrame$owins[[i]]), names(nucleiList[[i]]))]
-    })
+    hypFrame$nuclei <- nucleiList[[i]][rownames(hypFrame)]
     if(checkSubset){
-      noSubSet = lapply(rownames(hypFrame), function(i){
+      if(is.null(hypFrame$owins)){
+        stop("No cells present in hyperframe so I cannot check if nuclei are encompassed by them!")
+      }
+      noSubSet <- lapply(rownames(hypFrame), function(i){
         which(!vapply(names(hypFrame$nuclei[[i]]), FUN.VALUE = logical(1), function(x){
           is.subset.owin(hypFrame$nuclei[[i]][[x]], hypFrame$owins[[i]][[x]])
         }))

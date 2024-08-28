@@ -48,6 +48,21 @@ cellTypesDf <- data.frame(cell = unCells, cellType = sample(paste0("CellType_", 
 ))
 names(wList) <- names(wList2) <- rownames(hypFrame)
 hypFrame2 <- addCell(hypFrame, wList, cellTypes = cellTypesDf, verbose = FALSE)
+# The nuclei
+n1 <- owin(poly = list(x = c(0.2, .4, 0.8, .4), y = c(.4, .2, .4, .8)))
+n2 <- owin(poly = list(x = c(0.1, 0.1, .4), y = c(.4, .1, .1)))
+n3 <- owin(poly = list(x = c(0.1, 0.1, .4), y = c(1, .75, 1)))
+n4 <- owin(poly = list(x = c(1, 1, .6), y = c(.7, .9, .9)))
+n5 <- owin(poly = list(x = c(.95, .95, .7), y = c(.1, .4, .1)))
+nLarge <- owin(poly = list(x = c(1.1, 1.1, .7), y = c(.1, .4, .1)))
+nList <- lapply(seq_len(nDesignFactors), function(x) {
+    list("w1" = n1, "w2" = n2, "w3" = n3, "w4" = n4, "w5" = n5)
+})
+nList2 <- lapply(seq_len(nDesignFactors), function(x) {
+  list("w1" = n1, "w2" = n2, "w3" = n3, "w4" = n4, "w5" = nLarge)
+})
+names(nList) <- names(nList2) <- rownames(hypFrame) # Matching names is necessary
+hypFrame2 <- addNuclei(hypFrame2, nList, verbose = FALSE)
 # Register the parallel backend
 nCores <- 2
 register(MulticoreParam(nCores))

@@ -25,7 +25,7 @@ example(read10xVisium)
 test_that("Reading in SpatialExperiment class proceeds without errors", {
     expect_message(hypFrame4 <- buildHyperFrame(spe, imageVars = "sample_id", pointVars = "in_tissue"))
 })
-test_that("Adding regions of interest works", {
+test_that("Adding cells works", {
     expect_s3_class(hypFrame5 <- addCell(hypFrame, wList), "hyperframe")
     expect_s3_class(
         hypFrame6 <- addCell(hypFrame, wList, cellTypes = cellTypesDf),
@@ -39,11 +39,19 @@ test_that("Adding regions of interest works", {
         coVars = "in_tissue"
     ))
 })
-
-test_that("Adding regions of interest throws errors when appropriate", {
+test_that("Adding cells throws errors when appropriate", {
     wListNoNames <- wList
     names(wListNoNames) <- NULL
     expect_error(addCell(addCell(hypFrame, wList), wList))
     expect_error(addCell(hypFrame$ppp[[1]], wList))
     expect_error(addCell(hypFrame, wListNoNames))
+})
+test_that("Adding nuclei works", {
+  expect_s3_class(hypFrame5 <- addNuclei(hypFrame, nList), "hyperframe")
+  expect_warning(addNuclei(hypFrame, nList2)) # Detect overlap
+  expect_s3_class(addNuclei(hypFrame, nList2, checkSubSet = FALSE)) # Detect overlap
+  expect_s3_class(addNuclei(hypFrame, nList, checkSubSet = FALSE))
+})
+test_that("Adding nuclei throws errors when appropriate", {
+ expect_error(addNuclei(hypFrame, nList, verbose = FALSE))
 })
