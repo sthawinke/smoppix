@@ -19,6 +19,7 @@ test_that("Plotting hyperframes proceeds without errors", {
 
 test_that("Plotting hyperframes throws warning when appropriate", {
     expect_warning(plotExplore(hypYang, plotWindows = TRUE))
+    expect_warning(plotExplore(hypYang, plotNuclei = TRUE))
     expect_error(plotExplore(hypFrame2, piEsts = objCSR, piColourCell = "edge"))
     expect_error(plotExplore(hypFrame2, piEsts = objCSR, piColourCell = "nn", feature = "gene1"))
     expect_error(plotExplore(hypFrame2,
