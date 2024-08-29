@@ -17,7 +17,7 @@ getDesignVars <- function(x) {
 #' @return A vector of variables
 getPPPvars <- function(x, exclude = c(
                            "tabObs", "centroids", "owins", "ppp", "pimRes",
-                           "image", "inSeveralCells"
+                           "image", "inSeveralCells", "nuclei"
                        )) {
     setdiff(names(getHypFrame(x)), exclude)
 }

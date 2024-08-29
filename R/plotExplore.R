@@ -28,6 +28,8 @@
 #' @param border Passed on to plot.owin, and further to graphics::polygon
 #' @param CexLegend,CexLegendMain Expansion factor for the legend and its title
 #' respectively
+#' @param plotNuclei A boolean, should the nuclei be plotted?
+#' @param nucCol The colour for the nucleus window
 #' @param Nrow Number of rows of the facet plot. Will be calculated if missing
 #' @note palCols sets the pseudo-continuous scale to colour cells.
 #'
@@ -46,14 +48,18 @@
 #' plotExplore(hypYang, features = c("SmRBRb", "SmTMO5b", "SmWER--SmAHK4f"))
 plotExplore <- function(
     hypFrame, features = getFeatures(hypFrame)[seq_len(6)], ppps, numPps,
-    maxPlot = 1e+05, Cex = 1, plotWindows = !is.null(hypFrame$owins), plotPoints = TRUE, piEsts = NULL,
+    maxPlot = 1e+05, Cex = 1, plotWindows = !is.null(hypFrame$owins), plotPoints = TRUE, 
+    plotNuclei = !is.null(hypFrame$nuclei), piEsts = NULL,
     Xlim = NULL, Ylim = NULL, Cex.main = 1.1, Mar = c(0.4, 0.1, 0.8, 0.1), titleVar = NULL,
-    piColourCell = NULL, palCols = c("blue", "yellow"), border = NULL, CexLegend = 1.4, CexLegendMain = 1.7, Nrow) {
+    piColourCell = NULL, palCols = c("blue", "yellow"), nucCol ="lightblue", border = NULL, CexLegend = 1.4, CexLegendMain = 1.7, Nrow) {
     if (!is.hyperframe(hypFrame)) {
         hypFrame <- hypFrame$hypFrame
     }
     if (plotWindows && is.null(hypFrame$owins)) {
         warning("No windows present in hyperframe object")
+    }
+    if (plotNuclei && is.null(hypFrame$nuclei)) {
+      warning("No nuclei present in hyperframe object")
     }
     stopifnot(
         is.hyperframe(hypFrame), is.character(features), is.numeric(maxPlot),
@@ -132,6 +138,13 @@ plotExplore <- function(
                     }, border = border
                 )
             })
+        }
+        if (plotNuclei) {
+          foo <- lapply(names(hypFrame$nuclei[[i]]), function(cell) {
+            plot.owin(hypFrame[i, "nuclei", drop = TRUE][[cell]],
+                      add = TRUE, border = nucCol
+            )
+          })
         }
         if (plotPoints) {
             points(cordMat[ordVec, ], pch = ".", col = colVec[ordVec], cex = Cex)

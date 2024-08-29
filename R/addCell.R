@@ -25,10 +25,7 @@
 #' If no overlap is found, each event is assigned the cell that it falls into.
 #' Events not belonging to any cell will trigger a warning and be assigned 'NA'.
 #' Cell types and other variables are added to the marks if applicable.
-#' This function employs multithreading through the BiocParallel package for
-#' converting windows to owins as well as for finding overlap between the windows
-#' in the findOverlap() function when checkOverlap is TRUE.
-#' If this leads to excessive memory usage and crashes, try serial processing by
+#' This function employs multithreading through the BiocParallel package. If this leads to excessive memory usage and crashes, try serial processing by
 #' setting register(SerialParam()).
 #' Different formats of windows are allowed, if the corresponding packages are installed.
 #' A dataframe of coordinates or a list of spatstat.geom owins is always allowed, as necessary packages are required by smoppix.
@@ -110,20 +107,18 @@ addCell <- function(hypFrame,
         if (verbose) {
             message("Adding cell names for point pattern")
         }
-        for (nn in rownames(hypFrame)) {
+        hypFrame$ppp <- loadBalanceBplapply(rownames(hypFrame), function(nn){
             if (verbose) {
                 message(match(nn, rownames(hypFrame)), " of ", nrow(hypFrame))
             }
             ppp <- hypFrame[[nn, "ppp"]]
             NP <- npoints(ppp)
             if (any("cell" == names(marks(ppp, drop = FALSE)))) {
-                stop("Cell markers already present in point pattern ",
-                     nn)
+                stop("Cell markers already present in point pattern ", nn)
             }
             if (findOverlappingOwins) {
                 # Find overlap between cells
-                foo <-
-                    findOverlap(owins[[nn]], hypFrame[nn, "centroids"])
+                foo <- findOverlap(owins[[nn]], hypFrame[nn, "centroids"])
             }
             # Assign events to cells
             cellOut <- rep("NA", NP)
@@ -140,8 +135,7 @@ addCell <- function(hypFrame,
             if (NP == (nOut <- length(idLeft))) {
                 stop(
                     "All points lie outside all windows for point pattern ",
-                    nn,
-                    " check your input!"
+                    nn, " check your input!"
                 )
             }
             if ((nOut > 0) && warnOut) {
@@ -162,8 +156,8 @@ addCell <- function(hypFrame,
                                               drop = FALSE])
             }
             marks(ppp) <- newmarks
-            hypFrame[nn, "ppp"] <- ppp
-        }
+            return(ppp)
+        })
     }
     hypFrame$owins <- owins[rownames(hypFrame)]
     if (is.null(hypFrame$centroids)) {
@@ -177,3 +171,4 @@ addCell <- function(hypFrame,
     }
     return(hypFrame)
 }
+# 
