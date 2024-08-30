@@ -90,8 +90,7 @@ addCell <- function(hypFrame,
         message("Converting windows to spatstat owins")
     }
     # Convert different types of windows to owins
-    owins <-
-        loadBalanceBplapply(Nam <- names(owins), function(nam) {
+    owins <- loadBalanceBplapply(Nam <- names(owins), function(nam){
             convertToOwins(owins[[nam]], coords = coords, namePPP = nam, ...)
         })
     names(owins) <- Nam
@@ -147,8 +146,7 @@ addCell <- function(hypFrame,
                     immediate. = TRUE
                 )
             }
-            newmarks <-
-                cbind(marks(ppp, drop = FALSE), cell = cellOut)
+            newmarks <- cbind(marks(ppp, drop = FALSE), cell = cellOut)
             if (ct) {
                 newmarks <-
                     cbind(newmarks, cellTypes[match(cellOut, cellTypes$cell),
