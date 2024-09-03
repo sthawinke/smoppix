@@ -9,6 +9,7 @@
 #' @param coords The names of the coordinates, if the windows are given as sets of coordinates.
 #' @param verbose A boolean, should verbose output be printed?
 #' @param checkSubset A boolean, should be checked whether nuclei are encompassed by cells?
+#' @param overwriteNuclei A boolean, should existing nuclei be replaced?
 #' @param ... Further arguments passed onto \link{convertToOwins}
 #'
 #' @return The hyperframe with nuclei added as entry
@@ -73,6 +74,10 @@ addNuclei <- function(hypFrame, nucleiList, checkSubset = TRUE,
         is.hyperframe(hypFrame),
         is.list(nucleiList)
     )
+    if(!is.null(hypFrame$nuclei) && !overwriteNuclei){
+      stop("Cells already present in hyperframe!
+             Set overwriteNuclei=TRUE to replcae them")
+    }
     if (verbose) {
         message("Converting nuclei to spatstat owins")
     }

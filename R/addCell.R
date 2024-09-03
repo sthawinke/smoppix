@@ -16,6 +16,7 @@
 #' @param addCellMarkers A boolean, should cell identities be added? Set this to
 #'  FALSE if cell identifiers are already present in the data, and you only want
 #'  to add windows and centroids.
+#' @param overwriteCells A boolean, should cells already present in hyperframe be replaced?
 #' @param ... Further arguments passed onto \link{convertToOwins}
 #' @return The hyperframe with cell labels added in the marks of the point patterns
 #' @importFrom spatstat.geom inside.owin marks centroid.owin marks<-
@@ -79,6 +80,7 @@ addCell <- function(hypFrame,
                     coords = c("x", "y"),
                     verbose = TRUE,
                     addCellMarkers = TRUE,
+                    overwriteCells = FALSE,
                     ...) {
     stopifnot(
         nrow(hypFrame) == length(owins),
@@ -86,6 +88,10 @@ addCell <- function(hypFrame,
         is.hyperframe(hypFrame),
         is.null(cellTypes) || is.data.frame(cellTypes)
     )
+    if(!is.null(hypFrame$owins) && !overwriteCells){
+      stop("Cells already present in hyperframe!
+           Set overwriteCells=TRUE to replcae them")
+    }
     if (verbose) {
         message("Converting windows to spatstat owins")
     }

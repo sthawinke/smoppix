@@ -13,6 +13,7 @@ addCell(
   coords = c("x", "y"),
   verbose = TRUE,
   addCellMarkers = TRUE,
+  overwriteCells = FALSE,
   ...
 )
 }
@@ -38,6 +39,8 @@ contained in window?}
 \item{addCellMarkers}{A boolean, should cell identities be added? Set this to
 FALSE if cell identifiers are already present in the data, and you only want
 to add windows and centroids.}
+
+\item{overwriteCells}{A boolean, should cells already present in hyperframe be replaced?}
 
 \item{...}{Further arguments passed onto \link{convertToOwins}}
 }

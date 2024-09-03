@@ -27,6 +27,8 @@ Also lists of geojson objects, coordinate matrices or rois are accepted, see \li
 \item{coords}{The names of the coordinates, if the windows are given as sets of coordinates.}
 
 \item{...}{Further arguments passed onto \link{convertToOwins}}
+
+\item{overwriteNuclei}{A boolean, should existing nuclei be replaced?}
 }
 \value{
 The hyperframe with nuclei added as entry
