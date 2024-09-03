@@ -15,6 +15,8 @@
 #' @param summaryFun A function to summarize the gene-cell table in case multiple genes are plotted.
 #' Choose "min" for cells with the highest minimum, or "sum" for highest total expression
 #' of the combination of genes
+#' @param plotNuclei A boolean, should nuclei be added?
+#' @param nucCol A character string, the colour in which the nucleus' boundary is plotted
 #' @param ... Additional arguments, currently ignored
 #' @inheritParams plotExplore
 #'
@@ -32,9 +34,13 @@ plotCells <- function(
     Cex = 1.5, borderColVar = NULL, borderCols = rev(palette()), Mar = c(
         0.5, 0.1,
         0.75, 0.1
-    ), warnPosition = TRUE, summaryFun = "min", ...) {
+    ), warnPosition = TRUE, summaryFun = "min", 
+    plotNuclei = !is.null(getHypFrame(obj)$nuclei), nucCol = "lightblue", ...) {
     if (!is.hyperframe(obj)) {
-        obj <- obj$hypFrame
+        obj <- getHypFrame(obj)
+    }
+    if(is.null(obj$owins)){
+      stop("No windows present in object! Add them using addCells() first.")
     }
     summaryFun <- match.fun(summaryFun)
     colourBorder <- !is.null(borderColVar)
@@ -42,7 +48,7 @@ plotCells <- function(
     on.exit(par(old.par))
     par(mar = Mar)
     features <- unique(unlist(lapply(features, sund)))
-    stopifnot(is.hyperframe(obj), !is.null(obj$owins), length(nCells) == 1, all(features %in%
+    stopifnot(is.hyperframe(obj), length(nCells) == 1, all(features %in%
         getFeatures(obj)))
     Cols <- makeCols(features, obj)
     # Show cells with highest minimum of events of the gene (pair)
@@ -112,11 +118,16 @@ plotCells <- function(
         ppp <- subset.ppp(obj[[nam, "ppp"]], gene %in% features)
         for (j in seq_along(tablesCell[[nam]])) {
             namIn <- names(tablesCell[[nam]])[j]
-            shifted <- toUnitSquare(obj[[nam, "owins"]][[namIn]], ppp = subset.ppp(
-                ppp,
-                cell == namIn
-            ), Shift = shiftVec(counter, Ceils[1]))
+            shifted <- toUnitSquare(obj[[nam, "owins"]][[namIn]], 
+                                    ppp = subset.ppp(ppp, cell == namIn), 
+                                    Shift = shiftVec(counter, Ceils[1]),
+                                    nuclei = if(plotNuclei) obj[[nam, "nuclei"]][namIn])
             plot.owin(shifted$owin, add = TRUE, border = borderCols[[i]][[j]])
+            if(plotNuclei){
+              for(nn in shifted$nuclei){
+                plot.owin(nn, add = TRUE, border = nucCol)
+              }
+            }
             # text(x = Shift[1], y = Shift[2], labels = paste0('Point pattern
             # ', nam, '\nCell', namIn))
             points(coords(shifted$ppp),
@@ -141,13 +152,14 @@ plotCells <- function(
     invisible()
 }
 #' @importFrom spatstat.geom affine.owin affine.ppp
-toUnitSquare <- function(owin, ppp, Shift) {
+toUnitSquare <- function(owin, ppp, Shift, nuclei) {
     shrink <- 1 / rep(max(diff(owin$xrange), diff(owin$yrange)), 2)
     vec <- -c(owin$xrange[1], owin$yrange[1]) * shrink + Shift
-    list(owin = affine.owin(owin, diag(shrink), vec), ppp = affine.ppp(
-        ppp, diag(shrink),
-        vec
-    ))
+    list(owin = affine.owin(owin, diag(shrink), vec), 
+         ppp = affine.ppp(ppp, diag(shrink),vec),
+         nuclei = if(!is.null(nuclei)) {
+           lapply(nuclei, affine.owin, diag(shrink), vec)
+         })
 }
 shiftVec <- function(counter, Ceil) {
     c(counter %% Ceil, counter %/% Ceil)

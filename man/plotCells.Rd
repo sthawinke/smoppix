@@ -14,6 +14,8 @@ plotCells(
   Mar = c(0.5, 0.1, 0.75, 0.1),
   warnPosition = TRUE,
   summaryFun = "min",
+  plotNuclei = !is.null(getHypFrame(obj)$nuclei),
+  nucCol = "lightblue",
   ...
 )
 }
@@ -38,6 +40,10 @@ image that cells are not in their original location?}
 \item{summaryFun}{A function to summarize the gene-cell table in case multiple genes are plotted.
 Choose "min" for cells with the highest minimum, or "sum" for highest total expression
 of the combination of genes}
+
+\item{plotNuclei}{A boolean, should nuclei be added?}
+
+\item{nucCol}{A character string, the colour in which the nucleus' boundary is plotted}
 
 \item{...}{Additional arguments, currently ignored}
 }
