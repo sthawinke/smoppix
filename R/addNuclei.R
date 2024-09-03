@@ -75,7 +75,7 @@ addNuclei <- function(hypFrame, nucleiList, checkSubset = TRUE,
         is.list(nucleiList)
     )
     if(!is.null(hypFrame$nuclei) && !overwriteNuclei){
-      stop("Cells already present in hyperframe!
+      stop("Nuclei already present in hyperframe!
              Set overwriteNuclei=TRUE to replcae them")
     }
     if (verbose) {

@@ -28,7 +28,7 @@ test_that("Reading in SpatialExperiment class proceeds without errors", {
 hypFrame5 <- addCell(hypFrame, wList)
 test_that("Adding cells works", {
     expect_s3_class(hypFrame5, "hyperframe")
-  expect_s3_class(hypFrame5 <- addCell(hypFrame5, wList, overwriteCells = TRUE), "hyperframe")
+  expect_s3_class(hypFrame5 <- addCell(hypFrame5, wList, overwriteCells  = TRUE, addCellMarkers = FALSE), "hyperframe")
     expect_s3_class(
         hypFrame6 <- addCell(hypFrame, wList, cellTypes = cellTypesDf),
         "hyperframe"
@@ -51,7 +51,7 @@ test_that("Adding cells throws errors when appropriate", {
 })
 test_that("Adding nuclei works", {
   expect_s3_class(hypFrame6 <- addNuclei(hypFrame5, nList), "hyperframe")
-  expect_warning(addNuclei(hypFrame2, nList2)) # Detect overlap
+  expect_warning(addNuclei(hypFrame5, nList2)) # Detect overlap
   expect_s3_class(addNuclei(hypFrame, nList2, checkSubset = FALSE), "hyperframe") # Detect overlap
   expect_s3_class(addNuclei(hypFrame, nList, checkSubset = FALSE), "hyperframe")
 })
