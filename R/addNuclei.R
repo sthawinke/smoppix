@@ -67,7 +67,7 @@
 #' names(nList) <- rownames(hypFrame) # Matching names is necessary
 #' hypFrame3 <- addNuclei(hypFrame2, nList)
 addNuclei <- function(hypFrame, nucleiList, checkSubset = TRUE,
-                    verbose = TRUE, coords = c("x", "y"), ...) {
+                    verbose = TRUE, coords = c("x", "y"), overwriteNuclei = FALSE, ...) {
     stopifnot(
         nrow(hypFrame) == length(nucleiList),
         all(rownames(hypFrame) %in% names(nucleiList)),

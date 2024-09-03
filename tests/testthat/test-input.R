@@ -25,9 +25,10 @@ example(read10xVisium)
 test_that("Reading in SpatialExperiment class proceeds without errors", {
     expect_message(hypFrame4 <- buildHyperFrame(spe, imageVars = "sample_id", pointVars = "in_tissue"))
 })
+hypFrame5 <- addCell(hypFrame, wList)
 test_that("Adding cells works", {
-    expect_s3_class(hypFrame5 <- addCell(hypFrame, wList), "hyperframe")
-  expect_s3_class(hypFrame5 <- addCell(hypFrame, wList, overwriteCells = TRUE), "hyperframe")
+    expect_s3_class(hypFrame5, "hyperframe")
+  expect_s3_class(hypFrame5 <- addCell(hypFrame5, wList, overwriteCells = TRUE), "hyperframe")
     expect_s3_class(
         hypFrame6 <- addCell(hypFrame, wList, cellTypes = cellTypesDf),
         "hyperframe"
