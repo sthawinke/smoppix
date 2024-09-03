@@ -1,7 +1,7 @@
 #' Plot the n cells with highest abundance of a feature
 #' @description After testing for within-cell patterns, it may be useful to
 #' look at the cells with the most events for certain genes. These are plotted
-#' here, but the spatial location of the cells in the point pattern is lost! 
+#' here, but the spatial location of the cells in the point pattern is lost!
 #' The choice and ranking of cells is one of decreasing gene (pair) expression.
 #'
 #' @param obj A hyperframe, or an object containing one
@@ -34,7 +34,7 @@ plotCells <- function(
     Cex = 1.5, borderColVar = NULL, borderCols = rev(palette()), Mar = c(
         0.5, 0.1,
         0.75, 0.1
-    ), warnPosition = TRUE, summaryFun = "min", 
+    ), warnPosition = TRUE, summaryFun = "min",
     plotNuclei = !is.null(getHypFrame(obj)$nuclei), nucCol = "lightblue", ...) {
     if (!is.hyperframe(obj)) {
         obj <- getHypFrame(obj)
@@ -118,8 +118,8 @@ plotCells <- function(
         ppp <- subset.ppp(obj[[nam, "ppp"]], gene %in% features)
         for (j in seq_along(tablesCell[[nam]])) {
             namIn <- names(tablesCell[[nam]])[j]
-            shifted <- toUnitSquare(obj[[nam, "owins"]][[namIn]], 
-                                    ppp = subset.ppp(ppp, cell == namIn), 
+            shifted <- toUnitSquare(obj[[nam, "owins"]][[namIn]],
+                                    ppp = subset.ppp(ppp, cell == namIn),
                                     Shift = shiftVec(counter, Ceils[1]),
                                     nuclei = if(plotNuclei) obj[[nam, "nuclei"]][namIn])
             plot.owin(shifted$owin, add = TRUE, border = borderCols[[i]][[j]])
@@ -155,10 +155,10 @@ plotCells <- function(
 toUnitSquare <- function(owin, ppp, Shift, nuclei) {
     shrink <- 1 / rep(max(diff(owin$xrange), diff(owin$yrange)), 2)
     vec <- -c(owin$xrange[1], owin$yrange[1]) * shrink + Shift
-    list(owin = affine.owin(owin, diag(shrink), vec), 
+    list(owin = affine.owin(owin, diag(shrink), vec),
          ppp = affine.ppp(ppp, diag(shrink),vec),
-         nuclei = if(!is.null(nuclei)) {
-           lapply(nuclei, affine.owin, diag(shrink), vec)
+         nuclei = if(any(idNuc <- !vapply(nuclei, FUN.VALUE = TRUE, is.null))){
+           lapply(nuclei[idNuc], affine.owin, diag(shrink), vec)
          })
 }
 shiftVec <- function(counter, Ceil) {

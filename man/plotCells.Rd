@@ -53,7 +53,7 @@ Plots cells with highest expression to the plotting window, returns invisible
 \description{
 After testing for within-cell patterns, it may be useful to
 look at the cells with the most events for certain genes. These are plotted
-here, but the spatial location of the cells in the point pattern is lost! 
+here, but the spatial location of the cells in the point pattern is lost!
 The choice and ranking of cells is one of decreasing gene (pair) expression.
 }
 \examples{
