@@ -62,14 +62,17 @@ writeToXlsx <- function(obj, file, overwrite = FALSE, digits = 3,
                 "Intercept" = c(TRUE, FALSE),
                 TRUE
             )) {
-                sheetName <- makeSheetName(pi, effect, smallPI)
                 subMat2 <- if (effect == "Intercept") {
-                    subMat[match.fun(if (smallPI) "<" else ">")(subMat[, "Estimate"], 0.5), , drop = FALSE]
+                  subMat[match.fun(if (smallPI) "<" else ">")(subMat[, "Estimate"], 0.5), , drop = FALSE]
                 } else {
-                    subMat
+                  subMat
                 }
-                addWorksheet(wb, sheetName) # Create sheet and write data to it
-                writeData(wb, sheet = sheetName, x = data.frame(subMat2), colNames = TRUE, rowNames = TRUE)
+                if(nrow(subMat2)){
+                  #Only add sheet when significant findings
+                  sheetName <- makeSheetName(pi, effect, smallPI)
+                  addWorksheet(wb, sheetName) # Create sheet and write data to it
+                  writeData(wb, sheet = sheetName, x = data.frame(subMat2), colNames = TRUE, rowNames = TRUE)
+                }
             }
         }
     }
