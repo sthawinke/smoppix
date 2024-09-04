@@ -18,7 +18,7 @@ convertToOwins <- function(windows, namePPP, coords, ...) {
         if (requireNamespace("polyCub", quietly = TRUE)) {
             p <- slot(windows, "polygons")
             winOut <- lapply(p, as.owin, ...)
-            names(winOut) = windows$index
+            names(winOut) <- windows$index
         } else {
             stop("Install polyCub package first")
         }
