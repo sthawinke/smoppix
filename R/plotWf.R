@@ -29,7 +29,7 @@ plotWf <- function(obj, pi = obj$pis[1]) {
         tmp <- tmp[tmp[, "maxP"] > 0 & tmp[, "minP"] > 0, ]
         df <- cbind(Weight = evalWeightFunction(wf, newdata = tmp), exp(tmp))
         df[, "Weight"] <- df[, "Weight"] / max(df[, "Weight"])
-        ggplot(df, aes(x = log10(minP), y = log10(maxP), col = Weight)) +
+        pp <- ggplot(df, aes(x = log10(minP), y = log10(maxP), col = Weight)) +
             geom_point(size = 1) +
             scale_colour_gradient(low = "yellow", high = "blue", name = "Weight") +
             xlab("Log10 number of events for least expressed gene") +
@@ -38,6 +38,8 @@ plotWf <- function(obj, pi = obj$pis[1]) {
                 "Weighting function for probabilistic indices of type",
                 pi
             ))
+        print(pp)
+        return(pp)
     } else {
         tmp <- data.frame(NP = wf$model[, "log(NP)"])
         tmp <- tmp[tmp[, "NP"] > 0, , drop = FALSE]
