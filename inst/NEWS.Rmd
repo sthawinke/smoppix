@@ -13,3 +13,8 @@ output: github_document
 # 0.99.0
 
  - Submission to BioConductor
+ 
+# 0.99.25
+
+ - ggplot2 objects are now returned for user customization
+ - Repeated return() calls are omitted

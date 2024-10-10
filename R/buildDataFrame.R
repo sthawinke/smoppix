@@ -162,6 +162,7 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
               piMat <- cbind(piMat, weight = weight)
           }
           rownames(piMat) <- NULL
+          piMat
       }
       if (moransI) {
           if (missing(weightMats)) {
