@@ -52,11 +52,12 @@ subSampleP <- function(p, nSims, returnId = FALSE) {
     if (!tooBig && returnId) {
         id <- seq_len(npoints(p))
     }
-    if (returnId) {
-        return(list(Pout = Pout, id = id))
+    out = if (returnId) {
+        list(Pout = Pout, id = id)
     } else {
-        return(Pout)
+        Pout
     }
+    return(out)
 }
 #' A version of contr.sum that retains names, a bit controversial but also
 #' clearer

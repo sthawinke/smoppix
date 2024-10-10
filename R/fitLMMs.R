@@ -171,26 +171,27 @@ fitLMMsSingle <- function(
     }
     models <- loadBalanceBplapply(Features, function(gene) {
         df <- buildDataFrame(obj, gene = gene, pi = pi, pppDf = pppDf)
-        if (is.null(df) || sum(!is.na(df$pi)) < 3) {
-            return(NULL)
-        }
-        moranMod <- if (addMoransI) {
-            finalDf <- buildDataFrame(
-                piMat = df, gene = gene, pi = pi,
-                moransI = TRUE, obj = obj, weightMats = weightMats
-            )
-            W <- 1 / finalDf$Variance
-            fitPiModel(moranFormula, finalDf, contrastsMoran, Control,
-                MM = MMmoran, Weight = W / sum(W, na.rm = TRUE)
-            )
-        } # Run this before nesting
-        if (randomNested) {
-            df <- nestRandom(df, randomVarsSplit, intersect(fixedVars, getPPPvars(obj)))
-        }
-        contrasts <- contrasts[!names(contrasts) %in% vapply(df, FUN.VALUE = TRUE, is.numeric)]
-        piMod <- fitPiModel(Formula, df, contrasts,
-                            Control, MM = MM, Weight = df$weight)
-        return(list(piMod = piMod, moranMod = moranMod))
+        out <- if (is.null(df) || sum(!is.na(df$pi)) < 3) {
+            NULL
+        } else {
+          moranMod <- if (addMoransI) {
+              finalDf <- buildDataFrame(
+                  piMat = df, gene = gene, pi = pi,
+                  moransI = TRUE, obj = obj, weightMats = weightMats
+              )
+              W <- 1 / finalDf$Variance
+              fitPiModel(moranFormula, finalDf, contrastsMoran, Control,
+                  MM = MMmoran, Weight = W / sum(W, na.rm = TRUE)
+              )
+          } # Run this before nesting
+          if (randomNested) {
+              df <- nestRandom(df, randomVarsSplit, intersect(fixedVars, getPPPvars(obj)))
+          }
+          contrasts <- contrasts[!names(contrasts) %in% vapply(df, FUN.VALUE = TRUE, is.numeric)]
+          piMod <- fitPiModel(Formula, df, contrasts,
+                              Control, MM = MM, Weight = df$weight)
+          list(piMod = piMod, moranMod = moranMod)}
+        return(out)
     })
     names(models) <- Features
     mods <- c("piMod", if (addMoransI) "moranMod")
@@ -200,12 +201,5 @@ fitLMMsSingle <- function(
     })
     # Effect size, standard error, p-value and adjusted p-value per mixed
     # effect
-    if (!returnModels) {
-        return(list(results = results$piMod, resultsMoran = results$moranMod))
-    } else {
-        return(list(results = results$piMod, resultsMoran = results$moranMod, models = models))
-    }
-}
-prepareDataFrames <- function(obj, pi, vars) {
-
+    return(list(results = results$piMod, resultsMoran = results$moranMod, models = if(returnModels) models))
 }

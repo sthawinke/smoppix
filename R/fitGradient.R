@@ -23,10 +23,10 @@ fitGradient <- function(hypFrame, fixedForm, randomForm, fixedFormSimple,
     xyModel <- try(mppm(data = hypFrame, fixedForm, random = randomForm, ...),
         silent = silent
     )
-    if (returnModel) {
-        return(xyModel)
+    out <- if (returnModel) {
+        xyModel
     } else if (is(xyModel, "try-error")) {
-        return(list("pVal" = 1, "coef" = NULL))
+        list("pVal" = 1, "coef" = NULL)
     } else {
         intModel <- try(mppm(data = hypFrame, fixedFormSimple, random = randomForm, ...), silent = silent)
         pVal <- if (is(intModel, "try-error")) {
@@ -35,7 +35,7 @@ fitGradient <- function(hypFrame, fixedForm, randomForm, fixedFormSimple,
             anovaRes <- anova(xyModel, intModel, test = "Chisq")
             anovaRes$"Pr(>Chi)"[2]
         }
-        out <- list("pVal" = pVal, "coef" = coef(xyModel))
-        return(out)
+        list("pVal" = pVal, "coef" = coef(xyModel))
     }
+    return(out)
 }

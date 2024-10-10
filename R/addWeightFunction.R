@@ -101,26 +101,24 @@ addWeightFunction <- function(
                 tmp <- lapply(ordDesign, function(x) {
                     tab <- table(marks(resList$hypFrame$ppp[[x]])$cell, marks(resList$hypFrame$ppp[[x]])$gene)
                     tab <- tab[setdiff(rownames(tab), "NA"), ]
-                    if (!all(geneSplit %in% colnames(tab))) {
-                        return(NULL)
+                    out <- if (all(geneSplit %in% colnames(tab))) {
+                      lenOut <- sum(id <- apply((CellGene <- tab[, geneSplit, drop = FALSE]) >
+                          (1 - pairId), 1, all))
+                      if (lenOut) {
+                          xx <- unlist(piList[[x]])
+                          deps <- if (sum(!is.na(xx)) >= minNumVar) {
+                              (xx - mean(xx, na.rm = TRUE))^2
+                          } else {
+                              rep_len(NA, lenOut)
+                          }
+                          cbind(quadDeps = matrix(deps, nrow = lenOut), if (pairId) {
+                              t(apply(CellGene[id, , drop = FALSE], 1, sort))
+                          } else {
+                              CellGene[id, , drop = FALSE]
+                          })
+                      }
                     }
-                    lenOut <- sum(id <- apply((CellGene <- tab[, geneSplit, drop = FALSE]) >
-                        (1 - pairId), 1, all))
-                    if (!lenOut) {
-                        return(NULL)
-                    } else {
-                        xx <- unlist(piList[[x]])
-                        deps <- if (sum(!is.na(xx)) >= minNumVar) {
-                            (xx - mean(xx, na.rm = TRUE))^2
-                        } else {
-                            rep_len(NA, lenOut)
-                        }
-                        cbind(quadDeps = matrix(deps, nrow = lenOut), if (pairId) {
-                            t(apply(CellGene[id, , drop = FALSE], 1, sort))
-                        } else {
-                            CellGene[id, , drop = FALSE]
-                        })
-                    }
+                    return(out)
                 })
                 if (all(vapply(tmp, FUN.VALUE = logical(1), is.null))) {
                     return(NULL)

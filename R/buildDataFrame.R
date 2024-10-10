@@ -144,35 +144,34 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
                 }
             }
         })
-        if (all((Times <- vapply(piDfs, FUN.VALUE = integer(1), NROW)) == 0)) {
-            return(NULL)
-        }
-        image <- rep(rownames(obj$hypFrame), times = Times)
-        piDfsMat <- Reduce(piDfs, f = rbind)
-        piMat <- data.frame(piDfsMat, pppDf[image, ,drop = FALSE])
-        if (!windowId && !moransI) {
-            # Add weights
-            weight <- evalWeightFunction(obj$Wfs[[pi]], newdata = piMat[, if (grepl(
-                "Pair",
-                pi
-            )) {
-                c("minP", "maxP")
-            } else {
-                "NP"
-            }, drop = FALSE])
-            weight <- weight / sum(weight, na.rm = TRUE)
-            piMat <- cbind(piMat, weight = weight)
-        }
-        rownames(piMat) <- NULL
+        out <- if (!all((Times <- vapply(piDfs, FUN.VALUE = integer(1), NROW)) == 0)) {
+          image <- rep(rownames(obj$hypFrame), times = Times)
+          piDfsMat <- Reduce(piDfs, f = rbind)
+          piMat <- data.frame(piDfsMat, pppDf[image, ,drop = FALSE])
+          if (!windowId && !moransI) {
+              # Add weights
+              weight <- evalWeightFunction(obj$Wfs[[pi]], newdata = piMat[, if (grepl(
+                  "Pair",
+                  pi
+              )) {
+                  c("minP", "maxP")
+              } else {
+                  "NP"
+              }, drop = FALSE])
+              weight <- weight / sum(weight, na.rm = TRUE)
+              piMat <- cbind(piMat, weight = weight)
+          }
+          rownames(piMat) <- NULL
+      }
+      if (moransI) {
+          if (missing(weightMats)) {
+              weightMats <- lapply(getHypFrame(obj)$centroids, buildMoransIWeightMat,
+                  numNNs = numNNs
+              )
+              names(weightMats) <- getHypFrame(obj)$image
+          }
+          piMat <- buildMoransIDataFrame(piMat = piMat, pi = pi, weightMats = weightMats)
+      }
     }
-    if (moransI) {
-        if (missing(weightMats)) {
-            weightMats <- lapply(getHypFrame(obj)$centroids, buildMoransIWeightMat,
-                numNNs = numNNs
-            )
-            names(weightMats) <- getHypFrame(obj)$image
-        }
-        piMat <- buildMoransIDataFrame(piMat = piMat, pi = pi, weightMats = weightMats)
-    }
-    return(piMat)
+    return(out)
 }
