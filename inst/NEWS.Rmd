@@ -59,3 +59,7 @@ output: github_document
  - ggplot2 objects are now returned for user customization
  - Repeated return() calls are omitted
  - NEWS file was updated to reflect all changes
+ 
+# 0.99.26
+
+ - Version bump with serial processing to find bug occurring only on server

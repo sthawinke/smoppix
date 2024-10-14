@@ -11,3 +11,54 @@
 # 0.99.0
 
 - Submission to BioConductor
+
+# 0.99.4
+
+- Prediction of cell types
+
+# 0.99.9
+
+- Prediction of cell types
+
+# 0.99.9
+
+- Bugfixes in hyperframe building
+
+# 0.99.10
+
+- Reducing computation time of the examples
+
+# 0.99.17
+
+- Bugfix in calcnnPi
+
+# 0.99.19
+
+- Shorter example times
+
+# 0.99.20
+
+- Reducing running times of examples to pass R CMD CHECK
+
+# 0.99.21
+
+- Bugfix in buildDataFrame
+
+# 0.99.23
+
+- Added addNuclei() function for adding nuclei as spatstat::owin
+
+# 0.99.24
+
+- Nuclei can be plotted using plotExplore()
+
+# 0.99.25
+
+- ggplot2 objects are now returned for user customization
+- Repeated return() calls are omitted
+- NEWS file was updated to reflect all changes
+
+# 0.99.26
+
+- Version bump with serial processing to find bug occurring only on
+  server
