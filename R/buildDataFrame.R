@@ -144,7 +144,7 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
                 }
             }
         })
-        out <- if (!all((Times <- vapply(piDfs, FUN.VALUE = integer(1), NROW)) == 0)) {
+        piMat <- if (!all((Times <- vapply(piDfs, FUN.VALUE = integer(1), NROW)) == 0)) {
           image <- rep(rownames(obj$hypFrame), times = Times)
           piDfsMat <- Reduce(piDfs, f = rbind)
           piMat <- data.frame(piDfsMat, pppDf[image, ,drop = FALSE])
@@ -163,16 +163,15 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
           }
           rownames(piMat) <- NULL
           piMat
-      }
-      if (moransI) {
+        }
+      } else if (moransI) {
           if (missing(weightMats)) {
               weightMats <- lapply(getHypFrame(obj)$centroids, buildMoransIWeightMat,
                   numNNs = numNNs
               )
               names(weightMats) <- getHypFrame(obj)$image
           }
-          piMat <- buildMoransIDataFrame(piMat = piMat, pi = pi, weightMats = weightMats)
+        piMat <- buildMoransIDataFrame(piMat = piMat, pi = pi, weightMats = weightMats)
       }
-    }
-    return(out)
+    return(piMat)
 }

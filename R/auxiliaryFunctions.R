@@ -52,7 +52,7 @@ subSampleP <- function(p, nSims, returnId = FALSE) {
     if (!tooBig && returnId) {
         id <- seq_len(npoints(p))
     }
-    out = if (returnId) {
+    out <- if (returnId) {
         list(Pout = Pout, id = id)
     } else {
         Pout

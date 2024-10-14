@@ -38,7 +38,6 @@ plotWf <- function(obj, pi = obj$pis[1]) {
                 "Weighting function for probabilistic indices of type",
                 pi
             ))
-        print(pp)
         return(pp)
     } else {
         tmp <- data.frame(NP = wf$model[, "log(NP)"])

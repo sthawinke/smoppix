@@ -17,7 +17,7 @@ extractResults <- function(
     id <- vapply(models, FUN.VALUE = TRUE, function(x) {
         is(x[[subSet]], "lmerModLmerTest") || is(x[[subSet]], "lm")
     })
-    out = if (!any(id)) {
+    out <- if (!any(id)) {
         return(list("Intercept" = NULL, "fixedEffects" = NULL))
     } else {
       ints <- t(vapply(models, FUN.VALUE = double(3), function(x) {
