@@ -146,9 +146,8 @@ A couple of most expressed genes are shown as coloured dots as shown in the lege
 ### Tests for univariate aggregation or regularity: nearest neighbour distances
 
 ```{r numFeats}
-numFeats <- 12 #Limit number of genes in the analysis
+numFeats <- 10 #Limit number of genes in the analysis
 ```
-
 
 The first round of tests concerns the aggregation or regularity of individual transcripts, for which we look at the distribution of nearest neighbour distances (pi = 'nn'). Since the shape and size differ strongly between the roots, we choose the background of all other transcripts as null distribution, i.e. we look for transcripts aggregated _with respect to_ all other transcripts. As this is computationally most efficient, we also fit the PI for the bivariate analysis in this step ('nnPair', see below). For computation reasons, we limit the analysis to `r numFeats` genes.
 

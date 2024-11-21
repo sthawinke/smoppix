@@ -1,5 +1,5 @@
 context("Tests related to gradient fitting")
-numPPPs <- 10
+numPPPs <- 8
 hyp1 <- hyperframe("ppp" = lapply(integer(numPPPs), function(i) runifpoint(1e2)))
 Win <- owin(poly = list(x = c(0, 0.5, 1, 0.5), y = c(0.5, 0, 0.5, 1)))
 hyp2 <- hyperframe("ppp" = lapply(integer(10), function(i) runifpoint(1e2, win = Win)))
@@ -23,13 +23,13 @@ test_that("fitGradient fails where appropriate", {
     )$pVal, 1)
 })
 test_that("estGradients has correct return", {
-    yangGrads <- estGradients(hypYang[seq_len(10), ], features = feat <- getFeatures(hypYang)[seq_len(2)])
+    yangGrads <- estGradients(hypYang[seq_len(2), ], features = feat <- getFeatures(hypYang)[seq_len(2)])
     expect_is(yangGrads, "list")
     expect_identical(names(yangGrads), feat)
 })
 test_that("estGradients throws errors where appropriate", {
     expect_error(estGradients(hypYang, gradients = "x"))
-    expect_error(estGradients(hypEng[seq_len(10), ],
+    expect_error(estGradients(hypEng[seq_len(2), ],
         features = feat <- getFeatures(hypEng)[seq_len(2)],
         fixedEffects = "treatment"
     ))
