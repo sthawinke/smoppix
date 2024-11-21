@@ -2,10 +2,10 @@ library(testthat)
 library(smoppix)
 library(spatstat.random)
 library(BiocParallel)
-n <- 5000 # number of molecules
+n <- 4000 # number of molecules
 ng <- 8 # number of genes
 nfov <- 3 # Number of fields of view
-conditions <- 4
+conditions <- 3
 # sample xy-coordinates in [0, 1]
 x <- runif(n)
 y <- runif(n)
@@ -83,9 +83,9 @@ objBG <- addWeightFunction(piEstsBG, designVars = "condition")
 objCSR <- addWeightFunction(piEstsCSR, designVars = "condition")
 # Fit Yang models too
 data(Yang)
-hypYang <- buildHyperFrame(Yang, coordVars = c("x", "y"), imageVars = c(
-    "day", "root", "section"
-))
+hypYang <- buildHyperFrame(Yang[Yang$section %in% paste0("section", seq_len(3)),], 
+                           coordVars = c("x", "y"), imageVars = c("day", "root", "section"
+)) #Subset for speed
 yangPims <- estPis(hypYang, features = getFeatures(hypYang)[12:17], 
                    pis = c("nn", "nnPair"), verbose = FALSE, nPointsAll = 4000)
 yangPims <- addWeightFunction(yangPims, lowestLevelVar = "section")
