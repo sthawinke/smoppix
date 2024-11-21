@@ -67,11 +67,11 @@ yangGrads <- estGradients(hypYang[seq_len(2), ],
     fixedEffects = "day", randomEffects = "root")
 # Gradients within cell
 data(Eng)
-hypEng <- buildHyperFrame(Eng, 
+hypEng <- buildHyperFrame(Eng[Eng$fov \%in\% c(1,2),], 
     coordVars = c("x", "y"),
     imageVars = c("fov", "experiment")
-)
-hypEng <- addCell(hypEng, EngRois, verbose = FALSE)
+) #Subset for speed
+hypEng <- addCell(hypEng, EngRois[rownames(hypEng)], verbose = FALSE)
 # Limit number of cells and genes for computational reasons
 engGrads <- estGradients(hypEng[seq_len(2),],
     features = feat <- getFeatures(hypEng)[1])

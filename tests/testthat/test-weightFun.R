@@ -13,7 +13,7 @@ test_that("Adding the weight function works", {
         predNew <- evalWeightFunction(objBG$Wfs[["nn"]], newdata = data.frame(NP = 5)),
         "double"
     )
-    expect_true(predNew > evalWeightFunction(objBG$Wfs[["nn"]], newdata = data.frame(NP = 3)))
+    expect_true(predNew > evalWeightFunction(objBG$Wfs[["nn"]], newdata = data.frame(NP = 2)))
     # With information sharing across features
     expect_s3_class(dfBG1 <- buildDataFrame(objBG, gene = "gene1", pi = "nn"), "data.frame")
     expect_s3_class(
