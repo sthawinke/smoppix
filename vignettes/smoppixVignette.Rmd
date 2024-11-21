@@ -28,7 +28,7 @@ knitr::opts_chunk$set(fig.heigh = 7, fig.width = 7)
 
 # Introduction
 
-This vignette demonstrates the use of the _smoppix_ package: Single MOlecule sPatial omics data analysed through the Probabilistic IndeX. It unifies methods for statistical inference on single-molecule spatial transcriptomics datasets with replication in a single framework using probabilistic indices (PIs). Tests provided include univariate testing for vicinity to fixed objects such as cell walls or nuclei, univariate aggregation tests as well as bivariate tests for co- or antilocalization. Two different null hypothesis can be tested against: complete spatial randomness (CSR, also known as homogeneous Poisson process), but also the background distribution of molecules of all other genes can be a useful null. In addition, differences between treatments in terms of any of these univariate and bivariate PIs can be tested for, while accounting for complex design structures using mixed models. _smoppix_ is scalable to large numbers of molecules and genes thanks to an exact permutation null distribution in combination with a custom C++ implementation. An adequate variance weighting scheme harnesses the high-dimensionality of the data to account for heteroscedasticity. The _smoppix_ package is also applicable to cell type data, or other types of single-molecule omics data such as spatial proteomics or metabolomics.
+This vignette demonstrates the use of the _smoppix_ package: Single MOlecule sPatial omics data analysed through the Probabilistic IndeX. It unifies methods for statistical inference on single-molecule spatial transcriptomics datasets with replication in a single framework using probabilistic indices (PIs). Tests provided include univariate testing for vicinity to fixed objects such as cell walls or nuclei, univariate aggregation tests as well as bivariate tests for co- or antilocalization. Two different null hypothesis can be tested against: complete spatial randomness (CSR, also known as homogeneous Poisson process), and the background distribution of molecules of all other genes. In addition, differences between groups in terms of any of these univariate and bivariate PIs can be tested for, while accounting for complex design structures using mixed models. _smoppix_ is scalable to large numbers of molecules and genes thanks to an exact permutation null distribution in combination with a custom C++ implementation. An adequate variance weighting scheme harnesses the high-dimensionality of the data to account for heteroscedasticity. The _smoppix_ package is also applicable to other types of single-molecule omics data such as spatial proteomics or metabolomics, or to cell type localization data.
 
 \setcounter{tocdepth}{5}
 \tableofcontents
@@ -42,7 +42,7 @@ library(Biocmanager)
 install("smoppix")
 ```
 
-Alternatively, the latest version can be downloaded from github as:
+Alternatively, the latest version can be installed from github as:
 
 ```{r installAndLoadGitHub, eval = FALSE}
 library(devtools)
@@ -57,17 +57,31 @@ library(smoppix)
 
 # Multithreading
 
-The _smoppix_ package can be computationally intensive, especially for transcript pairs. For this reason we provide multithreading through the _BiocParallel_ package. 
+The _smoppix_ package can be computationally intensive, especially since the number transcript pairs grows quadratically with the number of transcripts. For this reason we provide multithreading through the _BiocParallel_ package. 
 
 ```{r}
 library(BiocParallel)
 ```
 
-All the user needs to do, is prepare the parallel backend as follows:
+All the user needs to do, is choose the number of cores: 
 
 ```{r}
 nCores <- 2 # The number of CPUs
-register(MulticoreParam(nCores))
+```
+
+and prepare the parallel backend. The code is different for windows or unix-based systems, but is taken care of by the following code snippet:
+
+```{r nonwindows}
+if(.Platform$OS.type == "unix"){
+    #On unix-based systems, use MulticoreParam
+    register(MulticoreParam(nCores))
+} else {
+    #On windows, use makeCluster
+    library(doParallel)
+    Clus = makeCluster(nCores)
+    registerDoParallel(Clus)
+    register(DoparParam(), default = TRUE)
+}
 ```
 
 Wherever applicable, the registered backend will be used throughout the analysis.
@@ -79,7 +93,7 @@ register(SerialParam())
 
 # Yang data: lycophyte roots
 
-As example dataset we use the data used in a [manuscript](https://doi.org/10.1016/j.cub.2023.08.030) by @Yang2023 on _Selaginella moellendorffii_ . Only a subset of the data, consisting of sections 1-5 of roots 1-3 is included for computational reasons. The data is loaded as follows.
+As example dataset we use the data from a [publication](https://doi.org/10.1016/j.cub.2023.08.030) by @Yang2023 on _Selaginella moellendorffii_ . Only a subset of the data, consisting of sections 1-5 of roots 1-3 is included for computational reasons. The data is loaded as follows.
 
 ```{r}
 data(Yang)
@@ -91,9 +105,7 @@ A quick glimpse ...
 head(Yang)
 ```
 
-It is a dataframe containing molecule locations (x- and y-variables), gene identity and covariates: day, root and section. At each day, 3 roots are included, with up to 5 sections for each root. The analysis will need to account for this nested design.
-
-The first step in the analysis is to build a hyperframe as provided in the _spatstat_ package, which consists of all different point patterns and their covariates
+It is a dataframe containing molecule locations (x- and y-variables), gene identity and covariates: day, root and section. At each day, 3 roots are included, with up to 5 sections for each root. The analysis will need to account for this nested design. The first step in the analysis is to build a hyperframe as provided in the _spatstat_ package, which consists of all different point patterns and their covariates
 
 ```{r}
 hypYang <- buildHyperFrame(Yang,
@@ -112,8 +124,8 @@ We see the following elements:
 
  - __ppp__: the _spatstat_ point patterns of class _ppp_
  - __image__: The image id uniquely defining each point pattern. In our case, it is a concatenation of the day, root and section variables.
- - __day__, __root__ and __section__: the covariates
  - __tabObs__: tabulation of the frequency of each transcript in each point pattern
+ - __day__, __root__ and __section__: the covariates
  
  Zooming in on the first point pattern:
  
@@ -133,7 +145,12 @@ A couple of most expressed genes are shown as coloured dots as shown in the lege
 
 ### Tests for univariate aggregation or regularity: nearest neighbour distances
 
-The first round of tests concerns the aggregation or regularity of individual transcripts,for which we look ath the distribution of nearest neighbour distances (pi = 'nn'). Since the shape and size differ strongly between the roots, we choose the background of all other transcripts as null distribution, i.e. we look for transcripts aggregated _with respect to_ all other transcripts. As this is computationally most efficient, we also fit the PI for the bivariate analysis in this step ('nnPair', see below). For computation reasons, we limit the analysis to `r (numFeats <- 10)` genes.
+```{r numFeats}
+numFeats <- 12 #Limit number of genes in the analysis
+```
+
+
+The first round of tests concerns the aggregation or regularity of individual transcripts, for which we look at the distribution of nearest neighbour distances (pi = 'nn'). Since the shape and size differ strongly between the roots, we choose the background of all other transcripts as null distribution, i.e. we look for transcripts aggregated _with respect to_ all other transcripts. As this is computationally most efficient, we also fit the PI for the bivariate analysis in this step ('nnPair', see below). For computation reasons, we limit the analysis to `r numFeats` genes.
 
 ```{r estpisyang}
 nnObj <- estPis(hypYang,
@@ -160,7 +177,7 @@ As expected the weight increases with the number of observations; quickly at fir
 dfUniNN <- buildDataFrame(nnObj, gene = "SmAHK4e", pi = "nn")
 ```
 
-This dataframe can then be used for mixed modelling, either in R or in an other software package. We present an example analysis below using the _lmerTest_ package, which enhances the _lmer_ package by providing approximate p-values. We fit the following linear mixed model (LMM) for once manually, before automating it. The day variable enters the model as a fixed effect, the root as a random effect. We use sum coding for the day variable, meaning that two dummies are created, one for "day0" and one for "day3", so without a reference level. Instead the corresponding parameters are constrained to sum to zero, i.e. to be each other's opposite in this case. This maintains the interpretability of the intercept as the baseline pi, from which the different days can depart, and allows meaningful inference on the intercept.
+This dataframe can then be used for mixed modelling, either in R or in an other software package. We present an example analysis below using the _lmerTest_ package, which enhances the _lmer_ package by providing approximate p-values. We fit the following linear mixed model (LMM) for once manually, before automating it. The day variable enters the model as a fixed effect, the root as a random effect (a random intercept). We use sum coding for the day variable, meaning that two dummies are created, one for "day0" and one for "day3", so without a reference level. Instead the corresponding parameters are constrained to sum to zero, i.e. to be each other's opposite in this case. This maintains the interpretability of the intercept as the baseline pi, from which the different days can depart, and allows meaningful inference on the intercept.
 
 ```{r}
 library(lmerTest, quietly = TRUE)
@@ -216,7 +233,13 @@ lmeModNN <- lmerTest::lmer(pi - 0.5 ~ day + (1 | root),
 summary(lmeModNN)
 ```
 
-We find a significant positive intercept `r signif(summary(lmeModNN)$coef["(Intercept)", "Estimate"], 3)`, indicating strong antilocalization (PI = `r signif(summary(lmeModNN)$coef["(Intercept)", "Estimate"], 3)+0.5`). And similarly, this process can be wrapped using _fitLMMs()_as before:
+We find a significant positive intercept `r signif(summary(lmeModNN)$coef["(Intercept)", "Estimate"], 3)`, indicating strong antilocalization (PI = `r signif(summary(lmeModNN)$coef["(Intercept)", "Estimate"], 3)+0.5`). We investigate this gene pair visually:
+
+```{r visualInvest}
+plotExplore(hypYang, features = "SmVND2--SmPINR")
+```
+
+Shows clear antilocalization indeed. And similarly, this process can be wrapped using _fitLMMs()_as before:
 
 ```{r fitlmmPair}
 head(getResults(allModsNN, "nnPair", "Intercept"))
@@ -242,11 +265,11 @@ hypEng <- buildHyperFrame(Eng,
 
 Plotting an overview
 
-```{r engNoCells}
+```{r engNoCells, fig.height = 6}
 plotExplore(hypEng)
 ```
 
-Next, the cell boundaries are added, as a list with names corresponding to the rownames of the hyperframe. Different formats are allowed to provide windows in case the correct packages are installed, see _?addCell_. Based on these cells, every event is assigned to a cell. Not available for this dataset, but also nuclei can be added analogously via the _addNuclei_ functions.
+Next, the cell boundaries are added, as a list with names corresponding to the rownames of the hyperframe. Different formats are allowed to provide windows in case the correct packages are installed, see _?addCell_. Based on these cells, every event is assigned to a cell. Although available for this dataset, also nuclei can be added analogously via the _addNuclei_ functions.
 
 ```{r CellEngData}
 # Add cell identifiers
@@ -283,7 +306,7 @@ We the bivariate weight function as an example:
 plotWf(engPis, "nnPairCell")
 ```
 
-As before, the minority gene of the pair is the main driver of variance. Next, we fit linear mixed models on the obtained PIs. The experiment was conducted twice, so we add the experiment variable as fixed effect. The image and cell variables are added automatically where appropriate, as printed in the output:
+Usually, the minority gene of the pair is the main driver of variance. Next, we fit linear mixed models on the obtained PIs. The experiment was conducted twice, so we add the experiment variable as fixed effect. The image and cell variables are added automatically where appropriate, as printed in the output:
 
 ```{r FitEngModels}
 allModsNNcell <- fitLMMs(engPis, fixedVars = "experiment", addMoransI = TRUE)
@@ -332,9 +355,7 @@ The molecules are shown in red, while the yellow-blue scale indicates the PI est
 getResults(allModsNNcell, "edge", "Intercept", moransI = TRUE)[remEdge, ]
 ```
 
-Although the estimated Moran's I is positive indeed, indicating positive spatial autocorrelation, it is not significant over the different repeats.
-
-Writing the results to a spreadsheet again:
+Although the estimated Moran's I is positive indeed, indicating positive spatial autocorrelation, it is not significant over the different repeats. Writing the results to a spreadsheet again:
 
 ```{r writeXlsxEng, eval = FALSE}
 writeToXlsx(allModsNNcell, file = "mysecondfile.xlsx")
@@ -342,9 +363,7 @@ writeToXlsx(allModsNNcell, file = "mysecondfile.xlsx")
 
 ## Gradients
 
-Another biologically interesting spatial pattern are gradients. Again, they can be estimated image-wide or within cells. Parametric model fitting of Poisson point processes is provided in the [spatstat.model](http://book.spatstat.org/) package by Baddeley _et al._ (2015)\parencite{Baddeley2015}, we wrap it here for convenience. Detecting presence of gradients over different point patterns is done by fitting a model including interaction terms between x and y coordinates and image identifiers. If this interactions are significant, this implies existence of gradients in the different point patterns, albeit with different directions. 
-
-The fitting process is quite computation intensive, so we limit ourselves to a subset of the data. By default both overall gradients and within-cell gradients are fitted.
+Another biologically interesting spatial pattern are gradients. Again, they can be estimated image-wide or within cells. Parametric model fitting of Poisson point processes is provided in the [spatstat.model](http://book.spatstat.org/) package by @Baddeley2015, we wrap it here for convenience. Detecting presence of gradients over different point patterns is done by fitting a model including interaction terms between x and y coordinates and image identifiers. If this interactions are significant, this implies existence of gradients in the different point patterns, albeit with different directions. The fitting process is quite computation intensive, so we limit ourselves to a subset of the data. By default both overall gradients and within-cell gradients are fitted.
 
 ```{r enggrads}
 engGrads <- estGradients(hypEng[seq_len(2), ], features = feat <- getFeatures(hypEng)[seq_len(3)])
@@ -363,14 +382,16 @@ if(reqFunky <- require(funkycells)){
     data("TNBC_meta")
     TNBC_pheno$age <- TNBC_meta$Age[match(TNBC_pheno$Person, TNBC_meta$Person)]
     TNBC_pheno$Class <- ifelse(TNBC_pheno$Class=="0", "mixed", "compartentalised")
-    hypTNBC <- buildHyperFrame(TNBC_pheno, coordVars = c("cellx", "celly"), imageVars = c("Person", "Class", "age"), featureName = "Phenotype")
+    hypTNBC <- buildHyperFrame(TNBC_pheno, coordVars = c("cellx", "celly"), 
+                               imageVars = c("Person", "Class", "age"), featureName = "Phenotype")
     hypTNBC <- hypTNBC[order(hypTNBC$Class),] #Order by class for plots
 }
 ```
 
 ```{r plotTNBC, fig.cap = "Explorative plot of triple negative breast cancer dataset.\\parencite{Keren2018}", fig.height = 8}
 if(reqFunky){
-    plotExplore(hypTNBC, Cex.main = 0.7, features = c("Tumor", "Macrophage", "CD8T"), CexLegend = 0.85)
+    plotExplore(hypTNBC, Cex.main = 0.7, features = c("Tumor", "Macrophage", "CD8T"), 
+                CexLegend = 0.85)
 }
 ```
 
