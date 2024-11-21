@@ -23,7 +23,7 @@ test_that("fitGradient fails where appropriate", {
     )$pVal, 1)
 })
 test_that("estGradients has correct return", {
-    yangGrads <- estGradients(hypYang[seq_len(20), ], features = feat <- getFeatures(hypYang)[seq_len(2)])
+    yangGrads <- estGradients(hypYang[seq_len(10), ], features = feat <- getFeatures(hypYang)[seq_len(2)])
     expect_is(yangGrads, "list")
     expect_identical(names(yangGrads), feat)
 })
@@ -35,18 +35,18 @@ test_that("estGradients throws errors where appropriate", {
     ))
 })
 test_that("estGradients works for cells as well", {
-    engGrads <- estGradients(hypEng[seq_len(4), ], features = feat <- getFeatures(hypEng)[seq_len(2)])
+    engGrads <- estGradients(hypEng[idEng <- seq_len(2), ], features = feat <- getFeatures(hypEng)[seq_len(2)])
     expect_equal(names(engGrads), feat)
     expect_equal(names(engGrads[[1]]), c("overall", "cell"))
     expect_true(engGrads[[1]]$overall$pVal >= 0 & engGrads[[1]]$overall$pVal <= 1)
-    engGradsCell <- estGradients(hypEng[seq_len(4), ],
+    engGradsCell <- estGradients(hypEng[idEng, ],
         features = feat <- getFeatures(hypEng)[seq_len(2)],
         fixedEffects = "experiment"
     )
     expect_true(engGradsCell[[1]]$cell$pVal >= 0 & engGradsCell[[1]]$cell$pVal <= 1)
     expect_length(
         engGradsCell[[1]]$cell$coef,
-        1 + 3 * sum(vapply(hypEng[seq_len(4), ]$ppp, function(x) length(unique(marks(x)$cell)), FUN.VALUE = 1))
+        1 + 3 * sum(vapply(hypEng[idEng, ]$ppp, function(x) length(unique(marks(x)$cell)), FUN.VALUE = 1))
     )
     # One extra parameter for experiment baseline
 })

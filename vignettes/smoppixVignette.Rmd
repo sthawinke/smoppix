@@ -133,12 +133,12 @@ A couple of most expressed genes are shown as coloured dots as shown in the lege
 
 ### Tests for univariate aggregation or regularity: nearest neighbour distances
 
-The first round of tests concerns the aggregation or regularity of individual transcripts,for which we look ath the distribution of nearest neighbour distances (pi = 'nn'). Since the shape and size differ strongly between the roots, we choose the background of all other transcripts as null distribution, i.e. we look for transcripts aggregated _with respect to_ all other transcripts. As this is computationally most efficient, we also fit the PI for the bivariate analysis in this step ('nnPair', see below). For computation reasons, we limit the analysis to 20 genes.
+The first round of tests concerns the aggregation or regularity of individual transcripts,for which we look ath the distribution of nearest neighbour distances (pi = 'nn'). Since the shape and size differ strongly between the roots, we choose the background of all other transcripts as null distribution, i.e. we look for transcripts aggregated _with respect to_ all other transcripts. As this is computationally most efficient, we also fit the PI for the bivariate analysis in this step ('nnPair', see below). For computation reasons, we limit the analysis to `r (numFeats <- 10)` genes.
 
 ```{r estpisyang}
 nnObj <- estPis(hypYang,
     pis = c("nn", "nnPair"), null = "background", verbose = FALSE,
-    features = c("SmVND2", "SmPINR", getFeatures(hypYang)[seq_len(18)])
+    features = c("SmVND2", "SmPINR", getFeatures(hypYang)[seq_len(numFeats)])
 )
 ```
 
@@ -240,12 +240,11 @@ hypEng <- buildHyperFrame(Eng,
 )
 ```
 
-Plotting an overviwe
+Plotting an overview
 
 ```{r engNoCells}
 plotExplore(hypEng)
 ```
-
 
 Next, the cell boundaries are added, as a list with names corresponding to the rownames of the hyperframe. Different formats are allowed to provide windows in case the correct packages are installed, see _?addCell_. Based on these cells, every event is assigned to a cell. Not available for this dataset, but also nuclei can be added analogously via the _addNuclei_ functions.
 
@@ -345,10 +344,10 @@ writeToXlsx(allModsNNcell, file = "mysecondfile.xlsx")
 
 Another biologically interesting spatial pattern are gradients. Again, they can be estimated image-wide or within cells. Parametric model fitting of Poisson point processes is provided in the [spatstat.model](http://book.spatstat.org/) package by Baddeley _et al._ (2015)\parencite{Baddeley2015}, we wrap it here for convenience. Detecting presence of gradients over different point patterns is done by fitting a model including interaction terms between x and y coordinates and image identifiers. If this interactions are significant, this implies existence of gradients in the different point patterns, albeit with different directions. 
 
-The fitting process is quite computation intensive, so we limit ourselves to a subset of the data. By default both overall gradients and within-cell gradients are fitted
+The fitting process is quite computation intensive, so we limit ourselves to a subset of the data. By default both overall gradients and within-cell gradients are fitted.
 
 ```{r enggrads}
-engGrads <- estGradients(hypEng[seq_len(3), ], features = feat <- getFeatures(hypEng)[seq_len(3)])
+engGrads <- estGradients(hypEng[seq_len(2), ], features = feat <- getFeatures(hypEng)[seq_len(3)])
 pValsGrads <- getPvaluesGradient(engGrads, "cell")
 ```
 
