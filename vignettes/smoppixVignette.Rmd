@@ -235,7 +235,7 @@ summary(lmeModNN)
 
 We find a significant positive intercept `r signif(summary(lmeModNN)$coef["(Intercept)", "Estimate"], 3)`, indicating strong antilocalization (PI = `r signif(summary(lmeModNN)$coef["(Intercept)", "Estimate"], 3)+0.5`). We investigate this gene pair visually:
 
-```{r visualInvest}
+```{r visualInvest, fig.height = 6}
 plotExplore(hypYang, features = "SmVND2--SmPINR")
 ```
 
@@ -306,7 +306,7 @@ We the bivariate weight function as an example:
 plotWf(engPis, "nnPairCell")
 ```
 
-Usually, the minority gene of the pair is the main driver of variance. Next, we fit linear mixed models on the obtained PIs. The experiment was conducted twice, so we add the experiment variable as fixed effect. The image and cell variables are added automatically where appropriate, as printed in the output:
+As before, the minority gene of the pair is the main driver of variance. Next, we fit linear mixed models on the obtained PIs. The experiment was conducted twice, so we add the experiment variable as fixed effect. The image and cell variables are added automatically where appropriate, as printed in the output:
 
 ```{r FitEngModels}
 allModsNNcell <- fitLMMs(engPis, fixedVars = "experiment", addMoransI = TRUE)
