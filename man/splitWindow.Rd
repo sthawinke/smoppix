@@ -2,7 +2,7 @@
 % Please edit documentation in R/helpers.R
 \name{splitWindow}
 \alias{splitWindow}
-\title{Split a number of plots into rows and colums}
+\title{Split a number of plots into rows and columns}
 \usage{
 splitWindow(x)
 }
@@ -10,8 +10,8 @@ splitWindow(x)
 \item{x}{The number of plots}
 }
 \value{
-A vector of length 2 with required number of rows and colums
+A vector of length 2 with required number of rows and columns
 }
 \description{
-Split a number of plots into rows and colums
+Split a number of plots into rows and columns
 }

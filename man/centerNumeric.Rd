@@ -10,7 +10,7 @@ centerNumeric(x)
 \item{x}{The dataframe whose numeric variables are being centered}
 }
 \value{
-The adapeted dataframe
+The adapted dataframe
 }
 \description{
 Center numeric variables
