@@ -150,11 +150,11 @@ getHypFrame <- function(x) {
         x$hypFrame
     }
 }
-#' Split a number of plots into rows and colums
+#' Split a number of plots into rows and columns
 #'
 #' @param x The number of plots
 #'
-#' @return A vector of length 2 with required number of rows and colums
+#' @return A vector of length 2 with required number of rows and columns
 splitWindow <- function(x) {
     Sqrt <- sqrt(x)
     a <- ceiling(Sqrt)
@@ -175,7 +175,7 @@ crossdistWrapper <- function(x, y) {
 #'
 #' @param x The dataframe whose numeric variables are being centered
 #'
-#' @return The adapeted dataframe
+#' @return The adapted dataframe
 centerNumeric <- function(x){
     numId <- vapply(x, FUN.VALUE = TRUE, is.numeric)
     for(i in which(numId)){
