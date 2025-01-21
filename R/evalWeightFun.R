@@ -17,7 +17,7 @@
 #' # First Build the weighting function
 #' yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))
 #' evalWeightFunction(yangObj$Wfs$nn, newdata = data.frame("NP" = 2))
-#' @seealso \link{predict.scam}, \link{addWeightFunction}
+#' @seealso \link[scam]{predict.scam}, \link{addWeightFunction}
 evalWeightFunction <- function(wf, newdata) {
     1 / exp(predict.scam(wf, newdata = newdata))
 }

@@ -12,7 +12,7 @@
 #' @importFrom extraDistr pnhyper
 #' @return A vector of evaluations of the negative hypergeometric distribution
 #' function
-#' @seealso \link{pnhyper}, \link{calcIndividualPIs}
+#' @seealso \link[extraDistr]{pnhyper}, \link{calcIndividualPIs}
 calcNNPI <- function(Ranks, n, m, ties, r = 1) {
     tmp <- pnhyper(Ranks, n = n, m = m, r = r)
     if (!is.null(ties)) {
