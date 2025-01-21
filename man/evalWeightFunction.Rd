@@ -19,8 +19,7 @@ Evaluate the variance weighting function to  return unnormalized weights
 }
 \examples{
 data(Yang)
-hypYang <- buildHyperFrame(Yang,
-    coordVars = c("x", "y"),
+hypYang <- buildHyperFrame(Yang, coordVars = c("x", "y"),
     imageVars = c("day", "root", "section")
 )
 yangPims <- estPis(hypYang, pis = "nn", features = getFeatures(hypYang)[12:20], nPointsAll = 1e3)
@@ -29,5 +28,5 @@ yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))
 evalWeightFunction(yangObj$Wfs$nn, newdata = data.frame("NP" = 2))
 }
 \seealso{
-\link{predict.scam}, \link{addWeightFunction}
+\link[scam]{predict.scam}, \link{addWeightFunction}
 }
