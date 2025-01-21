@@ -9,8 +9,7 @@
 #' @export
 #' @examples
 #' data(Yang)
-#' hypYang <- buildHyperFrame(Yang,
-#'     coordVars = c("x", "y"),
+#' hypYang <- buildHyperFrame(Yang, coordVars = c("x", "y"),
 #'     imageVars = c("day", "root", "section")
 #' )
 #' yangPims <- estPis(hypYang, pis = "nn", features = getFeatures(hypYang)[12:20], nPointsAll = 1e3)
