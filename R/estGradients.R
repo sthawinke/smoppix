@@ -155,5 +155,5 @@ getPvaluesGradient <- function(res, gradient, method = "BH"){
         x[[gradient]]$pVal
     })
     pAdj <- p.adjust(pVals, method = method)
-    return(pVals)
+    return(cbind("pVal" = pVals, "pAdj" = pAdj))
 }
