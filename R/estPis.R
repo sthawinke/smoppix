@@ -103,7 +103,6 @@ estPis <- function(
 #' @param window An window of class owin, in which events can occur
 #' @param loopFun The function to use to loop over the features.
 #' Defaults to bplapply except when looping over features within cells
-#' @inheritParams estPis
 #'
 #' @return A list of data frames with estimated PIs per gene and/or gene pair:
 #' \item{pointDists}{PIs for pointwise distances overall}
@@ -114,6 +113,7 @@ estPis <- function(
 #' @importFrom spatstat.geom is.hyperframe
 #' @importFrom Rdpack reprompt
 #' @seealso \link{estPis}
+#' @rdname estPis
 estPisSingle <- function(
     p, pis, null, tabObs, owins = NULL, centroids = NULL, window = p$window,
     loopFun = "bplapply", features, nPointsAll, nPointsAllWithinCell, nPointsAllWin,

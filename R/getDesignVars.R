@@ -13,8 +13,8 @@ getDesignVars <- function(x) {
 #' Extract variables from point patterns
 #'
 #' @param exclude variables to exclude
-#' @inheritParams getDesignVars
 #' @return A vector of variables
+#' @rdname getDesignVars
 getPPPvars <- function(x, exclude = c(
                            "tabObs", "centroids", "owins", "ppp", "pimRes",
                            "image", "inSeveralCells", "nuclei"
@@ -23,8 +23,7 @@ getPPPvars <- function(x, exclude = c(
 }
 #' Extract variables from events (the marks)
 #' @return A vector of variables
-#' @inheritParams getDesignVars
-#' @inheritParams getPPPvars
+#' @rdname getDesignVars
 getEventVars <- function(x, exclude = c("x", "y", "z")) {
     setdiff(unique(unlist(lapply(getHypFrame(x)$ppp, function(ppp) {
         names(marks(ppp, drop = FALSE))

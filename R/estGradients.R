@@ -22,6 +22,7 @@
 #' The fixed and random effects modify the baseline intensity of the point pattern, not the gradient!
 #' Random effects can lead to problems with fitting and are dissuaded.
 #' @return A list with the estimated gradients
+#' @seealso \link{fitGradient}, \link{estGradientsSingle}
 #' @examples
 #' # Overall Gradients
 #' data(Yang)
@@ -42,7 +43,7 @@
 #' # Limit number of cells and genes for computational reasons
 #' engGrads <- estGradients(hypEng[seq_len(2),],
 #'     features = feat <- getFeatures(hypEng)[1])
-#' @seealso \link{fitGradient}, \link{estGradientsSingle}
+#' pVals <- getPvaluesGradient(engGrads, "cell")
 estGradients <- function(hypFrame, gradients = c("overall", if (!is.null(hypFrame$owins)) "cell"),
                          fixedEffects = NULL, randomEffects = NULL,
                          verbose = FALSE, features = getFeatures(hypFrame), silent = TRUE, loopFun = "bplapply", ...) {
@@ -100,6 +101,7 @@ estGradients <- function(hypFrame, gradients = c("overall", if (!is.null(hypFram
 #' @importFrom Rdpack reprompt
 #' @importFrom spatstat.geom unmark cbind.hyperframe
 #' @seealso \link{estGradients}
+#' @rdname estGradients
 estGradientsSingle <- function(hypFrame, gradients, fixedForm, randomForm,
                                fixedFormSimple, effects = NULL, ...) {
     # Within cell: recurse into estGradientsSingle but now per cell
@@ -145,10 +147,7 @@ estGradientsSingle <- function(hypFrame, gradients, fixedForm, randomForm,
 #' @importFrom stats p.adjust
 #' @return A vector of p-values
 #' @export
-#'
-#' @examples
-#' example(estGradients, "smoppix")
-#' pVals <- getPvaluesGradient(engGrads, "cell")
+#' @rdname estGradients
 getPvaluesGradient <- function(res, gradient, method = "BH"){
     gradient <- match.arg(gradient, choices = c("cell", "overall"))
     pVals <- vapply(res, FUN.VALUE = double(1), function(x) {
@@ -157,3 +156,4 @@ getPvaluesGradient <- function(res, gradient, method = "BH"){
     pAdj <- p.adjust(pVals, method = method)
     return(cbind("pVal" = pVals, "pAdj" = pAdj))
 }
+

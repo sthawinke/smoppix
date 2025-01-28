@@ -2,6 +2,7 @@
 % Please edit documentation in R/estPis.R
 \name{estPis}
 \alias{estPis}
+\alias{estPisSingle}
 \title{Estimate probabilistic indices for single-molecule localization patterns}
 \usage{
 estPis(
@@ -16,6 +17,23 @@ estPis(
   minObsNN = 1L,
   features = getFeatures(hypFrame),
   ...
+)
+
+estPisSingle(
+  p,
+  pis,
+  null,
+  tabObs,
+  owins = NULL,
+  centroids = NULL,
+  window = p$window,
+  loopFun = "bplapply",
+  features,
+  nPointsAll,
+  nPointsAllWithinCell,
+  nPointsAllWin,
+  minDiff,
+  minObsNN
 )
 }
 \arguments{
@@ -45,9 +63,26 @@ Matters mainly for within-cell calculations: cells with too few events are skipp
 probabilistic indices be calculated?}
 
 \item{...}{additional arguments, passed on to \link{estPisSingle}.}
+
+\item{p}{The point pattern}
+
+\item{tabObs}{A table of observed gene frequencies}
+
+\item{owins, centroids}{The list of windows corresponding to cells,
+and their centroids}
+
+\item{window}{An window of class owin, in which events can occur}
+
+\item{loopFun}{The function to use to loop over the features.
+Defaults to bplapply except when looping over features within cells}
 }
 \value{
 The hyperframe with the estimated PIs present in it
+
+A list of data frames with estimated PIs per gene and/or gene pair:
+\item{pointDists}{PIs for pointwise distances overall}
+\item{windowDists}{PIs for distances to cell wall or centroid}
+\item{withinCellDists}{PIs for pointwise distances within cell}
 }
 \description{
 Estimate different probabilistic indices for localization
@@ -82,4 +117,6 @@ yangPims <- estPis(hypYang[c(seq_len(4), seq(27, 29)), ], pis = "nn",
 }
 \seealso{
 \link{estPisSingle}
+
+\link{estPis}
 }

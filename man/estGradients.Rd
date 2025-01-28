@@ -2,6 +2,8 @@
 % Please edit documentation in R/estGradients.R
 \name{estGradients}
 \alias{estGradients}
+\alias{estGradientsSingle}
+\alias{getPvaluesGradient}
 \title{Estimate gradients over multiple point patterns}
 \usage{
 estGradients(
@@ -15,6 +17,18 @@ estGradients(
   loopFun = "bplapply",
   ...
 )
+
+estGradientsSingle(
+  hypFrame,
+  gradients,
+  fixedForm,
+  randomForm,
+  fixedFormSimple,
+  effects = NULL,
+  ...
+)
+
+getPvaluesGradient(res, gradient, method = "BH")
 }
 \arguments{
 \item{hypFrame}{A hyperframe}
@@ -33,10 +47,29 @@ gradients indices be calculated?}
 
 \item{loopFun}{The function to use to loop over the features.}
 
-\item{...}{additional arguments, passed on to \link{fitGradient}.}
+\item{...}{Passed onto fitGradient}
+
+\item{fixedForm, randomForm, fixedFormSimple}{Formulae for fixed effects,
+random effects and fixed effects without slopes respectively}
+
+\item{effects}{Character vector of fixed and random effects}
+
+\item{res}{The fitted gradients}
+
+\item{gradient}{The gradient to be extracted, a character vector equal to
+"overall" or "cell".}
+
+\item{method}{Method of multiplicity correction, see \link{p.adjust}.
+Defaults to Benjamini-Hochberg}
 }
 \value{
 A list with the estimated gradients
+
+A list contraining
+\item{overall}{Overall gradients}
+\item{cell}{Gradients within the cell}
+
+A vector of p-values
 }
 \description{
 Estimate gradients on all single-molecule point patterns of a hyperframe
@@ -75,7 +108,10 @@ hypEng <- addCell(hypEng, EngRois[rownames(hypEng)], verbose = FALSE)
 # Limit number of cells and genes for computational reasons
 engGrads <- estGradients(hypEng[seq_len(2),],
     features = feat <- getFeatures(hypEng)[1])
+pVals <- getPvaluesGradient(engGrads, "cell")
 }
 \seealso{
 \link{fitGradient}, \link{estGradientsSingle}
+
+\link{estGradients}
 }

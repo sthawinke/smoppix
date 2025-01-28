@@ -2,6 +2,7 @@
 % Please edit documentation in R/fitLMMs.R
 \name{fitLMMs}
 \alias{fitLMMs}
+\alias{fitLMMsSingle}
 \title{Fit linear (mixed) models for all probabilistic indices (PIs) and all genes}
 \usage{
 fitLMMs(
@@ -18,6 +19,21 @@ fitLMMs(
   addMoransI = FALSE,
   numNNs = 10,
   ...
+)
+
+fitLMMsSingle(
+  obj,
+  pi,
+  fixedVars,
+  randomVars,
+  verbose,
+  returnModels,
+  Formula,
+  randomNested,
+  features,
+  addMoransI,
+  weightMats,
+  moranFormula
 )
 }
 \arguments{
@@ -51,9 +67,15 @@ Defaults to all features in the object}
 weight matrix for the calculation of the Moran's I statistic}
 
 \item{...}{Passed onto fitLMMsSingle}
+
+\item{pi}{character string indicating the desired PI}
+
+\item{weightMats}{A list of weight matrices for Moran's I}
 }
 \value{
 A list of fitted objects
+
+A list of test results, if requested also the linear models are returned
 }
 \description{
 The PI is used as outcome variable in a linear (mixed) model,
@@ -82,4 +104,6 @@ lmmModels <- fitLMMs(yangObj, fixedVars = "day", randomVars = "root")
 }
 \seealso{
 \link{buildMoransIDataFrame}
+
+\link{buildDataFrame},\link{getResults}
 }

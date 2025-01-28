@@ -79,6 +79,7 @@ fitLMMs <- function(
 #' @importFrom lme4 lmerControl .makeCC isSingular
 #' @importFrom methods is
 #' @seealso \link{buildDataFrame},\link{getResults}
+#' @rdname fitLMMs
 fitLMMsSingle <- function(
     obj, pi, fixedVars, randomVars, verbose, returnModels,
     Formula, randomNested, features, addMoransI, weightMats, moranFormula) {
