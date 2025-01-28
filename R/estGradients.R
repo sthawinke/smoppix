@@ -21,6 +21,7 @@
 #' Baseline intensity corrections for every image or cell are included by default.
 #' The fixed and random effects modify the baseline intensity of the point pattern, not the gradient!
 #' Random effects can lead to problems with fitting and are dissuaded.
+#' estGradientsSingle() is the workhorse for \link{estGradients} on a single feature, getPvaluesGradient extracts the p-values
 #' @return A list with the estimated gradients
 #' @seealso \link{fitGradient}, \link{estGradientsSingle}
 #' @examples
@@ -87,8 +88,6 @@ estGradients <- function(hypFrame, gradients = c("overall", if (!is.null(hypFram
     names(grads) <- features
     grads
 }
-#' Workhorse for \link{estGradients} on a single feature
-#'
 #' @inheritParams estGradients
 #' @param fixedForm,randomForm,fixedFormSimple Formulae for fixed effects,
 #' random effects and fixed effects without slopes respectively

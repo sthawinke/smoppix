@@ -62,3 +62,15 @@
 
 - Version bump with serial processing to find bug occurring only on
   server
+
+# 0.99.30
+
+- Reduce computation time of tests and vignettes in view of BioConductor
+  server warnings
+- Automate choice of parallel backend for different operating systems in
+  vignette
+
+# 0.99.36
+
+- Simplify documentation and reducing example runtimes by pooling
+  manpages using the rdname commend

@@ -104,6 +104,7 @@ The suffix 'Cell' indicates that nearest neighbour distances are being calculate
 
 It can be useful to set the minObsNN higher than the default of 5 for calculations within cells when the number of events is low,
 not to waste computation time on gene (pairs) with very variable PI estimates.
+estPisSingle() is the workhorse for a single feature
 }
 \examples{
 data(Yang)

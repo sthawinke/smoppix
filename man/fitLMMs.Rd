@@ -97,6 +97,7 @@ It is by default assumed that random effects are nested within the point
  The Moran's I statistic is used to test whether cell-wise PIs ("nnCell", "nnCellPair", "edge" and "centroid") 
  are spatially autocorrelated across the images. The numeric value of the PI is assigned to the 
  centroid location, and then Moran's I is calculated with a fixed number of numNNs nearest neighbours with equal weights.
+fitLMMsSingle() is the workhorse function for a single feature
 }
 \examples{
 example(addWeightFunction, "smoppix")

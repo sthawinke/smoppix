@@ -45,6 +45,7 @@
 #'
 #' It can be useful to set the minObsNN higher than the default of 5 for calculations within cells when the number of events is low,
 #' not to waste computation time on gene (pairs) with very variable PI estimates.
+#' estPisSingle() is the workhorse for a single feature
 #' @seealso \link{estPisSingle}
 estPis <- function(
     hypFrame, pis = c("nn", "nnPair", "edge", "centroid", "nnCell",
@@ -94,8 +95,6 @@ estPis <- function(
     })
     list(hypFrame = hypFrame, null = null, pis = pis)
 }
-#' A wrapper function for the different probabilistic indices (PIs), applied to individual point patterns
-#'
 #' @param p The point pattern
 #' @param owins,centroids The list of windows corresponding to cells,
 #' and their centroids

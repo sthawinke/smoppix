@@ -36,7 +36,7 @@
 #'  The Moran's I statistic is used to test whether cell-wise PIs ("nnCell", "nnCellPair", "edge" and "centroid") 
 #'  are spatially autocorrelated across the images. The numeric value of the PI is assigned to the 
 #'  centroid location, and then Moran's I is calculated with a fixed number of numNNs nearest neighbours with equal weights.
-#'
+#' fitLMMsSingle() is the workhorse function for a single feature
 #' @return A list of fitted objects
 #' @export
 #' @seealso \link{buildMoransIDataFrame}
@@ -67,8 +67,6 @@ fitLMMs <- function(
     names(out) <- pis
     return(out)
 }
-#' Fit linear mixed models for all features of a object containing estimated PiS
-#'
 #' @inheritParams buildDataFrame
 #' @inheritParams fitLMMs
 #'

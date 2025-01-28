@@ -84,6 +84,7 @@ spatial patterns can be captured by a gradient to some extent.
 Baseline intensity corrections for every image or cell are included by default.
 The fixed and random effects modify the baseline intensity of the point pattern, not the gradient!
 Random effects can lead to problems with fitting and are dissuaded.
+estGradientsSingle() is the workhorse for \link{estGradients} on a single feature, getPvaluesGradient extracts the p-values
 }
 \note{
 Fitting Poisson point processes is computation-intensive.
