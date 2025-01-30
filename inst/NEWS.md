@@ -84,3 +84,4 @@
 # 0.99.40
 
 - Use DOIs in URLs following winbuilder
+- Use makeCluster() on windows in the examples too
