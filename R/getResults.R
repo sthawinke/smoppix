@@ -13,22 +13,7 @@
 #' \item{pVal}{The p-value}
 #' \item{pAdj}{The Benjamini-Hochberg adjusted p-value}
 #' @export
-#' @examples
-#' data(Yang)
-#' hypYang <- buildHyperFrame(Yang,
-#'     coordVars = c("x", "y"),
-#'     imageVars = c("day", "root", "section")
-#' )
-#' yangPims <- estPis(hypYang, pis = "nn", features = getFeatures(hypYang)[16:29], nPointsAll = 5e2)
-#' # First build the weighting function
-#' yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))
-#' fittedModels <- fitLMMs(yangObj,
-#'     features = getFeatures(yangObj),
-#'     fixedVars = "day", randomVars = "root",
-#'     pi = "nn"
-#' )
-#' res <- getResults(fittedModels, "nn", "Intercept")
-#' head(res)
+#' @rdname fitLMMs
 getResults <- function(obj, pi, parameter, moransI = FALSE) {
     if (!(pi %in% names(obj))) {
         stop("PI ", pi, " not estimated! Run estPis() again with desired pi as argument")

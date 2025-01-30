@@ -44,6 +44,8 @@
 #' @examples
 #' example(addWeightFunction, "smoppix")
 #' lmmModels <- fitLMMs(yangObj, fixedVars = "day", randomVars = "root")
+#' res <- getResults(lmmModels, "nn", "Intercept") #Extract the results
+#' head(res)
 fitLMMs <- function(
     obj, pis = obj$pis, fixedVars = NULL, randomVars = NULL, verbose = TRUE,
     returnModels = FALSE, Formula = NULL, randomNested = TRUE, features = getFeatures(obj),
@@ -67,9 +69,6 @@ fitLMMs <- function(
     names(out) <- pis
     return(out)
 }
-#' @inheritParams buildDataFrame
-#' @inheritParams fitLMMs
-#'
 #' @param weightMats A list of weight matrices for Moran's I
 #' @return A list of test results, if requested also the linear models are returned
 #' @importFrom lmerTest lmer

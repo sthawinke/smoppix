@@ -12,7 +12,7 @@ Test for univariate and bivariate spatial patterns in spatial omics data with si
 Useful links:
 \itemize{
   \item \url{https://github.com/sthawinke/smoppix}
-  \item Report bugs at \url{https://github.com/sthawinke/smoppix}
+  \item Report bugs at \url{https://github.com/sthawinke/smoppix/issues}
 }
 
 }
