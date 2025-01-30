@@ -1,6 +1,7 @@
-#' Estimate probabilistic indices for single-molecule localization patterns
+#' Estimates probabilistic indices for single-molecule localization patterns, and add the variance weighting function.
 #' @description Estimate different probabilistic indices for localization
-#' on all point patterns of a hyperframe, and integrate the results in the same hyperframe
+#' on all point patterns of a hyperframe, and integrate the results in the same hyperframe. 
+#' estPisSingle() is the workhorse function for a single point pattern.
 #' @export
 #' @param hypFrame A hyperframe
 #' @param ... additional arguments, passed on to \link{estPisSingle}.
@@ -19,7 +20,8 @@
 #' @param minObsNN An integer, the minimum number of events before a gene is analysed See details.
 #' @param features A character vector, for which features should the
 #' probabilistic indices be calculated?
-#' @return The hyperframe with the estimated PIs present in it
+#' @return For estPis(), the hyperframe with the estimated PIs present in it
+#' @order 1
 #' @examples
 #' data(Yang)
 #' hypYang <- buildHyperFrame(Yang,
@@ -29,6 +31,11 @@
 #' yangPims <- estPis(hypYang[c(seq_len(4), seq(27, 29)), ], pis = "nn",
 #'     nPointsAll = 4e2)
 #' # Univariate nearest neighbour distances
+#' yangObj <- addWeightFunction(yangPims, designVars = c("day", "root")) 
+#' # Add the weight functions 
+#' yangObj2 <- addWeightFunction(yangPims, lowestLevelVar = "section", 
+#' pi = "nn")
+#' # Alternative formulation with 'lowestLevelVar'
 #' @details
 #' The null distribution used to calculate the PIs can be either 'background' or 'null'.
 #' For 'background', the observed distributions of all genes is used. Alternatively,
@@ -45,8 +52,6 @@
 #'
 #' It can be useful to set the minObsNN higher than the default of 5 for calculations within cells when the number of events is low,
 #' not to waste computation time on gene (pairs) with very variable PI estimates.
-#' estPisSingle() is the workhorse for a single feature.
-#' @seealso \link{estPisSingle}
 estPis <- function(
     hypFrame, pis = c("nn", "nnPair", "edge", "centroid", "nnCell",
         "nnPairCell"), verbose = TRUE, null = c("background", "CSR"),
@@ -103,7 +108,7 @@ estPis <- function(
 #' @param loopFun The function to use to loop over the features.
 #' Defaults to bplapply except when looping over features within cells
 #'
-#' @return A list of data frames with estimated PIs per gene and/or gene pair:
+#' @return For estPisSingle(), a list of data frames with estimated PIs per gene and/or gene pair:
 #' \item{pointDists}{PIs for pointwise distances overall}
 #' \item{windowDists}{PIs for distances to cell wall or centroid}
 #' \item{withinCellDists}{PIs for pointwise distances within cell}
@@ -111,8 +116,8 @@ estPis <- function(
 #' @importFrom spatstat.random runifpoint
 #' @importFrom spatstat.geom is.hyperframe
 #' @importFrom Rdpack reprompt
-#' @seealso \link{estPis}
 #' @rdname estPis
+#' @order 2
 estPisSingle <- function(
     p, pis, null, tabObs, owins = NULL, centroids = NULL, window = p$window,
     loopFun = "bplapply", features, nPointsAll, nPointsAllWithinCell, nPointsAllWin,

@@ -1,7 +1,7 @@
 #' Fit linear (mixed) models for all probabilistic indices (PIs) and all genes
 #' @description The PI is used as outcome variable in a linear (mixed) model,
 #' with design variables as regressors. Separate models are fitted for every combination of gene
-#' and PI.
+#' and PI. fitLMMsSingle() is the workhorse function for a single point pattern,
 #'
 #' @param obj The result object, from a call to \link{estPis} of \link{addWeightFunction}
 #' @param pis Optional, the pis required. Defaults to all pis in the object
@@ -36,11 +36,10 @@
 #'  The Moran's I statistic is used to test whether cell-wise PIs ("nnCell", "nnCellPair", "edge" and "centroid") 
 #'  are spatially autocorrelated across the images. The numeric value of the PI is assigned to the 
 #'  centroid location, and then Moran's I is calculated with a fixed number of numNNs nearest neighbours with equal weights.
-#' fitLMMsSingle() is the workhorse function for a single feature
-#' @return A list of fitted objects
+#' @return For fitLMMs(), a list of fitted objects
 #' @export
-#' @seealso \link{buildMoransIDataFrame}
-#'
+#' @seealso \link{buildMoransIDataFrame}, \link{buildDataFrame}
+#' @order 1
 #' @examples
 #' example(addWeightFunction, "smoppix")
 #' lmmModels <- fitLMMs(yangObj, fixedVars = "day", randomVars = "root")
@@ -70,13 +69,13 @@ fitLMMs <- function(
     return(out)
 }
 #' @param weightMats A list of weight matrices for Moran's I
-#' @return A list of test results, if requested also the linear models are returned
+#' @return For fitLMMsSingle(), a list of test results, if requested also the linear models are returned
 #' @importFrom lmerTest lmer
 #' @importFrom stats formula anova
 #' @importFrom lme4 lmerControl .makeCC isSingular
 #' @importFrom methods is
-#' @seealso \link{buildDataFrame},\link{getResults}
 #' @rdname fitLMMs
+#' @order 2
 fitLMMsSingle <- function(
     obj, pi, fixedVars, randomVars, verbose, returnModels,
     Formula, randomNested, features, addMoransI, weightMats, moranFormula) {

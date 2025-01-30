@@ -4,7 +4,7 @@
 \alias{estGradients}
 \alias{estGradientsSingle}
 \alias{getPvaluesGradient}
-\title{Estimate gradients over multiple point patterns}
+\title{Estimate gradients over multiple point patterns, and extract the p-values}
 \usage{
 estGradients(
   hypFrame,
@@ -63,16 +63,18 @@ random effects and fixed effects without slopes respectively}
 Defaults to Benjamini-Hochberg}
 }
 \value{
-A list with the estimated gradients
+For estGradients(), a list with the estimated gradients
 
-A list contraining
+For estGradientsSingle(), a list containing
 \item{overall}{Overall gradients}
 \item{cell}{Gradients within the cell}
 
-A vector of p-values
+For getPvaluesGradient(), a vector of p-values
 }
 \description{
-Estimate gradients on all single-molecule point patterns of a hyperframe
+estGradients() estimate gradients on all single-molecule point patterns of a hyperframe. 
+estGradientsSingle() is the workhorse function for a single point pattern.
+getPvaluesGradient() extracts the p-values of the fits.
 }
 \details{
 The test for existence of a gradient revolves around interaction terms
@@ -84,7 +86,6 @@ spatial patterns can be captured by a gradient to some extent.
 Baseline intensity corrections for every image or cell are included by default.
 The fixed and random effects modify the baseline intensity of the point pattern, not the gradient!
 Random effects can lead to problems with fitting and are dissuaded.
-estGradientsSingle() is the workhorse for \link{estGradients} on a single feature, getPvaluesGradient extracts the p-values
 }
 \note{
 Fitting Poisson point processes is computation-intensive.
@@ -112,7 +113,5 @@ engGrads <- estGradients(hypEng[seq_len(2),],
 pVals <- getPvaluesGradient(engGrads, "cell")
 }
 \seealso{
-\link{fitGradient}, \link{estGradientsSingle}
-
-\link{estGradients}
+\link{fitGradient}
 }

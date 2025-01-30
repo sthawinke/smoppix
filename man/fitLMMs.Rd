@@ -80,11 +80,11 @@ weight matrix for the calculation of the Moran's I statistic}
 \item{moransI}{A boolean, should results for the Moran's I be returned?}
 }
 \value{
-A list of fitted objects
+For fitLMMs(), a list of fitted objects
 
-A list of test results, if requested also the linear models are returned
+For fitLMMsSingle(), a list of test results, if requested also the linear models are returned
 
-The matrix with results, with p-values in ascending order
+For getResults(), the matrix with results, with p-values in ascending order
 \item{Estimate}{The estimated PI}
 \item{se}{The corresponding standard error}
 \item{pVal}{The p-value}
@@ -93,9 +93,9 @@ The matrix with results, with p-values in ascending order
 \description{
 The PI is used as outcome variable in a linear (mixed) model,
 with design variables as regressors. Separate models are fitted for every combination of gene
-and PI.
+and PI. fitLMMsSingle() is the workhorse function for a single point pattern,
 
-Extract effect size estimates, standard errors and adjusted p-values for a certain parameter
+getResults() Extracts effect size estimates, standard errors and adjusted p-values for a certain parameter
 from a linear model.
 }
 \details{
@@ -113,7 +113,6 @@ It is by default assumed that random effects are nested within the point
  The Moran's I statistic is used to test whether cell-wise PIs ("nnCell", "nnCellPair", "edge" and "centroid") 
  are spatially autocorrelated across the images. The numeric value of the PI is assigned to the 
  centroid location, and then Moran's I is calculated with a fixed number of numNNs nearest neighbours with equal weights.
-fitLMMsSingle() is the workhorse function for a single feature
 }
 \examples{
 example(addWeightFunction, "smoppix")
@@ -122,7 +121,5 @@ res <- getResults(lmmModels, "nn", "Intercept") #Extract the results
 head(res)
 }
 \seealso{
-\link{buildMoransIDataFrame}
-
-\link{buildDataFrame},\link{getResults}
+\link{buildMoransIDataFrame}, \link{buildDataFrame}
 }

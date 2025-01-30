@@ -1,5 +1,4 @@
-#' Add a variance weighting function
-#' @description Add a weighting function based on the data to the object by modeling variance as a
+#' @description addWeightFunction() adds a weighting function based on the data to the object by modeling variance as a
 #' non-increasing spline as a function of number of events.
 #'
 #' @param resList A results list, from a call to estPis().
@@ -25,18 +24,14 @@
 #' is restricted to a random subset of the data through the maxObs and
 #' maxFeatures parameters.
 #'
-#' @return The input object 'resList' with a slot 'Wfs' added containing the weighting
+#' @return For addWeightFunction(), the input object 'resList' with a slot 'Wfs' added containing the weighting
 #' functions.
 #' @importFrom scam scam
 #' @importFrom stats formula
 #' @export
 #' @seealso \link{buildDataFrame}, \link{estPis}
-#' @examples
-#' example(estPis, "smoppix")
-#' yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))
-#' # Alternative formulation with 'lowestLevelVar'
-#' yangObj2 <- addWeightFunction(yangPims, lowestLevelVar = "section", 
-#' pi = "nn")
+#' @rdname estPis
+#' @order 3
 addWeightFunction <- function(
     resList, pis = resList$pis, designVars, lowestLevelVar,
     maxObs = 1e+05, maxFeatures = 1000, minNumVar = 3, ...) {

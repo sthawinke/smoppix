@@ -1,5 +1,7 @@
-#' Estimate gradients over multiple point patterns
-#' @description Estimate gradients on all single-molecule point patterns of a hyperframe
+#' Estimate gradients over multiple point patterns, and extract the p-values
+#' @description estGradients() estimate gradients on all single-molecule point patterns of a hyperframe. 
+#' estGradientsSingle() is the workhorse function for a single point pattern.
+#' getPvaluesGradient() extracts the p-values of the fits.
 #' @export
 #' @param ... additional arguments, passed on to \link{fitGradient}.
 #' @param gradients The gradients types to be estimated: "overall" or within cell ("cell")
@@ -21,9 +23,8 @@
 #' Baseline intensity corrections for every image or cell are included by default.
 #' The fixed and random effects modify the baseline intensity of the point pattern, not the gradient!
 #' Random effects can lead to problems with fitting and are dissuaded.
-#' estGradientsSingle() is the workhorse for \link{estGradients} on a single feature, getPvaluesGradient extracts the p-values
-#' @return A list with the estimated gradients
-#' @seealso \link{fitGradient}, \link{estGradientsSingle}
+#' @return For estGradients(), a list with the estimated gradients
+#' @seealso \link{fitGradient}
 #' @examples
 #' # Overall Gradients
 #' data(Yang)
@@ -94,12 +95,11 @@ estGradients <- function(hypFrame, gradients = c("overall", if (!is.null(hypFram
 #' @param effects Character vector of fixed and random effects
 #' @param ... Passed onto fitGradient
 #'
-#' @return A list contraining
+#' @return For estGradientsSingle(), a list containing
 #' \item{overall}{Overall gradients}
 #' \item{cell}{Gradients within the cell}
 #' @importFrom Rdpack reprompt
 #' @importFrom spatstat.geom unmark cbind.hyperframe
-#' @seealso \link{estGradients}
 #' @rdname estGradients
 estGradientsSingle <- function(hypFrame, gradients, fixedForm, randomForm,
                                fixedFormSimple, effects = NULL, ...) {
@@ -136,15 +136,13 @@ estGradientsSingle <- function(hypFrame, gradients, fixedForm, randomForm,
     }
     list("overall" = overall, "cell" = cell)
 }
-#' Extract the p-values for gradient fitting
-#'
 #' @param res The fitted gradients
 #' @param gradient The gradient to be extracted, a character vector equal to
 #' "overall" or "cell".
 #' @param method Method of multiplicity correction, see \link{p.adjust}.
 #' Defaults to Benjamini-Hochberg
 #' @importFrom stats p.adjust
-#' @return A vector of p-values
+#' @return For getPvaluesGradient(), a vector of p-values
 #' @export
 #' @rdname estGradients
 getPvaluesGradient <- function(res, gradient, method = "BH"){

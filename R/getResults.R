@@ -1,5 +1,4 @@
-#' Extract test results from the linear model
-#' @description Extract effect size estimates, standard errors and adjusted p-values for a certain parameter
+#' @description getResults() Extracts effect size estimates, standard errors and adjusted p-values for a certain parameter
 #' from a linear model.
 #'
 #' @param obj The result object
@@ -7,13 +6,14 @@
 #' @param parameter The desired parameter
 #' @param moransI A boolean, should results for the Moran's I be returned?
 #'
-#' @return The matrix with results, with p-values in ascending order
+#' @return For getResults(), the matrix with results, with p-values in ascending order
 #' \item{Estimate}{The estimated PI}
 #' \item{se}{The corresponding standard error}
 #' \item{pVal}{The p-value}
 #' \item{pAdj}{The Benjamini-Hochberg adjusted p-value}
 #' @export
 #' @rdname fitLMMs
+#' @order 3
 getResults <- function(obj, pi, parameter, moransI = FALSE) {
     if (!(pi %in% names(obj))) {
         stop("PI ", pi, " not estimated! Run estPis() again with desired pi as argument")

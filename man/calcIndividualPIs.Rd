@@ -25,7 +25,7 @@ calcIndividualPIs(
 
 \item{tabObs}{A table of observed gene frequencies}
 
-\item{pis}{The probabilistic indices to be estimated}
+\item{pis}{The PIs for which weighting functions are constructed}
 
 \item{pSubLeft}{The subsampled overall point pattern returned by subSampleP}
 
