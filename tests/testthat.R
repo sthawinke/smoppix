@@ -68,8 +68,17 @@ nList2 <- lapply(seq_len(nDesignFactors), function(x) {
 names(nList) <- names(nList2) <- rownames(hypFrame) # Matching names is necessary
 hypFrame2 <- addNuclei(hypFrame2, nList, verbose = FALSE)
 # Register the parallel backend
-nCores <- 2#if(.Platform$OS.type == "unix"){2} else{1} # See what goes wrong for windows
-register(MulticoreParam(nCores))
+nCores <- 2
+if(.Platform$OS.type == "unix"){
+  #On unix-based systems, use MulticoreParam
+  register(MulticoreParam(nCores))
+} else {
+  #On windows, use makeCluster
+  library(doParallel)
+  Clus = makeCluster(nCores)
+  registerDoParallel(Clus)
+  register(DoparParam(), default = TRUE)
+}
 #register(SerialParam()) # Switch on when mapping test coverage
 pis <- c("nn", "nnPair", "edge", "centroid", "nnCell", "nnPairCell")
 piEstsBG <- estPis(hypFrame2, pis = pis, null = "background", verbose = FALSE)
