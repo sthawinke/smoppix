@@ -74,3 +74,9 @@
 
 - Simplify documentation and reducing example runtimes by pooling
   manpages using the rdname commend
+
+# 0.99.39
+
+- Further round of reducing documentation and test time by pooling
+  examples
+- Test windows on a single core
