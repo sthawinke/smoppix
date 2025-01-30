@@ -80,3 +80,7 @@
 - Further round of reducing documentation and test time by pooling
   examples
 - Test windows on a single core
+
+# 0.99.40
+
+- Use DOIs in URLs following winbuilder
