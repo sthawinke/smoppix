@@ -85,3 +85,7 @@
 
 - Use DOIs in URLs following winbuilder
 - Use makeCluster() on windows in the examples too
+
+# 0.99.41
+
+- Clean up manpages for functions sharing the same example set
