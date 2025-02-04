@@ -32,7 +32,6 @@
 #' @param nucCol The colour for the nucleus window
 #' @param Nrow Number of rows of the facet plot. Will be calculated if missing
 #' @note palCols sets the pseudo-continuous scale to colour cells.
-#'
 #' @return Plots a facet of point patterns to output
 #' @importFrom spatstat.geom is.hyperframe coords plot.owin
 #' @importFrom grDevices palette
@@ -40,7 +39,6 @@
 #' @importFrom stats aggregate
 #' @importFrom grDevices colorRampPalette
 #' @export
-#'
 #' @examples
 #' example(buildHyperFrame, "smoppix")
 #' plotExplore(hypYang)
@@ -48,9 +46,9 @@
 #' plotExplore(hypYang, features = c("SmRBRb", "SmTMO5b", "SmWER--SmAHK4f"))
 plotExplore <- function(
     hypFrame, features = getFeatures(hypFrame)[seq_len(6)], ppps, numPps,
-    maxPlot = 1e+05, Cex = 1, plotWindows = !is.null(hypFrame$owins), plotPoints = TRUE, 
+    maxPlot = 1e+05, Cex = 1, plotWindows = !is.null(hypFrame$owins), plotPoints = TRUE,
     plotNuclei = !is.null(hypFrame$nuclei), piEsts = NULL,
-    Xlim = NULL, Ylim = NULL, Cex.main = 1.1, Mar = c(0.4, 0.1, 0.8, 0.1), titleVar = NULL,
+    Xlim = NULL, Ylim = NULL, Cex.main = 1.1, Mar = c(0.5, 0.1, 0.9, 0.1), titleVar = NULL,
     piColourCell = NULL, palCols = c("blue", "yellow"), nucCol ="lightblue", border = NULL, CexLegend = 1.4, CexLegendMain = 1.7, Nrow) {
     if (!is.hyperframe(hypFrame)) {
         hypFrame <- hypFrame$hypFrame

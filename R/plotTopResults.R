@@ -42,18 +42,15 @@ plotTopResults <- function(hypFrame, results, pi, effect = "Intercept",
                                "colocalized"
                            } else if (pi %in% c("edge", "centroid")) {
                                "close"
-                           }, sigLevel = 0.05, numFeats = 2, 
-                           piThreshold = switch(effect, Intercept = 0.5, 0), 
+                           }, sigLevel = 0.05, numFeats = 2,
+                           piThreshold = switch(effect, Intercept = 0.5, 0),
                            effectParameter = NULL, ...) {
-    stopifnot(
-        is.hyperframe(hypFrame), is.character(what), sigLevel > 0,
-        sigLevel < 1
-    )
+    stopifnot(is.hyperframe(hypFrame), is.character(what), sigLevel > 0,
+              sigLevel < 1)
     pi <- match.arg(pi, choices = c(
-        "nn", "nnPair", "edge", "centroid", "nnCell",
-        "nnPairCell"
-    ))
-    what <- match.arg(what, choices = c("close", "far", "regular", "aggregated", "antilocalized", "colocalized"))
+        "nn", "nnPair", "edge", "centroid", "nnCell", "nnPairCell"))
+    what <- match.arg(what, choices = c("close", "far", "regular", "aggregated",
+                                        "antilocalized", "colocalized"))
     smallPI <- if (what %in% c("far", "regular", "antilocalized")) {
         FALSE
     } else if (what %in% c("close", "aggregated", "colocalized")) {
