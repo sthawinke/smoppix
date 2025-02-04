@@ -2,7 +2,7 @@
 % Please edit documentation in R/buildMoransIWeightMat.R
 \name{buildMoransIWeightMat}
 \alias{buildMoransIWeightMat}
-\title{Build a weight matrix for Moran's I calculations}
+\title{Build a weight matrix based on nearest neighbourship for Moran's I calculations}
 \usage{
 buildMoransIWeightMat(coordMat, numNNs)
 }
@@ -17,7 +17,11 @@ A sparse matrix of weights for Moran's I statistic, of equal value
 for the numNNs nearest neighbours and zero otherwise
 }
 \description{
-Build a weight matrix for Moran's I calculations
+Build a weight matrix based on nearest neighbourship for Moran's I calculations
+}
+\note{
+The choice of numNN nearest neighbours is far less memory-glutton than
+a weight decaying continuously with distance
 }
 \seealso{
 \link{buildMoransIDataFrame}, \link[ape]{Moran.I}

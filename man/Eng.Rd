@@ -13,7 +13,7 @@
   \item{gene}{Character vector with gene identities}
  \item{experiment,fov}{Design variables}
 }
-\item \strong{EngRois} A list of list of regions of interest (ROIs)
+\item \strong{EngRois} A list of lists of regions of interest (ROIs): the cell boundaries
 }
 }
 \source{

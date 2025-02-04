@@ -24,5 +24,5 @@ Random intercepts are assumed for the random effects, if more
 complicated designs are used, do supply your own formula.
 }
 \seealso{
-\link{fitLMMs}
+\link{fitLMMs},\link[stats]{formula}
 }

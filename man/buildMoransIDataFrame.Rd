@@ -19,10 +19,6 @@ A modified data frame, containing the estimated Moran's I and its variance
 \description{
 Build a data frame with Moran's I as outcome variable
 }
-\note{
-The choice of numNN nearest neighbours is far less memory-glutton than
-a weight decaying continuously with distance
-}
 \seealso{
 \link[ape]{Moran.I}, \link{buildMoransIWeightMat}
 }

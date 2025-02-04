@@ -2,7 +2,7 @@
 #'
 #' Single-molecule spatial transcriptomics smFISH data of Selaginella moellendorffii roots of a
 #' replicated experiment by \insertCite{Yang2023}{smoppix}. Molecule locations, gene identity and design
-#' variables are included. Only a subset of the data, consisting of roots 1-3 and sections 1-5 is included for computational and memory reasons.
+#' variables are included. Only a subset of the data, consisting of roots 1-3 and sections 1-5 is included in the package for computational and memory reasons.
 #' The data are in table format to illustrate conversion to \link[spatstat.geom]{hyperframe} using \link{buildHyperFrame}.
 #'
 #' @format A data matrix
@@ -31,7 +31,7 @@
 #'   \item{gene}{Character vector with gene identities}
 #'  \item{experiment,fov}{Design variables}
 #' }
-#' \item \strong{EngRois} A list of list of regions of interest (ROIs)
+#' \item \strong{EngRois} A list of lists of regions of interest (ROIs): the cell boundaries
 #' }
 #' @source \doi{10.1038/s41586-019-1049-y}
 #' @references

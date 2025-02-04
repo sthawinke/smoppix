@@ -8,7 +8,7 @@
 #' @details Random intercepts are assumed for the random effects, if more
 #' complicated designs are used, do supply your own formula.
 #' @importFrom stats formula
-#' @seealso \link{fitLMMs}
+#' @seealso \link{fitLMMs},\link[stats]{formula}
 buildFormula <- function(Formula, fixedVars, randomVars, outcome = "pi - 0.5") {
     # Allow cell as design variable, both fixed and random
     Formula <- if (missing(Formula) || is.null(Formula)) {

@@ -4,8 +4,6 @@
 #'
 #' @return A modified data frame, containing the estimated Moran's I and its variance
 #' @seealso \link[ape]{Moran.I}, \link{buildMoransIWeightMat}
-#' @note The choice of numNN nearest neighbours is far less memory-glutton than
-#' a weight decaying continuously with distance
 buildMoransIDataFrame <- function(pi, piMat, weightMats) {
     dfMoran <- if (pi %in% c("edge", "centroid")) {
         aggregate(pi ~ cell + image, piMat, FUN = mean, na.rm = TRUE)

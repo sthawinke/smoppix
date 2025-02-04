@@ -1,4 +1,4 @@
-#' Build a weight matrix for Moran's I calculations
+#' Build a weight matrix based on nearest neighbourship for Moran's I calculations
 #' @param coordMat A matrix of centroid coordinates
 #' @inheritParams fitLMMs
 #' @return A sparse matrix of weights for Moran's I statistic, of equal value
@@ -6,6 +6,8 @@
 #' @importFrom Matrix sparseMatrix
 #' @importFrom spatstat.geom nnwhich
 #' @seealso \link{buildMoransIDataFrame}, \link[ape]{Moran.I}
+#' @note The choice of numNN nearest neighbours is far less memory-glutton than
+#' a weight decaying continuously with distance
 buildMoransIWeightMat <- function(coordMat, numNNs) {
     numNNs <- min(numNNs, nrow(coordMat) - 3)
     if (numNNs < 0) {
