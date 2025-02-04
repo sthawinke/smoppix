@@ -18,7 +18,7 @@ plotExplore(
   Xlim = NULL,
   Ylim = NULL,
   Cex.main = 1.1,
-  Mar = c(0.4, 0.1, 0.8, 0.1),
+  Mar = c(0.5, 0.1, 0.9, 0.1),
   titleVar = NULL,
   piColourCell = NULL,
   palCols = c("blue", "yellow"),
@@ -42,7 +42,7 @@ Ignored is pps is given, and throws an error when more than 2 features provided}
 
 \item{maxPlot}{The maximum number of events plotted per point pattern}
 
-\item{Cex}{Point amplification factor}
+\item{Cex, Cex.main}{Point and title expansion factors, repsectively}
 
 \item{plotWindows}{A boolean, should windows be plotted too?}
 
@@ -53,8 +53,6 @@ Ignored is pps is given, and throws an error when more than 2 features provided}
 \item{piEsts}{Set of PI estimates, returned by estPis}
 
 \item{Xlim, Ylim}{plotting limits}
-
-\item{Cex.main}{Expansion factor for the title}
 
 \item{Mar}{the margins}
 
