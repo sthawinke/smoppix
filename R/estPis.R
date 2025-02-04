@@ -1,4 +1,4 @@
-#' Estimates probabilistic indices for single-molecule localization patterns, and add the variance weighting function.
+#' Estimate probabilistic indices for single-molecule localization patterns, and add the variance weighting function.
 #' @description Estimate different probabilistic indices for localization
 #' on all point patterns of a hyperframe, and integrate the results in the same hyperframe. 
 #' estPisSingle() is the workhorse function for a single point pattern.
@@ -6,7 +6,6 @@
 #' @param hypFrame A hyperframe
 #' @param ... additional arguments, passed on to \link{estPisSingle}.
 #' @param verbose A boolean, whether to report on progress of the fitting process.
-#' @param pis The probabilistic indices to be estimated
 #' @param null A character vector, indicating how the null distribution is
 #'  defined. See details.
 #' @param nPointsAll,nPointsAllWithinCell How many points to subsample or simulate to calculate the
@@ -16,8 +15,8 @@
 #' to calculate distance to cell edge or centroid distribution
 #' @param minDiff An integer, the minimum number of events from other genes
 #'  needed for calculation of background distribution of distances.
-#'  Matters mainly for within-cell calculations: cells with too few events are skipped
-#' @param minObsNN An integer, the minimum number of events before a gene is analysed See details.
+#'  Matters mainly for within-cell calculations: cells with too few events are skipped.
+#' @param minObsNN An integer, the minimum number of events required for a gene to be analysed. See details.
 #' @param features A character vector, for which features should the
 #' probabilistic indices be calculated?
 #' @return For estPis(), the hyperframe with the estimated PIs present in it

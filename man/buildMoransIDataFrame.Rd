@@ -9,9 +9,9 @@ buildMoransIDataFrame(pi, piMat, weightMats)
 \arguments{
 \item{pi}{character string indicating the desired PI}
 
-\item{piMat}{A data frame. Will be constructed if not provided, for internal use}
+\item{piMat}{A data frame. Will be constructed if not provided, for internal use.}
 
-\item{weightMats}{List of weight matrices for Moran's I calculation}
+\item{weightMats}{List of weight matrices for Moran's I calculation.}
 }
 \value{
 A modified data frame, containing the estimated Moran's I and its variance

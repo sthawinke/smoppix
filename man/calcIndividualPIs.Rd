@@ -25,7 +25,7 @@ calcIndividualPIs(
 
 \item{tabObs}{A table of observed gene frequencies}
 
-\item{pis}{The PIs for which weighting functions are constructed}
+\item{pis}{The PIs to be estimated or for which weighting functions is to be added}
 
 \item{pSubLeft}{The subsampled overall point pattern returned by subSampleP}
 
@@ -46,9 +46,9 @@ Defaults to bplapply except when looping over features within cells}
 
 \item{minDiff}{An integer, the minimum number of events from other genes
 needed for calculation of background distribution of distances.
-Matters mainly for within-cell calculations: cells with too few events are skipped}
+Matters mainly for within-cell calculations: cells with too few events are skipped.}
 
-\item{minObsNN}{An integer, the minimum number of events before a gene is analysed See details.}
+\item{minObsNN}{An integer, the minimum number of events required for a gene to be analysed. See details.}
 }
 \value{
 A list containing PI entries per feature

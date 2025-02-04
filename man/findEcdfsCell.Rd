@@ -18,7 +18,7 @@ to calculate distance to cell edge or centroid distribution}
 \item{null}{A character vector, indicating how the null distribution is
 defined. See details of \link{estPis}.}
 
-\item{pis}{The PIs for which weighting functions are constructed}
+\item{pis}{The PIs to be estimated or for which weighting functions is to be added}
 
 \item{loopFun}{The function to use to loop over the features.
 Defaults to bplapply except when looping over features within cells}

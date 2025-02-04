@@ -1,13 +1,13 @@
 #' @description addWeightFunction() adds a weighting function based on the data to the object by modeling variance as a
-#' non-increasing spline as a function of number of events.
+#' non-increasing spline as a function of the number of events.
 #'
 #' @param resList A results list, from a call to estPis().
 #' @param designVars A character vector containing all design factors
 #' (both fixed and random), that are also present as variables in hypFrame.
-#' @param ... Additional arguments passed on to the scam::scam function, fitting the spline
+#' @param ... Additional arguments passed on to the \link[scam]{scam} function, fitting the spline
 #' @param maxObs,maxFeatures The maximum number of observations respectively
-#' features for fitting the weighting function. See details
-#' @param pis The PIs for which weighting functions are constructed
+#' features for fitting the weighting function. See details.
+#' @param pis The PIs to be estimated or for which weighting functions is to be added
 #' @param lowestLevelVar The design variable at the lowest level of nesting,
 #' often separating technical replicates. The conditional variance is calculated
 #' within the groups of PIs defined by this variable.

@@ -2,7 +2,7 @@
 % Please edit documentation in R/plotExplore.R
 \name{plotExplore}
 \alias{plotExplore}
-\title{Plot the hyperframe with chosen features highlighted}
+\title{Plot a hyperframe with chosen features highlighted}
 \usage{
 plotExplore(
   hypFrame,
@@ -32,13 +32,13 @@ plotExplore(
 \arguments{
 \item{hypFrame}{The hyperframe}
 
-\item{features}{A small number of features to be highlighted Defaults to the first 5.}
+\item{features}{A small number of features to be highlighted. Defaults to the first 5.}
 
 \item{ppps}{The rownames or indices of the point patterns to be plotted.
 Defaults to maximum 99.}
 
 \item{numPps}{The number of point patterns with highest expression to be shown.
-Ignored is pps is given, and throws an error when more than 2 features provided}
+Ignored is pps is given, and throws an error when more than 2 features are provided.}
 
 \item{maxPlot}{The maximum number of events plotted per point pattern}
 
@@ -75,8 +75,8 @@ respectively}
 Plots a facet of point patterns to output
 }
 \description{
-All points of the hyperframe are plotted in grey, with a subset fearures highlighted.
-A selection of point patterns is plotted that fit in the window, highlighting some features.
+All points of the hyperframe are plotted in grey, with a subset of features highlighted in colour.
+A selection of point patterns is plotted that fit in the window, by default the first six.
 This function is meant for exploratory purposes as well as for visual confirmation of findings.
 }
 \details{

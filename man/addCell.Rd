@@ -18,16 +18,16 @@ addCell(
 )
 }
 \arguments{
-\item{hypFrame}{The hyperframe}
+\item{hypFrame}{A hyperframe}
 
-\item{owins}{the list containing a list of owins per point pattern.
+\item{owins}{A list containing a list of owins per point pattern.
 The length of the list must match the length of the hyperframe, and the names must match.
 Also lists of geojson objects, coordinate matrices or rois are accepted, see details.}
 
 \item{cellTypes}{A dataframe of cell types and other cell-associated covariates.
 If supplied, it must contain a variable 'cell' that is matched with the names of the owins}
 
-\item{findOverlappingOwins}{a boolean, should windows be checked for overlap?}
+\item{findOverlappingOwins}{a boolean, should windows be checked for overlap? Can be computationally intensive.}
 
 \item{warnOut}{a boolean, should warning be issued when points are not
 contained in window?}
@@ -40,7 +40,7 @@ contained in window?}
 FALSE if cell identifiers are already present in the data, and you only want
 to add windows and centroids.}
 
-\item{overwriteCells}{A boolean, should cells already present in hyperframe be replaced?}
+\item{overwriteCells}{A boolean, should cells already present in hyperframe be overwritten?}
 
 \item{...}{Further arguments passed onto \link{convertToOwins}}
 }
@@ -52,15 +52,15 @@ Add the list of the cells and their centroids in the hyperframe,
 check in which cell each event lies and add a cell marker.
 }
 \details{
-First the different cells are checked for overlap per point pattern.
+First the different cells are checked for overlap per point pattern if \textit{findOverlappingOwins} is TRUE.
 If no overlap is found, each event is assigned the cell that it falls into.
 Events not belonging to any cell will trigger a warning and be assigned 'NA'.
 Cell types and other variables are added to the marks if applicable.
 This function employs multithreading through the BiocParallel package. If this leads to excessive memory usage and crashes, try serial processing by
 setting register(SerialParam()).
 Different formats of windows are allowed, if the corresponding packages are installed.
-A dataframe of coordinates or a list of spatstat.geom owins is always allowed, as necessary packages are required by smoppix.
-A 'SpatialPolygonsDataFrame' object is allowed if the polycub package is installed,
+A dataframe of coordinates or a list of spatstat.geom owins is always allowed, as the necessary packages are required by smoppix.
+A 'SpatialPolygonsDataFrame' object is allowed if the 'polycub' package is installed,
 and a list of 'ijroi' object or a single 'ijzip' object if the 'RImageJROI' package is installed.
 }
 \note{

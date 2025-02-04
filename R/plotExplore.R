@@ -1,6 +1,6 @@
-#' Plot the hyperframe with chosen features highlighted
-#' @description All points of the hyperframe are plotted in grey, with a subset fearures highlighted.
-#' A selection of point patterns is plotted that fit in the window, highlighting some features.
+#' Plot a hyperframe with chosen features highlighted
+#' @description All points of the hyperframe are plotted in grey, with a subset of features highlighted in colour.
+#' A selection of point patterns is plotted that fit in the window, by default the first six.
 #' This function is meant for exploratory purposes as well as for visual confirmation of findings.
 #' @details When cell-specific PIs are calculated ("nnCell', "nnCellPair", "edge", "centroid"),
 #' the cells can be coloured by them to investigate their spatial distribution,
@@ -9,11 +9,11 @@
 #' so set that one to change the colour scheme.
 #'
 #' @param hypFrame The hyperframe
-#' @param features A small number of features to be highlighted Defaults to the first 5.
+#' @param features A small number of features to be highlighted. Defaults to the first 5.
 #' @param ppps The rownames or indices of the point patterns to be plotted.
 #' Defaults to maximum 99.
 #' @param numPps The number of point patterns with highest expression to be shown.
-#' Ignored is pps is given, and throws an error when more than 2 features provided
+#' Ignored is pps is given, and throws an error when more than 2 features are provided.
 #' @param maxPlot The maximum number of events plotted per point pattern
 #' @param Cex,Cex.main Point and title expansion factors, repsectively
 #' @param plotWindows A boolean, should windows be plotted too?

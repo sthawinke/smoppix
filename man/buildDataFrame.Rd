@@ -2,7 +2,7 @@
 % Please edit documentation in R/buildDataFrame.R
 \name{buildDataFrame}
 \alias{buildDataFrame}
-\title{Build a data frame for a certain gene and PI, in preparation for mixed model building.}
+\title{Extract a data frame for a certain gene and PI from a fitted object}
 \usage{
 buildDataFrame(
   obj,
@@ -16,31 +16,32 @@ buildDataFrame(
 )
 }
 \arguments{
-\item{obj}{A results object. For distances to fixed objects, the result of a call to \link{estPis}();
+\item{obj}{A results object. For distances to fixed objects, the result of a call to \link{estPis};
 for nearest neighbour distances, the result of a call to \link{addWeightFunction}}
 
-\item{gene}{A character string indicating the desired gene or gene pair (gene separated by double hyphens)}
+\item{gene}{A character string indicating the desired gene or gene pair (genes separated by double hyphens)}
 
 \item{pi}{character string indicating the desired PI}
 
-\item{piMat}{A data frame. Will be constructed if not provided, for internal use}
+\item{piMat}{A data frame. Will be constructed if not provided, for internal use.}
 
-\item{moransI}{A boolean, should Moran's I be calculated
+\item{moransI}{A boolean, should Moran's I be calculated?
 in the linear mixed model}
 
 \item{numNNs}{An integer, the number of nearest neighbours in the
 weight matrix for the calculation of the Moran's I statistic}
 
-\item{weightMats}{List of weight matrices for Moran's I calculation}
+\item{weightMats}{List of weight matrices for Moran's I calculation.}
 
 \item{pppDf}{Dataframe of point pattern-wise variables. It is precalculated
-in fitLMMsSingle for speed, but will be newly constructed when not provided}
+in fitLMMsSingle for speed, but will be newly constructed when not provided.}
 }
 \value{
 A dataframe with estimated PIs and covariates
 }
 \description{
-Build a data frame for a certain gene and PI, in preparation for mixed model building.
+Based on a fitted object, a dataframe with results for a certain feature and
+ PI is built, e.g. in preparation for linear modelling.
 }
 \examples{
 example(addWeightFunction, "smoppix")

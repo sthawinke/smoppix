@@ -1,15 +1,18 @@
-#' Build a data frame for a certain gene and PI, in preparation for mixed model building.
+#' Extract a data frame for a certain gene and PI from a fitted object
+#' @description
+#' Based on a fitted object, a dataframe with results for a certain feature and
+#'  PI is built, e.g. in preparation for linear modelling. 
 #'
-#' @param obj A results object. For distances to fixed objects, the result of a call to \link{estPis}();
+#' @param obj A results object. For distances to fixed objects, the result of a call to \link{estPis};
 #' for nearest neighbour distances, the result of a call to \link{addWeightFunction}
-#' @param gene A character string indicating the desired gene or gene pair (gene separated by double hyphens)
+#' @param gene A character string indicating the desired gene or gene pair (genes separated by double hyphens)
 #' @param pi character string indicating the desired PI
-#' @param piMat A data frame. Will be constructed if not provided, for internal use
-#' @param moransI A boolean, should Moran's I be calculated
+#' @param piMat A data frame. Will be constructed if not provided, for internal use.
+#' @param moransI A boolean, should Moran's I be calculated?
 #' in the linear mixed model
-#' @param weightMats List of weight matrices for Moran's I calculation
+#' @param weightMats List of weight matrices for Moran's I calculation.
 #' @param pppDf Dataframe of point pattern-wise variables. It is precalculated
-#' in fitLMMsSingle for speed, but will be newly constructed when not provided
+#' in fitLMMsSingle for speed, but will be newly constructed when not provided.
 #' @inheritParams fitLMMs
 #' @return A dataframe with estimated PIs and covariates
 #' @export

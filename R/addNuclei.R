@@ -1,12 +1,11 @@
-#' Add nuclei to a hyperframe already containing cells.
-#' @description Add the list of the cells and their centroids in the hyperframe,
-#' check in which cell each event lies and add a cell marker.
+#' Add nuclei to a hyperframe
+#' @description Add the nuclei identifiers to a hyperframe already containing cells.
 #'
-#' @param hypFrame The hyperframe
-#' @param nucleiList the list containing a list of owins per point pattern.
+#' @param hypFrame A hyperframe
+#' @param nucleiList A list containing a list of owins per point pattern.
 #' The length of the list must match the length of the hyperframe, and the names must match.
 #' Also lists of geojson objects, coordinate matrices or rois are accepted, see \link{addCell}
-#' @param coords The names of the coordinates, if the windows are given as sets of coordinates.
+#' @param coords The names of the coordinates, if the nuclei are given as sets of coordinates.
 #' @param verbose A boolean, should verbose output be printed?
 #' @param checkSubset A boolean, should be checked whether nuclei are encompassed by cells?
 #' @param overwriteNuclei A boolean, should existing nuclei be replaced?
@@ -17,7 +16,7 @@
 #' @export
 #' @seealso \link{addCell}, \link{convertToOwins}
 #' @details The nuclei names must match the cell names already present, all other nuclei are dropped. 
-#' A warning is issued when nuclei are not encompassed by their cell
+#' A warning is issued when nuclei are not encompassed by their cell.
 #' @examples
 #' library(spatstat.random)
 #' set.seed(54321)

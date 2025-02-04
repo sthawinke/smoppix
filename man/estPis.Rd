@@ -4,7 +4,7 @@
 \alias{estPis}
 \alias{estPisSingle}
 \alias{addWeightFunction}
-\title{Estimates probabilistic indices for single-molecule localization patterns, and add the variance weighting function.}
+\title{Estimate probabilistic indices for single-molecule localization patterns, and add the variance weighting function.}
 \usage{
 estPis(
   hypFrame,
@@ -51,7 +51,7 @@ addWeightFunction(
 \arguments{
 \item{hypFrame}{A hyperframe}
 
-\item{pis}{The PIs for which weighting functions are constructed}
+\item{pis}{The PIs to be estimated or for which weighting functions is to be added}
 
 \item{verbose}{A boolean, whether to report on progress of the fitting process.}
 
@@ -67,14 +67,14 @@ to calculate distance to cell edge or centroid distribution}
 
 \item{minDiff}{An integer, the minimum number of events from other genes
 needed for calculation of background distribution of distances.
-Matters mainly for within-cell calculations: cells with too few events are skipped}
+Matters mainly for within-cell calculations: cells with too few events are skipped.}
 
-\item{minObsNN}{An integer, the minimum number of events before a gene is analysed See details.}
+\item{minObsNN}{An integer, the minimum number of events required for a gene to be analysed. See details.}
 
 \item{features}{A character vector, for which features should the
 probabilistic indices be calculated?}
 
-\item{...}{Additional arguments passed on to the scam::scam function, fitting the spline}
+\item{...}{Additional arguments passed on to the \link[scam]{scam} function, fitting the spline}
 
 \item{p}{The point pattern}
 
@@ -98,7 +98,7 @@ often separating technical replicates. The conditional variance is calculated
 within the groups of PIs defined by this variable.}
 
 \item{maxObs, maxFeatures}{The maximum number of observations respectively
-features for fitting the weighting function. See details}
+features for fitting the weighting function. See details.}
 
 \item{minNumVar}{The minimum number of observations needed to calculate a
 variance. Groups with fewer replicates are ignored.}
@@ -120,7 +120,7 @@ on all point patterns of a hyperframe, and integrate the results in the same hyp
 estPisSingle() is the workhorse function for a single point pattern.
 
 addWeightFunction() adds a weighting function based on the data to the object by modeling variance as a
-non-increasing spline as a function of number of events.
+non-increasing spline as a function of the number of events.
 }
 \details{
 The null distribution used to calculate the PIs can be either 'background' or 'null'.

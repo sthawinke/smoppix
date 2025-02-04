@@ -86,3 +86,5 @@ output: github_document
 # 0.99.41
 
  - Clean up manpages for functions sharing the same example set
+
+# 0.99.42

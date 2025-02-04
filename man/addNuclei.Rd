@@ -2,7 +2,7 @@
 % Please edit documentation in R/addNuclei.R
 \name{addNuclei}
 \alias{addNuclei}
-\title{Add nuclei to a hyperframe already containing cells.}
+\title{Add nuclei to a hyperframe}
 \usage{
 addNuclei(
   hypFrame,
@@ -15,9 +15,9 @@ addNuclei(
 )
 }
 \arguments{
-\item{hypFrame}{The hyperframe}
+\item{hypFrame}{A hyperframe}
 
-\item{nucleiList}{the list containing a list of owins per point pattern.
+\item{nucleiList}{A list containing a list of owins per point pattern.
 The length of the list must match the length of the hyperframe, and the names must match.
 Also lists of geojson objects, coordinate matrices or rois are accepted, see \link{addCell}}
 
@@ -25,7 +25,7 @@ Also lists of geojson objects, coordinate matrices or rois are accepted, see \li
 
 \item{verbose}{A boolean, should verbose output be printed?}
 
-\item{coords}{The names of the coordinates, if the windows are given as sets of coordinates.}
+\item{coords}{The names of the coordinates, if the nuclei are given as sets of coordinates.}
 
 \item{overwriteNuclei}{A boolean, should existing nuclei be replaced?}
 
@@ -35,12 +35,11 @@ Also lists of geojson objects, coordinate matrices or rois are accepted, see \li
 The hyperframe with nuclei added as entry
 }
 \description{
-Add the list of the cells and their centroids in the hyperframe,
-check in which cell each event lies and add a cell marker.
+Add the nuclei identifiers to a hyperframe already containing cells.
 }
 \details{
 The nuclei names must match the cell names already present, all other nuclei are dropped. 
-A warning is issued when nuclei are not encompassed by their cell
+A warning is issued when nuclei are not encompassed by their cell.
 }
 \examples{
 library(spatstat.random)
