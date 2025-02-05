@@ -22,7 +22,7 @@
 #' @importFrom spatstat.geom inside.owin marks centroid.owin marks<-
 #' @export
 #' @seealso \link{buildHyperFrame}, \link{convertToOwins}
-#' @details First the different cells are checked for overlap per point pattern if \textit{findOverlappingOwins} is TRUE.
+#' @details First the different cells are checked for overlap per point pattern if 'findOverlappingOwins' is TRUE.
 #' If no overlap is found, each event is assigned the cell that it falls into.
 #' Events not belonging to any cell will trigger a warning and be assigned 'NA'.
 #' Cell types and other variables are added to the marks if applicable.
