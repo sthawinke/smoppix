@@ -89,3 +89,7 @@
 # 0.99.41
 
 - Clean up manpages for functions sharing the same example set
+
+# 0.99.42
+
+- Reviewed all manpages, clarifying user options
