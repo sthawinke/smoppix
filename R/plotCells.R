@@ -12,7 +12,8 @@
 #' @param borderCols Colour palette for the borders
 #' @param warnPosition A boolean, should a warning be printed on the
 #'  image that cells are not in their original location?
-#' @param summaryFun A function to summarize the gene-cell table in case multiple genes are plotted.
+#' @param summaryFun A function to summarize the gene-cell table in case multiple 
+#' genes are plotted, to determine which cells are plotted.
 #' Choose "min" for cells with the highest minimum, or "sum" for highest total expression
 #' of the combination of genes
 #' @param plotNuclei A boolean, should nuclei be added?

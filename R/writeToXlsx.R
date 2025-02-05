@@ -24,6 +24,7 @@
 #' writeToXlsx(lmmModels, "tmpFile.xlsx")
 #' file.remove("tmpFile.xlsx")
 #' @importFrom openxlsx createWorkbook writeData addWorksheet saveWorkbook getSheetNames
+#' @seealso \link[openxlsx]{createWorkbook},\link[openxlsx]{writeData}, \link[openxlsx]{addWorksheet}, \link[openxlsx]{saveWorkbook}
 writeToXlsx <- function(obj, file, overwrite = FALSE, digits = 3, 
                         sigLevel = 0.05) {
     stopifnot(is.logical(overwrite), is.character(file), is.numeric(digits), 

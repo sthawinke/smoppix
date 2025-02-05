@@ -1,4 +1,4 @@
-#' Estimate gradients over multiple point patterns, and extract the p-values
+#' Estimate gradients over multiple point patterns, and test for significance
 #' @description estGradients() estimate gradients on all single-molecule point patterns of a hyperframe. 
 #' estGradientsSingle() is the workhorse function for a single point pattern.
 #' getPvaluesGradient() extracts the p-values of the fits.
@@ -140,7 +140,7 @@ estGradientsSingle <- function(hypFrame, gradients, fixedForm, randomForm,
 #' @param gradient The gradient to be extracted, a character vector equal to
 #' "overall" or "cell".
 #' @param method Method of multiplicity correction, see \link{p.adjust}.
-#' Defaults to Benjamini-Hochberg
+#' Defaults to Benjamini-Hochberg.
 #' @importFrom stats p.adjust
 #' @return For getPvaluesGradient(), a vector of p-values
 #' @export

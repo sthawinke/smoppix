@@ -13,7 +13,7 @@
 #' @param ppps The rownames or indices of the point patterns to be plotted.
 #' Defaults to maximum 99.
 #' @param numPps The number of point patterns with highest expression to be shown.
-#' Ignored is pps is given, and throws an error when more than 2 features are provided.
+#' Ignored is pps is given.
 #' @param maxPlot The maximum number of events plotted per point pattern
 #' @param Cex,Cex.main Point and title expansion factors, repsectively
 #' @param plotWindows A boolean, should windows be plotted too?
@@ -29,7 +29,7 @@
 #' respectively
 #' @param plotNuclei A boolean, should the nuclei be plotted?
 #' @param nucCol The colour for the nucleus window
-#' @param Nrow Number of rows of the facet plot. Will be calculated if missing
+#' @param Nrow Number of rows of the facet plot. Will be calculated if missing.
 #' @note palCols sets the pseudo-continuous scale to colour cells.
 #' @return Plots a facet of point patterns to output
 #' @importFrom spatstat.geom is.hyperframe coords plot.owin

@@ -38,7 +38,7 @@ plotExplore(
 Defaults to maximum 99.}
 
 \item{numPps}{The number of point patterns with highest expression to be shown.
-Ignored is pps is given, and throws an error when more than 2 features are provided.}
+Ignored is pps is given.}
 
 \item{maxPlot}{The maximum number of events plotted per point pattern}
 
@@ -69,7 +69,7 @@ Ignored is pps is given, and throws an error when more than 2 features are provi
 \item{CexLegend, CexLegendMain}{Expansion factor for the legend and its title
 respectively}
 
-\item{Nrow}{Number of rows of the facet plot. Will be calculated if missing}
+\item{Nrow}{Number of rows of the facet plot. Will be calculated if missing.}
 }
 \value{
 Plots a facet of point patterns to output

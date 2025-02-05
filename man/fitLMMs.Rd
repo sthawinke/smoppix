@@ -95,7 +95,7 @@ The PI is used as outcome variable in a linear (mixed) model,
 with design variables as regressors. Separate models are fitted for every combination of gene
 and PI. fitLMMsSingle() is the workhorse function for a single point pattern,
 
-getResults() Extracts effect size estimates, standard errors and adjusted p-values for a certain parameter
+getResults() extracts effect size estimates, standard errors and adjusted p-values for a certain parameter
 from a linear model.
 }
 \details{

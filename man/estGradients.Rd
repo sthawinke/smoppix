@@ -4,7 +4,7 @@
 \alias{estGradients}
 \alias{estGradientsSingle}
 \alias{getPvaluesGradient}
-\title{Estimate gradients over multiple point patterns, and extract the p-values}
+\title{Estimate gradients over multiple point patterns, and test for significance}
 \usage{
 estGradients(
   hypFrame,
@@ -60,7 +60,7 @@ random effects and fixed effects without slopes respectively}
 "overall" or "cell".}
 
 \item{method}{Method of multiplicity correction, see \link{p.adjust}.
-Defaults to Benjamini-Hochberg}
+Defaults to Benjamini-Hochberg.}
 }
 \value{
 For estGradients(), a list with the estimated gradients

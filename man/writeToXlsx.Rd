@@ -38,3 +38,6 @@ example(fitLMMs, "smoppix")
 writeToXlsx(lmmModels, "tmpFile.xlsx")
 file.remove("tmpFile.xlsx")
 }
+\seealso{
+\link[openxlsx]{createWorkbook},\link[openxlsx]{writeData}, \link[openxlsx]{addWorksheet}, \link[openxlsx]{saveWorkbook}
+}

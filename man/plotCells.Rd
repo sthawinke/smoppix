@@ -37,7 +37,8 @@ plotCells(
 \item{warnPosition}{A boolean, should a warning be printed on the
 image that cells are not in their original location?}
 
-\item{summaryFun}{A function to summarize the gene-cell table in case multiple genes are plotted.
+\item{summaryFun}{A function to summarize the gene-cell table in case multiple 
+genes are plotted, to determine which cells are plotted.
 Choose "min" for cells with the highest minimum, or "sum" for highest total expression
 of the combination of genes}
 
