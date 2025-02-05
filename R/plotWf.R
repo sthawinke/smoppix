@@ -32,8 +32,8 @@ plotWf <- function(obj, pi = obj$pis[1]) {
         pp <- ggplot(df, aes(x = log10(minP), y = log10(maxP), col = Weight)) +
             geom_point(size = 1) +
             scale_colour_gradient(low = "yellow", high = "blue", name = "Weight") +
-            xlab("Log10 number of events for least expressed gene") +
-            ylab("Log10 number of events for most expressed gene") +
+            xlab("Log10 number of molecules for least expressed gene") +
+            ylab("Log10 number of molecules for most expressed gene") +
             ggtitle(paste(
                 "Weighting function for probabilistic indices of type",
                 pi
