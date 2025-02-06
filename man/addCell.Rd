@@ -52,7 +52,7 @@ Add the list of the cells and their centroids in the hyperframe,
 check in which cell each event lies and add a cell marker.
 }
 \details{
-First the different cells are checked for overlap per point pattern if \textit{findOverlappingOwins} is TRUE.
+First the different cells are checked for overlap per point pattern if 'findOverlappingOwins' is TRUE.
 If no overlap is found, each event is assigned the cell that it falls into.
 Events not belonging to any cell will trigger a warning and be assigned 'NA'.
 Cell types and other variables are added to the marks if applicable.
