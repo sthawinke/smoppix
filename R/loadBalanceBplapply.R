@@ -8,13 +8,13 @@
 #' @param loopFun The looping function, can also be 'lapply' for serial processing
 #'
 #' @return A list with the same length as iterator
-#' @importFrom BiocParallel bpparam bplapply
+#' @importFrom BiocParallel bpparam bplapply bpnworkers
 loadBalanceBplapply <- function(iterator, func, loopFun = "bplapply") {
     loopFunMatched <- match.fun(loopFun)
     if (loopFun == "lapply") {
         loopFunMatched(iterator, func)
     } else if (loopFun == "bplapply") {
-        splitFac <- rep(seq_len(bpparam()$workers), length.out = length(iterator))
+        splitFac <- rep(seq_len(bpnworkers(bpparam())), length.out = length(iterator))
         # Divide the work over the available workers
         piList <- unsplit(f = splitFac, loopFunMatched(
             split(iterator, f = splitFac),

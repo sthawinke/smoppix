@@ -93,3 +93,7 @@
 # 0.99.42
 
 - Reviewed all manpages, clarifying user options
+
+# 0.99.43
+
+- Fixed bug on windows using bpnworkers()
