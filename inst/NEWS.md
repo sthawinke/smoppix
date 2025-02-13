@@ -97,3 +97,7 @@
 # 0.99.43
 
 - Fixed bug on windows using bpnworkers()
+
+# 0.99.44
+
+- Limit number of features to avoid windows timeout
