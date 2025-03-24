@@ -161,10 +161,9 @@ estPisSingle <- function(
         nnPairPis <- vapply(seq_len(ncol(genePairsMat)), FUN.VALUE = double(1), function(i) {
             feat1 <- genePairsMat[1, i]
             feat2 <- genePairsMat[2, i]
-            mean(c(getElement(piList[[feat1]]$pointDists$nnPair, feat2), getElement(
-                piList[[feat2]]$pointDists$nnPair,
-                feat1
-            )))
+            mean(c(getElement(piList[[feat1]]$pointDists$nnPair, feat2), 
+                   getElement(piList[[feat2]]$pointDists$nnPair,feat1))
+                 ) #Equal weights for both direction, regardless of number of observations
         })
         names(nnPairPis) <- apply(genePairsMat, 2, paste, collapse = "--")
     } else {
