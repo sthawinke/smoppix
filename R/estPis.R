@@ -163,7 +163,8 @@ estPisSingle <- function(
             feat2 <- genePairsMat[2, i]
             mean(c(getElement(piList[[feat1]]$pointDists$nnPair, feat2), 
                    getElement(piList[[feat2]]$pointDists$nnPair,feat1))
-                 ) #Equal weights for both direction, regardless of number of observations
+                 )
+            #Each point gets the same weight, variance weighting is implemented downstream
         })
         names(nnPairPis) <- apply(genePairsMat, 2, paste, collapse = "--")
     } else {
