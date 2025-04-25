@@ -30,6 +30,7 @@
 #' @param plotNuclei A boolean, should the nuclei be plotted?
 #' @param nucCol The colour for the nucleus window
 #' @param Nrow Number of rows of the facet plot. Will be calculated if missing.
+#' @param Cols colours vector named by features. If missing a default palette is used
 #' @note palCols sets the pseudo-continuous scale to colour cells.
 #' @return Plots a facet of point patterns to output
 #' @importFrom spatstat.geom is.hyperframe coords plot.owin
@@ -48,7 +49,8 @@ plotExplore <- function(
     maxPlot = 1e+05, Cex = 1, plotWindows = !is.null(hypFrame$owins), plotPoints = TRUE,
     plotNuclei = !is.null(hypFrame$nuclei), piEsts = NULL,
     Xlim = NULL, Ylim = NULL, Cex.main = 1.1, Mar = c(0.5, 0.1, 0.9, 0.1), titleVar = NULL,
-    piColourCell = NULL, palCols = c("blue", "yellow"), nucCol ="lightblue", border = NULL, CexLegend = 1.4, CexLegendMain = 1.7, Nrow) {
+    piColourCell = NULL, palCols = c("blue", "yellow"), nucCol ="lightblue", border = NULL, 
+    CexLegend = 1.4, CexLegendMain = 1.7, Nrow, Cols) {
     if (!is.hyperframe(hypFrame)) {
         hypFrame <- hypFrame$hypFrame
     }
@@ -98,7 +100,8 @@ plotExplore <- function(
     } else if (is.character(ppps)) {
         ppps <- match(ppps, rownames(hypFrame))
     }
-    Cols <- makeCols(features, hypFrame)
+    if(missing(Cols))
+      Cols <- makeCols(features, hypFrame)
     old.par <- par(no.readonly = TRUE)
     on.exit(par(old.par))
     LL <- length(ppps)

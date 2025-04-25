@@ -98,3 +98,7 @@ output: github_document
 # 0.99.44
 
  - Limit number of features to avoid windows timeout
+ 
+# 0.99.45
+
+ - Allow to pass own colours to plotExplore

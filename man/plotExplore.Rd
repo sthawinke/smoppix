@@ -26,7 +26,8 @@ plotExplore(
   border = NULL,
   CexLegend = 1.4,
   CexLegendMain = 1.7,
-  Nrow
+  Nrow,
+  Cols
 )
 }
 \arguments{
@@ -70,6 +71,8 @@ Ignored is pps is given.}
 respectively}
 
 \item{Nrow}{Number of rows of the facet plot. Will be calculated if missing.}
+
+\item{Cols}{colours vector named by features. If missing a default palette is used}
 }
 \value{
 Plots a facet of point patterns to output
