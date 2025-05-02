@@ -9,7 +9,7 @@
 #' @importFrom stats p.adjust
 #' @importFrom methods is
 #' @return A list of matrices, all containing estimate, standard error,
-#' p-value and ajdusted p-value
+#' p-value and adjusted p-value
 #' @seealso \link{fitLMMs}, \link{p.adjust}
 extractResults <- function(
     models, hypFrame, subSet = "piMod", fixedVars = NULL,

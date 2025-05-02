@@ -25,7 +25,7 @@ extractResults(
 }
 \value{
 A list of matrices, all containing estimate, standard error,
-p-value and ajdusted p-value
+p-value and adjusted p-value
 }
 \description{
 Extract results from a list of fitted LMMs. For internal use mainly.
