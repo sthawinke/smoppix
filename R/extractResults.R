@@ -11,8 +11,7 @@
 #' @return A list of matrices, all containing estimate, standard error,
 #' p-value and adjusted p-value
 #' @seealso \link{fitLMMs}, \link{p.adjust}
-extractResults <- function(
-    models, hypFrame, subSet = "piMod", fixedVars = NULL,
+extractResults <- function(models, hypFrame, subSet = "piMod", fixedVars = NULL,
     method = "BH") {
     id <- vapply(models, FUN.VALUE = TRUE, function(x) {
         is(x[[subSet]], "lmerModLmerTest") || is(x[[subSet]], "lm")

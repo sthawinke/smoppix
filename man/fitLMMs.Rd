@@ -15,7 +15,7 @@ fitLMMs(
   returnModels = FALSE,
   Formula = NULL,
   randomNested = TRUE,
-  features = getFeatures(obj),
+  features = getEstFeatures(obj),
   moranFormula = NULL,
   addMoransI = FALSE,
   numNNs = 10,

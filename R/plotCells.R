@@ -129,8 +129,6 @@ plotCells <- function(
                 plot.owin(nn, add = TRUE, border = nucCol)
               }
             }
-            # text(x = Shift[1], y = Shift[2], labels = paste0('Point pattern
-            # ', nam, '\nCell', namIn))
             points(coords(shifted$ppp),
                 col = Cols[marks(shifted$ppp, drop = FALSE)$gene],
                 pch = ".", cex = Cex
@@ -141,7 +139,7 @@ plotCells <- function(
     addLegend(Cols, shiftVec(counter, Ceils[1]))
     if (colourBorder) {
         borderCols <- unique(unlist(borderCols))
-        names(borderCols) <- borderCols #unVals[[seq_along(borderCols)]]
+        names(borderCols) <- borderCols
         addLegend(borderCols, shiftVec(counter + 1, Ceils[1]),
             Pch = 5, Main = borderColVar,
             Cex = 0.7

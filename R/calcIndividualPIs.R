@@ -8,7 +8,7 @@
 #' @return A list containing PI entries per feature
 #' @details For the single-feature nearest neighbour distances, the PI is average
 #' over the point pattern
-#' @importFrom spatstat.geom nndist npoints nncross.ppp
+#' @importFrom spatstat.geom nndist npoints nncross.ppp subset.ppp
 #' @seealso \link{estPis}, \link{calcNNPI}
 calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null,
                               features, ecdfAll, ecdfsCell, loopFun, minDiff, minObsNN) {
@@ -20,8 +20,9 @@ calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null,
         # while limiting computation time in evaluating the negative
         # hypergeometric
     }
-    p <- p[marks(p, drop = FALSE)$gene %in% features,,drop = FALSE] #Only calculate PI for selected features
-    pSplit <- split.ppp(p, f = factor(marks(p, drop = FALSE)$gene))
+    id <- marks(p, drop = FALSE)$gene %in% features
+    #Only calculate PI for selected features
+    pSplit <- split.ppp(p[id], f = factor(marks(p, drop = FALSE)$gene)[id])
     # Divide the work over the available workers
     piList <- loadBalanceBplapply(loopFun = loopFun, iterator = features, func = function(feat) {
         pSub <- pSplit[[feat]] #ppp-object of a single feature

@@ -2,7 +2,7 @@
 % Please edit documentation in R/getFeatures.R
 \name{getFeatures}
 \alias{getFeatures}
-\title{Extract all unique features from an object}
+\title{Extract all unique features from an object, or the ones for which PIs were estimated}
 \usage{
 getFeatures(x)
 }
@@ -10,14 +10,10 @@ getFeatures(x)
 \item{x}{A hyperframe or a results list containing a hyperframe}
 }
 \value{
-A vector of features.
+A vector of features
 }
 \description{
-Extract all unique features from an object
-}
-\details{
-If x is a hyperFrame, all of its features are returned. If it is a result from estPis,
-only features with estimated PIs are returned.
+Extract all unique features from an object, or the ones for which PIs were estimated
 }
 \examples{
 data(Yang)

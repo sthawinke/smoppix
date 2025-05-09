@@ -47,7 +47,7 @@
 #' head(res)
 fitLMMs <- function(
     obj, pis = obj$pis, fixedVars = NULL, randomVars = NULL, verbose = TRUE,
-    returnModels = FALSE, Formula = NULL, randomNested = TRUE, features = getFeatures(obj),
+    returnModels = FALSE, Formula = NULL, randomNested = TRUE, features = getEstFeatures(obj),
     moranFormula = NULL, addMoransI = FALSE, numNNs = 10, ...) {
     stopifnot(
         is.logical(returnModels), is.logical(randomNested), is.logical(addMoransI),
