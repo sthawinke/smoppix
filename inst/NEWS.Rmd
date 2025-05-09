@@ -102,3 +102,7 @@ output: github_document
 # 1.1.1
 
  - Allow to pass own colours to plotExplore
+ 
+# 1.1.2
+
+ - Calculate nnPair PIs only between desired features

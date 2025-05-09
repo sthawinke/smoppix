@@ -2,8 +2,10 @@
 #'
 #' @param x A hyperframe or a results list containing a hyperframe
 #'
-#' @return A vector of features
+#' @return A vector of features.
 #' @export
+#' @details If x is a hyperFrame, all of its features are returned. If it is a result from estPis,
+#' only features with estimated PIs are returned.
 #' @examples
 #' data(Yang)
 #' hypYang <- buildHyperFrame(Yang,
@@ -12,10 +14,9 @@
 #' )
 #' head(getFeatures(hypYang))
 getFeatures <- function(x) {
-    x <- if (is.hyperframe(x)) {
-        x
+    if (is.hyperframe(x)) {
+        unique(unlist(lapply(x$tabObs, names)))
     } else if (is.hyperframe(x$hypFrame)) {
-        x$hypFrame
+        x$features
     }
-    unique(unlist(lapply(x$tabObs, names)))
 }

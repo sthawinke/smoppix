@@ -10,10 +10,14 @@ getFeatures(x)
 \item{x}{A hyperframe or a results list containing a hyperframe}
 }
 \value{
-A vector of features
+A vector of features.
 }
 \description{
 Extract all unique features from an object
+}
+\details{
+If x is a hyperFrame, all of its features are returned. If it is a result from estPis,
+only features with estimated PIs are returned.
 }
 \examples{
 data(Yang)

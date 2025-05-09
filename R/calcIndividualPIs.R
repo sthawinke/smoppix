@@ -20,6 +20,7 @@ calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null,
         # while limiting computation time in evaluating the negative
         # hypergeometric
     }
+    p <- p[marks(p, drop = FALSE)$gene %in% features,,drop = FALSE] #Only calculate PI for selected features
     pSplit <- split.ppp(p, f = factor(marks(p, drop = FALSE)$gene))
     # Divide the work over the available workers
     piList <- loadBalanceBplapply(loopFun = loopFun, iterator = features, func = function(feat) {

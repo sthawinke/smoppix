@@ -91,8 +91,7 @@ addWeightFunction <- function(
                         }
                     })
                 })
-                # If cellId, there is no tapply, cells are the lowest level
-                # anyway
+             # If cellId, there is no tapply, cells are the lowest level anyway
                 tmp <- lapply(ordDesign, function(x) {
                     tab <- table(marks(resList$hypFrame$ppp[[x]])$cell, marks(resList$hypFrame$ppp[[x]])$gene)
                     tab <- tab[setdiff(rownames(tab), "NA"), ]

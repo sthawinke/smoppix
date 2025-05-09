@@ -97,7 +97,7 @@ estPis <- function(
         )
         return(out)
     })
-    list(hypFrame = hypFrame, null = null, pis = pis)
+    list(hypFrame = hypFrame, null = null, pis = pis, features = features)
 }
 #' @param p The point pattern
 #' @param owins,centroids The list of windows corresponding to cells,
