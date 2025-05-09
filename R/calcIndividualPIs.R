@@ -22,7 +22,7 @@ calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null,
     }
     id <- marks(p, drop = FALSE)$gene %in% features
     #Only calculate PI for selected features
-    pSplit <- split.ppp(p[id], f = factor(marks(p, drop = FALSE)$gene)[id])
+    pSplit <- split.ppp(p[id], f = factor(marks(p, drop = FALSE)$gene[id]))
     # Divide the work over the available workers
     piList <- loadBalanceBplapply(loopFun = loopFun, iterator = features, func = function(feat) {
         pSub <- pSplit[[feat]] #ppp-object of a single feature
@@ -61,7 +61,7 @@ calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null,
                    featId <- match(feat, marks(p, drop = FALSE)$gene)
                    #Indices of feature in subsampled ppp
                     selfPoint <- (featId %in% pSubLeft$id)
-                    # Correct for self distances, when point itself is part of the permutation, 
+                    # Correct for self distances, when point itself is part of the permutation,
                     # leading to distance 0, by subtracting one everywhere.
                     # The observed nearest neighbour distances (not the same as self distances) remain part of the permutation
                     selfPointRanks <- selfPoint & distMat > 0
