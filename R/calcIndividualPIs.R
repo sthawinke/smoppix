@@ -73,9 +73,6 @@ calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null,
                     # The observed distance is at least a tie.
                     tiesMat <- round(((tiesMatCor+tiesMatCorId) / (npoints(pSubLeft$Pout) - selfPoint + tiesMatCorId)
                     ) * (NPall - selfPoint))
-                    # tiesMat <- round(((tiesMat - selfPointTies) / (npoints(pSubLeft$Pout) - selfPoint)
-                    #                   ) * (NPall - selfPoint))
-                    # tiesMat[tiesMat==0] <- 1 
                   } else {
                     approxRanks <- round(approxRanks * NPall)
                 }
