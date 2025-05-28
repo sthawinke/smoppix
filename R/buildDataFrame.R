@@ -79,7 +79,7 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
             class(nList) <- "list" # Simplify things
             # Extract pi, and add counts and covariates
             if (cellId || windowId) {
-                Marks <- marks(nList$ppp, drop = FALSE)
+                Marks <- marks(nList$ppp[marks(nList$ppp, drop = FALSE)$gene %in% geneSplit, ], drop = FALSE)
             }
             df <- if (windowId) {
                 piEst <- if (is.null(vec <- getGp(nList$pimRes[[piListNameInner]], gene)[[pi]])) {

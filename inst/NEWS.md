@@ -101,3 +101,17 @@
 # 0.99.44
 
 - Limit number of features to avoid windows timeout
+
+# 1.1.1
+
+- Allow to pass own colours to plotExplore
+
+# 1.1.2
+
+- Calculate nnPair PIs only between desired features
+
+# 1.1.3
+
+- Remove nestRandom function. Nesting of random effects should be
+  controlled through the formula interface of the lme4 package
+- Some speedups in the buildDataFrame function
