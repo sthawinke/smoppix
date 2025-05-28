@@ -13,8 +13,6 @@
 #' Otherwise only summary statistics are returned
 #' @param Formula A formula; if not supplied it will be constructed
 #' from the fixed and random variables
-#' @param randomNested A boolean, indicating if random effects are nested within
-#' point patterns. See details.
 #' @param features The features for which to fit linear mixed models.
 #' Defaults to all features in the object
 #' @param moranFormula Formula for Moran's I model fitting
@@ -29,9 +27,10 @@
 #' but the safest is to construct the formula yourself and pass it onto fitLMMs.
 #'
 #' It is by default assumed that random effects are nested within the point
-#'  patterns. This means for instance that cells with the same name but from
-#'  different point patterns are assigned to different random effects. Set
-#'  'randomNested' to FALSE to override this behaviour.
+#'  patterns, through the (1|upperClass/lowerClass) term in the lme4 formula. 
+#'  This means for instance that cells with the same name but from
+#'  different point patterns are assigned to different random effects. 
+#'  Supply a custom forula to override this behaviour
 #'
 #'  The Moran's I statistic is used to test whether cell-wise PIs ("nnCell", "nnCellPair", "edge" and "centroid") 
 #'  are spatially autocorrelated across the images. The numeric value of the PI is assigned to the 
@@ -47,10 +46,10 @@
 #' head(res)
 fitLMMs <- function(
     obj, pis = obj$pis, fixedVars = NULL, randomVars = NULL, verbose = TRUE,
-    returnModels = FALSE, Formula = NULL, randomNested = TRUE, features = getEstFeatures(obj),
+    returnModels = FALSE, Formula = NULL, features = getEstFeatures(obj),
     moranFormula = NULL, addMoransI = FALSE, numNNs = 10, ...) {
     stopifnot(
-        is.logical(returnModels), is.logical(randomNested), is.logical(addMoransI),
+        is.logical(returnModels), is.logical(addMoransI),
         is.numeric(numNNs)
     )
     if (addMoransI) {
@@ -60,7 +59,7 @@ fitLMMs <- function(
     out <- lapply(pis, function(pi) {
         fitLMMsSingle(obj,
             pi = pi, verbose = verbose, fixedVars = fixedVars, randomVars = randomVars,
-            returnModels = returnModels, Formula = Formula, randomNested = randomNested,
+            returnModels = returnModels, Formula = Formula, 
             features = features, weightMats = weightMats, moranFormula = moranFormula,
             addMoransI = addMoransI, ...
         )
@@ -78,7 +77,7 @@ fitLMMs <- function(
 #' @order 2
 fitLMMsSingle <- function(
     obj, pi, fixedVars, randomVars, verbose, returnModels,
-    Formula, randomNested, features, addMoransI, weightMats, moranFormula) {
+    Formula, features, addMoransI, weightMats, moranFormula) {
     pi <- match.arg(pi, choices = c(
         "nn", "nnPair", "edge", "centroid", "nnCell", "nnPairCell"))
     noWeight <- pi %in% c("edge", "centroid")
@@ -179,9 +178,6 @@ fitLMMsSingle <- function(
               fitPiModel(moranFormula, finalDf, contrastsMoran, Control,
                   MM = MMmoran, Weight = W / sum(W, na.rm = TRUE)
               )
-          } # Run this before nesting
-          if (randomNested) {
-              df <- nestRandom(df, randomVarsSplit, intersect(fixedVars, getPPPvars(obj)))
           }
           contrasts <- contrasts[!names(contrasts) %in% vapply(df, FUN.VALUE = TRUE, is.numeric)]
           piMod <- fitPiModel(Formula, df, contrasts,

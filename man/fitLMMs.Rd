@@ -14,7 +14,6 @@ fitLMMs(
   verbose = TRUE,
   returnModels = FALSE,
   Formula = NULL,
-  randomNested = TRUE,
   features = getEstFeatures(obj),
   moranFormula = NULL,
   addMoransI = FALSE,
@@ -30,7 +29,6 @@ fitLMMsSingle(
   verbose,
   returnModels,
   Formula,
-  randomNested,
   features,
   addMoransI,
   weightMats,
@@ -55,9 +53,6 @@ Otherwise only summary statistics are returned}
 
 \item{Formula}{A formula; if not supplied it will be constructed
 from the fixed and random variables}
-
-\item{randomNested}{A boolean, indicating if random effects are nested within
-point patterns. See details.}
 
 \item{features}{The features for which to fit linear mixed models.
 Defaults to all features in the object}
@@ -106,9 +101,10 @@ intercepts are fitted for them by default. Providing them separated by '\' or
 but the safest is to construct the formula yourself and pass it onto fitLMMs.
 
 It is by default assumed that random effects are nested within the point
- patterns. This means for instance that cells with the same name but from
- different point patterns are assigned to different random effects. Set
- 'randomNested' to FALSE to override this behaviour.
+ patterns, through the (1|upperClass/lowerClass) term in the lme4 formula. 
+ This means for instance that cells with the same name but from
+ different point patterns are assigned to different random effects. 
+ Supply a custom forula to override this behaviour
 
  The Moran's I statistic is used to test whether cell-wise PIs ("nnCell", "nnCellPair", "edge" and "centroid") 
  are spatially autocorrelated across the images. The numeric value of the PI is assigned to the 

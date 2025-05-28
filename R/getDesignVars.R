@@ -1,4 +1,4 @@
-#' Return all design variables, both at the level of the point pattern and the
+#' getDesignVars() returns all design variables, both at the level of the point pattern and the
 #' level of the event
 #'
 #' @param x The results list, output from estPis
@@ -10,19 +10,17 @@
 getDesignVars <- function(x) {
     c(getPPPvars(x), getEventVars(x))
 }
-#' Extract variables from point patterns
+#' getPPPvars() extract variables related to point patterns
 #'
 #' @param exclude variables to exclude
-#' @return A vector of variables
 #' @rdname getDesignVars
 getPPPvars <- function(x, exclude = c(
                            "tabObs", "centroids", "owins", "ppp", "pimRes",
-                           "image", "inSeveralCells", "nuclei"
+                           "image", "nuclei"
                        )) {
     setdiff(names(getHypFrame(x)), exclude)
 }
-#' Extract variables from events (the marks)
-#' @return A vector of variables
+#' getEventVars() extracts variables related to events, e.g. the cell (the marks)
 #' @rdname getDesignVars
 getEventVars <- function(x, exclude = c("x", "y", "z")) {
     setdiff(unique(unlist(lapply(getHypFrame(x)$ppp, function(ppp) {

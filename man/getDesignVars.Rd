@@ -4,15 +4,14 @@
 \alias{getDesignVars}
 \alias{getPPPvars}
 \alias{getEventVars}
-\title{Return all design variables, both at the level of the point pattern and the
+\title{getDesignVars() returns all design variables, both at the level of the point pattern and the
 level of the event}
 \usage{
 getDesignVars(x)
 
 getPPPvars(
   x,
-  exclude = c("tabObs", "centroids", "owins", "ppp", "pimRes", "image", "inSeveralCells",
-    "nuclei")
+  exclude = c("tabObs", "centroids", "owins", "ppp", "pimRes", "image", "nuclei")
 )
 
 getEventVars(x, exclude = c("x", "y", "z"))
@@ -24,18 +23,14 @@ getEventVars(x, exclude = c("x", "y", "z"))
 }
 \value{
 A vector of design variables
-
-A vector of variables
-
-A vector of variables
 }
 \description{
-Return all design variables, both at the level of the point pattern and the
+getDesignVars() returns all design variables, both at the level of the point pattern and the
 level of the event
 
-Extract variables from point patterns
+getPPPvars() extract variables related to point patterns
 
-Extract variables from events (the marks)
+getEventVars() extracts variables related to events, e.g. the cell (the marks)
 }
 \details{
 getDesignVars() returns all design variables, \link{getPPPvars} returns
