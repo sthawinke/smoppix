@@ -25,7 +25,7 @@ getGp <- function(x, gp, drop = TRUE, Collapse = "--") {
     } else if (isMat <- is.matrix(x)) {
         Names <- rownames(x)
     }
-    if (gp %in% Names) {
+    if (any(gp == Names)) {
         if (isVec) {
             x[[gp]]
         } else {
@@ -34,7 +34,7 @@ getGp <- function(x, gp, drop = TRUE, Collapse = "--") {
     } else {
         geneSplit <- sund(gp)
         gp <- paste(rev(geneSplit), collapse = Collapse)
-        if (gp %in% Names) {
+        if (any(gp == Names)) {
             if (isVec) {
                 x[[gp]]
             } else {

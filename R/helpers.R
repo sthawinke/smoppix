@@ -101,6 +101,19 @@ addDesign <- function(hypFrame, desMat, designVec){
     rownames(hypFrame) <- hypFrame$image
     hypFrame
 }
+#' Nest random effects within fixed variables, in case the names are the same
+#'
+#' @param df The dataframe
+#' @param randomVars The random variables
+#' @param fixedVars The fixed variables
+#'
+#' @return The dataframe with adapted randomVars
+nestRandom <- function(df, randomVars, fixedVars) {
+  for (i in randomVars) {
+    df[, i] <- apply(df[, c(fixedVars, i), drop = FALSE], 1, paste, collapse = "_")
+  }
+  df
+}
 #' Extract coordinates from a point pattern or data frame
 #' @param x the point pattern, dataframe or matrix
 #' @return the matrix of coordinates
