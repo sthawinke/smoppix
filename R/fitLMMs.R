@@ -165,8 +165,31 @@ fitLMMsSingle <- function(
     names(discreteVars) <- discreteVars
     contrasts <- lapply(discreteVars, function(x) named.contr.sum)
   }
+  prepMat = prepareMatrix(obj, pi = pi)
+  prepareMatrix = function(obj, pi){
+    foo <- checkPi(obj, pi)
+    if (!(pi %in% c("edge", "centroid")) && is.null(obj$Wfs[[pi]])) {
+      stop("No weight function added yet, run addWeightFunction first!")
+    }
+    # Establish whether pi and gene match, and call separate functions
+    windowId <- pi %in% c("edge", "centroid")
+    cellId <- grepl("Cell", pi)
+    if (cellId) {
+      piSub <- sub("Cell", "", pi)
+    }
+    piListNameInner <- if (windowId) {
+      "windowDists"
+    } else if (cellId) {
+      "withinCellDists"
+    } else {
+      "pointDists"
+    }
+    newMat = matrix(NA, nrow = , ncol = )
+    #FINISH this!
+  }
+  
   models <- loadBalanceBplapply(Features, function(gene) {
-    df <- buildDataFrame(obj, gene = gene, pi = pi, pppDf = pppDf)
+    df <- buildDataFrame(obj, gene = gene, pi = pi, pppDf = pppDf, prepMat = prepMat)
     out <- if (is.null(df) || sum(!is.na(df$pi)) < 3) {
       NULL
     } else {

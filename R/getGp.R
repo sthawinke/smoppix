@@ -32,8 +32,7 @@ getGp <- function(x, gp, drop = TRUE, Collapse = "--") {
             x[gp, , drop = drop]
         }
     } else {
-        geneSplit <- sund(gp)
-        gp <- paste(rev(geneSplit), collapse = Collapse)
+        gp <- paste(rev(sund(gp)), collapse = Collapse)
         if (any(gp == Names)) {
             if (isVec) {
                 x[[gp]]

@@ -112,6 +112,5 @@
 
 # 1.1.3
 
-- Remove nestRandom function. Nesting of random effects should be
-  controlled through the formula interface of the lme4 package
 - Some speedups in the buildDataFrame function
+- With reference to bioRxiv preprint
