@@ -98,7 +98,7 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
                 marks(nList$ppp, drop = FALSE)$gene == geneSplit
               }
               Marks <- marks(nList$ppp[idG, ], drop = FALSE)
-              Marks < Marks[Marks$cell != "NA",]
+              Marks <- Marks[Marks$cell != "NA",]
               piEst <- if(misPrep){
                 vapply(nList$pimRes[[piListNameInner]], FUN.VALUE = double(1), function(y) {
                   getGp(y[[piSub]], gene, notFoundReturn = NA)
@@ -216,7 +216,7 @@ prepareMatrix <- function(obj, pi, features){
   } else {
     for(sam in samples){
       featVec <- obj$hypFrame[[sam, "pimRes"]][[piListNameInner]][[pi]]
-      newMat[sam, features] <-  featVec[features]
+      newMat[sam, features] <-featVec[features]
     }
   }
   return(newMat)
