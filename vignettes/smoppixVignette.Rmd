@@ -375,10 +375,10 @@ Probabilistic indices are features extracted from point patterns that can serve 
 if(reqFunky <- require(funkycells)){
     data("TNBC_pheno")
     data("TNBC_meta")
-    TNBC_pheno$age <- TNBC_meta$Age[match(TNBC_pheno$Person, TNBC_meta$Person)]
+    TNBC_pheno$Age <- TNBC_meta$Age[match(TNBC_pheno$Person, TNBC_meta$Person)]
     TNBC_pheno$Class <- ifelse(TNBC_pheno$Class=="0", "mixed", "compartentalised")
     hypTNBC <- buildHyperFrame(TNBC_pheno, coordVars = c("cellx", "celly"), 
-                               imageVars = c("Person", "Class", "age"), featureName = "Phenotype")
+                               imageVars = c("Person", "Class", "Age"), featureName = "Phenotype")
     hypTNBC <- hypTNBC[order(hypTNBC$Class),] #Order by class for plots
 }
 ```
@@ -397,19 +397,20 @@ if(reqFunky){
     #Select feature through hypothesis tests
     pisTNBC = estPis(hypTNBC, pis = c("nn", "nnPair"), null = "background", verbose = FALSE)
     pisTNBC = addWeightFunction(pisTNBC)
-    TNBClmms = fitLMMs(pisTNBC, fixedVars = c("age", "Class"), verbose = TRUE)
+    TNBClmms = fitLMMs(pisTNBC, fixedVars = c("Age", "Class"), verbose = TRUE)
     #Extract PIs of significant features
     nnRes = getResults(TNBClmms, "nn", "Class")
     sigLevel = 0.05
     nnSig = rownames(nnRes)[nnRes[, "pAdj"]<sigLevel]
     nnPairRes = getResults(TNBClmms, "nnPair", "Class")
     nnPairSig = rownames(nnPairRes)[nnPairRes[, "pAdj"]<sigLevel & !is.na(nnPairRes[, "pAdj"])]
-    nnPis = t(vapply(pisTNBC$hypFrame$pimRes, FUN.VALUE = double(length(nnSig)+ length(nnPairSig)), function(x){
+    nnPis = as.matrix(vapply(pisTNBC$hypFrame$pimRes, FUN.VALUE = double(length(nnSig)+ length(nnPairSig)), function(x){
         c(if(length(nnSig)) x$pointDists$nn[nnSig],
           if(length(nnPairSig)) vapply(nnPairSig, FUN.VALUE = 1, function(y) {
               getGp(gp = y, x$pointDists$nnPair, notFoundReturn = NA)
           }))
     }))
+    if(nrow(nnPis)==1){nnPis = t(nnPis)}
     colnames(nnPis) = c(nnSig, nnPairSig)
     nnPis[is.na(nnPis)] = 0.5 #Replace missing values by 0.5
     if(require(glmnet, quietly = TRUE)){

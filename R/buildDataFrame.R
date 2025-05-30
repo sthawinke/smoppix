@@ -98,6 +98,7 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
                 marks(nList$ppp, drop = FALSE)$gene == geneSplit
               }
               Marks <- marks(nList$ppp[idG, ], drop = FALSE)
+              Marks < Marks[Marks$cell != "NA",]
               piEst <- if(misPrep){
                 vapply(nList$pimRes[[piListNameInner]], FUN.VALUE = double(1), function(y) {
                   getGp(y[[piSub]], gene, notFoundReturn = NA)
@@ -121,7 +122,7 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
                 npVecOut[rownames(npVec),] <- npVec
                 data.frame(pi = piEst, cellCovars, npVecOut)
             } else {
-              piEst <- getGp(if(misPrep){nList$pimRes[[piListNameInner]][[pi]]} else {prepMat[n, ]}, 
+              piEst <- getGp(if(misPrep){nList$pimRes[[piListNameInner]][[pi]]} else {prepMat[n, ]},
                              gene, notFoundReturn = NA)
               npVec <- vapply(geneSplit, FUN.VALUE = integer(1), function(x) {
                 getGp(nList$tabObs, x, notFoundReturn = NA)
