@@ -60,7 +60,7 @@ fitLMMs <- function(
   out <- lapply(pis, function(pi) {
     fitLMMsSingle(obj, pi = pi, verbose = verbose, fixedVars = fixedVars, randomVars = randomVars,
         returnModels = returnModels, Formula = Formula, randomNested = randomNested,
-        features = features, weightMats = weightMats, moranFormula = moranFormula,
+        features = sort(features), weightMats = weightMats, moranFormula = moranFormula,
         addMoransI = addMoransI, ...
     )
   })
@@ -80,8 +80,8 @@ fitLMMsSingle <- function(
     Formula, randomNested, features, addMoransI, weightMats, moranFormula) {
   pi <- match.arg(pi, choices = c(
     "nn", "nnPair", "edge", "centroid", "nnCell", "nnPairCell"))
-  noWeight <- pi %in% c("edge", "centroid")
-  if (noWeight) {
+  foo <- checkPi(obj, pi)
+  if (windowId <- (pi %in% c("edge", "centroid"))) {
     randomVars <- setdiff(union(randomVars, "image/cell"), c("image", "cell"))
     # For edge and centroid, cell is nested within image
   }
@@ -164,7 +164,9 @@ fitLMMsSingle <- function(
     names(discreteVars) <- discreteVars
     contrasts <- lapply(discreteVars, function(x) named.contr.sum)
   }
-  prepMat = prepareMatrix(obj, pi = pi)
+  if(!windowId){
+    prepMat <- prepareMatrix(obj, pi = pi, features = Features)
+  }
   models <- loadBalanceBplapply(Features, function(gene) {
     df <- buildDataFrame(obj, gene = gene, pi = pi, pppDf = pppDf, prepMat = prepMat)
     out <- if (is.null(df) || sum(!is.na(df$pi)) < 3) {

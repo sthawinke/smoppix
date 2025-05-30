@@ -34,7 +34,7 @@ makeDesignVar <- function(x, designVars, sep = "_") {
 #' genes <- paste0("gene", seq_len(4))
 #' makePairs(genes)
 makePairs <- function(genes) {
-    apply(combn(genes, 2), 2, paste, collapse = "--")
+    apply(combn(sort(genes), 2), 2, paste, collapse = "--")
 }
 #' Subsample a point pattern when it is too large
 #'

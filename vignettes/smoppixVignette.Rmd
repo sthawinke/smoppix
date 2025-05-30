@@ -258,8 +258,7 @@ A second dataset was published in a [paper](https://www.nature.com/articles/s415
 data(Eng)
 hypEng <- buildHyperFrame(Eng,
     coordVars = c("x", "y"),
-    imageVars = c("fov", "experiment")
-)
+    imageVars = c("fov", "experiment"))
 ```
 
 Plotting an overview
@@ -288,8 +287,7 @@ First, we test for vicinity of the RNA molecules to cell boundaries or centroids
 ```{r}
 engPis <- estPis(hypEng,
     pis = c("edge", "centroid", "nnCell", "nnPairCell"),
-    null = "CSR", verbose = FALSE
-)
+    null = "CSR", verbose = FALSE)
 ```
 
 As before, the weight function needs to be added for the nearest neighbour PIs.

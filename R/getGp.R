@@ -20,27 +20,23 @@ getGp <- function(x, gp, drop = TRUE, Collapse = "--") {
     if (!length(x)) {
         return(NULL)
     }
-    if (isVec <- (is.vector(x) || is.list(x) || is.table(x))) {
-        Names <- names(x)
-    } else if (isMat <- is.matrix(x)) {
-        Names <- rownames(x)
+    isVec <- (is.vector(x) || is.list(x) || is.table(x))
+    if(inherits(attempt <- tryGetEl(x, gp, isVec), "try-error")){
+      gp <- paste(rev(sund(gp)), collapse = Collapse)
+      attempt <- tryGetEl(x, gp, isVec)
     }
-    if (any(gp == Names)) {
-        if (isVec) {
-            x[[gp]]
-        } else {
-            x[gp, , drop = drop]
-        }
-    } else {
-        gp <- paste(rev(sund(gp)), collapse = Collapse)
-        if (any(gp == Names)) {
-            if (isVec) {
-                x[[gp]]
-            } else {
-                x[gp, , drop = drop]
-            }
-        } else {
-            NULL
-        }
-    }
+    attempt <- if(inherits(attempt, "try-error")){
+      NULL
+    } else {attempt}
+    return(attempt)
+}
+getEl = function(x, gp, isVec){
+  if (isVec) {
+    x[[gp]]
+  } else {
+    x[gp, , drop = drop]
+  }
+}
+tryGetEl = function(...){
+  try(getEl(...), silent = TRUE)
 }

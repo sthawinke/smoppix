@@ -1,7 +1,7 @@
 #' Extract a data frame for a certain gene and PI from a fitted object
 #' @description
 #' Based on a fitted object, a dataframe with results for a certain feature and
-#'  PI is built, e.g. in preparation for linear modelling. 
+#'  PI is built, e.g. in preparation for linear modelling.
 #'
 #' @param obj A results object. For distances to fixed objects, the result of a call to \link{estPis};
 #' for nearest neighbour distances, the result of a call to \link{addWeightFunction}
@@ -13,6 +13,7 @@
 #' @param weightMats List of weight matrices for Moran's I calculation.
 #' @param pppDf Dataframe of point pattern-wise variables. It is precalculated
 #' in fitLMMsSingle for speed, but will be newly constructed when not provided.
+#' @param prepMat A preconstructed matrix with PI estimates to avoid looping
 #' @inheritParams fitLMMs
 #' @return A dataframe with estimated PIs and covariates
 #' @export
@@ -30,7 +31,7 @@
 #' summary(mixedMod)
 #' # Evidence for aggregation
 buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
-                               "nnCell", "nnPairCell"), piMat, moransI = FALSE, 
+                               "nnCell", "nnPairCell"), piMat, moransI = FALSE,
                            numNNs = 8, weightMats, pppDf, prepMat) {
     pi <- match.arg(pi)
     if (missing(pppDf)) {
@@ -73,6 +74,7 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
         if (cellId || windowId) {
             eventVars <- getEventVars(obj)
         }
+        misPrep <- missing(prepMat)
         piDfs <- lapply(seq_len(nrow(obj$hypFrame)), function(n) {
             nList <- obj$hypFrame[n, , drop = TRUE]
             class(nList) <- "list" # Simplify things
@@ -97,13 +99,17 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
                 }
                 return(dfWin)
             } else if (cellId) {
-                piEst <- vapply(nList$pimRes[[piListNameInner]], FUN.VALUE = double(1), function(y) {
+              piEst <- if(misPrep){
+                vapply(nList$pimRes[[piListNameInner]], FUN.VALUE = double(1), function(y) {
                     if (is.null(vec <- getGp(y[[piSub]], gene))) {
                         NA
                     } else {
                         vec
                     }
                 })
+              } else {
+                getGp(t(prepMat[names(nList$pimRes[[piListNameInner]]),]), gene)
+              }
                 cellCovars <- Marks[, eventVars, drop = FALSE]
                 cellCovars <- cellCovars[match(names(piEst), cellCovars$cell), setdiff(
                     colnames(cellCovars),
@@ -129,11 +135,15 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
                 }
                 data.frame(pi = piEst, cellCovars, npVec)
             } else {
-                piEst <- if (is.null(vec <- getGp(nList$pimRes[[piListNameInner]][[pi]], gene))) {
-                    NA
-                } else {
-                    vec
-                }
+              piEst <-  if(misPrep){
+                  if (is.null(vec <- getGp(nList$pimRes[[piListNameInner]][[pi]], gene))) {
+                      NA
+                  } else {
+                      vec
+                  }
+              } else {
+                  getGp(prepMat[n, ], gene)
+              }
                 npVec <- if (all(geneSplit %in% names(to <- nList$tabObs))) {
                     to[geneSplit]
                 } else {
@@ -169,17 +179,17 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
       } else if (moransI) {
           if (missing(weightMats)) {
               weightMats <- lapply(getHypFrame(obj)$centroids, buildMoransIWeightMat,
-                  numNNs = numNNs
-              )
+                  numNNs = numNNs)
               names(weightMats) <- getHypFrame(obj)$image
           }
         piMat <- buildMoransIDataFrame(piMat = piMat, pi = pi, weightMats = weightMats)
       }
     return(piMat)
 }
-prepareMatrix = function(obj, pi){
-  foo <- checkPi(obj, pi)
-  if (!(windowId <- (pi %in% c("edge", "centroid"))) && is.null(obj$Wfs[[pi]])) {
+prepareMatrix <- function(obj, pi, features){
+  if(windowId <- (pi %in% c("edge", "centroid"))){
+    stop("prepareMatrix() not implemented yet for pi ", pi, " !")
+  } else if (is.null(obj$Wfs[[pi]])) {
     stop("No weight function added yet, run addWeightFunction first!")
   }
   # Establish whether pi and gene match, and call separate functions
@@ -193,17 +203,43 @@ prepareMatrix = function(obj, pi){
   } else {
     "pointDists"
   }
-  features = unique(unlist(lapply(obj$hypFrame$pimRes, function(x){
-    names(x[[piListNameInner]][[pi]])
-    })))
-  samples = if(cellId){
-    
-  } else {rownames(obj$hypFrame)}
-  newMat = matrix(NA, nrow = length(samples), ncol = length(features), 
-                  dimnames = list(samples, features))
-  for(sam in samples){
-    featVec = obj$hypFrame[[sam, "pimRes"]][[piListNameInner]][[pi]]
-    newMat[sam, names(featVec)] = featVec
+  if(missing(features)){
+    features <- if(windowId){
+      unique(unlist(lapply(obj$hypFrame$pimRes, function(x) names(x[[piListNameInner]]))))
+    } else if(cellId){
+      unique(unlist(lapply(obj$hypFrame$pimRes, function(x) lapply(x[[piListNameInner]], function(y) names(y[[piSub]])))))
+    } else {
+      unique(unlist(lapply(obj$hypFrame$pimRes, function(x){
+        names(x[[piListNameInner]][[pi]])
+      })))
+    }
   }
-  #FINISH this!
+  samples <- if(windowId){
+    unique(unlist(lapply(obj$hypFrame$pimRes, function(x) lapply(x[[piListNameInner]], function(y) names(y[[pi]])))))
+  } else if(cellId){
+    unique(unlist(lapply(obj$hypFrame$pimRes, function(x) names(x[[piListNameInner]]))))
+  } else {rownames(obj$hypFrame)}
+  newMat <- matrix(NA, nrow = length(samples), ncol = length(features),
+                  dimnames = list(samples, features))
+  if(windowId){
+    for(feat in features){
+      featVec = obj$hypFrame[[sam, "pimRes"]][[piListNameInner]][[feat]][[pi]]
+      newMat[sam, features] = featVec[features]
+    }
+  } else if(cellId){
+    for(sam in rownames(obj$hypFrame)){
+      samVec <- names(obj$hypFrame$pimRes[[sam]][[piListNameInner]])
+      for(samIn in samVec){
+        featVec <- obj$hypFrame$pimRes[[sam]][[piListNameInner]][[samIn]][[piSub]]
+        newMat[samIn, features] = featVec[features]
+      }
+
+    }
+  } else {
+    for(sam in samples){
+      featVec <- obj$hypFrame[[sam, "pimRes"]][[piListNameInner]][[pi]]
+      newMat[sam, features] =  featVec[features]
+    }
+  }
+  return(newMat)
 }

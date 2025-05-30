@@ -161,7 +161,7 @@ yangPims <- estPis(hypYang[c(seq_len(4), seq(27, 29)), ], pis = "nn",
 # Univariate nearest neighbour distances
 yangObj <- addWeightFunction(yangPims, designVars = c("day", "root")) 
 # Add the weight functions 
-yangObj2 <- addWeightFunction(yangPims, lowestLevelVar = "section", 
+yangObj <- addWeightFunction(yangPims, lowestLevelVar = "section", 
 pi = "nn")
 # Alternative formulation with 'lowestLevelVar'
 }

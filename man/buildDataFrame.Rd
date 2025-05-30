@@ -12,7 +12,8 @@ buildDataFrame(
   moransI = FALSE,
   numNNs = 8,
   weightMats,
-  pppDf
+  pppDf,
+  prepMat
 )
 }
 \arguments{
@@ -35,6 +36,8 @@ weight matrix for the calculation of the Moran's I statistic}
 
 \item{pppDf}{Dataframe of point pattern-wise variables. It is precalculated
 in fitLMMsSingle for speed, but will be newly constructed when not provided.}
+
+\item{prepMat}{A preconstructed matrix with PI estimates to avoid looping}
 }
 \value{
 A dataframe with estimated PIs and covariates
