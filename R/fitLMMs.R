@@ -58,11 +58,10 @@ fitLMMs <- function(
     names(weightMats) <- getHypFrame(obj)$image
   }
   out <- lapply(pis, function(pi) {
-    fitLMMsSingle(obj,
-                  pi = pi, verbose = verbose, fixedVars = fixedVars, randomVars = randomVars,
-                  returnModels = returnModels, Formula = Formula, randomNested = randomNested,
-                  features = features, weightMats = weightMats, moranFormula = moranFormula,
-                  addMoransI = addMoransI, ...
+    fitLMMsSingle(obj, pi = pi, verbose = verbose, fixedVars = fixedVars, randomVars = randomVars,
+        returnModels = returnModels, Formula = Formula, randomNested = randomNested,
+        features = features, weightMats = weightMats, moranFormula = moranFormula,
+        addMoransI = addMoransI, ...
     )
   })
   names(out) <- pis
@@ -166,42 +165,17 @@ fitLMMsSingle <- function(
     contrasts <- lapply(discreteVars, function(x) named.contr.sum)
   }
   prepMat = prepareMatrix(obj, pi = pi)
-  prepareMatrix = function(obj, pi){
-    foo <- checkPi(obj, pi)
-    if (!(pi %in% c("edge", "centroid")) && is.null(obj$Wfs[[pi]])) {
-      stop("No weight function added yet, run addWeightFunction first!")
-    }
-    # Establish whether pi and gene match, and call separate functions
-    windowId <- pi %in% c("edge", "centroid")
-    cellId <- grepl("Cell", pi)
-    if (cellId) {
-      piSub <- sub("Cell", "", pi)
-    }
-    piListNameInner <- if (windowId) {
-      "windowDists"
-    } else if (cellId) {
-      "withinCellDists"
-    } else {
-      "pointDists"
-    }
-    newMat = matrix(NA, nrow = , ncol = )
-    #FINISH this!
-  }
-  
   models <- loadBalanceBplapply(Features, function(gene) {
     df <- buildDataFrame(obj, gene = gene, pi = pi, pppDf = pppDf, prepMat = prepMat)
     out <- if (is.null(df) || sum(!is.na(df$pi)) < 3) {
       NULL
     } else {
       moranMod <- if (addMoransI) {
-        finalDf <- buildDataFrame(
-          piMat = df, gene = gene, pi = pi,
-          moransI = TRUE, obj = obj, weightMats = weightMats
-        )
+        finalDf <- buildDataFrame(piMat = df, gene = gene, pi = pi,
+          moransI = TRUE, obj = obj, weightMats = weightMats)
         W <- 1 / finalDf$Variance
         fitPiModel(moranFormula, finalDf, contrastsMoran, Control,
-                   MM = MMmoran, Weight = W / sum(W, na.rm = TRUE)
-        )
+                   MM = MMmoran, Weight = W / sum(W, na.rm = TRUE))
       } # Run this before nesting
       if (randomNested) {
         df <- nestRandom(df, randomVarsSplit, intersect(fixedVars, getPPPvars(obj)))
@@ -218,7 +192,6 @@ fitLMMsSingle <- function(
   results <- lapply(mods, function(mm) {
     extractResults(models, hypFrame = obj$hypFrame, fixedVars, subSet = mm)
   })
-  # Effect size, standard error, p-value and adjusted p-value per mixed
-  # effect
+  # Effect size, standard error, p-value and adjusted p-value per mixed effect
   return(list(results = results$piMod, resultsMoran = results$moranMod, models = if(returnModels) models))
 }

@@ -39,11 +39,10 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
     if (missing(piMat)) {
         stopifnot((lg <- length(gene)) %in% c(1, 2))
         foo <- checkPi(obj, pi)
-        if (!(pi %in% c("edge", "centroid")) && is.null(obj$Wfs[[pi]])) {
+        if (!(windowId <- (pi %in% c("edge", "centroid"))) && is.null(obj$Wfs[[pi]])) {
             stop("No weight function added yet, run addWeightFunction first!")
         }
         # Establish whether pi and gene match, and call separate functions
-        windowId <- pi %in% c("edge", "centroid")
         cellId <- grepl("Cell", pi)
         if (cellId) {
             piSub <- sub("Cell", "", pi)
@@ -177,4 +176,34 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
         piMat <- buildMoransIDataFrame(piMat = piMat, pi = pi, weightMats = weightMats)
       }
     return(piMat)
+}
+prepareMatrix = function(obj, pi){
+  foo <- checkPi(obj, pi)
+  if (!(windowId <- (pi %in% c("edge", "centroid"))) && is.null(obj$Wfs[[pi]])) {
+    stop("No weight function added yet, run addWeightFunction first!")
+  }
+  # Establish whether pi and gene match, and call separate functions
+  if (cellId <- grepl("Cell", pi)) {
+    piSub <- sub("Cell", "", pi)
+  }
+  piListNameInner <- if (windowId) {
+    "windowDists"
+  } else if (cellId) {
+    "withinCellDists"
+  } else {
+    "pointDists"
+  }
+  features = unique(unlist(lapply(obj$hypFrame$pimRes, function(x){
+    names(x[[piListNameInner]][[pi]])
+    })))
+  samples = if(cellId){
+    
+  } else {rownames(obj$hypFrame)}
+  newMat = matrix(NA, nrow = length(samples), ncol = length(features), 
+                  dimnames = list(samples, features))
+  for(sam in samples){
+    featVec = obj$hypFrame[[sam, "pimRes"]][[piListNameInner]][[pi]]
+    newMat[sam, names(featVec)] = featVec
+  }
+  #FINISH this!
 }
