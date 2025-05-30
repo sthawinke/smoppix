@@ -405,10 +405,9 @@ if(reqFunky){
     nnPairRes = getResults(TNBClmms, "nnPair", "Class")
     nnPairSig = rownames(nnPairRes)[nnPairRes[, "pAdj"]<sigLevel & !is.na(nnPairRes[, "pAdj"])]
     nnPis = t(vapply(pisTNBC$hypFrame$pimRes, FUN.VALUE = double(length(nnSig)+ length(nnPairSig)), function(x){
-        c(if(length(length(nnSig))) x$pointDists$nn[nnSig],
-          if(length(length(nnPairSig))) vapply(nnPairSig, FUN.VALUE = 1, function(y) {
-              tmp = getGp(gp = y, x$pointDists$nnPair)
-              if(is.null(tmp)) NA else tmp
+        c(if(length(nnSig)) x$pointDists$nn[nnSig],
+          if(length(nnPairSig)) vapply(nnPairSig, FUN.VALUE = 1, function(y) {
+              getGp(gp = y, x$pointDists$nnPair, notFoundReturn = NA)
           }))
     }))
     colnames(nnPis) = c(nnSig, nnPairSig)

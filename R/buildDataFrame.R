@@ -79,9 +79,6 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
             nList <- obj$hypFrame[n, , drop = TRUE]
             class(nList) <- "list" # Simplify things
             # Extract pi, and add counts and covariates
-            if (cellId || windowId) {
-                Marks <- marks(nList$ppp[marks(nList$ppp, drop = FALSE)$gene %in% geneSplit, ], drop = FALSE)
-            }
             df <- if (windowId) {
                 piEst <- getGp(nList$pimRes[[piListNameInner]], gene)[[pi]]
                 dfWin <- data.frame(pi = unlist(piEst), cell = rep(names(piEst),
@@ -89,12 +86,18 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
                 ))
                 if (length(cellVars <- setdiff(eventVars, c("gene", "cell"))) &&
                     NROW(dfWin)) {
-                    mat <- Marks[match(dfWin$cell, Marks$cell), cellVars, drop = FALSE]
+                    mat <- marks(nList$ppp, drop = FALSE)[match(dfWin$cell, Marks$cell), cellVars, drop = FALSE]
                     colnames(mat) <- cellVars
                     dfWin <- cbind(dfWin, mat)
                 }
                 return(dfWin)
             } else if (cellId) {
+              idG = if(pairId){
+                marks(nList$ppp, drop = FALSE)$gene == geneSplit[1] | marks(nList$ppp, drop = FALSE)$gene == geneSplit[2]
+              } else{
+                marks(nList$ppp, drop = FALSE)$gene == geneSplit
+              }
+              Marks <- marks(nList$ppp[id, ], drop = FALSE)
               piEst <- if(misPrep){
                 vapply(nList$pimRes[[piListNameInner]], FUN.VALUE = double(1), function(y) {
                   getGp(y[[piSub]], gene, notFoundReturn = NA)
@@ -104,9 +107,7 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
               }
                 cellCovars <- Marks[, eventVars, drop = FALSE]
                 cellCovars <- cellCovars[match(names(piEst), cellCovars$cell), setdiff(
-                    colnames(cellCovars),
-                    "gene"
-                ), drop = FALSE]
+                    colnames(cellCovars), "gene"), drop = FALSE]
                 tabCell <- table(Marks$gene, Marks$cell)
                 npVec <- vapply(geneSplit, FUN.VALUE = integer(ncol(tabCell)), function(x) {
                   getGp(tabCell, x, notFoundReturn = NA)
