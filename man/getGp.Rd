@@ -4,7 +4,7 @@
 \alias{getGp}
 \title{Helper function to get gene pair from a vector or list}
 \usage{
-getGp(x, gp, drop = TRUE, Collapse = "--")
+getGp(x, gp, drop = TRUE, Collapse = "--", notFoundReturn = NULL)
 }
 \arguments{
 \item{x}{The object in which to look}
@@ -14,6 +14,8 @@ getGp(x, gp, drop = TRUE, Collapse = "--")
 \item{drop}{A boolean, should matrix attributes be dropped in [] subsetting}
 
 \item{Collapse}{The character separating the gene pair}
+
+\item{notFoundReturn}{value to return if element is not found}
 }
 \value{
 The element sought

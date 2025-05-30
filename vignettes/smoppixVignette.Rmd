@@ -285,8 +285,7 @@ plotExplore(hypEng)
 First, we test for vicinity of the RNA molecules to cell boundaries or centroids, and for localization patterns within the cell. For this we pass different PI arguments to the _estPis()_ function. As null hypothesis, we choose complete spatial randomness (CSR) within the cell, which seems most natural, although the "background" option is also available. The suffix "Cell" indicates that aggregation and colocalization is tested within the same cell only, so not across the tissue.
 
 ```{r}
-engPis <- estPis(hypEng,
-    pis = c("edge", "centroid", "nnCell", "nnPairCell"),
+engPis <- estPis(hypEng, pis = c("edge", "centroid", "nnCell", "nnPairCell"),
     null = "CSR", verbose = FALSE)
 ```
 
@@ -314,8 +313,7 @@ For the "edge" and "centroid" options, each individual RNA-molecule is an observ
 ```{r plotEdgeEng, fig.height = 6.5}
 plotTopResults(hypEng,
     results = allModsNNcell, pi = "edge", what = "far",
-    numFeats = 1
-)
+    numFeats = 1)
 ```
 
 Note that the cells are selected for high expression of the gene and are not shown in their original position! Now plot the gene with strongest intracellular aggregation:

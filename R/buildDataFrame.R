@@ -60,8 +60,9 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
             }
         }
         geneSplit <- sund(gene)
+        misPrep <- missing(prepMat)
         # Check whether genes are present
-        if (any(id <- !(geneSplit %in% getFeatures(obj)))) {
+        if (misPrep && any(id <- !(geneSplit %in% getFeatures(obj)))) {
             stop("PIs for features\n", geneSplit[id], "\nnot found in object")
         }
         piListNameInner <- if (windowId) {
@@ -74,7 +75,6 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
         if (cellId || windowId) {
             eventVars <- getEventVars(obj)
         }
-        misPrep <- missing(prepMat)
         piDfs <- lapply(seq_len(nrow(obj$hypFrame)), function(n) {
             nList <- obj$hypFrame[n, , drop = TRUE]
             class(nList) <- "list" # Simplify things
@@ -83,11 +83,7 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
                 Marks <- marks(nList$ppp[marks(nList$ppp, drop = FALSE)$gene %in% geneSplit, ], drop = FALSE)
             }
             df <- if (windowId) {
-                piEst <- if (is.null(vec <- getGp(nList$pimRes[[piListNameInner]], gene)[[pi]])) {
-                    NULL
-                } else {
-                    vec
-                }
+                piEst <- getGp(nList$pimRes[[piListNameInner]], gene)[[pi]]
                 dfWin <- data.frame(pi = unlist(piEst), cell = rep(names(piEst),
                     times = vapply(piEst, FUN.VALUE = double(1), length)
                 ))
@@ -101,14 +97,10 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
             } else if (cellId) {
               piEst <- if(misPrep){
                 vapply(nList$pimRes[[piListNameInner]], FUN.VALUE = double(1), function(y) {
-                    if (is.null(vec <- getGp(y[[piSub]], gene))) {
-                        NA
-                    } else {
-                        vec
-                    }
+                  getGp(y[[piSub]], gene, notFoundReturn = NA)
                 })
               } else {
-                getGp(t(prepMat[names(nList$pimRes[[piListNameInner]]),]), gene)
+                getGp(t(prepMat[names(nList$pimRes[[piListNameInner]]),, drop = FALSE]), gene, notFoundReturn = NA)
               }
                 cellCovars <- Marks[, eventVars, drop = FALSE]
                 cellCovars <- cellCovars[match(names(piEst), cellCovars$cell), setdiff(
@@ -116,44 +108,28 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
                     "gene"
                 ), drop = FALSE]
                 tabCell <- table(Marks$gene, Marks$cell)
-                npVec <- if (all(geneSplit %in% rownames(tabCell))) {
-                    tmp <- tabCell[geneSplit, match(names(piEst), colnames(tabCell)),
-                        drop = FALSE
-                    ]
-                    t(matrix(tmp, ncol = ncol(tmp), dimnames = dimnames(tmp)))
-                } else {
-                    matrix(NA, ncol = if (pairId) {
-                        2
-                    } else {
-                        1
-                    }, nrow = length(piEst))
-                }
+                npVec <- vapply(geneSplit, FUN.VALUE = integer(ncol(tabCell)), function(x) {
+                  getGp(tabCell, x, notFoundReturn = NA)
+                })
                 colnames(npVec) <- if (pairId) {
                     c("minP", "maxP")
                 } else {
                     "NP"
                 }
-                data.frame(pi = piEst, cellCovars, npVec)
+                npVecOut = matrix(0, ncol = length(geneSplit), nrow = length(piEst), dimnames = list(names(piEst), colnames(npVec)))
+                npVecOut[rownames(npVec),] = npVec
+                data.frame(pi = piEst, cellCovars, npVecOut)
             } else {
-              piEst <-  if(misPrep){
-                  if (is.null(vec <- getGp(nList$pimRes[[piListNameInner]][[pi]], gene))) {
-                      NA
-                  } else {
-                      vec
-                  }
+              piEst <- getGp(if(misPrep){nList$pimRes[[piListNameInner]][[pi]]} else {prepMat[n, ]}, 
+                             gene, notFoundReturn = NA)
+              npVec <- vapply(geneSplit, FUN.VALUE = integer(1), function(x) {
+                getGp(nList$tabObs, x, notFoundReturn = NA)
+              })
+              if (pairId) {
+                  cbind(pi = piEst, minP = min(npVec), maxP = max(npVec))
               } else {
-                  getGp(prepMat[n, ], gene)
+                  cbind(pi = piEst, NP = npVec)
               }
-                npVec <- if (all(geneSplit %in% names(to <- nList$tabObs))) {
-                    to[geneSplit]
-                } else {
-                    NA
-                }
-                if (pairId) {
-                    cbind(pi = piEst, minP = min(npVec), maxP = max(npVec))
-                } else {
-                    cbind(pi = piEst, NP = npVec)
-                }
             }
         })
         piMat <- if (!all((Times <- vapply(piDfs, FUN.VALUE = integer(1), NROW)) == 0)) {
