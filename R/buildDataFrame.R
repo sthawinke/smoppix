@@ -92,12 +92,12 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
                 }
                 return(dfWin)
             } else if (cellId) {
-              idG = if(pairId){
+              idG <- if(pairId){
                 marks(nList$ppp, drop = FALSE)$gene == geneSplit[1] | marks(nList$ppp, drop = FALSE)$gene == geneSplit[2]
               } else{
                 marks(nList$ppp, drop = FALSE)$gene == geneSplit
               }
-              Marks <- marks(nList$ppp[id, ], drop = FALSE)
+              Marks <- marks(nList$ppp[idG, ], drop = FALSE)
               piEst <- if(misPrep){
                 vapply(nList$pimRes[[piListNameInner]], FUN.VALUE = double(1), function(y) {
                   getGp(y[[piSub]], gene, notFoundReturn = NA)
@@ -117,8 +117,8 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
                 } else {
                     "NP"
                 }
-                npVecOut = matrix(0, ncol = length(geneSplit), nrow = length(piEst), dimnames = list(names(piEst), colnames(npVec)))
-                npVecOut[rownames(npVec),] = npVec
+                npVecOut <- matrix(0, ncol = length(geneSplit), nrow = length(piEst), dimnames = list(names(piEst), colnames(npVec)))
+                npVecOut[rownames(npVec),] <- npVec
                 data.frame(pi = piEst, cellCovars, npVecOut)
             } else {
               piEst <- getGp(if(misPrep){nList$pimRes[[piListNameInner]][[pi]]} else {prepMat[n, ]}, 
@@ -200,22 +200,22 @@ prepareMatrix <- function(obj, pi, features){
                   dimnames = list(samples, features))
   if(windowId){
     for(feat in features){
-      featVec = obj$hypFrame[[sam, "pimRes"]][[piListNameInner]][[feat]][[pi]]
-      newMat[sam, features] = featVec[features]
+      featVec <- obj$hypFrame[[sam, "pimRes"]][[piListNameInner]][[feat]][[pi]]
+      newMat[sam, features] <- featVec[features]
     }
   } else if(cellId){
     for(sam in rownames(obj$hypFrame)){
       samVec <- names(obj$hypFrame$pimRes[[sam]][[piListNameInner]])
       for(samIn in samVec){
         featVec <- obj$hypFrame$pimRes[[sam]][[piListNameInner]][[samIn]][[piSub]]
-        newMat[samIn, features] = featVec[features]
+        newMat[samIn, features] <- featVec[features]
       }
 
     }
   } else {
     for(sam in samples){
       featVec <- obj$hypFrame[[sam, "pimRes"]][[piListNameInner]][[pi]]
-      newMat[sam, features] =  featVec[features]
+      newMat[sam, features] <-  featVec[features]
     }
   }
   return(newMat)

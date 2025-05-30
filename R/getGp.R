@@ -31,13 +31,13 @@ getGp <- function(x, gp, drop = TRUE, Collapse = "--", notFoundReturn = NULL) {
     } else {attempt}
     return(attempt)
 }
-getEl = function(x, gp, isVec, drop){
+getEl <- function(x, gp, isVec, drop){
   if (isVec) {
     x[[gp]]
   } else {
     x[gp, , drop = drop]
   }
 }
-tryGetEl = function(...){
+tryGetEl <- function(...){
   try(getEl(...), silent = TRUE)
 }
