@@ -58,11 +58,10 @@ fitLMMs <- function(
     names(weightMats) <- getHypFrame(obj)$image
   }
   out <- lapply(pis, function(pi) {
-    fitLMMsSingle(obj,
-                  pi = pi, verbose = verbose, fixedVars = fixedVars, randomVars = randomVars,
-                  returnModels = returnModels, Formula = Formula, randomNested = randomNested,
-                  features = features, weightMats = weightMats, moranFormula = moranFormula,
-                  addMoransI = addMoransI, ...
+    fitLMMsSingle(obj, pi = pi, verbose = verbose, fixedVars = fixedVars, randomVars = randomVars,
+        returnModels = returnModels, Formula = Formula, randomNested = randomNested,
+        features = sort(features), weightMats = weightMats, moranFormula = moranFormula,
+        addMoransI = addMoransI, ...
     )
   })
   names(out) <- pis
@@ -81,8 +80,8 @@ fitLMMsSingle <- function(
     Formula, randomNested, features, addMoransI, weightMats, moranFormula) {
   pi <- match.arg(pi, choices = c(
     "nn", "nnPair", "edge", "centroid", "nnCell", "nnPairCell"))
-  noWeight <- pi %in% c("edge", "centroid")
-  if (noWeight) {
+  foo <- checkPi(obj, pi)
+  if (windowId <- (pi %in% c("edge", "centroid"))) {
     randomVars <- setdiff(union(randomVars, "image/cell"), c("image", "cell"))
     # For edge and centroid, cell is nested within image
   }
@@ -165,20 +164,31 @@ fitLMMsSingle <- function(
     names(discreteVars) <- discreteVars
     contrasts <- lapply(discreteVars, function(x) named.contr.sum)
   }
+  if(!windowId){
+    prepMat <- prepareMatrix(obj, pi = pi, features = Features)
+  }
+  if(cellId){
+    prepTabs <- lapply(obj$hypFrame$ppp, function(x){
+      tab <- table(marks(x)[, c("gene", "cell")])
+      tab[, colnames(tab)!= "NA"]
+    })
+    prepCells <- lapply(seq_along(prepTabs), function(n){
+      eventMarks <- marks(obj$hypFrame$ppp[[n]], drop = FALSE)[, getEventVars(obj), drop = FALSE]
+      eventMarks[match(colnames(prepTabs[[n]]), eventMarks$cell),]
+    })
+  }
   models <- loadBalanceBplapply(Features, function(gene) {
-    df <- buildDataFrame(obj, gene = gene, pi = pi, pppDf = pppDf)
+    df <- buildDataFrame(obj, gene = gene, pi = pi, pppDf = pppDf, 
+                         prepMat = prepMat, prepTabs = prepTabs, prepCells = prepCells)
     out <- if (is.null(df) || sum(!is.na(df$pi)) < 3) {
       NULL
     } else {
       moranMod <- if (addMoransI) {
-        finalDf <- buildDataFrame(
-          piMat = df, gene = gene, pi = pi,
-          moransI = TRUE, obj = obj, weightMats = weightMats
-        )
+        finalDf <- buildDataFrame(piMat = df, gene = gene, pi = pi,
+          moransI = TRUE, obj = obj, weightMats = weightMats)
         W <- 1 / finalDf$Variance
         fitPiModel(moranFormula, finalDf, contrastsMoran, Control,
-                   MM = MMmoran, Weight = W / sum(W, na.rm = TRUE)
-        )
+                   MM = MMmoran, Weight = W / sum(W, na.rm = TRUE))
       } # Run this before nesting
       if (randomNested) {
         df <- nestRandom(df, randomVarsSplit, intersect(fixedVars, getPPPvars(obj)))
@@ -195,7 +205,6 @@ fitLMMsSingle <- function(
   results <- lapply(mods, function(mm) {
     extractResults(models, hypFrame = obj$hypFrame, fixedVars, subSet = mm)
   })
-  # Effect size, standard error, p-value and adjusted p-value per mixed
-  # effect
+  # Effect size, standard error, p-value and adjusted p-value per mixed effect
   return(list(results = results$piMod, resultsMoran = results$moranMod, models = if(returnModels) models))
 }

@@ -28,7 +28,7 @@ knitr::opts_chunk$set(fig.heigh = 7, fig.width = 7)
 
 # Introduction
 
-This vignette demonstrates the use of the _smoppix_ package: Single MOlecule sPatial omics data analysed through the Probabilistic IndeX. It unifies methods for statistical inference on single-molecule spatial transcriptomics datasets with replication in a single framework using probabilistic indices (PIs). Tests provided include univariate testing for vicinity to fixed objects such as cell walls or nuclei, univariate aggregation tests as well as bivariate tests for co- or antilocalization. Two different null hypothesis can be tested against: complete spatial randomness (CSR, also known as homogeneous Poisson process), and the background distribution of molecules of all other genes. In addition, differences between groups in terms of any of these univariate and bivariate PIs can be tested for, while accounting for complex design structures using mixed models. _smoppix_ is scalable to large numbers of molecules and genes thanks to an exact permutation null distribution in combination with a custom C++ implementation. An adequate variance weighting scheme harnesses the high-dimensionality of the data to account for heteroscedasticity. The _smoppix_ package is also applicable to other types of single-molecule omics data such as spatial proteomics or metabolomics, or to cell type localization data.
+This vignette demonstrates the use of the _smoppix_ package: Single MOlecule sPatial omics data analysed through the Probabilistic IndeX , described in ["Unified nonparametric analysis of single-molecule spatial omics data using probabilistic indices"](https://www.biorxiv.org/content/10.1101/2025.05.20.654270v2) by Hawinkel et al. 2025. It unifies methods for statistical inference on single-molecule spatial transcriptomics datasets with replication in a single framework using probabilistic indices (PIs). Tests provided include univariate testing for vicinity to fixed objects such as cell walls or nuclei, univariate aggregation tests as well as bivariate tests for co- or antilocalization. Two different null hypothesis can be tested against: complete spatial randomness (CSR, also known as homogeneous Poisson process), and the background distribution of molecules of all other genes. In addition, differences between groups in terms of any of these univariate and bivariate PIs can be tested for, while accounting for complex design structures using mixed models. _smoppix_ is scalable to large numbers of molecules and genes thanks to an exact permutation null distribution in combination with a custom C++ implementation. An adequate variance weighting scheme harnesses the high-dimensionality of the data to account for heteroscedasticity. The _smoppix_ package is also applicable to other types of single-molecule omics data such as spatial proteomics or metabolomics, or to cell type localization data.
 
 \setcounter{tocdepth}{5}
 \tableofcontents
@@ -258,8 +258,7 @@ A second dataset was published in a [paper](https://www.nature.com/articles/s415
 data(Eng)
 hypEng <- buildHyperFrame(Eng,
     coordVars = c("x", "y"),
-    imageVars = c("fov", "experiment")
-)
+    imageVars = c("fov", "experiment"))
 ```
 
 Plotting an overview
@@ -286,10 +285,8 @@ plotExplore(hypEng)
 First, we test for vicinity of the RNA molecules to cell boundaries or centroids, and for localization patterns within the cell. For this we pass different PI arguments to the _estPis()_ function. As null hypothesis, we choose complete spatial randomness (CSR) within the cell, which seems most natural, although the "background" option is also available. The suffix "Cell" indicates that aggregation and colocalization is tested within the same cell only, so not across the tissue.
 
 ```{r}
-engPis <- estPis(hypEng,
-    pis = c("edge", "centroid", "nnCell", "nnPairCell"),
-    null = "CSR", verbose = FALSE
-)
+engPis <- estPis(hypEng, pis = c("edge", "centroid", "nnCell", "nnPairCell"),
+    null = "CSR", verbose = FALSE)
 ```
 
 As before, the weight function needs to be added for the nearest neighbour PIs.
@@ -316,8 +313,7 @@ For the "edge" and "centroid" options, each individual RNA-molecule is an observ
 ```{r plotEdgeEng, fig.height = 6.5}
 plotTopResults(hypEng,
     results = allModsNNcell, pi = "edge", what = "far",
-    numFeats = 1
-)
+    numFeats = 1)
 ```
 
 Note that the cells are selected for high expression of the gene and are not shown in their original position! Now plot the gene with strongest intracellular aggregation:
@@ -379,10 +375,10 @@ Probabilistic indices are features extracted from point patterns that can serve 
 if(reqFunky <- require(funkycells)){
     data("TNBC_pheno")
     data("TNBC_meta")
-    TNBC_pheno$age <- TNBC_meta$Age[match(TNBC_pheno$Person, TNBC_meta$Person)]
+    TNBC_pheno$Age <- TNBC_meta$Age[match(TNBC_pheno$Person, TNBC_meta$Person)]
     TNBC_pheno$Class <- ifelse(TNBC_pheno$Class=="0", "mixed", "compartentalised")
     hypTNBC <- buildHyperFrame(TNBC_pheno, coordVars = c("cellx", "celly"), 
-                               imageVars = c("Person", "Class", "age"), featureName = "Phenotype")
+                               imageVars = c("Person", "Class", "Age"), featureName = "Phenotype")
     hypTNBC <- hypTNBC[order(hypTNBC$Class),] #Order by class for plots
 }
 ```
@@ -401,20 +397,20 @@ if(reqFunky){
     #Select feature through hypothesis tests
     pisTNBC = estPis(hypTNBC, pis = c("nn", "nnPair"), null = "background", verbose = FALSE)
     pisTNBC = addWeightFunction(pisTNBC)
-    TNBClmms = fitLMMs(pisTNBC, fixedVars = c("age", "Class"), verbose = TRUE)
+    TNBClmms = fitLMMs(pisTNBC, fixedVars = c("Age", "Class"), verbose = TRUE)
     #Extract PIs of significant features
     nnRes = getResults(TNBClmms, "nn", "Class")
     sigLevel = 0.05
     nnSig = rownames(nnRes)[nnRes[, "pAdj"]<sigLevel]
     nnPairRes = getResults(TNBClmms, "nnPair", "Class")
     nnPairSig = rownames(nnPairRes)[nnPairRes[, "pAdj"]<sigLevel & !is.na(nnPairRes[, "pAdj"])]
-    nnPis = t(vapply(pisTNBC$hypFrame$pimRes, FUN.VALUE = double(length(nnSig)+ length(nnPairSig)), function(x){
-        c(if(length(length(nnSig))) x$pointDists$nn[nnSig],
-          if(length(length(nnPairSig))) vapply(nnPairSig, FUN.VALUE = 1, function(y) {
-              tmp = getGp(gp = y, x$pointDists$nnPair)
-              if(is.null(tmp)) NA else tmp
+    nnPis = as.matrix(vapply(pisTNBC$hypFrame$pimRes, FUN.VALUE = double(nnn <- (length(nnSig)+ length(nnPairSig))), function(x){
+        c(if(length(nnSig)) x$pointDists$nn[nnSig],
+          if(length(nnPairSig)) vapply(nnPairSig, FUN.VALUE = 1, function(y) {
+              getGp(gp = y, x$pointDists$nnPair, notFoundReturn = NA)
           }))
     }))
+    if(nnn!=1){nnPis = t(nnPis)}
     colnames(nnPis) = c(nnSig, nnPairSig)
     nnPis[is.na(nnPis)] = 0.5 #Replace missing values by 0.5
     if(require(glmnet, quietly = TRUE)){

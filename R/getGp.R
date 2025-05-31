@@ -7,6 +7,7 @@
 #' @param gp A character string describing the gene pair
 #' @param Collapse The character separating the gene pair
 #' @param drop A boolean, should matrix attributes be dropped in [] subsetting
+#' @param notFoundReturn value to return if element is not found
 #'
 #' @return The element sought
 #' @export
@@ -16,32 +17,27 @@
 #'     "gene1--gene3" = c(2, 3)
 #' ))
 #' getGp(mat, "gene3--gene1")
-getGp <- function(x, gp, drop = TRUE, Collapse = "--") {
+getGp <- function(x, gp, drop = TRUE, Collapse = "--", notFoundReturn = NULL) {
     if (!length(x)) {
-        return(NULL)
+        return(notFoundReturn)
     }
-    if (isVec <- (is.vector(x) || is.list(x) || is.table(x))) {
-        Names <- names(x)
-    } else if (isMat <- is.matrix(x)) {
-        Names <- rownames(x)
+    isVec <- (is.vector(x) || is.list(x) || (is.table(x) && is.na(ncol(x))))
+    if(inherits(attempt <- tryGetEl(x, gp, isVec, drop), "try-error")){
+      gp <- paste(rev(sund(gp)), collapse = Collapse)
+      attempt <- tryGetEl(x, gp, isVec, drop)
     }
-    if (any(gp == Names)) {
-        if (isVec) {
-            x[[gp]]
-        } else {
-            x[gp, , drop = drop]
-        }
-    } else {
-        geneSplit <- sund(gp)
-        gp <- paste(rev(geneSplit), collapse = Collapse)
-        if (any(gp == Names)) {
-            if (isVec) {
-                x[[gp]]
-            } else {
-                x[gp, , drop = drop]
-            }
-        } else {
-            NULL
-        }
-    }
+    attempt <- if(inherits(attempt, "try-error")){
+      notFoundReturn
+    } else {attempt}
+    return(attempt)
+}
+getEl <- function(x, gp, isVec, drop){
+  if (isVec) {
+    x[[gp]]
+  } else {
+    x[gp, , drop = drop]
+  }
+}
+tryGetEl <- function(...){
+  try(getEl(...), silent = TRUE)
 }
