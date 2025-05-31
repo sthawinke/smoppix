@@ -14,7 +14,8 @@ buildDataFrame(
   weightMats,
   pppDf,
   prepMat,
-  prepTabs
+  prepTabs,
+  prepCells
 )
 }
 \arguments{

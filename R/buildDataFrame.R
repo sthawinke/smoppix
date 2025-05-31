@@ -13,7 +13,7 @@
 #' @param weightMats List of weight matrices for Moran's I calculation.
 #' @param pppDf Dataframe of point pattern-wise variables. It is precalculated
 #' in fitLMMsSingle for speed, but will be newly constructed when not provided.
-#' @param prepMat A preconstructed matrix with PI estimates to avoid looping
+#' @param prepMat,prepTabs,prepCells Preconstructed objects to avoid looping over genes. For internal use mainly
 #' @inheritParams fitLMMs
 #' @return A dataframe with estimated PIs and covariates
 #' @export
@@ -32,7 +32,7 @@
 #' # Evidence for aggregation
 buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
                                "nnCell", "nnPairCell"), piMat, moransI = FALSE,
-                           numNNs = 8, weightMats, pppDf, prepMat, prepTabs) {
+                           numNNs = 8, weightMats, pppDf, prepMat, prepTabs, prepCells) {
     pi <- match.arg(pi)
     if (missing(pppDf)) {
         pppDf <- as.data.frame(obj$hypFrame[, c("image", getPPPvars(obj)), drop = FALSE])
@@ -86,29 +86,28 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
                 ))
                 if (length(cellVars <- setdiff(eventVars, c("gene", "cell"))) &&
                     NROW(dfWin)) {
-                    mat <- marks(nList$ppp, drop = FALSE)[match(dfWin$cell, Marks$cell), cellVars, drop = FALSE]
+                    mat <- marks(nList$ppp, drop = FALSE)[match(dfWin$cell, marks(nList$ppp, drop = FALSE)$cell), cellVars, drop = FALSE]
                     colnames(mat) <- cellVars
                     dfWin <- cbind(dfWin, mat)
                 }
                 return(dfWin)
             } else if (cellId) {
-              # idG <- if(pairId){
-              #   marks(nList$ppp, drop = FALSE)$gene == geneSplit[1] | marks(nList$ppp, drop = FALSE)$gene == geneSplit[2]
-              # } else{
-              #   marks(nList$ppp, drop = FALSE)$gene == geneSplit
-              # }
-              piEst <- if(misPrep){
-                vapply(nList$pimRes[[piListNameInner]], FUN.VALUE = double(1), function(y) {
+              if(misPrep){
+                piEst <- vapply(nList$pimRes[[piListNameInner]], FUN.VALUE = double(1), function(y) {
                   getGp(y[[piSub]], gene, notFoundReturn = NA)
                 })
-              } else {
-                getGp(t(prepMat[names(nList$pimRes[[piListNameInner]]),, drop = FALSE]), gene, notFoundReturn = NA)
-              }
                 cellCovars <- marks(nList$ppp, drop = FALSE)[, eventVars, drop = FALSE]
                 cellCovars <- cellCovars[match(names(piEst), cellCovars$cell), setdiff(
-                    colnames(cellCovars), "gene"), drop = FALSE]
-                #tabCell <- table(Marks$gene, Marks$cell)
+                  colnames(cellCovars), "gene"), drop = FALSE]
+                tabCell <-table(marks(nList$ppp)[, c("gene", "cell")])
+                tabCell <- tabCell[, colnames(tabCell)!= "NA"]
+              } else {
+                piEst <- getGp(t(prepMat[names(nList$pimRes[[piListNameInner]]),, drop = FALSE]), 
+                               gene, notFoundReturn = NA)
+                cellCovars <-prepCells[[n]][match(names(piEst), prepCells[[n]]$cell), setdiff(
+                  colnames(prepCells[[n]]), "gene"), drop = FALSE]
                 tabCell <- prepTabs[[n]][geneSplit,, drop = FALSE]
+              }
                 npVec <- vapply(geneSplit, FUN.VALUE = integer(ncol(tabCell)), function(x) {
                   getGp(tabCell, x, notFoundReturn = NA)
                 })
