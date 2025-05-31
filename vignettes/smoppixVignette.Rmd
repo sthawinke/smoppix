@@ -404,13 +404,12 @@ if(reqFunky){
     nnSig = rownames(nnRes)[nnRes[, "pAdj"]<sigLevel]
     nnPairRes = getResults(TNBClmms, "nnPair", "Class")
     nnPairSig = rownames(nnPairRes)[nnPairRes[, "pAdj"]<sigLevel & !is.na(nnPairRes[, "pAdj"])]
-    nnPis = as.matrix(vapply(pisTNBC$hypFrame$pimRes, FUN.VALUE = double(length(nnSig)+ length(nnPairSig)), function(x){
+    nnPis = t(as.matrix(vapply(pisTNBC$hypFrame$pimRes, FUN.VALUE = double(length(nnSig)+ length(nnPairSig)), function(x){
         c(if(length(nnSig)) x$pointDists$nn[nnSig],
           if(length(nnPairSig)) vapply(nnPairSig, FUN.VALUE = 1, function(y) {
               getGp(gp = y, x$pointDists$nnPair, notFoundReturn = NA)
           }))
-    }))
-    if(nrow(nnPis)==1){nnPis = t(nnPis)}
+    })))
     colnames(nnPis) = c(nnSig, nnPairSig)
     nnPis[is.na(nnPis)] = 0.5 #Replace missing values by 0.5
     if(require(glmnet, quietly = TRUE)){

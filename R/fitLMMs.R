@@ -166,9 +166,16 @@ fitLMMsSingle <- function(
   }
   if(!windowId){
     prepMat <- prepareMatrix(obj, pi = pi, features = Features)
+    if(cellId){
+      prepTabs <- lapply(obj$hypFrame$ppp, function(x){
+        tab <- table(marks(x)[, c("gene", "cell")])
+        tab[, colnames(tab)!= "NA"]
+      })
+    }
   }
   models <- loadBalanceBplapply(Features, function(gene) {
-    df <- buildDataFrame(obj, gene = gene, pi = pi, pppDf = pppDf, prepMat = prepMat)
+    df <- buildDataFrame(obj, gene = gene, pi = pi, pppDf = pppDf, 
+                         prepMat = prepMat, prepTabs = prepTabs)
     out <- if (is.null(df) || sum(!is.na(df$pi)) < 3) {
       NULL
     } else {

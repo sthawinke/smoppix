@@ -32,7 +32,7 @@
 #' # Evidence for aggregation
 buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
                                "nnCell", "nnPairCell"), piMat, moransI = FALSE,
-                           numNNs = 8, weightMats, pppDf, prepMat) {
+                           numNNs = 8, weightMats, pppDf, prepMat, prepTabs) {
     pi <- match.arg(pi)
     if (missing(pppDf)) {
         pppDf <- as.data.frame(obj$hypFrame[, c("image", getPPPvars(obj)), drop = FALSE])
@@ -92,13 +92,11 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
                 }
                 return(dfWin)
             } else if (cellId) {
-              idG <- if(pairId){
-                marks(nList$ppp, drop = FALSE)$gene == geneSplit[1] | marks(nList$ppp, drop = FALSE)$gene == geneSplit[2]
-              } else{
-                marks(nList$ppp, drop = FALSE)$gene == geneSplit
-              }
-              Marks <- marks(nList$ppp[idG, ], drop = FALSE)
-              Marks <- Marks[Marks$cell != "NA",]
+              # idG <- if(pairId){
+              #   marks(nList$ppp, drop = FALSE)$gene == geneSplit[1] | marks(nList$ppp, drop = FALSE)$gene == geneSplit[2]
+              # } else{
+              #   marks(nList$ppp, drop = FALSE)$gene == geneSplit
+              # }
               piEst <- if(misPrep){
                 vapply(nList$pimRes[[piListNameInner]], FUN.VALUE = double(1), function(y) {
                   getGp(y[[piSub]], gene, notFoundReturn = NA)
@@ -106,10 +104,11 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
               } else {
                 getGp(t(prepMat[names(nList$pimRes[[piListNameInner]]),, drop = FALSE]), gene, notFoundReturn = NA)
               }
-                cellCovars <- Marks[, eventVars, drop = FALSE]
+                cellCovars <- marks(nList$ppp, drop = FALSE)[, eventVars, drop = FALSE]
                 cellCovars <- cellCovars[match(names(piEst), cellCovars$cell), setdiff(
                     colnames(cellCovars), "gene"), drop = FALSE]
-                tabCell <- table(Marks$gene, Marks$cell)
+                #tabCell <- table(Marks$gene, Marks$cell)
+                tabCell <- prepTabs[[n]][geneSplit,, drop = FALSE]
                 npVec <- vapply(geneSplit, FUN.VALUE = integer(ncol(tabCell)), function(x) {
                   getGp(tabCell, x, notFoundReturn = NA)
                 })
@@ -141,9 +140,7 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
           if (!windowId && !moransI) {
               # Add weights
               weight <- evalWeightFunction(obj$Wfs[[pi]], newdata = piMat[, if (grepl(
-                  "Pair",
-                  pi
-              )) {
+                  "Pair", pi)) {
                   c("minP", "maxP")
               } else {
                   "NP"

@@ -13,7 +13,8 @@ buildDataFrame(
   numNNs = 8,
   weightMats,
   pppDf,
-  prepMat
+  prepMat,
+  prepTabs
 )
 }
 \arguments{

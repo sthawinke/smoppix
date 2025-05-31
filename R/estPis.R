@@ -55,10 +55,10 @@ estPis <- function(
     hypFrame, pis = c("nn", "nnPair", "edge", "centroid", "nnCell",
         "nnPairCell"), verbose = TRUE, null = c("background", "CSR"),
     nPointsAll = switch(null,
-        background = 2e4, CSR = 1e3
+        background = 5e4, CSR = 2e3
     ), nPointsAllWithinCell = switch(null,
-        background = 2e3, CSR = 5e2
-    ), nPointsAllWin = 1000, minDiff = 20, minObsNN = 1L,
+        background = 5e3, CSR = 1e3
+    ), nPointsAllWin = 1e4, minDiff = 20, minObsNN = 1L,
     features = getFeatures(hypFrame), ...) {
     pis <- match.arg(pis, several.ok = TRUE)
     null <- match.arg(null)
