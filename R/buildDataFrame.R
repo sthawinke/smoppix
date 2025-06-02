@@ -87,7 +87,6 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
                 if (length(cellVars <- setdiff(eventVars, c("gene", "cell"))) &&
                     NROW(dfWin)) {
                     mat <- Marks[match(dfWin$cell, Marks$cell), cellVars, drop = FALSE]
-                    colnames(mat) <- cellVars
                     dfWin <- cbind(dfWin, mat)
                 }
                 return(dfWin)
@@ -96,9 +95,8 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
                 piEst <- vapply(nList$pimRes[[piListNameInner]], FUN.VALUE = double(1), function(y) {
                   getGp(y[[piSub]], gene, notFoundReturn = NA)
                 })
-                cellCovars <- Marks[, eventVars, drop = FALSE]
-                cellCovars <- cellCovars[match(names(piEst), cellCovars$cell), setdiff(
-                  colnames(cellCovars), "gene"), drop = FALSE]
+                cellCovars <- Marks[match(names(piEst), Marks$cell), setdiff(
+                  eventVars, "gene"), drop = FALSE]
                 tabCell <- table(Marks[, c("gene", "cell")])
                 tabCell <- tabCell[, colnames(tabCell)!= "NA"]
               } else {
@@ -116,7 +114,8 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
                 } else {
                     "NP"
                 }
-                npVecOut <- matrix(0, ncol = length(geneSplit), nrow = length(piEst), dimnames = list(names(piEst), colnames(npVec)))
+                npVecOut <- matrix(0, ncol = length(geneSplit), nrow = length(piEst), 
+                                   dimnames = list(names(piEst), colnames(npVec)))
                 npVecOut[rownames(npVec),] <- npVec
                 data.frame(pi = piEst, cellCovars, npVecOut, check.rows = FALSE, check.names = FALSE)
             } else {

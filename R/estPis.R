@@ -40,6 +40,7 @@
 #' For 'background', the observed distributions of all genes is used. Alternatively,
 #' for null = 'CSR', Monte-Carlo simulation under complete spatial randomness
 #' is performed within the given window to find the null distribution of the distance under study.
+#' See \insertCite{Hawinkel2025b}{smoppix} for precise definition of the PI.
 #'
 #' The 'nn' prefix indicates that nearest neighbour distances are being used,
 #' either univariately or bivariately.
