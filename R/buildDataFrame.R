@@ -201,20 +201,22 @@ prepareMatrix <- function(obj, pi, features){
     piObj <- obj$hypFrame[[sam, "pimRes"]][[piListNameInner]]
     for(feat in features){
       featVec <- piObj[[feat]][[pi]]
-      newMat[sam, names(featVec)] <- featVec
+      newMat[sam, feat] <- featVec
     }
   } else if(cellId){
     for(sam in rownames(obj$hypFrame)){
       samVec <- names(piObj <- obj$hypFrame$pimRes[[sam]][[piListNameInner]])
       for(samIn in samVec){
         featVec <- piObj[[samIn]][[piSub]]
-        newMat[samIn, names(featVec)] <- featVec
+        int <- intersect(names(featVec), features)
+        newMat[samIn, int] <- featVec[int]
       }
     }
   } else {
     for(sam in samples){
       featVec <- obj$hypFrame[[sam, "pimRes"]][[piListNameInner]][[pi]]
-      newMat[sam, names(featVec)] <- featVec
+      int <- intersect(names(featVec), features)
+      newMat[sam, int] <- featVec[int]
     }
   }
   return(newMat)

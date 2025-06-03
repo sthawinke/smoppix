@@ -32,8 +32,7 @@
 #' @seealso \link{buildDataFrame}, \link{estPis}
 #' @rdname estPis
 #' @order 3
-addWeightFunction <- function(
-    resList, pis = resList$pis, designVars, lowestLevelVar,
+addWeightFunction <- function(resList, pis = resList$pis, designVars, lowestLevelVar,
     maxObs = 1e+05, maxFeatures = 1000, minNumVar = 3, ...) {
     if (is.null(resList$pis)) {
         stop("No pims found in the hyperframe.", " First estimate them using the estPis() function.")

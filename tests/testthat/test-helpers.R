@@ -32,5 +32,7 @@ test_that("Coordinate extraction works", {
 })
 test_that("Feature pairs are correctly sorted", {
   genePairs <- c("geneB--geneC", "geneC--geneA", "gene2--gene1")
-  expect_identical(sortGp(genePairs), c("geneB--geneC", "geneA--geneC", "gene1--gene2"))
+  genePairsSorted <- c("geneB--geneC", "geneA--geneC", "gene1--gene2")
+  names(genePairsSorted) = genePairsSorted
+  expect_identical(sortGp(genePairs), genePairsSorted)
 })

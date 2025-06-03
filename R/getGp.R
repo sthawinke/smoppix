@@ -22,12 +22,17 @@ getGp <- function(x, gp, drop = TRUE, Collapse = "--", notFoundReturn = NULL) {
         return(notFoundReturn)
     }
     isVec <- (is.vector(x) || is.list(x) || (is.table(x) && is.na(ncol(x))))
+
     if(inherits(attempt <- tryGetEl(x, gp, isVec, drop), "try-error")){
       gp <- paste(rev(sund(gp)), collapse = Collapse)
       attempt <- tryGetEl(x, gp, isVec, drop)
     }
     attempt <- if(inherits(attempt, "try-error")){
-      notFoundReturn
+      if(!isVec){
+         rep(notFoundReturn, ncol(x))
+      } else {
+        notFoundReturn
+      }
     } else {attempt}
     return(attempt)
 }
