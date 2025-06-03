@@ -187,8 +187,8 @@ prepareMatrix <- function(obj, pi, features){
       })))
     }
   }
-  if(grepl("Pair", p)){
-    features = sortGp(features)
+  if(grepl("Pair", pi)){
+    features <- sortGp(features)
   }
   samples <- if(windowId){
     unique(unlist(lapply(obj$hypFrame$pimRes, function(x) lapply(x[[piListNameInner]], function(y) names(y[[pi]])))))
