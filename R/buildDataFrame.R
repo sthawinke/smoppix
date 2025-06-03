@@ -198,20 +198,20 @@ prepareMatrix <- function(obj, pi, features){
     piObj <- obj$hypFrame[[sam, "pimRes"]][[piListNameInner]]
     for(feat in features){
       featVec <- piObj[[feat]][[pi]]
-      newMat[sam, features] <- featVec[features]
+      newMat[sam, names(featVec)] <- featVec
     }
   } else if(cellId){
     for(sam in rownames(obj$hypFrame)){
       samVec <- names(piObj <- obj$hypFrame$pimRes[[sam]][[piListNameInner]])
       for(samIn in samVec){
         featVec <- piObj[[samIn]][[piSub]]
-        newMat[samIn, features] <- featVec[features]
+        newMat[samIn, names(featVec)] <- featVec
       }
     }
   } else {
     for(sam in samples){
       featVec <- obj$hypFrame[[sam, "pimRes"]][[piListNameInner]][[pi]]
-      newMat[sam, features] <-featVec[features]
+      newMat[sam, names(featVec)] <- featVec
     }
   }
   return(newMat)
