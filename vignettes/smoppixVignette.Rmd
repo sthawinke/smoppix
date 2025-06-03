@@ -16,10 +16,8 @@ bibliography: ../inst/REFERENCES.bib
 
 ```{r, echo=FALSE}
 htmltools::img(src = knitr::image_uri("../inst/Smoppix.jpg"), 
-               alt = 'logo', 
                style = 'position:absolute; top:0; right:0; padding:10px;',
-               width = "200px",
-               heigth = "200px")
+               alt = 'logo', width = "200px", heigth = "200px")
 ```
 
 ```{r setup, include=FALSE, echo=FALSE}

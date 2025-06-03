@@ -2,8 +2,7 @@
 % Please edit documentation in R/helpers.R
 \name{named.contr.sum}
 \alias{named.contr.sum}
-\title{A version of contr.sum that retains names, a bit controversial but also
-clearer}
+\title{A version of contr.sum that retains names, a bit controversial but also clearer}
 \usage{
 named.contr.sum(x, ...)
 }
@@ -14,8 +13,7 @@ named.contr.sum(x, ...)
 The matrix of contrasts
 }
 \description{
-A version of contr.sum that retains names, a bit controversial but also
-clearer
+A version of contr.sum that retains names, a bit controversial but also clearer
 }
 \note{
 After

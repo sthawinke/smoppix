@@ -60,7 +60,7 @@ fitLMMs <- function(
   out <- lapply(pis, function(pi) {
     fitLMMsSingle(obj, pi = pi, verbose = verbose, fixedVars = fixedVars, randomVars = randomVars,
         returnModels = returnModels, Formula = Formula, randomNested = randomNested,
-        features = sort(features), weightMats = weightMats, moranFormula = moranFormula,
+        features = features, weightMats = weightMats, moranFormula = moranFormula,
         addMoransI = addMoransI, ...
     )
   })

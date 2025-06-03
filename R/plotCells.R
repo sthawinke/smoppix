@@ -32,10 +32,8 @@
 #' plotCells(hypFrame2, "gene1", borderColVar = "condition", nCells = 10)
 plotCells <- function(
     obj, features = getFeatures(obj)[seq_len(3)], nCells = 100,
-    Cex = 1.5, borderColVar = NULL, borderCols = rev(palette()), Mar = c(
-        0.5, 0.1,
-        0.75, 0.1
-    ), warnPosition = TRUE, summaryFun = "min",
+    Cex = 1.5, borderColVar = NULL, borderCols = rev(palette()), Mar = c(0.5, 0.1,0.75, 0.1), 
+    warnPosition = TRUE, summaryFun = "min",
     plotNuclei = !is.null(getHypFrame(obj)$nuclei), nucCol = "lightblue", ...) {
     if (!is.hyperframe(obj)) {
         obj <- getHypFrame(obj)

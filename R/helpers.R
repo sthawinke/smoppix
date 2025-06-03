@@ -59,8 +59,7 @@ subSampleP <- function(p, nSims, returnId = FALSE) {
     }
     return(out)
 }
-#' A version of contr.sum that retains names, a bit controversial but also
-#' clearer
+#' A version of contr.sum that retains names, a bit controversial but also clearer
 #' @note After
 #' https://stackoverflow.com/questions/24515892/r-how-to-contrast-code-factors-and-retain-meaningful-labels-in-output-summary
 #' @param x,... passed on to contr.sum
@@ -182,4 +181,14 @@ centerNumeric <- function(x){
         x[,i] <- x[,i] - mean(x[,i])
     }
     x
+}
+#' Sort feature pairs alphabetically
+#'
+#' @param features 
+#'
+#' @returns A character vector of the same length as the features, with pairs sorted
+sortGp <- function(features){
+  vapply(features, FUN.VALUE = character(1), FUN = function(x){
+    paste(sort(sund(x)), collapse = "--")
+  })
 }
