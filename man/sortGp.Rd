@@ -4,10 +4,10 @@
 \alias{sortGp}
 \title{Sort feature pairs alphabetically}
 \usage{
-sortGp(features)
+sortGp(featurePairs)
 }
 \arguments{
-\item{features}{}
+\item{featurePairs}{The feature pairs to be sorted}
 }
 \value{
 A character vector of the same length as the features, with pairs sorted

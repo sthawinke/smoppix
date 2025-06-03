@@ -184,11 +184,11 @@ centerNumeric <- function(x){
 }
 #' Sort feature pairs alphabetically
 #'
-#' @param features 
+#' @param featurePairs The feature pairs to be sorted
 #'
 #' @returns A character vector of the same length as the features, with pairs sorted
-sortGp <- function(features){
-  vapply(features, FUN.VALUE = character(1), FUN = function(x){
+sortGp <- function(featurePairs){
+  vapply(featurePairs, FUN.VALUE = character(1), FUN = function(x){
     paste(sort(sund(x)), collapse = "--")
   })
 }

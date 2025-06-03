@@ -104,7 +104,7 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
                                gene, notFoundReturn = NA)
                 cellCovars <-prepCells[[n]][match(names(piEst), prepCells[[n]]$cell), setdiff(
                   colnames(prepCells[[n]]), "gene"), drop = FALSE]
-                tabCell <- prepTabs[[n]][geneSplit,, drop = FALSE]
+                tabCell <- prepTabs[[n]][match(geneSplit, rownames( prepTabs[[n]])),, drop = FALSE]
               }
                 npVec <- vapply(geneSplit, FUN.VALUE = integer(ncol(tabCell)), function(x) {
                   getGp(tabCell, x, notFoundReturn = NA)
