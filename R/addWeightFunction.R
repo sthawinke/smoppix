@@ -73,6 +73,13 @@ addWeightFunction <- function(resList, pis = resList$pis, designVars, lowestLeve
                 1, paste, collapse = "_")
             ordDesign <- order(designVec) # Ensure correct ordering for tapply
         }
+        if(cellId){
+          #Prepare tables
+          prepTabsWf <- lapply(ordDesign, function(x) {
+            tab <- table(marks(resList$hypFrame$ppp[[x]])[, c("cell", "gene")])
+            tab[setdiff(rownames(tab), "NA"), ]
+          })
+        }
         varEls <- lapply(features, function(gene) {
             geneSplit <- if (pairId) {
                 sund(gene)
@@ -83,17 +90,12 @@ addWeightFunction <- function(resList, pis = resList$pis, designVars, lowestLeve
                 piSub <- sub("Cell", "", pi)
                 piList <- lapply(resList$hypFrame$pimRes, function(x) {
                     lapply(x[["withinCellDists"]], function(y) {
-                        if (!is.null(vec <- getGp(y[[piSub]], gene))) {
-                            vec
-                        } else {
-                            NULL
-                        }
+                        getGp(y[[piSub]], gene)
                     })
                 })
              # If cellId, there is no tapply, cells are the lowest level anyway
                 tmp <- lapply(ordDesign, function(x) {
-                    tab <- table(marks(resList$hypFrame$ppp[[x]])$cell, marks(resList$hypFrame$ppp[[x]])$gene)
-                    tab <- tab[setdiff(rownames(tab), "NA"), ]
+                    tab <- prepTabsWf[[x]]
                     out <- if (all(geneSplit %in% colnames(tab))) {
                       lenOut <- sum(id <- apply((CellGene <- tab[, geneSplit, drop = FALSE]) >
                           (1 - pairId), 1, all))
@@ -123,13 +125,8 @@ addWeightFunction <- function(resList, pis = resList$pis, designVars, lowestLeve
                 piList <- vapply(resList$hypFrame$pimRes[ordDesign],
                     FUN.VALUE = double(1),
                     function(x) {
-                        if (is.null(baa <- getGp(x[["pointDists"]][[pi]], gene))) {
-                            NA
-                        } else {
-                            baa
-                        }
-                    }
-                )
+                        getGp(x[["pointDists"]][[pi]], gene, notFoundReturn = NA)
+                    })
                 quadDeps <- unlist(tapply(piList, designVec, function(x) {
                     if (sum(!is.na(x)) >= minNumVar) {
                         (x - mean(x, na.rm = TRUE))^2
@@ -137,15 +134,12 @@ addWeightFunction <- function(resList, pis = resList$pis, designVars, lowestLeve
                         rep_len(NA, length(x))
                     }
                 })) # The quadratic departures from the conditional mean
-                tabEntries <- vapply(resList$hypFrame$tabObs[ordDesign], FUN.VALUE = double(if (pairId) {
-                    2
-                } else {
-                    1
-                }), function(x) {
+                tabEntries <- vapply(resList$hypFrame$tabObs[ordDesign], 
+                                     FUN.VALUE = double(1+pairId), function(x) {
                     if (all(geneSplit %in% names(x))) {
                         sort(x[geneSplit]) # Number of NN distances
                     } else {
-                        rep(NA, if (pairId) 2 else 1)
+                        rep(NA, 1+pairId)
                     }
                 })
                 out <- rbind(quadDeps = quadDeps, tabEntries)
@@ -157,11 +151,8 @@ addWeightFunction <- function(resList, pis = resList$pis, designVars, lowestLeve
             }
             out
         })
-        varElMat <- matrix(unlist(varEls), ncol = if (pairId) {
-            3
-        } else {
-            2
-        }, byrow = TRUE, dimnames = list(NULL, c("quadDeps", if (pairId) {
+        varElMat <- matrix(unlist(varEls), ncol = 2+pairId, byrow = TRUE, 
+                           dimnames = list(NULL, c("quadDeps", if (pairId) {
             c("minP", "maxP")
         } else {
             "NP"
