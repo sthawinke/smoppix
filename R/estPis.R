@@ -67,6 +67,7 @@ estPis <- function(
         is.hyperframe(hypFrame), is.numeric(nPointsAll), is.numeric(nPointsAllWithinCell),
         is.numeric(nPointsAllWin), is.numeric(minDiff), is.character(features)
     )
+    features <- sort(features)
     if (any(vapply(hypFrame$ppp, FUN.VALUE = FALSE, function(x) is.unsorted(getCoordsMat(x)[, "x"])))) {
         stop("Point patterns must be sorted by x-coordinates!
         Build the hyperframe by the buildHyperFrame function or presort!")

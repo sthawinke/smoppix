@@ -12,7 +12,7 @@
 #' )
 #' head(getFeatures(hypYang))
 getFeatures <- function(x) {
-    unique(unlist(lapply(getHypFrame(x)$tabObs, names)))
+    sort(unique(unlist(lapply(getHypFrame(x)$tabObs, names))))
 }
 getEstFeatures <- function(x){
     x$features 
