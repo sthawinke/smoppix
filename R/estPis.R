@@ -121,7 +121,7 @@ estPisSingle <- function(
     p, pis, null, tabObs, owins = NULL, centroids = NULL, window = p$window,
     loopFun = "bplapply", features, nPointsAll, nPointsAllWithinCell, nPointsAllWin,
     minDiff, minObsNN) {
-    features <- sample(intersect(features, names(tabObs)))
+    features <- intersect(features, names(tabObs))
     if(!length(features)){
         return(list(pointDists = NULL, windowDists = NULL, withinCellDists = NULL))
     }
