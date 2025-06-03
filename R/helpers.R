@@ -188,7 +188,9 @@ centerNumeric <- function(x){
 #'
 #' @returns A character vector of the same length as the features, with pairs sorted
 sortGp <- function(featurePairs){
-  vapply(featurePairs, FUN.VALUE = character(1), FUN = function(x){
+  newFeat <- vapply(featurePairs, FUN.VALUE = character(1), FUN = function(x){
     paste(sort(sund(x)), collapse = "--")
   })
+  names(newFeat) <- newFeat
+  return(newFeat)
 }
