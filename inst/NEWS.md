@@ -112,5 +112,9 @@
 
 # 1.1.3
 
-- Some speedups in the buildDataFrame and addWeightFunction functions
+- Some speedups in the buildDataFrame function
 - With reference to bioRxiv preprint
+
+# 1.1.4
+
+- Optimize addWeightFunction
