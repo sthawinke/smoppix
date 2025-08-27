@@ -118,3 +118,7 @@
 # 1.1.4
 
 - Optimize addWeightFunction
+
+# 1.1.5
+
+- Export loadBalanceBplappy for use in other packages
