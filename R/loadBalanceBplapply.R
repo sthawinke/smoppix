@@ -10,7 +10,7 @@
 #' @return A list with the same length as iterator
 #' @importFrom BiocParallel bpparam bplapply bpnworkers
 #' @export
-loadBalanceBplapply <- function(iterator, func, loopFun = "BiocParallel::bplapply") {
+loadBalanceBplapply <- function(iterator, func, loopFun = "bplapply"){
     loopFunMatched <- match.fun(loopFun)
     if (loopFun == "lapply") {
         loopFunMatched(iterator, func)

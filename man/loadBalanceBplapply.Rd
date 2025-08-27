@@ -4,7 +4,7 @@
 \alias{loadBalanceBplapply}
 \title{Parallel processing with BiocParallel with load balancing}
 \usage{
-loadBalanceBplapply(iterator, func, loopFun = "BiocParallel::bplapply")
+loadBalanceBplapply(iterator, func, loopFun = "bplapply")
 }
 \arguments{
 \item{iterator}{The vector to iterate over}
