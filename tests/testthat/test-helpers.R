@@ -1,7 +1,6 @@
 context("Unit tests for small auxiliary function")
 test_that("sund yields correct result", {
     expect_identical(sund("gene1--gene2"), c("gene1", "gene2"))
-    expect_identical("gene1", "gene1")
 })
 test_that("Make gene pairs works as expected", {
     expect_identical(makePairs(paste0("gene", seq_len(3))), c(
