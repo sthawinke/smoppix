@@ -9,7 +9,14 @@ our [preprint](https://doi.org/10.1101/2025.05.20.654270). A simple
 use-case is shown below, more extensive documentation can be found in
 the vignette.
 
-The package can be installed from GitHub as follows:
+The package can be installed from Bioconductor as follows:
+
+``` r
+library(Biocmanager)
+install("smoppix")
+```
+
+The latest version can be installed from this Github repo as:
 
 ``` r
 library(devtools)

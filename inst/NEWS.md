@@ -122,3 +122,4 @@
 # 1.1.5
 
 - Export loadBalanceBplappy for use in other packages
+- Mention Bioconductor installer in README

@@ -5,16 +5,18 @@ title: "<img src='inst/Smoppix.jpg' align='centre' height='15%' width='15%'/>SMO
 
 This repo provides code for analyzing single-molecule spatial omics data and cell type location data using probabilistic indices as introduced in our [preprint](https://doi.org/10.1101/2025.05.20.654270). A simple use-case is shown below, more extensive documentation can be found in the vignette.
 
-The package can be installed from GitHub as follows:
+The package can be installed from Bioconductor as follows:
+
+```{r install, eval = FALSE}
+library(Biocmanager)
+install("smoppix")
+```
+
+The latest version can be installed from this Github repo as:
 
 ```{r installAndLoadGitHub, eval = FALSE}
 library(devtools)
 install_github("sthawinke/smoppix")
-```
-
-```{r install, eval = FALSE, echo = FALSE}
-library(Biocmanager)
-install("smoppix")
 ```
 
 Once installed, you can load the package
