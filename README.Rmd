@@ -1,11 +1,6 @@
 ---
 output: github_document
 title: "<img src='inst/Smoppix.jpg' align='centre' height='15%' width='15%'/>SMOPPIX: Single-MOlecule sPatial omics data analysed using the Probabilistic IndeX"
-header-includes:
-  - \usepackage{titling}
-  - \pretitle{\begin{center}
-    \includegraphics[width=2in,height=2in]{inst/Smoppix.jpg}\LARGE\\}
-  - \posttitle{\end{center}}
 ---
 
 This repo provides code for analyzing single-molecule spatial omics data and cell type location data using probabilistic indices as introduced in our [preprint](https://doi.org/10.1101/2025.05.20.654270). A simple use-case is shown below, more extensive documentation can be found in the vignette.
