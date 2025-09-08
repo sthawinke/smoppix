@@ -9,9 +9,6 @@ buildDataFrame(
   gene,
   pi = c("nn", "nnPair", "edge", "centroid", "nnCell", "nnPairCell"),
   piMat,
-  moransI = FALSE,
-  numNNs = 8,
-  weightMats,
   pppDf,
   prepMat,
   prepTabs,
@@ -27,11 +24,6 @@ for nearest neighbour distances, the result of a call to \link{addWeightFunction
 \item{pi}{character string indicating the desired PI}
 
 \item{piMat}{A data frame. Will be constructed if not provided, for internal use.}
-
-\item{moransI}{A boolean, should Moran's I be calculated?
-in the linear mixed model}
-
-\item{weightMats}{List of weight matrices for Moran's I calculation.}
 
 \item{pppDf}{Dataframe of point pattern-wise variables. It is precalculated
 in fitLMMsSingle for speed, but will be newly constructed when not provided.}
@@ -58,5 +50,5 @@ summary(mixedMod)
 # Evidence for aggregation
 }
 \seealso{
-\link{addWeightFunction}, \link{buildMoransIDataFrame}
+\link{addWeightFunction}
 }

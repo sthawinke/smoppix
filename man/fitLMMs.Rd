@@ -31,7 +31,7 @@ fitLMMsSingle(
   features
 )
 
-getResults(obj, pi, parameter, moransI = FALSE)
+getResults(obj, pi, parameter)
 }
 \arguments{
 \item{obj}{The result object}
@@ -61,8 +61,6 @@ Defaults to all features in the object}
 \item{pi}{The desired PI}
 
 \item{parameter}{The desired parameter}
-
-\item{moransI}{A boolean, should results for the Moran's I be returned?}
 }
 \value{
 For fitLMMs(), a list of fitted objects

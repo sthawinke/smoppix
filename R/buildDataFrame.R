@@ -8,17 +8,13 @@
 #' @param gene A character string indicating the desired gene or gene pair (genes separated by double hyphens)
 #' @param pi character string indicating the desired PI
 #' @param piMat A data frame. Will be constructed if not provided, for internal use.
-#' @param moransI A boolean, should Moran's I be calculated?
-#' in the linear mixed model
-#' @param weightMats List of weight matrices for Moran's I calculation.
 #' @param pppDf Dataframe of point pattern-wise variables. It is precalculated
 #' in fitLMMsSingle for speed, but will be newly constructed when not provided.
 #' @param prepMat,prepTabs,prepCells Preconstructed objects to avoid looping over genes. For internal use mainly
-#' @inheritParams fitLMMs
 #' @return A dataframe with estimated PIs and covariates
 #' @export
 #' @importFrom scam predict.scam
-#' @seealso \link{addWeightFunction}, \link{buildMoransIDataFrame}
+#' @seealso \link{addWeightFunction}
 #' @examples
 #' example(addWeightFunction, "smoppix")
 #' dfUniNN <- buildDataFrame(yangObj, gene = "SmVND2", pi = "nn")
@@ -31,8 +27,7 @@
 #' summary(mixedMod)
 #' # Evidence for aggregation
 buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
-                               "nnCell", "nnPairCell"), piMat, moransI = FALSE,
-                           numNNs = 8, weightMats, pppDf, prepMat, prepTabs, prepCells) {
+                               "nnCell", "nnPairCell"), piMat, pppDf, prepMat, prepTabs, prepCells) {
     pi <- match.arg(pi)
     if (missing(pppDf)) {
         pppDf <- as.data.frame(obj$hypFrame[, c("image", getPPPvars(obj)), drop = FALSE])
@@ -135,7 +130,7 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
           image <- rep(rownames(obj$hypFrame), times = Times)
           piDfsMat <- Reduce(piDfs, f = rbind)
           piMat <- data.frame(piDfsMat, pppDf[image, ,drop = FALSE], check.rows = FALSE, check.names = FALSE)
-          if (!windowId && !moransI) {
+          if (!windowId) {
               # Add weights
               weight <- evalWeightFunction(obj$Wfs[[pi]], newdata = piMat[, if (grepl(
                   "Pair", pi)) {
@@ -149,13 +144,6 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
           rownames(piMat) <- NULL
           piMat
         }
-      } else if (moransI) {
-          if (missing(weightMats)) {
-              weightMats <- lapply(getHypFrame(obj)$centroids, buildMoransIWeightMat,
-                  numNNs = numNNs)
-              names(weightMats) <- getHypFrame(obj)$image
-          }
-        piMat <- buildMoransIDataFrame(piMat = piMat, pi = pi, weightMats = weightMats)
       }
     return(piMat)
 }

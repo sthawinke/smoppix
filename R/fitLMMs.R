@@ -41,7 +41,7 @@
 fitLMMs <- function(
     obj, pis = obj$pis, fixedVars = NULL, randomVars = NULL, verbose = TRUE,
     returnModels = FALSE, Formula = NULL, randomNested = TRUE, features = getEstFeatures(obj), ...) {
-  stopifnot(is.logical(returnModels), is.logical(randomNested),is.numeric(numNNs))
+  stopifnot(is.logical(returnModels), is.logical(randomNested))
   out <- lapply(pis, function(pi) {
     fitLMMsSingle(obj, pi = pi, verbose = verbose, fixedVars = fixedVars, randomVars = randomVars,
         returnModels = returnModels, Formula = Formula, randomNested = randomNested,
@@ -147,7 +147,7 @@ fitLMMsSingle <- function(
   }
   #Prepare generic dataframe with fixed and random effects, swap in weights and outcome per feature
   
-  ff <- lFormula(Formula, data = data.frame("pi" = 0.5, pppDf), REML = TRUE)
+  #ff <- lFormula(Formula, data = data.frame("pi" = 0.5, pppDf), REML = TRUE)
   #For cell wise properties, also include prepTabs and prepCells
   models <- loadBalanceBplapply(Features, function(gene) {
     # mat = getPiAndWeights(obj, gene = gene, pi = pi, prepMat = prepMat, prepTabs = prepTabs, prepCells = prepCells)
@@ -161,13 +161,12 @@ fitLMMsSingle <- function(
         df <- nestRandom(df, randomVarsSplit, intersect(fixedVars, getPPPvars(obj)))
       }
       contrasts <- contrasts[!names(contrasts) %in% vapply(df, FUN.VALUE = TRUE, is.numeric)]
-      piMod <- fitPiModel(Formula, df, contrasts,
-                          Control, MM = MM, Weight = df$weight)
-      list(piMod = piMod)}
+      fitPiModel(Formula, df, contrasts, Control, MM = MM, Weight = df$weight)
+      }
     return(out)
   })
   names(models) <- Features
   results <- extractResults(models, hypFrame = obj$hypFrame, fixedVars)
   # Effect size, standard error, p-value and adjusted p-value per mixed effect
-  return(list(results = results$piMod, models = if(returnModels) models))
+  return(list(results = results, models = if(returnModels) models))
 }
