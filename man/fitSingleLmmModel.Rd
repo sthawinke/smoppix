@@ -2,20 +2,20 @@
 % Please edit documentation in R/fitPiModel.R
 \name{fitSingleLmmModel}
 \alias{fitSingleLmmModel}
-\title{Take an existing frame, add outcome and weight ad fit lmer model}
+\title{Take an existing frame, add outcome and weight and fit lmer model}
 \usage{
-fitSingleLmmModel(ff, y, wts = NULL)
+fitSingleLmmModel(ff, y, Control, weights = NULL)
 }
 \arguments{
-\item{ff}{}
+\item{ff}{The prepared frame}
 
 \item{y}{outcome vector}
 
-\item{wts}{weights vector}
+\item{weights}{weights vector}
 }
 \value{
 A fitted lmer model
 }
 \description{
-Take an existing frame, add outcome and weight ad fit lmer model
+Take an existing frame, add outcome and weight and fit lmer model
 }

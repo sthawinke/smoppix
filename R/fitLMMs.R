@@ -145,23 +145,23 @@ fitLMMsSingle <- function(
       eventMarks[match(colnames(prepTabs[[n]]), eventMarks$cell),]
     })
   }
-  #Prepare generic dataframe with fixed and random effects, swap in weights and outcome per feature
-  
-  #ff <- lFormula(Formula, data = data.frame("pi" = 0.5, pppDf), REML = TRUE)
+  #Prepare generic dataframe with fixed and random effects, later 
+  # swap in weights and outcome per feature
+  ff <- lFormula(Formula, data = data.frame("pi" = 0.5, pppDf), contrasts = contrasts)
+  if (randomNested) {
+    ff$fr <- nestRandom(ff$fr, randomVarsSplit, intersect(fixedVars, getPPPvars(obj)))
+  }
   #For cell wise properties, also include prepTabs and prepCells
   models <- loadBalanceBplapply(Features, function(gene) {
-    # mat = getPiAndWeights(obj, gene = gene, pi = pi, prepMat = prepMat, prepTabs = prepTabs, prepCells = prepCells)
-    # fitSingleLmmModel(ff = ff, y = )
-    df <- buildDataFrame(obj, gene = gene, pi = pi, pppDf = pppDf, 
-                         prepMat = prepMat, prepTabs = prepTabs, prepCells = prepCells)
-    out <- if (is.null(df) || sum(!is.na(df$pi)) < 3) {
+    mat = getPiAndWeights(obj, gene = gene, pi = pi, prepMat = prepMat, 
+                          prepTabs = prepTabs, prepCells = prepCells)
+    # df <- buildDataFrame(obj, gene = gene, pi = pi, pppDf = pppDf, 
+    #                      prepMat = prepMat, prepTabs = prepTabs, prepCells = prepCells)
+    out <- if (is.null(mat) || sum(!is.na(mat[, "pi"])) < 3) {
       NULL
     } else {
-      if (randomNested) {
-        df <- nestRandom(df, randomVarsSplit, intersect(fixedVars, getPPPvars(obj)))
-      }
-      contrasts <- contrasts[!names(contrasts) %in% vapply(df, FUN.VALUE = TRUE, is.numeric)]
-      fitPiModel(Formula, df, contrasts, Control, MM = MM, Weight = df$weight)
+      fitSingleLmmModel(ff = ff, y = mat[, "pi"], 
+                  weights = if(!windowId) mat[, "weights"], Control = Control)
       }
     return(out)
   })

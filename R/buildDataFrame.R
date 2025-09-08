@@ -104,6 +104,9 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
                 npVec <- vapply(geneSplit, FUN.VALUE = integer(ncol(tabCell)), function(x) {
                   getGp(tabCell, x, notFoundReturn = NA)
                 })
+                if (pairId) {
+                  npVec = t(apply(npVec, 1, sort))
+                }
                 colnames(npVec) <- if (pairId) {
                     c("minP", "maxP")
                 } else {
@@ -132,8 +135,7 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
           piMat <- data.frame(piDfsMat, pppDf[image, ,drop = FALSE], check.rows = FALSE, check.names = FALSE)
           if (!windowId) {
               # Add weights
-              weight <- evalWeightFunction(obj$Wfs[[pi]], newdata = piMat[, if (grepl(
-                  "Pair", pi)) {
+              weight <- evalWeightFunction(obj$Wfs[[pi]], newdata = piMat[, if (pairId) {
                   c("minP", "maxP")
               } else {
                   "NP"
@@ -209,21 +211,20 @@ prepareMatrix <- function(obj, pi, features){
   }
   return(newMat)
 }
-getPiAndWeights <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
-                                             "nnCell", "nnPairCell"), piMat,
-                          pppDf, prepMat, prepTabs, prepCells) {
+getPiAndWeights <- function(obj, gene, pi, piMat, pppDf, prepMat, prepTabs, 
+                            prepCells) {
     geneSplit <- sund(gene)
-    piListNameInner <- if (windowId <- (pi %in% c("edge", "centroid"))) {
+    cellId <- grepl("Cell", pi)
+    pairId <- grepl("Pair", pi)
+    windowId <- pi %in% c("edge", "centroid")
+    piListNameInner <- if (windowId) {
       "windowDists"
     } else if (cellId) {
       "withinCellDists"
     } else {
       "pointDists"
     }
-    if (cellId || windowId) {
-      eventVars <- getEventVars(obj)
-    }
-    piDfs <- lapply(seq_len(nrow(obj$hypFrame)), function(n) {
+    piMat <- Reduce(f = rbind, lapply(seq_len(nrow(obj$hypFrame)), function(n) {
       nList <- obj$hypFrame[n, , drop = TRUE]
       class(nList) <- "list" # Simplify things
       # Extract pi and add counts
@@ -236,18 +237,17 @@ getPiAndWeights <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid"
         npVec <- vapply(geneSplit, FUN.VALUE = integer(ncol(tabCell)), function(x) {
           getGp(tabCell, x, notFoundReturn = NA)
         })
+        if (pairId) {
+          npVec = t(apply(npVec, 1, sort))
+        }
         colnames(npVec) <- if (pairId) {
           c("minP", "maxP")
         } else {
           "NP"
         }
-        npVecOut <- matrix(0, ncol = length(geneSplit), nrow = length(piEst), 
-                           dimnames = list(names(piEst), colnames(npVec)))
-        npVecOut[rownames(npVec),] <- npVec
-        cbind(pi = piEst, npVecOut)
+        cbind(pi = piEst, npVec)
       } else {
-        piEst <- getGp(if(misPrep){nList$pimRes[[piListNameInner]][[pi]]} else {prepMat[n, ]},
-                       gene, notFoundReturn = NA)
+        piEst <- getGp(prepMat[n, ], gene, notFoundReturn = NA)
         npVec <- vapply(geneSplit, FUN.VALUE = integer(1), function(x) {
           getGp(nList$tabObs, x, notFoundReturn = NA)
         })
@@ -257,11 +257,11 @@ getPiAndWeights <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid"
           cbind(pi = piEst, NP = npVec)
         }
       }
-    })
+    }))
     if(!windowId){
       weight <- evalWeightFunction(obj$Wfs[[pi]], 
-                newdata = piMat[, if (grepl("Pair", pi)) {c("minP", "maxP")} else {"NP"}, drop = FALSE])
-      piMat <- cbind(piMat[, "pi"], weight = weight/sum(weight, na.rm = TRUE))
+                newdata = piMat[, if (pairId) {c("minP", "maxP")} else {"NP"}, drop = FALSE])
+      piMat <- cbind(piMat[, "pi", drop = FALSE], "weights" = weight/sum(weight, na.rm = TRUE))
     } else {
       piMat <- piMat[, "pi", drop = FALSE]
     }
