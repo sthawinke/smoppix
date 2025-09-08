@@ -225,8 +225,7 @@ getPiAndWeights <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid"
                                              "nnCell", "nnPairCell"), piMat,
                           pppDf, prepMat, prepTabs, prepCells) {
     geneSplit <- sund(gene)
-    windowId <- (pi %in% c("edge", "centroid"))
-    piListNameInner <- if (windowId) {
+    piListNameInner <- if (windowId <- (pi %in% c("edge", "centroid"))) {
       "windowDists"
     } else if (cellId) {
       "withinCellDists"
@@ -239,14 +238,12 @@ getPiAndWeights <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid"
     piDfs <- lapply(seq_len(nrow(obj$hypFrame)), function(n) {
       nList <- obj$hypFrame[n, , drop = TRUE]
       class(nList) <- "list" # Simplify things
-      Marks <- marks(nList$ppp, drop = FALSE)
-      # Extract pi, and add counts and covariates
-      piEst <- getGp(nList$pimRes[[piListNameInner]], gene)[[pi]]
+      # Extract pi and add counts
+      if (windowId) {
+        cbind("pi" = getGp(nList$pimRes[[piListNameInner]], gene)[[pi]])
       } else if (cellId) {
         piEst <- getGp(t(prepMat[names(nList$pimRes[[piListNameInner]]),, drop = FALSE]), 
                        gene, notFoundReturn = NA)
-        cellCovars <-prepCells[[n]][match(names(piEst), prepCells[[n]]$cell), setdiff(
-          colnames(prepCells[[n]]), "gene"), drop = FALSE]
         tabCell <- prepTabs[[n]][match(geneSplit, rownames(prepTabs[[n]])),, drop = FALSE]
         npVec <- vapply(geneSplit, FUN.VALUE = integer(ncol(tabCell)), function(x) {
           getGp(tabCell, x, notFoundReturn = NA)

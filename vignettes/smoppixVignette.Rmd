@@ -303,7 +303,7 @@ plotWf(engPis, "nnPairCell")
 As before, the minority gene of the pair is the main driver of variance. Next, we fit linear mixed models on the obtained PIs. The experiment was conducted twice, so we add the experiment variable as fixed effect. The image and cell variables are added automatically where appropriate, as printed in the output:
 
 ```{r FitEngModels}
-allModsNNcell <- fitLMMs(engPis, fixedVars = "experiment", addMoransI = TRUE)
+allModsNNcell <- fitLMMs(engPis, fixedVars = "experiment")
 ```
 
 For the "edge" and "centroid" options, each individual RNA-molecule is an observation in the model, and random effects are added for both cell and image. For "nnCell" and "nnPairCell", the observations are averaged per cell, and so only a random effect common to all cells of a single image remains. Now we plot the genes with the strongest remoteness from the cell edge:
@@ -342,13 +342,7 @@ plotExplore(hypEng,
 )
 ```
 
-The molecules are shown in red, while the yellow-blue scale indicates the PI estimate. It seems like in the central cells, the PI is smaller (molecules closer to the cell edge) than the outer cells. We test whether the Moran's I statistic, a measure for spatial aggregation of numeric variables, is significant over the different point patterns:
-
-```{r testMoransI}
-getResults(allModsNNcell, "edge", "Intercept", moransI = TRUE)[remEdge, ]
-```
-
-Although the estimated Moran's I is positive indeed, indicating positive spatial autocorrelation, it is not significant over the different repeats. Writing the results to a spreadsheet again:
+The molecules are shown in red, while the yellow-blue scale indicates the PI estimate. Writing the results to a spreadsheet again:
 
 ```{r writeXlsxEng, eval = FALSE}
 writeToXlsx(allModsNNcell, file = "mysecondfile.xlsx")

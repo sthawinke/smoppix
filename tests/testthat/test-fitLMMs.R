@@ -47,10 +47,8 @@ test_that("Fitting linear mixed models proceeds without errors", {
     expect_s4_class(linMModsNNfull[["nn"]]$models[[getFeatures(yangPims)[[15]]]]$piMod, "lmerModLmerTest")
     expect_is(linModsMP <- fitLMMs(objBG,
         returnModels = TRUE, features = getFeatures(objBG)[1:5],
-        fixedVars = "condition", pi = "centroid", addMoransI = TRUE
-    ), "list")
-    expect_is(getResults(linModsMP, "centroid", "Intercept", moransI = TRUE), "matrix")
-    expect_s3_class(linModsMP[["centroid"]]$models[[1]]$moranMod, "lm")
+        fixedVars = "condition", pi = "centroid"), "list")
+    expect_is(getResults(linModsMP, "centroid", "Intercept"), "matrix")
     expect_s4_class(linModsMP[["centroid"]]$models[[1]]$piMod, "lmerModLmerTest")
     expect_is(linModsEdge <- fitLMMs(objBG,
         features = getFeatures(objBG)[1:5],
@@ -70,11 +68,10 @@ test_that("Fitting linear mixed models proceeds without errors", {
     ), "list")
     expect_is(linModsMidCellType <- fitLMMs(objBG,
         features = getFeatures(objBG)[1:5],
-        addMoransI = TRUE, fixedVars = c("condition", "cellType"), pi = "centroid",
+        fixedVars = c("condition", "cellType"), pi = "centroid",
         returnModels = TRUE,
     ), "list")
     expect_s4_class(linModsMidCellType[["centroid"]]$models[[1]]$piMod, "lmerModLmerTest")
-    expect_s3_class(linModsMidCellType[["centroid"]]$models[[1]]$moranMod, "lm")
     expect_is(linModsNNCellType <- fitLMMs(objBG,
         features = getFeatures(objBG)[1:3],
         fixedVars = c("condition", "cellType"), pi = "nnCell",

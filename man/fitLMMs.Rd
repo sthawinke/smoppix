@@ -16,9 +16,6 @@ fitLMMs(
   Formula = NULL,
   randomNested = TRUE,
   features = getEstFeatures(obj),
-  moranFormula = NULL,
-  addMoransI = FALSE,
-  numNNs = 10,
   ...
 )
 
@@ -31,10 +28,7 @@ fitLMMsSingle(
   returnModels,
   Formula,
   randomNested,
-  features,
-  addMoransI,
-  weightMats,
-  moranFormula
+  features
 )
 
 getResults(obj, pi, parameter, moransI = FALSE)
@@ -62,18 +56,9 @@ point patterns. See details.}
 \item{features}{The features for which to fit linear mixed models.
 Defaults to all features in the object}
 
-\item{moranFormula}{Formula for Moran's I model fitting}
-
-\item{addMoransI}{A boolean, include Moran's I of the cell-wise PIs in the calculation}
-
-\item{numNNs}{An integer, the number of nearest neighbours in the
-weight matrix for the calculation of the Moran's I statistic}
-
 \item{...}{Passed onto fitLMMsSingle}
 
 \item{pi}{The desired PI}
-
-\item{weightMats}{A list of weight matrices for Moran's I}
 
 \item{parameter}{The desired parameter}
 
@@ -109,10 +94,6 @@ It is by default assumed that random effects are nested within the point
  patterns. This means for instance that cells with the same name but from
  different point patterns are assigned to different random effects. Set
  'randomNested' to FALSE to override this behaviour.
-
- The Moran's I statistic is used to test whether cell-wise PIs ("nnCell", "nnCellPair", "edge" and "centroid") 
- are spatially autocorrelated across the images. The numeric value of the PI is assigned to the 
- centroid location, and then Moran's I is calculated with a fixed number of numNNs nearest neighbours with equal weights.
 }
 \examples{
 example(addWeightFunction, "smoppix")
@@ -121,5 +102,5 @@ res <- getResults(lmmModels, "nn", "Intercept") #Extract the results
 head(res)
 }
 \seealso{
-\link{buildMoransIDataFrame}, \link{buildDataFrame}
+\link{buildDataFrame}
 }

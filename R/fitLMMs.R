@@ -17,10 +17,6 @@
 #' point patterns. See details.
 #' @param features The features for which to fit linear mixed models.
 #' Defaults to all features in the object
-#' @param moranFormula Formula for Moran's I model fitting
-#' @param addMoransI A boolean, include Moran's I of the cell-wise PIs in the calculation
-#' @param numNNs An integer, the number of nearest neighbours in the
-#' weight matrix for the calculation of the Moran's I statistic
 #' @param ... Passed onto fitLMMsSingle
 #' @details Genes or gene pairs with insufficient observations will be silently
 #' omitted. When randomVars is provided as a vector, independent random
@@ -33,12 +29,9 @@
 #'  different point patterns are assigned to different random effects. Set
 #'  'randomNested' to FALSE to override this behaviour.
 #'
-#'  The Moran's I statistic is used to test whether cell-wise PIs ("nnCell", "nnCellPair", "edge" and "centroid") 
-#'  are spatially autocorrelated across the images. The numeric value of the PI is assigned to the 
-#'  centroid location, and then Moran's I is calculated with a fixed number of numNNs nearest neighbours with equal weights.
 #' @return For fitLMMs(), a list of fitted objects
 #' @export
-#' @seealso \link{buildMoransIDataFrame}, \link{buildDataFrame}
+#' @seealso \link{buildDataFrame}
 #' @order 1
 #' @examples
 #' example(addWeightFunction, "smoppix")
@@ -47,27 +40,17 @@
 #' head(res)
 fitLMMs <- function(
     obj, pis = obj$pis, fixedVars = NULL, randomVars = NULL, verbose = TRUE,
-    returnModels = FALSE, Formula = NULL, randomNested = TRUE, features = getEstFeatures(obj),
-    moranFormula = NULL, addMoransI = FALSE, numNNs = 10, ...) {
-  stopifnot(
-    is.logical(returnModels), is.logical(randomNested), is.logical(addMoransI),
-    is.numeric(numNNs)
-  )
-  if (addMoransI) {
-    weightMats <- lapply(getHypFrame(obj)$centroids, buildMoransIWeightMat, numNNs = numNNs)
-    names(weightMats) <- getHypFrame(obj)$image
-  }
+    returnModels = FALSE, Formula = NULL, randomNested = TRUE, features = getEstFeatures(obj), ...) {
+  stopifnot(is.logical(returnModels), is.logical(randomNested),is.numeric(numNNs))
   out <- lapply(pis, function(pi) {
     fitLMMsSingle(obj, pi = pi, verbose = verbose, fixedVars = fixedVars, randomVars = randomVars,
         returnModels = returnModels, Formula = Formula, randomNested = randomNested,
-        features = features, weightMats = weightMats, moranFormula = moranFormula,
-        addMoransI = addMoransI, ...
+        features = features, ...
     )
   })
   names(out) <- pis
   return(out)
 }
-#' @param weightMats A list of weight matrices for Moran's I
 #' @return For fitLMMsSingle(), a list of test results, if requested also the linear models are returned
 #' @importFrom lmerTest lmer
 #' @importFrom stats formula anova
@@ -77,7 +60,7 @@ fitLMMs <- function(
 #' @order 2
 fitLMMsSingle <- function(
     obj, pi, fixedVars, randomVars, verbose, returnModels,
-    Formula, randomNested, features, addMoransI, weightMats, moranFormula) {
+    Formula, randomNested, features) {
   pi <- match.arg(pi, choices = c(
     "nn", "nnPair", "edge", "centroid", "nnCell", "nnPairCell"))
   foo <- checkPi(obj, pi)
@@ -115,21 +98,6 @@ fitLMMsSingle <- function(
   MM <- any(grepl("\\|", formChar <- characterFormula(Formula)))
   if (verbose) {
     message("Fitted formula for pi ", pi, ":\n", formChar)
-  }
-  if (addMoransI) {
-    moranFormula <- buildFormula(moranFormula,
-                                 fixedVars = morFix <- intersect(
-                                   fixedVars,
-                                   getPPPvars(obj)
-                                 ), randomVars = rvMoran <- intersect(randomVars, getPPPvars(obj)),
-                                 outcome = "MoransI"
-    )
-    MMmoran <- as.logical(length(rvMoran))
-    names(morFix) <- morFix
-    contrastsMoran <- lapply(morFix, function(x) named.contr.sum)
-    if (verbose) {
-      message("Fitted formula for Moran's I for pi ", pi, ":\n", formCharMoran <- characterFormula(moranFormula))
-    }
   }
   Control <- lmerControl(
     check.conv.grad = .makeCC("ignore", tol = 0.002, relTol = NULL),
@@ -182,38 +150,24 @@ fitLMMsSingle <- function(
   ff <- lFormula(Formula, data = data.frame("pi" = 0.5, pppDf), REML = TRUE)
   #For cell wise properties, also include prepTabs and prepCells
   models <- loadBalanceBplapply(Features, function(gene) {
-    mat = getPiAndWeights(obj, gene = gene, pi = pi, prepMat = prepMat, prepTabs = prepTabs, prepCells = prepCells)
-    fitSingleLmmModel(ff = ff, y = )
-    
-    
-    
+    # mat = getPiAndWeights(obj, gene = gene, pi = pi, prepMat = prepMat, prepTabs = prepTabs, prepCells = prepCells)
+    # fitSingleLmmModel(ff = ff, y = )
     df <- buildDataFrame(obj, gene = gene, pi = pi, pppDf = pppDf, 
                          prepMat = prepMat, prepTabs = prepTabs, prepCells = prepCells)
     out <- if (is.null(df) || sum(!is.na(df$pi)) < 3) {
       NULL
     } else {
-      moranMod <- if (addMoransI) {
-        finalDf <- buildDataFrame(piMat = df, gene = gene, pi = pi,
-          moransI = TRUE, obj = obj, weightMats = weightMats)
-        W <- 1 / finalDf$Variance
-        fitPiModel(moranFormula, finalDf, contrastsMoran, Control,
-                   MM = MMmoran, Weight = W / sum(W, na.rm = TRUE))
-      } # Run this before nesting
       if (randomNested) {
         df <- nestRandom(df, randomVarsSplit, intersect(fixedVars, getPPPvars(obj)))
       }
       contrasts <- contrasts[!names(contrasts) %in% vapply(df, FUN.VALUE = TRUE, is.numeric)]
       piMod <- fitPiModel(Formula, df, contrasts,
                           Control, MM = MM, Weight = df$weight)
-      list(piMod = piMod, moranMod = moranMod)}
+      list(piMod = piMod)}
     return(out)
   })
   names(models) <- Features
-  mods <- c("piMod", if (addMoransI) "moranMod")
-  names(mods) <- mods
-  results <- lapply(mods, function(mm) {
-    extractResults(models, hypFrame = obj$hypFrame, fixedVars, subSet = mm)
-  })
+  results <- extractResults(models, hypFrame = obj$hypFrame, fixedVars)
   # Effect size, standard error, p-value and adjusted p-value per mixed effect
-  return(list(results = results$piMod, resultsMoran = results$moranMod, models = if(returnModels) models))
+  return(list(results = results$piMod, models = if(returnModels) models))
 }
