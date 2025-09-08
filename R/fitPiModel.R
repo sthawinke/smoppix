@@ -31,3 +31,22 @@ fitPiModel <- function(Formula, dff, contrasts, Control, MM, Weight = NULL) {
     }
     return(mod)
 }
+#' Take an existing frame, add outcome and weight ad fit lmer model
+#'
+#' @param ff 
+#' @param y outcome vector
+#' @param wts weights vector
+#'
+#' @returns A fitted lmer model
+#' @importFrom lme4 mkLmerDevfun optimizeLmer mkMerMod
+fitSingleLmmModel <- function(ff, y, wts = NULL) {
+  fr <- ff$fr                    # this is a data.frame (model frame)
+  fr[["pi - 0.5"]] <- y                 # replace response
+  
+  ## Use model-frame column names used by stats::model.frame
+  if (!is.null(wts)) fr$`(weights)` <- wts
+  
+  devfun <- mkLmerDevfun(fr, ff$X, ff$reTrms)
+  opt    <- optimizeLmer(devfun)
+  mkMerMod(environment(devfun), opt, ff$reTrms, fr)
+}

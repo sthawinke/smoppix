@@ -221,3 +221,65 @@ prepareMatrix <- function(obj, pi, features){
   }
   return(newMat)
 }
+getPiAndWeights <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
+                                             "nnCell", "nnPairCell"), piMat,
+                          pppDf, prepMat, prepTabs, prepCells) {
+    geneSplit <- sund(gene)
+    windowId <- (pi %in% c("edge", "centroid"))
+    piListNameInner <- if (windowId) {
+      "windowDists"
+    } else if (cellId) {
+      "withinCellDists"
+    } else {
+      "pointDists"
+    }
+    if (cellId || windowId) {
+      eventVars <- getEventVars(obj)
+    }
+    piDfs <- lapply(seq_len(nrow(obj$hypFrame)), function(n) {
+      nList <- obj$hypFrame[n, , drop = TRUE]
+      class(nList) <- "list" # Simplify things
+      Marks <- marks(nList$ppp, drop = FALSE)
+      # Extract pi, and add counts and covariates
+      piEst <- getGp(nList$pimRes[[piListNameInner]], gene)[[pi]]
+      } else if (cellId) {
+        piEst <- getGp(t(prepMat[names(nList$pimRes[[piListNameInner]]),, drop = FALSE]), 
+                       gene, notFoundReturn = NA)
+        cellCovars <-prepCells[[n]][match(names(piEst), prepCells[[n]]$cell), setdiff(
+          colnames(prepCells[[n]]), "gene"), drop = FALSE]
+        tabCell <- prepTabs[[n]][match(geneSplit, rownames(prepTabs[[n]])),, drop = FALSE]
+        npVec <- vapply(geneSplit, FUN.VALUE = integer(ncol(tabCell)), function(x) {
+          getGp(tabCell, x, notFoundReturn = NA)
+        })
+        colnames(npVec) <- if (pairId) {
+          c("minP", "maxP")
+        } else {
+          "NP"
+        }
+        npVecOut <- matrix(0, ncol = length(geneSplit), nrow = length(piEst), 
+                           dimnames = list(names(piEst), colnames(npVec)))
+        npVecOut[rownames(npVec),] <- npVec
+        cbind(pi = piEst, npVecOut)
+      } else {
+        piEst <- getGp(if(misPrep){nList$pimRes[[piListNameInner]][[pi]]} else {prepMat[n, ]},
+                       gene, notFoundReturn = NA)
+        npVec <- vapply(geneSplit, FUN.VALUE = integer(1), function(x) {
+          getGp(nList$tabObs, x, notFoundReturn = NA)
+        })
+        if (pairId) {
+          cbind(pi = piEst, minP = min(npVec), maxP = max(npVec))
+        } else {
+          cbind(pi = piEst, NP = npVec)
+        }
+      }
+    })
+    if(!windowId){
+      weight <- evalWeightFunction(obj$Wfs[[pi]], 
+                newdata = piMat[, if (grepl("Pair", pi)) {c("minP", "maxP")} else {"NP"}, drop = FALSE])
+      piMat <- cbind(piMat[, "pi"], weight = weight/sum(weight, na.rm = TRUE))
+    } else {
+      piMat <- piMat[, "pi", drop = FALSE]
+    }
+    rownames(piMat) <- NULL
+    return(piMat)
+}

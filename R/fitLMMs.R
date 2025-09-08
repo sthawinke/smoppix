@@ -71,7 +71,7 @@ fitLMMs <- function(
 #' @return For fitLMMsSingle(), a list of test results, if requested also the linear models are returned
 #' @importFrom lmerTest lmer
 #' @importFrom stats formula anova
-#' @importFrom lme4 lmerControl .makeCC isSingular
+#' @importFrom lme4 lmerControl .makeCC isSingular lFormula
 #' @importFrom methods is
 #' @rdname fitLMMs
 #' @order 2
@@ -177,7 +177,16 @@ fitLMMsSingle <- function(
       eventMarks[match(colnames(prepTabs[[n]]), eventMarks$cell),]
     })
   }
+  #Prepare generic dataframe with fixed and random effects, swap in weights and outcome per feature
+  
+  ff <- lFormula(Formula, data = data.frame("pi" = 0.5, pppDf), REML = TRUE)
+  #For cell wise properties, also include prepTabs and prepCells
   models <- loadBalanceBplapply(Features, function(gene) {
+    mat = getPiAndWeights(obj, gene = gene, pi = pi, prepMat = prepMat, prepTabs = prepTabs, prepCells = prepCells)
+    fitSingleLmmModel(ff = ff, y = )
+    
+    
+    
     df <- buildDataFrame(obj, gene = gene, pi = pi, pppDf = pppDf, 
                          prepMat = prepMat, prepTabs = prepTabs, prepCells = prepCells)
     out <- if (is.null(df) || sum(!is.na(df$pi)) < 3) {
