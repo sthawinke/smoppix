@@ -12,22 +12,20 @@
 #' @seealso \link{fitLMMs}, \link[stats]{p.adjust}
 extractResults <- function(models, hypFrame, fixedVars = NULL, method = "BH") {
     id <- vapply(models, FUN.VALUE = TRUE, function(x) {
-        is(x, "lmerModLmerTest") || is.matrix(x)
+        is(x, "lmerModLmerTest") || is.list(x)
     })
     out <- if (!any(id)) {
         return(list("Intercept" = NULL, "fixedEffects" = NULL))
     } else {
-      ints <- t(vapply(models, FUN.VALUE = double(3), function(x) {
-          if (is.null(x) || is(x, "try-error")) {
-              c(Estimate = NA, `Std. Error` = NA, `Pr(>|t|)` = NA)
-          } else if(is(x, "lmerModLmerTest")){
-              summary(x)$coef["(Intercept)", c(
-                  "Estimate", "Std. Error",
-                  "Pr(>|t|)"
-              )]
-          } else {
-            getLmWfitPvalues(x)["(Intercept)", c("Estimate", "Std. Error","Pr(>|t|)")]
-          }
+      Summaries = loadBalanceBplapply(models[id], function(x) {
+        if(is(x, "lmerModLmerTest")){
+          summary(x)$coef
+        } else {
+          getLmWfitPvalues(x)
+        }
+      })
+      ints <- t(vapply(Summaries, FUN.VALUE = double(3), function(x) {
+          x["(Intercept)", c("Estimate", "Std. Error", "Pr(>|t|)")]
       }))
       colnames(ints) <- c("Estimate", "SE", "pVal")
       ints[, "Estimate"] <- ints[, "Estimate"] + 0.5
@@ -51,11 +49,10 @@ extractResults <- function(models, hypFrame, fixedVars = NULL, method = "BH") {
               names(emptyCoef) <- Var
           }
           pVal <- vapply(AnovaTabs, FUN.VALUE = double(1), function(x) x[Var, "Pr(>F)"])
-          coefs <- lapply(models[id], function(x) {
+          coefs <- lapply(Summaries, function(coefObj) {
               # Prepare the empty coefficient vector with all levels present. If
               # outcome is NA for all levels, the factor level gets dropped,
               # causing problems downstream.
-              coefObj <- if(is(x, "lmerModLmerTest")) summary(x)$coef else x
               if(discr){
                   rn <- intersect(names(emptyCoef), rownames(coefObj))
                   emptyCoef[rn] <- coefObj[rn, "Estimate"]
