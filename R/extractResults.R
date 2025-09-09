@@ -34,7 +34,7 @@ extractResults <- function(models, hypFrame, fixedVars = NULL, method = "BH") {
       intMat <- cbind(ints, pAdj = p.adjust(ints[, "pVal"], method = method))[order(ints[
           ,"pVal"]), ]
       # Order by p-value
-      AnovaTabs <- lapply(models[id], anova)
+      AnovaTabs <- loadBalanceBplapply(models[id], anova)
       fixedOut <- lapply(fixedVars, function(Var) {
           if(discr <- Var %in% getDiscreteVars(hypFrame)){
               unVals <- if (Var %in% getEventVars(hypFrame)) {
