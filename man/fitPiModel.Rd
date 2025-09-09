@@ -27,5 +27,5 @@ A fitted model
 Fit a linear model for an individual gene and PI combination
 }
 \seealso{
-\link{fitLMMsSingle}
+\link{fitLMMsSingle}, \link{getLmWfitPvalues}
 }

@@ -23,5 +23,5 @@ p-value and adjusted p-value
 Extract results from a list of fitted LMMs. For internal use mainly.
 }
 \seealso{
-\link{fitLMMs}, \link{p.adjust}
+\link{fitLMMs}, \link[stats]{p.adjust}
 }

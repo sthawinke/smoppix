@@ -53,7 +53,7 @@ fitLMMs <- function(
 }
 #' @return For fitLMMsSingle(), a list of test results, if requested also the linear models are returned
 #' @importFrom lmerTest lmer
-#' @importFrom stats formula anova
+#' @importFrom stats formula terms
 #' @importFrom lme4 lmerControl .makeCC isSingular lFormula
 #' @importFrom methods is
 #' @rdname fitLMMs
@@ -148,6 +148,7 @@ fitLMMsSingle <- function(
   #Prepare generic dataframe with fixed and random effects, later 
   # swap in weights and outcome per feature
   ff <- lFormula(Formula, data = data.frame("pi" = 0.5, pppDf), contrasts = contrasts)
+  Terms = terms(Formula)
   if (randomNested) {
     ff$fr <- nestRandom(ff$fr, randomVarsSplit, intersect(fixedVars, getPPPvars(obj)))
   }
@@ -160,7 +161,7 @@ fitLMMsSingle <- function(
     out <- if (is.null(mat) || sum(!is.na(mat[, "pi"])) < 3) {
       NULL
     } else {
-      fitSingleLmmModel(ff = ff, y = mat[, "pi"], 
+      fitSingleLmmModel(ff = ff, y = mat[, "pi"], Terms = Terms,
                   weights = if(!windowId) mat[, "weights"], Control = Control)
       }
     return(out)
