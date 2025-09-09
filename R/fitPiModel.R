@@ -30,41 +30,4 @@ fitPiModel <- function(Formula, dff, contrasts, Control, MM, Weight = NULL) {
     }
     return(mod)
 }
-#' Take an existing frame, add outcome and weight and fit lmer model
-#'
-#' @param ff The prepared frame
-#' @param y outcome vector
-#' @param weights weights vector
-#'
-#' @returns A fitted lmer model
-#' @importFrom lme4 mkLmerDevfun optimizeLmer mkMerMod
-#' @importFrom lmerTest as_lmerModLmerTest
-fitSingleLmmModel <- function(ff, y, Control, Terms, weights = NULL) {
-  fr <- ff$fr                    # this is a data.frame (model frame)
-  ## Use model-frame column names used by stats::model.frame
-  weights <- if (is.null(weights)) rep(1, length(y)) else weights
-  #Set weights to zero for NA y's. This is more efficient than dropping rows, as we can keep using the same design matrix
-  weights[naId <- is.na(y)] = 0
-  y[naId] = 0 #Set to arbitrary number to avoid errors, will be downweighted anyway
-  fr$`(weights)` = weights
-  fr[["pi - 0.5"]] <- y                 # replace response
-  
-  mod = try({
-    devfun <- mkLmerDevfun(fr, ff$X, ff$reTrms, control = Control)
-    opt <- optimizeLmer(devfun, control = Control)
-    out <- mkMerMod(rho = environment(devfun), opt = opt, 
-                                       reTrms = ff$reTrms, fr = fr)
-    out <- lmerTest:::as_lmerModLT(out, devfun = devfun)
-  }, silent = TRUE)
-  # Switch to fixed effects model when fit failed
-  if(inherits(mod, "try-error")){
-    lm_from_wfit(lm.wfit(y = y, x = ff$X, w = weights), y = y, Terms = Terms)
-  }
-  return(mod)
-}
-lm_from_wfit <- function(obj, y, Terms, weights = NULL) {
-  # Create a minimal lm object
-  obj <- c(obj, list(y = y, terms = Terms))
-  class(obj) <- "lm"
-  return(obj)
-}
+

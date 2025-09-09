@@ -27,7 +27,6 @@ extractResults <- function(models, hypFrame, fixedVars = NULL, method = "BH") {
               )]
           } else {
             getLmWfitPvalues(x)["(Intercept)", c("Estimate", "Std. Error","Pr(>|t|)")]
-            #Returned by smoppix:::getLmWfitPvalues
           }
       }))
       colnames(ints) <- c("Estimate", "SE", "pVal")
@@ -35,9 +34,7 @@ extractResults <- function(models, hypFrame, fixedVars = NULL, method = "BH") {
       intMat <- cbind(ints, pAdj = p.adjust(ints[, "pVal"], method = method))[order(ints[
           ,"pVal"]), ]
       # Order by p-value
-      AnovaTabs <- lapply(models[id], function(x) {
-        if(is(x, "lmerModLmerTest")) anova(x) else anovaLmwfit(x)
-        })
+      AnovaTabs <- lapply(models[id], anova)
       fixedOut <- lapply(fixedVars, function(Var) {
           if(discr <- Var %in% getDiscreteVars(hypFrame)){
               unVals <- if (Var %in% getEventVars(hypFrame)) {
