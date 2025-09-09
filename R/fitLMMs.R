@@ -189,6 +189,7 @@ fitSingleLmmModel <- function(ff, y, Control, Terms, modMat, weights = NULL) {
   #Set weights to zero for NA y's. This is more efficient than dropping rows, as we can keep using the same design matrix
   weights[naId <- is.na(y)] = 0
   y[naId] = 0 #Set to arbitrary number to avoid errors, will be downweighted anyway
+  weights = weights/sum(weights)
   fr$`(weights)` = weights
   fr[["pi - 0.5"]] <- y - 0.5               # replace response
   
