@@ -209,24 +209,27 @@ getPiAndWeights <- function(obj, gene, pi, piMat, pppDf, prepMat, prepTab) {
     geneSplit <- sund(gene)
     cellId <- grepl("Cell", pi)
     pairId <- grepl("Pair", pi)
-    piListNameInner <- if (cellId) {
-      "withinCellDists"
-    } else {
-      "pointDists"
-    }
-    piMat <- t(vapply(seq_len(nrow(obj$hypFrame)), FUN.VALUE = double(2+pairId), function(n) {
+    piListNameInner <- if (cellId) {"withinCellDists"} else {"pointDists"}
+    piMat <- Reduce(f = rbind, lapply(seq_len(nrow(obj$hypFrame)), function(n){
           if(cellId){
             piEst = prepMat[[n]][, gene]
-            npVec = prepTab[[n]][, geneSplit]
+            npVec = prepTab[[n]][names(piEst), geneSplit]
+            if(pairId){
+              npVec = t(apply(npVec, 1, sort))
+            }
           } else {
-            piEst <-prepMat[n, gene]
+            piEst <- prepMat[n, gene]
             npVec <- prepTab[n, geneSplit]
+            if(pairId)
+              npVec = sort(npVec)
           }
-          if (pairId) {
-            c(pi = piEst, minP = min(npVec), maxP = max(npVec))
-          } else {
-            c(pi = piEst, NP = npVec)
-          }
+      out <- if(pairId){
+          cbind(pi = piEst, minP = if(cellId) npVec[, 1] else npVec[1], 
+                maxP = if(cellId) npVec[, 2] else npVec[2])
+      } else {
+          cbind(pi = piEst, NP = npVec)
+      }
+      return(out)
     }))
     weight <- evalWeightFunction(obj$Wfs[[pi]], 
                 newdata = piMat[, if (pairId) {c("minP", "maxP")} else {"NP"}, drop = FALSE])

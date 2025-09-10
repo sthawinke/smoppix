@@ -159,7 +159,7 @@ fitLMMsSingle <- function(
       })
       prepCells <- lapply(seq_along(prepTableOrList), function(n){
         eventMarks <- marks(obj$hypFrame$ppp[[n]], drop = FALSE)[, getEventVars(obj), drop = FALSE]
-        eventMarks[match(colnames(prepTableOrList[[n]]), eventMarks$cell),]
+        eventMarks[match(rownames(prepTableOrList[[n]]), eventMarks$cell),]
       })
     } else {
       prepTableOrList = {
@@ -183,15 +183,16 @@ fitLMMsSingle <- function(
       pppDf
     }
     contrasts <- contrasts[!names(contrasts) %in% vapply(baseDf, FUN.VALUE = TRUE, is.numeric)]
-    ff <- lFormula(Formula, data = data.frame("pi" = 0.5, baseDf), 
+    if(MM){
+      ff <- lFormula(Formula, data = data.frame("pi" = 0.5, baseDf), 
                    contrasts = contrasts, na.action = na.omit)
-    Terms = terms(Formula)
-    Attr = attr(ff$X, "assign")
-    modMat = model.matrix(formula(paste("~", paste(collapse = "+", fixedVars))),
-                          pppDf, contrasts.arg = contrasts) #Fixed effects model matrix
-    if (randomNested) {
-      ff$fr <- nestRandom(ff$fr, randomVarsSplit, intersect(fixedVars, getPPPvars(obj)))
-      ff$reTrms <- mkReTrms(findbars(Formula[[length(Formula)]]), ff$fr)
+      Attr = attr(ff$X, "assign")
+      modMat = model.matrix(formula(paste("~", paste(collapse = "+", fixedVars))),
+                            baseDf, contrasts.arg = contrasts) #Fixed effects model matrix
+      if (randomNested) {
+        ff$fr <- nestRandom(ff$fr, randomVarsSplit, intersect(fixedVars, getPPPvars(obj)))
+        ff$reTrms <- mkReTrms(findbars(Formula[[length(Formula)]]), ff$fr)
+      }
     }
     #For cell wise properties, also include prepTabs and prepCells
     models <- loadBalanceBplapply(Features, function(gene) {
@@ -200,11 +201,13 @@ fitLMMsSingle <- function(
       out <- if (is.null(mat) || sum(id <- !is.na(mat[, "pi"])) < 3) {
         NULL
       } else {
-        ff$fr = ff$fr[id,, drop = FALSE];ff$X = ff$X[id,, drop = FALSE]
-        attr(ff$X, "assign") = Attr
-        ff$reTrms$Zt = ff$reTrms$Zt[, id, drop = FALSE]
-        fitSingleLmmModel(ff = ff, y = mat[id, "pi"], Terms = Terms, modMat = modMat[id,],
-                    weights = mat[id, "weights"], Control = Control)
+        if(MM){
+          ff$fr = ff$fr[id,, drop = FALSE];ff$X = ff$X[id,, drop = FALSE]
+          attr(ff$X, "assign") = Attr
+          ff$reTrms$Zt = ff$reTrms$Zt[, id, drop = FALSE]
+        }
+        fitSingleLmmModel(ff = ff, y = mat[id, "pi"], Terms = terms(Formula), modMat = modMat[id,],
+                    weights = mat[id, "weights"], Control = Control, MM = MM)
         }
       return(out)
     })
@@ -222,23 +225,22 @@ fitLMMsSingle <- function(
 #'
 #' @returns A fitted lmer model
 #' @importFrom lme4 mkLmerDevfun optimizeLmer mkMerMod
-#' @importFrom lmerTest as_lmerModLmerTest
-fitSingleLmmModel <- function(ff, y, Control, Terms, modMat, weights = NULL) {
-  fr <- ff$fr                    # this is a data.frame (model frame)
-  ## Use model-frame column names used by stats::model.frame
-  fr$`(weights)` = weights
-  fr[["pi - 0.5"]] <- y - 0.5               # replace response
-  id = !is.na(y)
-  
-  mod = try({
-    devfun <- mkLmerDevfun(fr, ff$X, ff$reTrms, control = Control)
-    opt <- optimizeLmer(devfun, control = Control)
-    out <- mkMerMod(rho = environment(devfun), opt = opt, 
-                    reTrms = ff$reTrms, fr = fr)
-    out <- lmerTest:::as_lmerModLT(out, devfun = devfun)
-  }, silent = TRUE)
+fitSingleLmmModel <- function(ff, y, Control, Terms, modMat, MM, weights = NULL) {
+  if(MM){
+    fr <- ff$fr                    # this is a data.frame (model frame)
+    ## Use model-frame column names used by stats::model.frame
+    fr$`(weights)` = weights
+    fr[["pi - 0.5"]] <- y - 0.5               # replace response
+    mod = try({
+      devfun <- mkLmerDevfun(fr, ff$X, ff$reTrms, control = Control)
+      opt <- optimizeLmer(devfun, control = Control)
+      out <- mkMerMod(rho = environment(devfun), opt = opt, 
+                      reTrms = ff$reTrms, fr = fr)
+      out <- lmerTest:::as_lmerModLT(out, devfun = devfun)
+    }, silent = TRUE)
+  }
   # Switch to fixed effects model when fit failed
-  if(inherits(mod, "try-error")){
+  if(!MM || inherits(mod, "try-error")){
     lm_from_wfit(lm.wfit(y = y, x = modMat, w = weights), y = y, Terms = Terms)
   }
   return(mod)
