@@ -388,9 +388,9 @@ if(reqFunky){
     #Extract PIs of significant features
     nnRes = getResults(TNBClmms, "nn", "Class")
     sigLevel = 0.05
-    nnSig = rownames(nnRes)[nnRes[, "pAdj"]<sigLevel]
+    nnSig = rownames(nnRes)[nnRes[, "pAdj"] < sigLevel]
     nnPairRes = getResults(TNBClmms, "nnPair", "Class")
-    nnPairSig = rownames(nnPairRes)[nnPairRes[, "pAdj"]<sigLevel & !is.na(nnPairRes[, "pAdj"])]
+    nnPairSig = rownames(nnPairRes)[nnPairRes[, "pAdj"] < sigLevel & !is.na(nnPairRes[, "pAdj"])]
     nnPis = as.matrix(vapply(pisTNBC$hypFrame$pimRes, FUN.VALUE = double(nnn <- (length(nnSig)+ length(nnPairSig))), function(x){
         c(if(length(nnSig)) x$pointDists$nn[nnSig],
           if(length(nnPairSig)) vapply(nnPairSig, FUN.VALUE = 1, function(y) {
