@@ -12,18 +12,12 @@
 #' @seealso \link{fitLMMs}, \link[stats]{p.adjust}
 extractResults <- function(models, hypFrame, fixedVars = NULL, method = "BH") {
     id <- vapply(models, FUN.VALUE = TRUE, function(x) {
-        is(x, "lmerModLmerTest") || is.list(x)
+        is(x, "lmerModLmerTest") || is(x, "lm")
     })
     out <- if (!any(id)) {
         return(list("Intercept" = NULL, "fixedEffects" = NULL))
     } else {
-      Summaries = loadBalanceBplapply(models[id], function(x) {
-        if(is(x, "lmerModLmerTest")){
-          summary(x)$coef
-        } else {
-          getLmWfitPvalues(x)
-        }
-      })
+      Summaries = loadBalanceBplapply(models[id], function(x) summary(x)$coef)
       ints <- t(vapply(Summaries, FUN.VALUE = double(3), function(x) {
           x["(Intercept)", c("Estimate", "Std. Error", "Pr(>|t|)")]
       }))

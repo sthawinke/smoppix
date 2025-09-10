@@ -11,7 +11,7 @@
 #' @importFrom lmerTest lmer
 #' @importFrom stats na.omit lm as.formula
 #' @importFrom lme4 nobars
-#' @seealso \link{fitLMMsSingle}, \link{getLmWfitPvalues}
+#' @seealso \link{fitLMMsSingle}
 fitPiModel <- function(Formula, dff, contrasts, Control, MM, Weight = NULL) {
     ff <- as.formula(Formula)
     environment(ff) <- environment() # Make sure formula sees the weights, see

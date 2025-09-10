@@ -187,14 +187,13 @@ fitLMMsSingle <- function(
       ff <- lFormula(Formula, data = data.frame("pi" = 0.5, baseDf), 
                    contrasts = contrasts, na.action = na.omit)
       Attr = attr(ff$X, "assign")
-      modMat = model.matrix(formula(paste("~", paste(collapse = "+", fixedVars))),
-                            baseDf, contrasts.arg = contrasts) #Fixed effects model matrix
       if (randomNested) {
         ff$fr <- nestRandom(ff$fr, randomVarsSplit, intersect(fixedVars, getPPPvars(obj)))
         ff$reTrms <- mkReTrms(findbars(Formula[[length(Formula)]]), ff$fr)
       }
     }
-    #For cell wise properties, also include prepTabs and prepCells
+    modMat = model.matrix(formula(paste("~", paste(collapse = "+", fixedVars))),
+                          baseDf, contrasts.arg = contrasts) #Fixed effects model matrix
     models <- loadBalanceBplapply(Features, function(gene) {
       mat = getPiAndWeights(obj, gene = gene, pi = pi, prepMat = prepMatorList,
                             prepTab = prepTableOrList)
@@ -241,11 +240,18 @@ fitSingleLmmModel <- function(ff, y, Control, Terms, modMat, MM, weights = NULL)
   }
   # Switch to fixed effects model when fit failed
   if(!MM || inherits(mod, "try-error")){
-    lm_from_wfit(lm.wfit(y = y, x = modMat, w = weights), y = y, Terms = Terms)
+    mod <- lm_from_wfit(lm.wfit(y = y, x = modMat, w = weights), y = y, Terms = Terms)
   }
   return(mod)
 }
-lm_from_wfit <- function(obj, y, Terms, weights = NULL) {
+#' Add compoments to a result from lm.wfit to make it a minimally valid lm object
+#'
+#' @param obj The lm.wfit() result
+#' @param y the outcome variable
+#' @param Terms The terms object
+#'
+#' @returns A object of class lm
+lm_from_wfit <- function(obj, y, Terms) {
   # Create a minimal lm object
   obj <- c(obj, list(y = y, terms = Terms))
   class(obj) <- "lm"

@@ -205,7 +205,12 @@ prepareMatrixOrList <- function(obj, pi, features){
   }
   return(out)
 }
-getPiAndWeights <- function(obj, gene, pi, piMat, pppDf, prepMat, prepTab) {
+#' Build a matrix with pi and weights
+#'
+#' @inheritParams buildDataFrame
+#'
+#' @returns A matrix of two columns: pi estimate and weights
+getPiAndWeights <- function(obj, gene, pi, piMat, prepMat, prepTab) {
     geneSplit <- sund(gene)
     cellId <- grepl("Cell", pi)
     pairId <- grepl("Pair", pi)
