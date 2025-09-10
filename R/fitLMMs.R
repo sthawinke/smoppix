@@ -138,6 +138,7 @@ fitLMMsSingle <- function(
   if(cellId){
     prepTabs <- lapply(obj$hypFrame$ppp, function(x){
       tab <- table(marks(x)[, c("gene", "cell")])
+      class(tab) = "matrix"
       tab[, colnames(tab)!= "NA"]
     })
     prepCells <- lapply(seq_along(prepTabs), function(n){
@@ -145,9 +146,43 @@ fitLMMsSingle <- function(
       eventMarks[match(colnames(prepTabs[[n]]), eventMarks$cell),]
     })
   }
+  if(windowId){
+    models <- loadBalanceBplapply(Features, function(gene) {
+      df <- buildDataFrame(obj, gene = gene, pi = pi, pppDf = pppDf, 
+                            prepMat = prepMat)
+      out <- if (is.null(mat) || sum(id <- !is.na(mat[, "pi"])) < 3) {
+        NULL
+      } else {
+        ff$fr = ff$fr[id,, drop = FALSE];ff$X = ff$X[id,, drop = FALSE]
+        attr(ff$X, "assign") = Attr
+        ff$reTrms$Zt = ff$reTrms$Zt[, id, drop = FALSE]
+        fitSingleLmmModel(ff = ff, y = mat[id, "pi"], Terms = Terms, modMat = modMat[id,],
+                          weights = if(!windowId) mat[id, "weights"], Control = Control)
+      }
+      return(out)
+    })
+  }
+  baseDf = if(windowId){
+    
+  } else if(cellId){
+    Reduce(f = rbind, lapply(seq_along(prepCells), function(n) {
+      cbind(prepCells[[n]][, setdiff(colnames(prepCells[[n]]), "gene"), drop = FALSE],
+            pppDf[n,setdiff(colnames(pppDf), "cell"), drop = FALSE], t(prepTabs[[n]]))
+    }))
+  } else {
+    pppDf
+  }
+  prepTable = if(windowId){
+    
+    } if(cellId){
+    cbind(t(Reduce(f = cbind, prepTabs)), 
+          pppDf[rep(seq_len(nrows(pppDf)), times = vapply(prepTabs, FUN.VALUE = 0L, ncol)),])
+  } else {
+    pppDf
+  }
   #Prepare generic dataframe with fixed and random effects, later 
   # swap in weights and outcome per feature
-  ff <- lFormula(Formula, data = data.frame("pi" = 0.5, pppDf), contrasts = contrasts, 
+  ff <- lFormula(Formula, data = data.frame("pi" = 0.5, baseDf), contrasts = contrasts, 
                  na.action = na.omit)
   Terms = terms(Formula)
   Attr = attr(ff$X, "assign")
@@ -160,7 +195,7 @@ fitLMMsSingle <- function(
   #For cell wise properties, also include prepTabs and prepCells
   models <- loadBalanceBplapply(Features, function(gene) {
     mat = getPiAndWeights(obj, gene = gene, pi = pi, prepMat = prepMat, 
-                          prepTabs = prepTabs, prepCells = prepCells)
+                          prepTable = prepTable)
     # df <- buildDataFrame(obj, gene = gene, pi = pi, pppDf = pppDf, 
     #                      prepMat = prepMat, prepTabs = prepTabs, prepCells = prepCells)
     out <- if (is.null(mat) || sum(id <- !is.na(mat[, "pi"])) < 3) {
