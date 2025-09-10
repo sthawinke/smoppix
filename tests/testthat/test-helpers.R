@@ -10,7 +10,7 @@ test_that("Make gene pairs works as expected", {
 })
 test_that("getGp does correct extraction", {
     geneMat <- matrix(rnorm(6), 3, 2)
-    rownames(geneMat) <- makePairs(paste0("gene", seq_len(3)))
+    colnames(geneMat) <- makePairs(paste0("gene", seq_len(ncol(geneMat))))
     expect_identical(getGp(geneMat, "gene1--gene2"), getGp(geneMat, "gene2--gene1"))
     expect_is(getGp(geneMat, "gene1--gene2", drop = FALSE), "matrix")
 })
