@@ -3,6 +3,7 @@
 \name{fitLMMs}
 \alias{fitLMMs}
 \alias{fitLMMsSingle}
+\alias{fitSingleLmmModel}
 \alias{getResults}
 \title{Fit linear (mixed) models for all probabilistic indices (PIs) and all genes}
 \usage{
@@ -30,6 +31,8 @@ fitLMMsSingle(
   randomNested,
   features
 )
+
+fitSingleLmmModel(ff, y, Control, Terms, modMat, MM, assign, weights = NULL)
 
 getResults(obj, pi, parameter)
 }
@@ -60,12 +63,20 @@ Defaults to all features in the object}
 
 \item{pi}{The desired PI}
 
+\item{ff}{The prepared frame}
+
+\item{y}{outcome vector}
+
+\item{weights}{weights vector}
+
 \item{parameter}{The desired parameter}
 }
 \value{
 For fitLMMs(), a list of fitted objects
 
 For fitLMMsSingle(), a list of test results, if requested also the linear models are returned
+
+A fitted lmer model
 
 For getResults(), the matrix with results, with p-values in ascending order
 \item{Estimate}{The estimated PI}
@@ -76,7 +87,7 @@ For getResults(), the matrix with results, with p-values in ascending order
 \description{
 The PI is used as outcome variable in a linear (mixed) model,
 with design variables as regressors. Separate models are fitted for every combination of gene
-and PI. fitLMMsSingle() is the workhorse function for a single point pattern,
+and PI. fitLMMsSingle() is the workhorse function for a single point pattern, fitSingleLmmModel() for a single feature.
 
 getResults() extracts effect size estimates, standard errors and adjusted p-values for a certain parameter
 from a linear model.
