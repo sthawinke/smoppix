@@ -186,7 +186,6 @@ fitLMMsSingle <- function(
     if(MM){
       ff <- lFormula(Formula, data = data.frame("pi" = 0.5, baseDf), 
                    contrasts = contrasts, na.action = na.omit)
-      Attr = attr(ff$X, "assign")
       if (randomNested) {
         ff$fr <- nestRandom(ff$fr, randomVarsSplit, intersect(fixedVars, getPPPvars(obj)))
         ff$reTrms <- mkReTrms(findbars(Formula[[length(Formula)]]), ff$fr)
@@ -194,6 +193,7 @@ fitLMMsSingle <- function(
     }
     modMat = model.matrix(formula(paste("~", paste(collapse = "+", fixedVars))),
                           baseDf, contrasts.arg = contrasts) #Fixed effects model matrix
+    Assign = attr(modMat, "assign")
     models <- loadBalanceBplapply(Features, function(gene) {
       mat = getPiAndWeights(obj, gene = gene, pi = pi, prepMat = prepMatorList,
                             prepTab = prepTableOrList)
@@ -202,11 +202,11 @@ fitLMMsSingle <- function(
       } else {
         if(MM){
           ff$fr = ff$fr[id,, drop = FALSE];ff$X = ff$X[id,, drop = FALSE]
-          attr(ff$X, "assign") = Attr
+          attr(ff$X, "assign") = Assign
           ff$reTrms$Zt = ff$reTrms$Zt[, id, drop = FALSE]
         }
         fitSingleLmmModel(ff = ff, y = mat[id, "pi"], Terms = terms(Formula), modMat = modMat[id,],
-                    weights = mat[id, "weights"], Control = Control, MM = MM)
+                    weights = mat[id, "weights"], Control = Control, MM = MM, Assign = Assign)
         }
       return(out)
     })
@@ -224,13 +224,14 @@ fitLMMsSingle <- function(
 #'
 #' @returns A fitted lmer model
 #' @importFrom lme4 mkLmerDevfun optimizeLmer mkMerMod
-fitSingleLmmModel <- function(ff, y, Control, Terms, modMat, MM, weights = NULL) {
+#' @importFrom stats lm.wfit
+fitSingleLmmModel <- function(ff, y, Control, Terms, modMat, MM, Assign, weights = NULL) {
   if(MM){
     fr <- ff$fr                    # this is a data.frame (model frame)
     ## Use model-frame column names used by stats::model.frame
-    fr$`(weights)` = weights
+    fr$`(weights)` #' @importFrom stats lm.wfit weights
     fr[["pi - 0.5"]] <- y - 0.5               # replace response
-    mod = try({
+    mod <- try({
       devfun <- mkLmerDevfun(fr, ff$X, ff$reTrms, control = Control)
       opt <- optimizeLmer(devfun, control = Control)
       out <- mkMerMod(rho = environment(devfun), opt = opt, 
@@ -240,7 +241,7 @@ fitSingleLmmModel <- function(ff, y, Control, Terms, modMat, MM, weights = NULL)
   }
   # Switch to fixed effects model when fit failed
   if(!MM || inherits(mod, "try-error")){
-    mod <- lm_from_wfit(lm.wfit(y = y, x = modMat, w = weights), y = y, Terms = Terms)
+    mod <- lm_from_wfit(lm.wfit(y = y, x = modMat, w = weights), y = y, Assign = Assign, Terms = Terms)
   }
   return(mod)
 }
@@ -248,12 +249,13 @@ fitSingleLmmModel <- function(ff, y, Control, Terms, modMat, MM, weights = NULL)
 #'
 #' @param obj The lm.wfit() result
 #' @param y the outcome variable
-#' @param Terms The terms object
+#' @param Terms,Assign Added to the object
 #'
 #' @returns A object of class lm
-lm_from_wfit <- function(obj, y, Terms) {
+lm_from_wfit <- function(obj, y, Terms, Assign) {
   # Create a minimal lm object
   obj <- c(obj, list(y = y, terms = Terms))
+  obj$assign = Assign
   class(obj) <- "lm"
   return(obj)
 }

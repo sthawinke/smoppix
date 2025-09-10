@@ -4,7 +4,7 @@
 \alias{fitSingleLmmModel}
 \title{Take an existing frame, add outcome and weight and fit lmer model}
 \usage{
-fitSingleLmmModel(ff, y, Control, Terms, modMat, MM, weights = NULL)
+fitSingleLmmModel(ff, y, Control, Terms, modMat, MM, Assign, weights = NULL)
 }
 \arguments{
 \item{ff}{The prepared frame}

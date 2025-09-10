@@ -220,13 +220,13 @@ getPiAndWeights <- function(obj, gene, pi, piMat, prepMat, prepTab) {
             piEst = prepMat[[n]][, gene]
             npVec = prepTab[[n]][names(piEst), geneSplit]
             if(pairId){
-              npVec = t(apply(npVec, 1, sort))
+              npVec <- t(apply(npVec, 1, sort))
             }
           } else {
             piEst <- prepMat[n, gene]
             npVec <- prepTab[n, geneSplit]
             if(pairId)
-              npVec = sort(npVec)
+              npVec <- sort(npVec)
           }
       out <- if(pairId){
           cbind(pi = piEst, minP = if(cellId) npVec[, 1] else npVec[1], 

@@ -4,14 +4,14 @@
 \alias{lm_from_wfit}
 \title{Add compoments to a result from lm.wfit to make it a minimally valid lm object}
 \usage{
-lm_from_wfit(obj, y, Terms)
+lm_from_wfit(obj, y, Terms, Assign)
 }
 \arguments{
 \item{obj}{The lm.wfit() result}
 
 \item{y}{the outcome variable}
 
-\item{Terms}{The terms object}
+\item{Terms, Assign}{Added to the object}
 }
 \value{
 A object of class lm
