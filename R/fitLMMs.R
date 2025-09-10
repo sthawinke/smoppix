@@ -221,6 +221,8 @@ fitLMMsSingle <- function(
 #' @param ff The prepared frame
 #' @param y outcome vector
 #' @param weights weights vector
+#' @param Assign,Terms Added to fitted fixed effects model
+#' @inheritParams fitPiModel
 #'
 #' @returns A fitted lmer model
 #' @importFrom lme4 mkLmerDevfun optimizeLmer mkMerMod

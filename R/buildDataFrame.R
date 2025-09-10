@@ -27,7 +27,7 @@
 #' summary(mixedMod)
 #' # Evidence for aggregation
 buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
-                               "nnCell", "nnPairCell"), piMat, pppDf, prepMat, prepTabs, prepCells) {
+                               "nnCell", "nnPairCell"), piMat, pppDf, prepMat, prepTab, prepCells) {
     pi <- match.arg(pi)
     if (missing(pppDf)) {
         pppDf <- as.data.frame(obj$hypFrame[, c("image", getPPPvars(obj)), drop = FALSE])
@@ -99,7 +99,7 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
                                gene, notFoundReturn = NA)
                 cellCovars <-prepCells[[n]][match(names(piEst), prepCells[[n]]$cell), setdiff(
                   colnames(prepCells[[n]]), "gene"), drop = FALSE]
-                tabCell <- prepTabs[[n]][match(geneSplit, rownames( prepTabs[[n]])),, drop = FALSE]
+                tabCell <- prepTab[[n]][match(geneSplit, rownames( prepTab[[n]])),, drop = FALSE]
               }
                 npVec <- vapply(geneSplit, FUN.VALUE = integer(ncol(tabCell)), function(x) {
                   getGp(tabCell, x, notFoundReturn = NA)
@@ -178,10 +178,8 @@ prepareMatrixOrList <- function(obj, pi, features){
   if(grepl("Pair", pi)){
     features <- sortGp(features)
   }
-  samples <- if(cellId){
-    unique(unlist(lapply(obj$hypFrame$pimRes, function(x) names(x[[piListNameInner]]))))
-  } else {}
   if(cellId){
+    samples = unique(unlist(lapply(obj$hypFrame$pimRes, function(x) names(x[[piListNameInner]]))))
     out = lapply(selfName(rownames(obj$hypFrame)), function(sam){
       samVec <- names(piObj <- obj$hypFrame$pimRes[[sam]][[piListNameInner]])
       outIn <- matrix(NA, nrow = length(samVec), ncol = length(features),

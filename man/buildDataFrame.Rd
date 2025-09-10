@@ -11,7 +11,7 @@ buildDataFrame(
   piMat,
   pppDf,
   prepMat,
-  prepTabs,
+  prepTab,
   prepCells
 )
 }

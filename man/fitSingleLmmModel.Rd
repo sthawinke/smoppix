@@ -11,6 +11,12 @@ fitSingleLmmModel(ff, y, Control, Terms, modMat, MM, Assign, weights = NULL)
 
 \item{y}{outcome vector}
 
+\item{Control}{Control parameters}
+
+\item{MM}{A boolean, should a mixed model be tried}
+
+\item{Assign, Terms}{Added to fitted fixed effects model}
+
 \item{weights}{weights vector}
 }
 \value{

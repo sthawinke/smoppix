@@ -25,3 +25,6 @@ The vector to iterate over (iterator) is split into as many parts as there are
 cores available, such that each core gets an equal load and overhead is minimized. 
 The registered backend is then used by default to multithread using \link[BiocParallel]{bplapply}.
 }
+\examples{
+loadBalanceBplapply(LETTERS, length)
+}
