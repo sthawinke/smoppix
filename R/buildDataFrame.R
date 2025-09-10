@@ -247,7 +247,11 @@ getPiAndWeights <- function(obj, gene, pi, piMat, pppDf, prepMat, prepTabs,
         }
         cbind(pi = piEst, npVec)
       } else {
-        piEst <- getGp(prepMat[n, ], gene, notFoundReturn = NA)
+        piEst <- getGp(prepMat[n, ,drop = FALSE], gene, notFoundReturn = NA)
+        # npVec = rep(NA, length(geneSplit))
+        # names(npVec) = geneSplit
+        # id <- match(names(nList$tabObs), geneSplit, nomatch = 0)
+        # npVec[geneSplit[id]] = nList$tabObs[geneSplit[id]]
         npVec <- vapply(geneSplit, FUN.VALUE = integer(1), function(x) {
           getGp(nList$tabObs, x, notFoundReturn = NA)
         })
