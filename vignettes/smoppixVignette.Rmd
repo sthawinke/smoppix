@@ -178,7 +178,9 @@ This dataframe can then be used for mixed modelling, either in R or in an other 
 
 ```{r}
 library(lmerTest, quietly = TRUE)
-lmeMod <- lmerTest::lmer(pi - 0.5 ~ day + (1 | root),
+#Make sure to nest root within day, without including a random effect for day
+dfUniNN$dayRoot = paste0(dfUniNN$day, dfUniNN$root)
+lmeMod <- lmerTest::lmer(pi - 0.5 ~ day + (1 |dayRoot),
     data = dfUniNN, na.action = na.omit,
     weights = weight, contrasts = list("day" = "contr.sum")
 )
