@@ -10,7 +10,7 @@
 #' @param piMat A data frame. Will be constructed if not provided, for internal use.
 #' @param pppDf Dataframe of point pattern-wise variables. It is precalculated
 #' in fitLMMsSingle for speed, but will be newly constructed when not provided.
-#' @param prepMat,prepTabs,prepCells Preconstructed objects to avoid looping over genes. For internal use mainly
+#' @param prepMat,prepTab,prepCells Preconstructed objects to avoid looping over genes. For internal use mainly
 #' @return A dataframe with estimated PIs and covariates
 #' @export
 #' @importFrom scam predict.scam
@@ -149,7 +149,7 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
       }
     return(piMat)
 }
-prepareMatrix <- function(obj, pi, features){
+prepareMatrixOrList <- function(obj, pi, features){
   if(windowId <- (pi %in% c("edge", "centroid"))){
     stop("prepareMatrix() not implemented yet for pi ", pi, " !")
   } else if (is.null(obj$Wfs[[pi]])) {
@@ -159,9 +159,7 @@ prepareMatrix <- function(obj, pi, features){
   if (cellId <- grepl("Cell", pi)) {
     piSub <- sub("Cell", "", pi)
   }
-  piListNameInner <- if (windowId) {
-    "windowDists"
-  } else if (cellId) {
+  piListNameInner <- if (cellId) {
     "withinCellDists"
   } else {
     "pointDists"
@@ -180,95 +178,59 @@ prepareMatrix <- function(obj, pi, features){
   if(grepl("Pair", pi)){
     features <- sortGp(features)
   }
-  samples <- if(windowId){
-    unique(unlist(lapply(obj$hypFrame$pimRes, function(x) lapply(x[[piListNameInner]], function(y) names(y[[pi]])))))
-  } else if(cellId){
+  samples <- if(cellId){
     unique(unlist(lapply(obj$hypFrame$pimRes, function(x) names(x[[piListNameInner]]))))
-  } else {rownames(obj$hypFrame)}
-  newMat <- matrix(NA, nrow = length(samples), ncol = length(features),
-                  dimnames = list(samples, features))
-  if(windowId){
-    piObj <- obj$hypFrame[[sam, "pimRes"]][[piListNameInner]]
-    for(feat in features){
-      featVec <- piObj[[feat]][[pi]]
-      newMat[sam, feat] <- featVec
-    }
-  } else if(cellId){
-    for(sam in rownames(obj$hypFrame)){
+  } else {}
+  if(cellId){
+    out = lapply(selfName(rownames(obj$hypFrame)), function(sam){
       samVec <- names(piObj <- obj$hypFrame$pimRes[[sam]][[piListNameInner]])
+      outIn <- matrix(NA, nrow = length(samVec), ncol = length(features),
+                      dimnames = list(samVec, features))
       for(samIn in samVec){
         featVec <- piObj[[samIn]][[piSub]]
         int <- intersect(names(featVec), features)
-        newMat[samIn, int] <- featVec[int]
+        outIn[samIn, int] <- featVec[int]
       }
-    }
+      return(outIn)
+    })
   } else {
+    samples <- rownames(obj$hypFrame)
+    out <- matrix(NA, nrow = length(samples), ncol = length(features),
+                     dimnames = list(samples, features))
     for(sam in samples){
       featVec <- obj$hypFrame[[sam, "pimRes"]][[piListNameInner]][[pi]]
       int <- intersect(names(featVec), features)
-      newMat[sam, int] <- featVec[int]
+      out[sam, int] <- featVec[int]
     }
   }
-  return(newMat)
+  return(out)
 }
-getPiAndWeights <- function(obj, gene, pi, piMat, pppDf, prepMat, prepTabs, 
-                            prepCells) {
+getPiAndWeights <- function(obj, gene, pi, piMat, pppDf, prepMat, prepTab) {
     geneSplit <- sund(gene)
     cellId <- grepl("Cell", pi)
     pairId <- grepl("Pair", pi)
-    windowId <- pi %in% c("edge", "centroid")
-    piListNameInner <- if (windowId) {
-      "windowDists"
-    } else if (cellId) {
+    piListNameInner <- if (cellId) {
       "withinCellDists"
     } else {
       "pointDists"
     }
-    piMat <- Reduce(f = rbind, lapply(seq_len(nrow(obj$hypFrame)), function(n) {
-      nList <- obj$hypFrame[n, , drop = TRUE]
-      class(nList) <- "list" # Simplify things
-      # Extract pi and add counts
-      if (windowId) {
-        cbind("pi" = getGp(nList$pimRes[[piListNameInner]], gene)[[pi]])
-      } else if (cellId) {
-        piEst <- getGp(t(prepMat[names(nList$pimRes[[piListNameInner]]),, drop = FALSE]), 
-                       gene, notFoundReturn = NA)
-        tabCell <- prepTabs[[n]][match(geneSplit, rownames(prepTabs[[n]])),, drop = FALSE]
-        npVec <- vapply(geneSplit, FUN.VALUE = integer(ncol(tabCell)), function(x) {
-          getGp(tabCell, x, notFoundReturn = NA)
-        })
-        if (pairId) {
-          npVec = t(apply(npVec, 1, sort))
-        }
-        colnames(npVec) <- if (pairId) {
-          c("minP", "maxP")
-        } else {
-          "NP"
-        }
-        cbind(pi = piEst, npVec)
-      } else {
-        piEst <- getGp(prepMat[n, ,drop = FALSE], gene, notFoundReturn = NA)
-        # npVec = rep(NA, length(geneSplit))
-        # names(npVec) = geneSplit
-        # id <- match(names(nList$tabObs), geneSplit, nomatch = 0)
-        # npVec[geneSplit[id]] = nList$tabObs[geneSplit[id]]
-        npVec <- vapply(geneSplit, FUN.VALUE = integer(1), function(x) {
-          getGp(nList$tabObs, x, notFoundReturn = NA)
-        })
-        if (pairId) {
-          cbind(pi = piEst, minP = min(npVec), maxP = max(npVec))
-        } else {
-          cbind(pi = piEst, NP = npVec)
-        }
-      }
+    piMat <- t(vapply(seq_len(nrow(obj$hypFrame)), FUN.VALUE = double(2+pairId), function(n) {
+          if(cellId){
+            piEst = prepMat[[n]][, gene]
+            npVec = prepTab[[n]][, geneSplit]
+          } else {
+            piEst <-prepMat[n, gene]
+            npVec <- prepTab[n, geneSplit]
+          }
+          if (pairId) {
+            c(pi = piEst, minP = min(npVec), maxP = max(npVec))
+          } else {
+            c(pi = piEst, NP = npVec)
+          }
     }))
-    if(!windowId){
-      weight <- evalWeightFunction(obj$Wfs[[pi]], 
+    weight <- evalWeightFunction(obj$Wfs[[pi]], 
                 newdata = piMat[, if (pairId) {c("minP", "maxP")} else {"NP"}, drop = FALSE])
-      piMat <- cbind(piMat[, "pi", drop = FALSE], "weights" = weight/sum(weight, na.rm = TRUE))
-    } else {
-      piMat <- piMat[, "pi", drop = FALSE]
-    }
+    piMat <- cbind(piMat[, "pi", drop = FALSE], "weights" = weight/sum(weight, na.rm = TRUE))
     rownames(piMat) <- NULL
     return(piMat)
 }

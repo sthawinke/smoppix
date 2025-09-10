@@ -133,23 +133,70 @@ fitLMMsSingle <- function(
     contrasts <- lapply(discreteVars, function(x) named.contr.sum)
   }
   if(!windowId){
-    prepMat <- prepareMatrix(obj, pi = pi, features = Features)
-  }
-  if(cellId){
-    prepTabs <- lapply(obj$hypFrame$ppp, function(x){
-      tab <- table(marks(x)[, c("gene", "cell")])
-      class(tab) = "matrix"
-      tab[, colnames(tab)!= "NA"]
-    })
-    prepCells <- lapply(seq_along(prepTabs), function(n){
-      eventMarks <- marks(obj$hypFrame$ppp[[n]], drop = FALSE)[, getEventVars(obj), drop = FALSE]
-      eventMarks[match(colnames(prepTabs[[n]]), eventMarks$cell),]
-    })
+    prepMatorList <- prepareMatrixOrList(obj, pi = pi, features = Features)
   }
   if(windowId){
     models <- loadBalanceBplapply(Features, function(gene) {
-      df <- buildDataFrame(obj, gene = gene, pi = pi, pppDf = pppDf, 
-                            prepMat = prepMat)
+      df <- buildDataFrame(obj, gene = gene, pi = pi, pppDf = pppDf)
+      out <- if (is.null(df) || sum(!is.na(df$pi)) < 3) {
+        NULL
+      } else {
+        if (randomNested) {
+          df <- nestRandom(df, randomVarsSplit, intersect(fixedVars, getPPPvars(obj)))
+        }
+        contrasts <- contrasts[!names(contrasts) %in% vapply(df, FUN.VALUE = TRUE, is.numeric)]
+        fitPiModel(Formula, df, contrasts,
+                            Control, MM = MM, Weight = df$weight)
+      }
+      return(out)
+    })
+  } else {
+    if(cellId){
+      prepTableOrList <- lapply(obj$hypFrame$ppp, function(x){
+        tab <- table(marks(x)[, c("gene", "cell")])
+        class(tab) = "matrix"
+        t(tab[, colnames(tab)!= "NA"])
+      })
+      prepCells <- lapply(seq_along(prepTableOrList), function(n){
+        eventMarks <- marks(obj$hypFrame$ppp[[n]], drop = FALSE)[, getEventVars(obj), drop = FALSE]
+        eventMarks[match(colnames(prepTableOrList[[n]]), eventMarks$cell),]
+      })
+    } else {
+      prepTableOrList = {
+        singleFeats = getFeatures(obj)
+        emptyTab = matrix(NA, nrow = nrow(pppDf), ncol = length(singleFeats), 
+                          dimnames = list(rownames(pppDf), singleFeats))
+        for(i in rownames(pppDf)){
+          emptyTab[i,names(getHypFrame(obj)[[i,"tabObs"]])] = getHypFrame(obj)[[i,"tabObs"]]
+        }
+        emptyTab
+      }
+    }
+    #Prepare generic dataframe with fixed and random effects, later 
+    # swap in weights and outcome per feature
+    baseDf = if(cellId){
+      Reduce(f = rbind, lapply(seq_along(prepCells), function(n) {
+        cbind(prepCells[[n]][, setdiff(colnames(prepCells[[n]]), "gene"), drop = FALSE],
+              pppDf[n,setdiff(colnames(pppDf), "cell"), drop = FALSE])
+      }))
+    } else {
+      pppDf
+    }
+    contrasts <- contrasts[!names(contrasts) %in% vapply(baseDf, FUN.VALUE = TRUE, is.numeric)]
+    ff <- lFormula(Formula, data = data.frame("pi" = 0.5, baseDf), 
+                   contrasts = contrasts, na.action = na.omit)
+    Terms = terms(Formula)
+    Attr = attr(ff$X, "assign")
+    modMat = model.matrix(formula(paste("~", paste(collapse = "+", fixedVars))),
+                          pppDf, contrasts.arg = contrasts) #Fixed effects model matrix
+    if (randomNested) {
+      ff$fr <- nestRandom(ff$fr, randomVarsSplit, intersect(fixedVars, getPPPvars(obj)))
+      ff$reTrms <- mkReTrms(findbars(Formula[[length(Formula)]]), ff$fr)
+    }
+    #For cell wise properties, also include prepTabs and prepCells
+    models <- loadBalanceBplapply(Features, function(gene) {
+      mat = getPiAndWeights(obj, gene = gene, pi = pi, prepMat = prepMatorList,
+                            prepTab = prepTableOrList)
       out <- if (is.null(mat) || sum(id <- !is.na(mat[, "pi"])) < 3) {
         NULL
       } else {
@@ -157,58 +204,11 @@ fitLMMsSingle <- function(
         attr(ff$X, "assign") = Attr
         ff$reTrms$Zt = ff$reTrms$Zt[, id, drop = FALSE]
         fitSingleLmmModel(ff = ff, y = mat[id, "pi"], Terms = Terms, modMat = modMat[id,],
-                          weights = if(!windowId) mat[id, "weights"], Control = Control)
-      }
+                    weights = mat[id, "weights"], Control = Control)
+        }
       return(out)
     })
   }
-  baseDf = if(windowId){
-    
-  } else if(cellId){
-    Reduce(f = rbind, lapply(seq_along(prepCells), function(n) {
-      cbind(prepCells[[n]][, setdiff(colnames(prepCells[[n]]), "gene"), drop = FALSE],
-            pppDf[n,setdiff(colnames(pppDf), "cell"), drop = FALSE], t(prepTabs[[n]]))
-    }))
-  } else {
-    pppDf
-  }
-  prepTable = if(windowId){
-    
-    } if(cellId){
-    cbind(t(Reduce(f = cbind, prepTabs)), 
-          pppDf[rep(seq_len(nrows(pppDf)), times = vapply(prepTabs, FUN.VALUE = 0L, ncol)),])
-  } else {
-    pppDf
-  }
-  #Prepare generic dataframe with fixed and random effects, later 
-  # swap in weights and outcome per feature
-  ff <- lFormula(Formula, data = data.frame("pi" = 0.5, baseDf), contrasts = contrasts, 
-                 na.action = na.omit)
-  Terms = terms(Formula)
-  Attr = attr(ff$X, "assign")
-  modMat = model.matrix(formula(paste("~", paste(collapse = "+", fixedVars))),
-                        pppDf, contrasts.arg = contrasts) #Fixed effects model matrix
-  if (randomNested) {
-    ff$fr <- nestRandom(ff$fr, randomVarsSplit, intersect(fixedVars, getPPPvars(obj)))
-    ff$reTrms <- mkReTrms(findbars(Formula[[length(Formula)]]), ff$fr)
-  }
-  #For cell wise properties, also include prepTabs and prepCells
-  models <- loadBalanceBplapply(Features, function(gene) {
-    mat = getPiAndWeights(obj, gene = gene, pi = pi, prepMat = prepMat, 
-                          prepTable = prepTable)
-    # df <- buildDataFrame(obj, gene = gene, pi = pi, pppDf = pppDf, 
-    #                      prepMat = prepMat, prepTabs = prepTabs, prepCells = prepCells)
-    out <- if (is.null(mat) || sum(id <- !is.na(mat[, "pi"])) < 3) {
-      NULL
-    } else {
-      ff$fr = ff$fr[id,, drop = FALSE];ff$X = ff$X[id,, drop = FALSE]
-      attr(ff$X, "assign") = Attr
-      ff$reTrms$Zt = ff$reTrms$Zt[, id, drop = FALSE]
-      fitSingleLmmModel(ff = ff, y = mat[id, "pi"], Terms = Terms, modMat = modMat[id,],
-                  weights = if(!windowId) mat[id, "weights"], Control = Control)
-      }
-    return(out)
-  })
   names(models) <- Features
   results <- extractResults(models, hypFrame = obj$hypFrame, fixedVars)
   # Effect size, standard error, p-value and adjusted p-value per mixed effect

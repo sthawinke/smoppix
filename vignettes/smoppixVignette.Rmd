@@ -258,8 +258,7 @@ A second dataset was published in a [paper](https://www.nature.com/articles/s415
 
 ```{r readInEngData, warning=FALSE}
 data(Eng)
-hypEng <- buildHyperFrame(Eng,
-    coordVars = c("x", "y"),
+hypEng <- buildHyperFrame(Eng, coordVars = c("x", "y"),
     imageVars = c("fov", "experiment"))
 ```
 
