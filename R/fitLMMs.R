@@ -54,7 +54,7 @@ fitLMMs <- function(
 #' @return For fitLMMsSingle(), a list of test results, if requested also the linear models are returned
 #' @importFrom lmerTest lmer
 #' @importFrom stats formula terms model.matrix
-#' @importFrom lme4 lmerControl .makeCC isSingular lFormula
+#' @importFrom lme4 lmerControl .makeCC isSingular lFormula mkReTrms findbars
 #' @importFrom methods is
 #' @rdname fitLMMs
 #' @order 2
@@ -147,13 +147,15 @@ fitLMMsSingle <- function(
   }
   #Prepare generic dataframe with fixed and random effects, later 
   # swap in weights and outcome per feature
-  ff <- lFormula(Formula, data = data.frame("pi" = 0.5, pppDf), contrasts = contrasts, na.action = na.omit)
+  ff <- lFormula(Formula, data = data.frame("pi" = 0.5, pppDf), contrasts = contrasts, 
+                 na.action = na.omit)
   Terms = terms(Formula)
   Attr = attr(ff$X, "assign")
-  modMat = model.matrix(formula(paste("~", paste(collapse = "+", nobars(Formula[[3]])[-1]))),
+  modMat = model.matrix(formula(paste("~", paste(collapse = "+", fixedVars))),
                         pppDf, contrasts.arg = contrasts) #Fixed effects model matrix
   if (randomNested) {
     ff$fr <- nestRandom(ff$fr, randomVarsSplit, intersect(fixedVars, getPPPvars(obj)))
+    ff$reTrms <- mkReTrms(findbars(Formula[[length(Formula)]]), ff$fr)
   }
   #For cell wise properties, also include prepTabs and prepCells
   models <- loadBalanceBplapply(Features, function(gene) {
