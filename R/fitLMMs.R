@@ -2,6 +2,7 @@
 #' @description The PI is used as outcome variable in a linear (mixed) model,
 #' with design variables as regressors. Separate models are fitted for every combination of gene
 #' and PI. fitLMMsSingle() is the workhorse function for a single point pattern,
+#' fitSingleLmmModel() for a single feature in a single point pattern.
 #'
 #' @param obj The result object, from a call to \link{estPis} of \link{addWeightFunction}
 #' @param pis Optional, the pis required. Defaults to all pis in the object
