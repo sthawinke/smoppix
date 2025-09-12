@@ -28,7 +28,7 @@ for nearest neighbour distances, the result of a call to \link{addWeightFunction
 \item{pppDf}{Dataframe of point pattern-wise variables. It is precalculated
 in fitLMMsSingle for speed, but will be newly constructed when not provided.}
 
-\item{prepMat, prepTab, prepCells}{Preconstructed objects to avoid looping over genes. For internal use mainly}
+\item{prepMat, prepTab, prepCells}{Preconstructed objects to save computation time, for internal use}
 }
 \value{
 A dataframe with estimated PIs and covariates
