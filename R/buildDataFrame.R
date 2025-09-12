@@ -10,7 +10,7 @@
 #' @param piMat A data frame. Will be constructed if not provided, for internal use.
 #' @param pppDf Dataframe of point pattern-wise variables. It is precalculated
 #' in fitLMMsSingle for speed, but will be newly constructed when not provided.
-#' @param prepMat,prepTab,prepCells Preconstructed objects to avoid looping over genes. For internal use mainly
+#' @param prepMat,prepTab,prepCells Preconstructed objects to save computation time, for internal use
 #' @return A dataframe with estimated PIs and covariates
 #' @export
 #' @importFrom scam predict.scam
