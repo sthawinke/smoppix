@@ -124,7 +124,7 @@
 - Export loadBalanceBplappy for use in other packages
 - Mention Bioconductor installer in README
 
-# 1.3.0
+# 1.1.6
 
 - Removing functionality related to Moran’s I
 - Speed up and reduce memory requirements of linear (mixed) model
