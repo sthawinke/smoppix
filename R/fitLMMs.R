@@ -232,7 +232,7 @@ fitSingleLmmModel <- function(ff, y, Control, Terms, modMat, MM, Assign, weights
   if(MM){
     fr <- ff$fr                    # this is a data.frame (model frame)
     ## Use model-frame column names used by stats::model.frame
-    fr$`(weights)` #' @importFrom stats lm.wfit weights
+    fr$`(weights)` <- weights
     fr[["pi - 0.5"]] <- y - 0.5               # replace response
     mod <- try({
       devfun <- mkLmerDevfun(fr, ff$X, ff$reTrms, control = Control)
