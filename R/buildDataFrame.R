@@ -92,8 +92,8 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
                 })
                 cellCovars <- Marks[match(names(piEst), Marks$cell), setdiff(
                   eventVars, "gene"), drop = FALSE]
-                tabCell <- table(Marks[, c("gene", "cell")])
-                tabCell <- tabCell[, colnames(tabCell)!= "NA"]
+                tabCell <- table(Marks[, c("cell", "gene")])
+                tabCell <- tabCell[rownames(tabCell)!= "NA",]
               } else {
                 piEst <- getGp(t(prepMat[names(nList$pimRes[[piListNameInner]]),, drop = FALSE]), 
                                gene, notFoundReturn = NA)
@@ -105,7 +105,7 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
                   getGp(tabCell, x, notFoundReturn = NA)
                 })
                 if (pairId) {
-                  npVec = t(apply(npVec, 1, sort))
+                  npVec <- t(apply(npVec, 1, sort))
                 }
                 colnames(npVec) <- if (pairId) {
                     c("minP", "maxP")
@@ -179,8 +179,8 @@ prepareMatrixOrList <- function(obj, pi, features){
     features <- sortGp(features)
   }
   if(cellId){
-    samples = unique(unlist(lapply(obj$hypFrame$pimRes, function(x) names(x[[piListNameInner]]))))
-    out = lapply(selfName(rownames(obj$hypFrame)), function(sam){
+    samples <- unique(unlist(lapply(obj$hypFrame$pimRes, function(x) names(x[[piListNameInner]]))))
+    out <- lapply(selfName(rownames(obj$hypFrame)), function(sam){
       samVec <- names(piObj <- obj$hypFrame$pimRes[[sam]][[piListNameInner]])
       outIn <- matrix(NA, nrow = length(samVec), ncol = length(features),
                       dimnames = list(samVec, features))

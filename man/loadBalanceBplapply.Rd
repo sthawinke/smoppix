@@ -26,5 +26,6 @@ cores available, such that each core gets an equal load and overhead is minimize
 The registered backend is then used by default to multithread using \link[BiocParallel]{bplapply}.
 }
 \examples{
+library(BiocParallel)
 loadBalanceBplapply(LETTERS, length)
 }

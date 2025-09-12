@@ -11,6 +11,7 @@
 #' @importFrom BiocParallel bpparam bplapply bpnworkers
 #' @export
 #' @examples
+#' library(BiocParallel)
 #' loadBalanceBplapply(LETTERS, length)
 loadBalanceBplapply <- function(iterator, func, loopFun = if(bpparam()$workers==1) "lapply" else "bplapply"){
     loopFunMatched <- match.fun(loopFun)

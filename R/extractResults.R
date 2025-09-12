@@ -17,7 +17,7 @@ extractResults <- function(models, hypFrame, fixedVars = NULL, method = "BH") {
     out <- if (!any(id)) {
         return(list("Intercept" = NULL, "fixedEffects" = NULL))
     } else {
-      Summaries = loadBalanceBplapply(models[id], function(x) summary(x)$coef)
+      Summaries <- loadBalanceBplapply(models[id], function(x) summary(x)$coef)
       ints <- t(vapply(Summaries, FUN.VALUE = double(3), function(x) {
           x["(Intercept)", c("Estimate", "Std. Error", "Pr(>|t|)")]
       }))

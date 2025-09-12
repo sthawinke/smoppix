@@ -13,6 +13,8 @@ fitSingleLmmModel(ff, y, Control, Terms, modMat, MM, Assign, weights = NULL)
 
 \item{Control}{Control parameters}
 
+\item{modMat}{Design matrix of the fixed effects model}
+
 \item{MM}{A boolean, should a mixed model be tried}
 
 \item{Assign, Terms}{Added to fitted fixed effects model}

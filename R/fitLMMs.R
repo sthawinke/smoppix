@@ -191,7 +191,7 @@ fitLMMsSingle <- function(
         ff$reTrms <- mkReTrms(findbars(Formula[[length(Formula)]]), ff$fr)
       }
     }
-    modMat = model.matrix(formula(paste("~", paste(collapse = "+", fixedVars))),
+    modMat = model.matrix(formula(paste("~ 1+ ", paste(collapse = "+", fixedVars))),
                           baseDf, contrasts.arg = contrasts) #Fixed effects model matrix
     Assign = attr(modMat, "assign")
     models <- loadBalanceBplapply(Features, function(gene) {
@@ -222,6 +222,7 @@ fitLMMsSingle <- function(
 #' @param y outcome vector
 #' @param weights weights vector
 #' @param Assign,Terms Added to fitted fixed effects model
+#' @param modMat Design matrix of the fixed effects model
 #' @inheritParams fitPiModel
 #'
 #' @returns A fitted lmer model
