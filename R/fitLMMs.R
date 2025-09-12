@@ -58,8 +58,7 @@ fitLMMs <- function(
 #' @importFrom methods is
 #' @rdname fitLMMs
 #' @order 2
-fitLMMsSingle <- function(
-    obj, pi, fixedVars, randomVars, verbose, returnModels,
+fitLMMsSingle <- function(obj, pi, fixedVars, randomVars, verbose, returnModels,
     Formula, randomNested, features) {
   pi <- match.arg(pi, choices = c(
     "nn", "nnPair", "edge", "centroid", "nnCell", "nnPairCell"))
@@ -118,11 +117,8 @@ fitLMMsSingle <- function(
       vapply(obj$hypFrame$tabObs, FUN.VALUE = double(1), function(x) x[gene])
     })
   }
-  featIds <- (if (is.matrix(tmp)) {
-    colSums(tmp, na.rm = TRUE)
-  } else {
-    tmp
-  }) >= 1
+  featIds <- (if (is.matrix(tmp)) {colSums(tmp, na.rm = TRUE)
+    } else {tmp}) >= 1
   Features <- features[featIds]
   pppDf <- centerNumeric(as.data.frame(obj$hypFrame[, c("image", getPPPvars(obj))]))
   if (is.null(fixedVars)) {
@@ -154,7 +150,7 @@ fitLMMsSingle <- function(
     if(cellId){
       prepTableOrList <- lapply(obj$hypFrame$ppp, function(x){
         tab <- table(marks(x)[, c("gene", "cell")])
-        class(tab) = "matrix"
+        class(tab) <- "matrix"
         t(tab[, colnames(tab)!= "NA"])
       })
       prepCells <- lapply(seq_along(prepTableOrList), function(n){
@@ -162,19 +158,19 @@ fitLMMsSingle <- function(
         eventMarks[match(rownames(prepTableOrList[[n]]), eventMarks$cell),]
       })
     } else {
-      prepTableOrList = {
-        singleFeats = getFeatures(obj)
-        emptyTab = matrix(NA, nrow = nrow(pppDf), ncol = length(singleFeats), 
+      prepTableOrList <- {
+        singleFeats <- getFeatures(obj)
+        emptyTab <- matrix(NA, nrow = nrow(pppDf), ncol = length(singleFeats), 
                           dimnames = list(rownames(pppDf), singleFeats))
         for(i in rownames(pppDf)){
-          emptyTab[i,names(getHypFrame(obj)[[i,"tabObs"]])] = getHypFrame(obj)[[i,"tabObs"]]
+          emptyTab[i,names(getHypFrame(obj)[[i,"tabObs"]])] <- getHypFrame(obj)[[i,"tabObs"]]
         }
         emptyTab
       }
     }
     #Prepare generic dataframe with fixed and random effects, later 
     # swap in weights and outcome per feature
-    baseDf = if(cellId){
+    baseDf <- if(cellId){
       Reduce(f = rbind, lapply(seq_along(prepCells), function(n) {
         cbind(prepCells[[n]][, setdiff(colnames(prepCells[[n]]), "gene"), drop = FALSE],
               pppDf[n,setdiff(colnames(pppDf), "cell"), drop = FALSE])
@@ -191,19 +187,19 @@ fitLMMsSingle <- function(
         ff$reTrms <- mkReTrms(findbars(Formula[[length(Formula)]]), ff$fr)
       }
     }
-    modMat = model.matrix(formula(paste("~ 1+ ", paste(collapse = "+", fixedVars))),
+    modMat <- model.matrix(formula(paste("~ ", if(is.null(fixedVars)) "1" else paste(collapse = "+", fixedVars))),
                           baseDf, contrasts.arg = contrasts) #Fixed effects model matrix
-    Assign = attr(modMat, "assign")
+    Assign <- attr(modMat, "assign")
     models <- loadBalanceBplapply(Features, function(gene) {
-      mat = getPiAndWeights(obj, gene = gene, pi = pi, prepMat = prepMatorList,
+      mat <- getPiAndWeights(obj, gene = gene, pi = pi, prepMat = prepMatorList,
                             prepTab = prepTableOrList)
       out <- if (is.null(mat) || sum(id <- !is.na(mat[, "pi"])) < 3) {
         NULL
       } else {
         if(MM){
-          ff$fr = ff$fr[id,, drop = FALSE];ff$X = ff$X[id,, drop = FALSE]
-          attr(ff$X, "assign") = Assign
-          ff$reTrms$Zt = ff$reTrms$Zt[, id, drop = FALSE]
+          ff$fr <- ff$fr[id,, drop = FALSE];ff$X <- ff$X[id,, drop = FALSE]
+          attr(ff$X, "assign") <- Assign
+          ff$reTrms$Zt <- ff$reTrms$Zt[, id, drop = FALSE]
         }
         fitSingleLmmModel(ff = ff, y = mat[id, "pi"], Terms = terms(Formula), modMat = modMat[id,],
                     weights = mat[id, "weights"], Control = Control, MM = MM, Assign = Assign)
@@ -244,7 +240,8 @@ fitSingleLmmModel <- function(ff, y, Control, Terms, modMat, MM, Assign, weights
   }
   # Switch to fixed effects model when fit failed
   if(!MM || inherits(mod, "try-error")){
-    mod <- lm_from_wfit(lm.wfit(y = y, x = modMat, w = weights), y = y, Assign = Assign, Terms = Terms)
+    mod <- lm_from_wfit(lm.wfit(y = y, x = modMat, w = weights), y = y, 
+                        Assign = Assign, Terms = Terms)
   }
   return(mod)
 }
@@ -258,7 +255,7 @@ fitSingleLmmModel <- function(ff, y, Control, Terms, modMat, MM, Assign, weights
 lm_from_wfit <- function(obj, y, Terms, Assign) {
   # Create a minimal lm object
   obj <- c(obj, list(y = y, terms = Terms))
-  obj$assign = Assign
+  obj$assign <- Assign
   class(obj) <- "lm"
   return(obj)
 }

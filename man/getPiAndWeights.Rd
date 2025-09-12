@@ -15,6 +15,8 @@ for nearest neighbour distances, the result of a call to \link{addWeightFunction
 \item{pi}{character string indicating the desired PI}
 
 \item{piMat}{A data frame. Will be constructed if not provided, for internal use.}
+
+\item{prepMat, prepTab}{Preconstructed objects to avoid looping over genes. For internal use mainly}
 }
 \value{
 A matrix of two columns: pi estimate and weights

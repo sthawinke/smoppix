@@ -206,6 +206,7 @@ prepareMatrixOrList <- function(obj, pi, features){
 #' Build a matrix with pi and weights
 #'
 #' @inheritParams buildDataFrame
+#' @param prepMat,prepTab Preconstructed objects to avoid looping over genes. For internal use mainly
 #'
 #' @returns A matrix of two columns: pi estimate and weights
 getPiAndWeights <- function(obj, gene, pi, piMat, prepMat, prepTab) {
@@ -215,8 +216,8 @@ getPiAndWeights <- function(obj, gene, pi, piMat, prepMat, prepTab) {
     piListNameInner <- if (cellId) {"withinCellDists"} else {"pointDists"}
     piMat <- Reduce(f = rbind, lapply(seq_len(nrow(obj$hypFrame)), function(n){
           if(cellId){
-            piEst = prepMat[[n]][, gene]
-            npVec = prepTab[[n]][names(piEst), geneSplit]
+            piEst <- prepMat[[n]][, gene]
+            npVec <- prepTab[[n]][names(piEst), geneSplit]
             if(pairId){
               npVec <- t(apply(npVec, 1, sort))
             }

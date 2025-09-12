@@ -200,4 +200,4 @@ sortGp <- function(featurePairs){
 #' @export
 #' @examples
 #' selfName(LETTERS[1:5])
-selfName <- function(x){names(x)=x;x}
+selfName <- function(x){names(x)<-x;x}
