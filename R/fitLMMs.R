@@ -187,8 +187,12 @@ fitLMMsSingle <- function(obj, pi, fixedVars, randomVars, verbose, returnModels,
         ff$reTrms <- mkReTrms(findbars(Formula[[length(Formula)]]), ff$fr)
       }
     }
-    modMat <- model.matrix(formula(paste("~ ", if(is.null(fixedVars)) "1" else paste(collapse = "+", fixedVars))),
+    modMat <- if(is.null(fixedVars)){
+      matrix(1, ncol = 1, nrow = nrow(baseDf))
+    } else {
+      model.matrix(formula(paste("~ ", paste(collapse = "+", fixedVars))),
                           baseDf, contrasts.arg = contrasts) #Fixed effects model matrix
+    }
     Assign <- attr(modMat, "assign")
     models <- loadBalanceBplapply(Features, function(gene) {
       mat <- getPiAndWeights(obj, gene = gene, pi = pi, prepMat = prepMatorList,

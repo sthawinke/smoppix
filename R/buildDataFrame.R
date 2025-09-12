@@ -101,7 +101,7 @@ buildDataFrame <- function(obj, gene, pi = c("nn", "nnPair", "edge", "centroid",
                   colnames(prepCells[[n]]), "gene"), drop = FALSE]
                 tabCell <- prepTab[[n]][match(geneSplit, rownames( prepTab[[n]])),, drop = FALSE]
               }
-                npVec <- vapply(geneSplit, FUN.VALUE = integer(ncol(tabCell)), function(x) {
+                npVec <- vapply(geneSplit, FUN.VALUE = integer(nrow(tabCell)), function(x) {
                   getGp(tabCell, x, notFoundReturn = NA)
                 })
                 if (pairId) {
