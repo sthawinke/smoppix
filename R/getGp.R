@@ -40,7 +40,7 @@ getEl <- function(x, gp, isVec, drop){
   if (isVec) {
     x[[gp]]
   } else {
-    x[gp, , drop = drop]
+    x[, gp, drop = drop]
   }
 }
 tryGetEl <- function(...){

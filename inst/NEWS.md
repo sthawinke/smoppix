@@ -123,3 +123,10 @@
 
 - Export loadBalanceBplappy for use in other packages
 - Mention Bioconductor installer in README
+
+# 1.3.0
+
+- Removing functionality related to Moran’s I
+- Speed up and reduce memory requirements of linear (mixed) model
+  fitting by preparing design matrices only once
+- Correct bug in weighting for cell-wise nn distributions

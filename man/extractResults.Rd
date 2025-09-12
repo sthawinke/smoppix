@@ -4,20 +4,12 @@
 \alias{extractResults}
 \title{Extract results from a list of fitted LMMs. For internal use mainly.}
 \usage{
-extractResults(
-  models,
-  hypFrame,
-  subSet = "piMod",
-  fixedVars = NULL,
-  method = "BH"
-)
+extractResults(models, hypFrame, fixedVars = NULL, method = "BH")
 }
 \arguments{
 \item{models}{The models}
 
 \item{hypFrame}{The original hyperframe}
-
-\item{subSet}{The name of the subset to be extracted, either PI or Moran's I}
 
 \item{fixedVars}{The fixed effects for which the effect is to be reported}
 
@@ -31,5 +23,5 @@ p-value and adjusted p-value
 Extract results from a list of fitted LMMs. For internal use mainly.
 }
 \seealso{
-\link{fitLMMs}, \link{p.adjust}
+\link{fitLMMs}, \link[stats]{p.adjust}
 }

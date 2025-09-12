@@ -7,12 +7,11 @@ test_that("Adding the weight function works", {
     expect_silent(objCSR2 <- addWeightFunction(piEstsCSR, pi = c("nnCell", "nnCellPair")))
     expect_true(all(vapply(objBG$wfs, FUN.VALUE = TRUE, is, "scam")))
     expect_true(all(vapply(objCSR$wfs, FUN.VALUE = TRUE, is, "scam")))
-    expect_type(pred <- evalWeightFunction(objBG$Wfs[["nn"]]), "double")
-    expect_true(all(pred > 0))
     expect_type(
         predNew <- evalWeightFunction(objBG$Wfs[["nn"]], newdata = data.frame(NP = 5)),
         "double"
     )
+    expect_true(all(predNew > 0))
     expect_true(predNew > evalWeightFunction(objBG$Wfs[["nn"]], newdata = data.frame(NP = 2)))
     # With information sharing across features
     expect_s3_class(dfBG1 <- buildDataFrame(objBG, gene = "gene1", pi = "nn"), "data.frame")

@@ -26,7 +26,7 @@ knitr::opts_chunk$set(fig.heigh = 7, fig.width = 7)
 
 # Introduction
 
-This vignette demonstrates the use of the _smoppix_ package: Single MOlecule sPatial omics data analysed through the Probabilistic IndeX , described in ["Unified nonparametric analysis of single-molecule spatial omics data using probabilistic indices"](https://www.biorxiv.org/content/10.1101/2025.05.20.654270v2) by Hawinkel et al. 2025. It unifies methods for statistical inference on single-molecule spatial transcriptomics datasets with replication in a single framework using probabilistic indices (PIs). Tests provided include univariate testing for vicinity to fixed objects such as cell walls or nuclei, univariate aggregation tests as well as bivariate tests for co- or antilocalization. Two different null hypothesis can be tested against: complete spatial randomness (CSR, also known as homogeneous Poisson process), and the background distribution of molecules of all other genes. In addition, differences between groups in terms of any of these univariate and bivariate PIs can be tested for, while accounting for complex design structures using mixed models. _smoppix_ is scalable to large numbers of molecules and genes thanks to an exact permutation null distribution in combination with a custom C++ implementation. An adequate variance weighting scheme harnesses the high-dimensionality of the data to account for heteroscedasticity. The _smoppix_ package is also applicable to other types of single-molecule omics data such as spatial proteomics or metabolomics, or to cell type localization data.
+This vignette demonstrates the use of the _smoppix_ package: Single MOlecule sPatial omics data analysed through the Probabilistic IndeX , described in ["Unified nonparametric analysis of single-molecule spatial omics data using probabilistic indices"](https://www.biorxiv.org/content/10.1101/2025.05.20.654270v2) by @Hawinkel2025b. It unifies methods for statistical inference on single-molecule spatial transcriptomics datasets with replication in a single framework using probabilistic indices (PIs). Tests provided include univariate testing for vicinity to fixed objects such as cell walls or nuclei, univariate aggregation tests as well as bivariate tests for co- or antilocalization. Two different null hypothesis can be tested against: complete spatial randomness (CSR, also known as homogeneous Poisson process), and the background distribution of molecules of all other genes. In addition, differences between groups in terms of any of these univariate and bivariate PIs can be tested for, while accounting for complex design structures using mixed models. _smoppix_ is scalable to large numbers of molecules and genes thanks to an exact permutation null distribution in combination with a custom C++ implementation. An adequate variance weighting scheme harnesses the high-dimensionality of the data to account for heteroscedasticity. The _smoppix_ package is also applicable to other types of single-molecule omics data such as spatial proteomics or metabolomics, or to cell type localization data.
 
 \setcounter{tocdepth}{5}
 \tableofcontents
@@ -225,7 +225,9 @@ dfBiNN <- buildDataFrame(nnObj, gene = "SmVND2--SmPINR", pi = "nnPair")
 Finally for the mixed model:
 
 ```{r}
-lmeModNN <- lmerTest::lmer(pi - 0.5 ~ day + (1 | root),
+#Make sure to nest root within day, without including a random effect for day
+dfBiNN$dayRoot = paste0(dfBiNN$day, dfBiNN$root)
+lmeModNN <- lmerTest::lmer(pi - 0.5 ~ day + (1 | dayRoot),
     data = dfBiNN, na.action = na.omit,
     weights = weight, contrasts = list("day" = "contr.sum")
 )
@@ -256,8 +258,7 @@ A second dataset was published in a [paper](https://www.nature.com/articles/s415
 
 ```{r readInEngData, warning=FALSE}
 data(Eng)
-hypEng <- buildHyperFrame(Eng,
-    coordVars = c("x", "y"),
+hypEng <- buildHyperFrame(Eng, coordVars = c("x", "y"),
     imageVars = c("fov", "experiment"))
 ```
 
@@ -305,7 +306,7 @@ plotWf(engPis, "nnPairCell")
 As before, the minority gene of the pair is the main driver of variance. Next, we fit linear mixed models on the obtained PIs. The experiment was conducted twice, so we add the experiment variable as fixed effect. The image and cell variables are added automatically where appropriate, as printed in the output:
 
 ```{r FitEngModels}
-allModsNNcell <- fitLMMs(engPis, fixedVars = "experiment", addMoransI = TRUE)
+allModsNNcell <- fitLMMs(engPis, fixedVars = "experiment")
 ```
 
 For the "edge" and "centroid" options, each individual RNA-molecule is an observation in the model, and random effects are added for both cell and image. For "nnCell" and "nnPairCell", the observations are averaged per cell, and so only a random effect common to all cells of a single image remains. Now we plot the genes with the strongest remoteness from the cell edge:
@@ -331,11 +332,7 @@ plotTopResults(hypEng,
 )
 ```
 
-We can see that the molecule distribution within the cell is all but uniform!
-
-### Global spatial distribution of intracellular patterns
-
-A side question that may arise is whether the measures of intracellular aggregation have a global spatial patterning throughout the tissue. As a start, we can explore this graphically for the gene most significantly remote from the cell edge:
+We can see that the molecule distribution within the cell is all but uniform! A side question that may arise is whether the measures of intracellular aggregation have a global spatial patterning throughout the tissue. We can explore this graphically for the gene most significantly remote from the cell edge:
 
 ```{r exploreSpatCell, fig.height = 7}
 plotExplore(hypEng,
@@ -344,17 +341,7 @@ plotExplore(hypEng,
 )
 ```
 
-The molecules are shown in red, while the yellow-blue scale indicates the PI estimate. It seems like in the central cells, the PI is smaller (molecules closer to the cell edge) than the outer cells. We test whether the Moran's I statistic, a measure for spatial aggregation of numeric variables, is significant over the different point patterns:
-
-```{r testMoransI}
-getResults(allModsNNcell, "edge", "Intercept", moransI = TRUE)[remEdge, ]
-```
-
-Although the estimated Moran's I is positive indeed, indicating positive spatial autocorrelation, it is not significant over the different repeats. Writing the results to a spreadsheet again:
-
-```{r writeXlsxEng, eval = FALSE}
-writeToXlsx(allModsNNcell, file = "mysecondfile.xlsx")
-```
+The molecules are shown in red, while the yellow-blue scale indicates the PI estimate.
 
 ## Gradients
 
@@ -401,9 +388,9 @@ if(reqFunky){
     #Extract PIs of significant features
     nnRes = getResults(TNBClmms, "nn", "Class")
     sigLevel = 0.05
-    nnSig = rownames(nnRes)[nnRes[, "pAdj"]<sigLevel]
+    nnSig = rownames(nnRes)[nnRes[, "pAdj"] < sigLevel]
     nnPairRes = getResults(TNBClmms, "nnPair", "Class")
-    nnPairSig = rownames(nnPairRes)[nnPairRes[, "pAdj"]<sigLevel & !is.na(nnPairRes[, "pAdj"])]
+    nnPairSig = rownames(nnPairRes)[nnPairRes[, "pAdj"] < sigLevel & !is.na(nnPairRes[, "pAdj"])]
     nnPis = as.matrix(vapply(pisTNBC$hypFrame$pimRes, FUN.VALUE = double(nnn <- (length(nnSig)+ length(nnPairSig))), function(x){
         c(if(length(nnSig)) x$pointDists$nn[nnSig],
           if(length(nnPairSig)) vapply(nnPairSig, FUN.VALUE = 1, function(y) {

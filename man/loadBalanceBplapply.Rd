@@ -4,7 +4,11 @@
 \alias{loadBalanceBplapply}
 \title{Parallel processing with BiocParallel with load balancing}
 \usage{
-loadBalanceBplapply(iterator, func, loopFun = "bplapply")
+loadBalanceBplapply(
+  iterator,
+  func,
+  loopFun = if (bpparam()$workers == 1) "lapply" else "bplapply"
+)
 }
 \arguments{
 \item{iterator}{The vector to iterate over}
@@ -20,4 +24,8 @@ A list with the same length as iterator
 The vector to iterate over (iterator) is split into as many parts as there are
 cores available, such that each core gets an equal load and overhead is minimized. 
 The registered backend is then used by default to multithread using \link[BiocParallel]{bplapply}.
+}
+\examples{
+library(BiocParallel)
+loadBalanceBplapply(LETTERS, length)
 }

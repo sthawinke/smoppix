@@ -4,7 +4,6 @@
 #' @param obj The result object
 #' @param pi The desired PI
 #' @param parameter The desired parameter
-#' @param moransI A boolean, should results for the Moran's I be returned?
 #'
 #' @return For getResults(), the matrix with results, with p-values in ascending order
 #' \item{Estimate}{The estimated PI}
@@ -14,19 +13,14 @@
 #' @export
 #' @rdname fitLMMs
 #' @order 3
-getResults <- function(obj, pi, parameter, moransI = FALSE) {
+getResults <- function(obj, pi, parameter) {
     if (!(pi %in% names(obj))) {
         stop("PI ", pi, " not estimated! Run estPis() again with desired pi as argument")
     }
-    resChar <- if (moransI) {
-        "resultsMoran"
-    } else {
-        "results"
-    }
     Obj <- if (parameter == "Intercept") {
-        obj[[pi]][[resChar]]
+        obj[[pi]][["results"]]
     } else {
-        obj[[pi]][[resChar]]$fixedEffects
+        obj[[pi]][["results"]]$fixedEffects
     }
     if (!(parameter %in% names(Obj))) {
         stop("Parameter ", parameter, " not estimated in linear model!

@@ -3,41 +3,30 @@
 #' @param models The models
 #' @param hypFrame The original hyperframe
 #' @param fixedVars The fixed effects for which the effect is to be reported
-#' @param subSet The name of the subset to be extracted, either PI or Moran's I
 #' @param method Multiplicity correction method passed onto p.adjust
 #'
-#' @importFrom stats p.adjust
+#' @importFrom stats p.adjust anova
 #' @importFrom methods is
 #' @return A list of matrices, all containing estimate, standard error,
 #' p-value and adjusted p-value
-#' @seealso \link{fitLMMs}, \link{p.adjust}
-extractResults <- function(models, hypFrame, subSet = "piMod", fixedVars = NULL,
-    method = "BH") {
+#' @seealso \link{fitLMMs}, \link[stats]{p.adjust}
+extractResults <- function(models, hypFrame, fixedVars = NULL, method = "BH") {
     id <- vapply(models, FUN.VALUE = TRUE, function(x) {
-        is(x[[subSet]], "lmerModLmerTest") || is(x[[subSet]], "lm")
+        is(x, "lmerModLmerTest") || is(x, "lm")
     })
     out <- if (!any(id)) {
         return(list("Intercept" = NULL, "fixedEffects" = NULL))
     } else {
-      ints <- t(vapply(models, FUN.VALUE = double(3), function(x) {
-          if (is.null(x[[subSet]]) || is(x[[subSet]], "try-error")) {
-              c(Estimate = NA, `Std. Error` = NA, `Pr(>|t|)` = NA)
-          } else {
-              summary(x[[subSet]])$coef["(Intercept)", c(
-                  "Estimate", "Std. Error",
-                  "Pr(>|t|)"
-              )]
-          } # Identical code for lmerTest or lm
+      Summaries <- loadBalanceBplapply(models[id], function(x) summary(x)$coef)
+      ints <- t(vapply(Summaries, FUN.VALUE = double(3), function(x) {
+          x["(Intercept)", c("Estimate", "Std. Error", "Pr(>|t|)")]
       }))
       colnames(ints) <- c("Estimate", "SE", "pVal")
-      ints[, "Estimate"] <- ints[, "Estimate"] + switch(subSet,
-          piMod = 0.5,
-          moranMod = 0
-      )
+      ints[, "Estimate"] <- ints[, "Estimate"] + 0.5
       intMat <- cbind(ints, pAdj = p.adjust(ints[, "pVal"], method = method))[order(ints[
           ,"pVal"]), ]
       # Order by p-value
-      AnovaTabs <- lapply(models[id], function(x) anova(x[[subSet]]))
+      AnovaTabs <- loadBalanceBplapply(models[id], anova)
       fixedOut <- lapply(fixedVars, function(Var) {
           if(discr <- Var %in% getDiscreteVars(hypFrame)){
               unVals <- if (Var %in% getEventVars(hypFrame)) {
@@ -54,11 +43,10 @@ extractResults <- function(models, hypFrame, subSet = "piMod", fixedVars = NULL,
               names(emptyCoef) <- Var
           }
           pVal <- vapply(AnovaTabs, FUN.VALUE = double(1), function(x) x[Var, "Pr(>F)"])
-          coefs <- lapply(models[id], function(x) {
+          coefs <- lapply(Summaries, function(coefObj) {
               # Prepare the empty coefficient vector with all levels present. If
               # outcome is NA for all levels, the factor level gets dropped,
               # causing problems downstream.
-              coefObj <- summary(x[[subSet]])$coef
               if(discr){
                   rn <- intersect(names(emptyCoef), rownames(coefObj))
                   emptyCoef[rn] <- coefObj[rn, "Estimate"]

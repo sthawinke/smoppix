@@ -194,3 +194,10 @@ sortGp <- function(featurePairs){
   names(newFeat) <- newFeat
   return(newFeat)
 }
+#' Name a character vector after itself
+#' @param x The vector to be names
+#' @return the named vector
+#' @export
+#' @examples
+#' selfName(LETTERS[1:5])
+selfName <- function(x){names(x)<-x;x}
