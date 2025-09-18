@@ -185,30 +185,17 @@ prepareMatrixOrList <- function(obj, pi, features){
                       dimnames = list(samVec, features))
       for(samIn in samVec){
         featVec <- piObj[[samIn]][[piSub]]
-        int <- names(featVec)[names(featVec) %in% features]
-        outIn[samIn, int] <- featVec[int]
+        outIn[samIn,  names(featVec)] <- featVec
       }
       return(outIn)
     })
-    out <- lapply(selfName(rownames(obj$hypFrame)), function(sam){
-           samVec <- names(piObj <- obj$hypFrame$pimRes[[sam]][[piListNameInner]])
-         outIn <- matrix(NA, nrow = length(samVec), ncol = length(features),
-                                                 dimnames = list(samVec, features))
-          for(samIn in samVec){
-                 featVec <- piObj[[samIn]][[piSub]]
-                 int <- intersect(names(featVec), features)
-                 outIn[samIn, int] <- featVec[int]
-             }
-           return(outIn)
-       })
   } else {
     samples <- rownames(obj$hypFrame)
     out <- matrix(NA, nrow = length(samples), ncol = length(features),
                      dimnames = list(samples, features))
     for(sam in samples){
       featVec <- obj$hypFrame[[sam, "pimRes"]][[piListNameInner]][[pi]]
-      int <- intersect(names(featVec), features)
-      out[sam, int] <- featVec[int]
+      out[sam, names(featVec)] <- featVec
     }
   }
   return(out)

@@ -130,7 +130,7 @@ fitLMMsSingle <- function(obj, pi, fixedVars, randomVars, verbose, returnModels,
     contrasts <- lapply(discreteVars, function(x) named.contr.sum)
   }
   if(!windowId){
-    prepMatorList <- prepareMatrixOrList(obj, pi = pi, features = Features)
+    prepMatorList <- prepareMatrixOrList(obj, pi = pi)#Do it for all features
   }
   if(windowId){
     models <- loadBalanceBplapply(Features, function(gene) {
