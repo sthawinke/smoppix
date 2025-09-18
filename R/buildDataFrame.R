@@ -208,32 +208,28 @@ prepareMatrixOrList <- function(obj, pi, features){
 #' @param prepMat,prepTab Preconstructed objects to avoid looping over genes. For internal use mainly
 #'
 #' @returns A matrix of two columns: pi estimate and weights
+#' @importFrom Rfast rowSort
 getPiAndWeights <- function(obj, gene, pi, piMat, prepMat, prepTab) {
     geneSplit <- sund(gene)
     cellId <- grepl("Cell", pi)
     pairId <- grepl("Pair", pi)
     piListNameInner <- if (cellId) {"withinCellDists"} else {"pointDists"}
     piMat <- Reduce(f = rbind, lapply(seq_len(nrow(obj$hypFrame)), function(n){
-          if(cellId){
-            piEst <- prepMat[[n]][, gene]
-            npVec <- prepTab[[n]][names(piEst), geneSplit]
-            if(pairId){
-              npVec <- t(apply(npVec, 1, sort))
-            }
-          } else {
-            piEst <- prepMat[n, gene]
-            npVec <- prepTab[n, geneSplit]
-            if(pairId)
-              npVec <- sort(npVec)
-          }
-      out <- if(pairId){
-          cbind(pi = piEst, minP = if(cellId) npVec[, 1] else npVec[1], 
-                maxP = if(cellId) npVec[, 2] else npVec[2])
+      npVec <- if(cellId){
+        piEst <- prepMat[[n]][, gene]
+        prepTab[[n]][names(piEst), geneSplit]
       } else {
-          cbind(pi = piEst, NP = npVec)
+        piEst <- prepMat[n, gene]
+        prepTab[n, geneSplit]
       }
-      return(out)
+      cbind(pi = piEst, npVec)
     }))
+    if(pairId){
+      piMat[, 2:3] = rowSort(piMat[, 2:3])
+      colnames(piMat)[2:3] = c("minP", "maxP")
+    } else {
+      colnames(piMat)[2] = "NP"
+    }
     weight <- evalWeightFunction(obj$Wfs[[pi]], 
                 newdata = piMat[, if (pairId) {c("minP", "maxP")} else {"NP"}, drop = FALSE])
     piMat <- cbind(piMat[, "pi", drop = FALSE], "weights" = weight/sum(weight, na.rm = TRUE))
