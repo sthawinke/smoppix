@@ -185,7 +185,8 @@ prepareMatrixOrList <- function(obj, pi, features){
                       dimnames = list(samVec, features))
       for(samIn in samVec){
         featVec <- piObj[[samIn]][[piSub]]
-        outIn[samIn,  names(featVec)] <- featVec
+        nams <- features[features %in% names(featVec)]
+        outIn[samIn, nams] <- featVec[nams]
       }
       return(outIn)
     })
@@ -195,7 +196,8 @@ prepareMatrixOrList <- function(obj, pi, features){
                      dimnames = list(samples, features))
     for(sam in samples){
       featVec <- obj$hypFrame[[sam, "pimRes"]][[piListNameInner]][[pi]]
-      out[sam, names(featVec)] <- featVec
+      nams <- features[features %in% names(featVec)]
+      out[sam, nams] <- featVec[nams]
     }
   }
   return(out)

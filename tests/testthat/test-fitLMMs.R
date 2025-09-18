@@ -87,4 +87,5 @@ test_that("Fitting linear mixed models proceeds without errors", {
 })
 test_that("Fitting linear mixed models throws errors where appropriate", {
     expect_error(fitLMMs(objBG, fixedVars = "treatment", randomVars = "fov", pi = "centroid"))
+    expect_error(fitLMMs(yangPims, pi = "nn", features = "gene1"))
 })

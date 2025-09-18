@@ -43,6 +43,10 @@ fitLMMs <- function(
     obj, pis = obj$pis, fixedVars = NULL, randomVars = NULL, verbose = TRUE,
     returnModels = FALSE, Formula = NULL, randomNested = TRUE, features = getEstFeatures(obj), ...) {
   stopifnot(is.logical(returnModels), is.logical(randomNested))
+  if(any(id<- !(features %in% getEstFeatures(obj)))){
+    stop("Features ", features[id], "did not have their PI estimated before!
+         Consider rerunning estPis with these features included.")
+  }
   out <- lapply(pis, function(pi) {
     fitLMMsSingle(obj, pi = pi, verbose = verbose, fixedVars = fixedVars, randomVars = randomVars,
         returnModels = returnModels, Formula = Formula, randomNested = randomNested,
@@ -105,22 +109,22 @@ fitLMMsSingle <- function(obj, pi, fixedVars, randomVars, verbose, returnModels,
     check.conv.hess = .makeCC(action = "ignore", tol = 1e-06)
   )
   # convergence checking options
-  tmp <- if (grepl("Pair", pi)) {
-    features <- makePairs(features)
-    vapply(features, FUN.VALUE = double(nrow(obj$hypFrame)), function(gene) {
-      vapply(obj$hypFrame$tabObs, FUN.VALUE = double(1), function(x) {
-        all(x[sund(gene)] >= 1)
-      })
-    })
-  } else {
-    # First check if gene is present at all
-    vapply(features, FUN.VALUE = double(nrow(obj$hypFrame)), function(gene) {
-      vapply(obj$hypFrame$tabObs, FUN.VALUE = double(1), function(x) x[gene])
-    })
-  }
-  featIds <- (if (is.matrix(tmp)) {colSums(tmp, na.rm = TRUE)
-    } else {tmp}) >= 1
-  Features <- features[featIds]
+  # tmp <- if (grepl("Pair", pi)) {
+  #   features <- makePairs(features)
+  #   vapply(features, FUN.VALUE = double(nrow(obj$hypFrame)), function(gene) {
+  #     vapply(obj$hypFrame$tabObs, FUN.VALUE = double(1), function(x) {
+  #       all(x[sund(gene)] >= 1)
+  #     })
+  #   })
+  # } else {
+  #   # First check if gene is present at all
+  #   vapply(features, FUN.VALUE = double(nrow(obj$hypFrame)), function(gene) {
+  #     vapply(obj$hypFrame$tabObs, FUN.VALUE = double(1), function(x) x[gene])
+  #   })
+  # }
+  # featIds <- (if (is.matrix(tmp)) {colSums(tmp, na.rm = TRUE)
+  #   } else {tmp}) >= 1
+  Features <- if (grepl("Pair", pi)){makePairs(features)} else {features}
   pppDf <- centerNumeric(as.data.frame(obj$hypFrame[, c("image", getPPPvars(obj))]))
   if (is.null(fixedVars)) {
     contrasts <- NULL
@@ -130,7 +134,7 @@ fitLMMsSingle <- function(obj, pi, fixedVars, randomVars, verbose, returnModels,
     contrasts <- lapply(discreteVars, function(x) named.contr.sum)
   }
   if(!windowId){
-    prepMatorList <- prepareMatrixOrList(obj, pi = pi)#Do it for all features
+    prepMatorList <- prepareMatrixOrList(obj, pi = pi, features = Features)
   }
   if(windowId){
     models <- loadBalanceBplapply(Features, function(gene) {
