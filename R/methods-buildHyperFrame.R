@@ -82,13 +82,10 @@ setMethod("buildHyperFrame", "list", function(
                 stop("Gene or cell marker\n", featureName, "\nis missing in at least one point pattern")
             }
             i <- order(z[, coordVars[1]])
-            spatstat.geom::ppp(x = z[i, coordVars[1]], y = z[i, coordVars[2]], marks = z[i,
-                PPcovariates,
-                drop = FALSE
-            ], xrange = range(z[, coordVars[1]]), yrange = range(z[
-                ,
-                coordVars[2]
-            ]), drop = FALSE)
+            spatstat.geom::ppp(x = z[i, coordVars[1]], y = z[i, coordVars[2]], 
+                               marks = z[i, PPcovariates, drop = FALSE], 
+                               xrange = range(z[, coordVars[1]]), 
+            yrange = range(z[,coordVars[2]]), drop = FALSE)
         }), image = names(x))
     } else {
         stop("Supply a list of point patterns (ppp)", "or of dataframes or matrices")
