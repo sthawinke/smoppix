@@ -130,3 +130,8 @@
 - Speed up and reduce memory requirements of linear (mixed) model
   fitting by preparing design matrices only once
 - Correct bug in weighting for cell-wise nn distributions
+
+# 1.1.7
+
+- Remove memory intensive looping over features in data preparation for
+  mixed-effect modelling
