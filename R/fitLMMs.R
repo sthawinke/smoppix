@@ -108,22 +108,6 @@ fitLMMsSingle <- function(obj, pi, fixedVars, randomVars, verbose, returnModels,
     check.conv.singular = .makeCC(action = "ignore", tol = formals(isSingular)$tol),
     check.conv.hess = .makeCC(action = "ignore", tol = 1e-06)
   )
-  # convergence checking options
-  # tmp <- if (grepl("Pair", pi)) {
-  #   features <- makePairs(features)
-  #   vapply(features, FUN.VALUE = double(nrow(obj$hypFrame)), function(gene) {
-  #     vapply(obj$hypFrame$tabObs, FUN.VALUE = double(1), function(x) {
-  #       all(x[sund(gene)] >= 1)
-  #     })
-  #   })
-  # } else {
-  #   # First check if gene is present at all
-  #   vapply(features, FUN.VALUE = double(nrow(obj$hypFrame)), function(gene) {
-  #     vapply(obj$hypFrame$tabObs, FUN.VALUE = double(1), function(x) x[gene])
-  #   })
-  # }
-  # featIds <- (if (is.matrix(tmp)) {colSums(tmp, na.rm = TRUE)
-  #   } else {tmp}) >= 1
   Features <- if (grepl("Pair", pi)){makePairs(features)} else {features}
   pppDf <- centerNumeric(as.data.frame(obj$hypFrame[, c("image", getPPPvars(obj))]))
   if (is.null(fixedVars)) {
