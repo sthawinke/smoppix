@@ -130,3 +130,4 @@ output: github_document
 # 1.1.7
 
  - Remove memory intensive looping over features in data preparation for mixed-effect modelling
+ - Depend on Rfast package for fast rowsorting
