@@ -217,10 +217,10 @@ getPiAndWeights <- function(obj, gene, pi, piMat, prepMat, prepTab) {
     piMat <- Reduce(f = rbind, lapply(seq_len(nrow(obj$hypFrame)), function(n){
       npVec <- if(cellId){
         piEst <- prepMat[[n]][, gene]
-        prepTab[[n]][names(piEst), geneSplit]
+        prepTab[[n]][names(piEst), geneSplit, drop = FALSE]
       } else {
         piEst <- prepMat[n, gene]
-        prepTab[n, geneSplit]
+        prepTab[n, geneSplit, drop = FALSE]
       }
       cbind(pi = piEst, npVec)
     }))
