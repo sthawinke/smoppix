@@ -225,10 +225,10 @@ getPiAndWeights <- function(obj, gene, pi, piMat, prepMat, prepTab) {
       cbind(pi = piEst, npVec)
     }))
     if(pairId){
-      piMat[, 2:3] = rowSort(piMat[, 2:3])
-      colnames(piMat)[2:3] = c("minP", "maxP")
+      piMat[, 2:3] <- rowSort(piMat[, 2:3])
+      colnames(piMat)[2:3] <- c("minP", "maxP")
     } else {
-      colnames(piMat)[2] = "NP"
+      colnames(piMat)[2] <- "NP"
     }
     weight <- evalWeightFunction(obj$Wfs[[pi]], 
                 newdata = piMat[, if (pairId) {c("minP", "maxP")} else {"NP"}, drop = FALSE])
