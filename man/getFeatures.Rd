@@ -2,7 +2,7 @@
 % Please edit documentation in R/getFeatures.R
 \name{getFeatures}
 \alias{getFeatures}
-\title{Extract all unique features from an object, or the ones for which PIs were estimated}
+\title{Extract all unique and estimated features from an object}
 \usage{
 getFeatures(x)
 }
@@ -13,7 +13,7 @@ getFeatures(x)
 A vector of features
 }
 \description{
-Extract all unique features from an object, or the ones for which PIs were estimated
+Extract all unique and estimated features from an object
 }
 \examples{
 data(Yang)

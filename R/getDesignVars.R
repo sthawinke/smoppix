@@ -1,4 +1,6 @@
-#' getDesignVars() returns all design variables, both at the level of the point pattern and the
+#' Extract design variables from a hyperframe
+#' 
+#' Returns all design variables, both at the level of the point pattern and the
 #' level of the event
 #'
 #' @param x The results list, output from estPis

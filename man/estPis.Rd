@@ -4,7 +4,7 @@
 \alias{estPis}
 \alias{estPisSingle}
 \alias{addWeightFunction}
-\title{Estimate probabilistic indices for single-molecule localization patterns, and add the variance weighting function.}
+\title{Estimate probabilistic indices and add a variance weighting function.}
 \usage{
 estPis(
   hypFrame,

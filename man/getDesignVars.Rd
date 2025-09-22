@@ -4,8 +4,7 @@
 \alias{getDesignVars}
 \alias{getPPPvars}
 \alias{getEventVars}
-\title{getDesignVars() returns all design variables, both at the level of the point pattern and the
-level of the event}
+\title{Extract design variables from a hyperframe}
 \usage{
 getDesignVars(x)
 
@@ -25,12 +24,8 @@ getEventVars(x, exclude = c("x", "y", "z"))
 A vector of design variables
 }
 \description{
-getDesignVars() returns all design variables, both at the level of the point pattern and the
+Returns all design variables, both at the level of the point pattern and the
 level of the event
-
-getPPPvars() extract variables related to point patterns
-
-getEventVars() extracts variables related to events, e.g. the cell (the marks)
 }
 \details{
 getDesignVars() returns all design variables, \link{getPPPvars} returns

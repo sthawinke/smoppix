@@ -2,7 +2,7 @@
 % Please edit documentation in R/writeToXlsx.R
 \name{writeToXlsx}
 \alias{writeToXlsx}
-\title{Write effect sizes and p-values results to excel worksheet}
+\title{Write effect sizes and p-values results to an excel worksheet}
 \usage{
 writeToXlsx(obj, file, overwrite = FALSE, digits = 3, sigLevel = 0.05)
 }

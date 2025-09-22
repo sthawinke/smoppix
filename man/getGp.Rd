@@ -2,7 +2,7 @@
 % Please edit documentation in R/getGp.R
 \name{getGp}
 \alias{getGp}
-\title{Helper function to get gene pair from a vector or list}
+\title{Get a gene pair from a vector or list}
 \usage{
 getGp(x, gp, drop = TRUE, Collapse = "--", notFoundReturn = NULL)
 }

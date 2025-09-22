@@ -1,4 +1,4 @@
-#' Construct empirical cumulative distribution functions (ecdfs) for distances within the cell
+#' Construct empirical cumulative distribution functions (ecdfs) for within-cell distances
 #' @description The distance distribution under the null hypothesis of complete spatial randomness (CSR)
 #' within the cell is the same for all genes. This function precalculates this distribution using Monte-Carlo simulation under CSR,
 #' and summarizes it in an ecdf object

@@ -1,4 +1,4 @@
-#' Helper function to get gene pair from a vector or list
+#' Get a gene pair from a vector or list
 #'
 #'When provided with argument "geneA--geneB", looks for this gene pair as well as for
 #'"geneB--geneA" in the provided object.

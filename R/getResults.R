@@ -1,3 +1,5 @@
+#' Extract linear mixed model results
+#' 
 #' @description getResults() extracts effect size estimates, standard errors and adjusted p-values for a certain parameter
 #' from a linear model.
 #'

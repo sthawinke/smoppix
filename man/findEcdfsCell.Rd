@@ -2,7 +2,7 @@
 % Please edit documentation in R/findEcdfsCell.R
 \name{findEcdfsCell}
 \alias{findEcdfsCell}
-\title{Construct empirical cumulative distribution functions (ecdfs) for distances within the cell}
+\title{Construct empirical cumulative distribution functions (ecdfs) for within-cell distances}
 \usage{
 findEcdfsCell(p, owins, nPointsAllWin, centroids, null, pis, loopFun)
 }

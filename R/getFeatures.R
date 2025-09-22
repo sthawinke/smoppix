@@ -1,4 +1,4 @@
-#' Extract all unique features from an object, or the ones for which PIs were estimated
+#' Extract all unique and estimated features from an object
 #'
 #' @param x A hyperframe or a results list containing a hyperframe
 #'

@@ -1,4 +1,4 @@
-#' Estimate probabilistic indices for single-molecule localization patterns, and add the variance weighting function.
+#' Estimate probabilistic indices and add a variance weighting function.
 #' @description Estimate different probabilistic indices for localization
 #' on all point patterns of a hyperframe, and integrate the results in the same hyperframe. 
 #' estPisSingle() is the workhorse function for a single point pattern.
