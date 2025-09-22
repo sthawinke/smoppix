@@ -46,7 +46,6 @@ The number of unique images found is printed, make sure that this is what you ex
 plotExplore(hypYang)
 ```
 
-
 As an example analysis, we estimate the univariate nearest neighbour probabilistic index as a measure of aggregation (clustering):
 
 ```{r nn}
@@ -80,3 +79,7 @@ Finally write the results to a spreadsheet:
 ```{r writeToSpreadsheet, eval = FALSE}
 writeToXlsx(allModsNN, file = "myfile.xlsx")
 ```
+
+A schematic representation of the _smoppix_ pipeline is shown below:
+
+<img src='inst/tikzPic.jpg' align='centre' height='100%' width='100%'/>
