@@ -25,9 +25,9 @@ When provided with argument "geneA--geneB", looks for this gene pair as well as 
 "geneB--geneA" in the provided object.
 }
 \examples{
-mat <- t(cbind(
+mat <- cbind(
     "gene1--gene2" = c(1, 2),
     "gene1--gene3" = c(2, 3)
-))
+)
 getGp(mat, "gene3--gene1")
 }

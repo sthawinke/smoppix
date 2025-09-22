@@ -12,10 +12,10 @@
 #' @return The element sought
 #' @export
 #' @examples
-#' mat <- t(cbind(
+#' mat <- cbind(
 #'     "gene1--gene2" = c(1, 2),
 #'     "gene1--gene3" = c(2, 3)
-#' ))
+#' )
 #' getGp(mat, "gene3--gene1")
 getGp <- function(x, gp, drop = TRUE, Collapse = "--", notFoundReturn = NULL) {
     if (!length(x)) {
