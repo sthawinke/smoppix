@@ -19,3 +19,7 @@ A object of class lm
 \description{
 Add compoments to a result from lm.wfit to make it a minimally valid lm object
 }
+\examples{
+example(lm.wfit, "stats")
+lm_from_wfit(lmw)
+}

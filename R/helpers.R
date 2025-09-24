@@ -65,6 +65,7 @@ subSampleP <- function(p, nSims, returnId = FALSE) {
 #' @param x,... passed on to contr.sum
 #' @importFrom stats contr.sum
 #' @return The matrix of contrasts
+#' @export
 named.contr.sum <- function(x, ...) {
     lev <- x
     x <- contr.sum(x, ...)
@@ -175,6 +176,7 @@ crossdistWrapper <- function(x, y) {
 #' @param x The dataframe whose numeric variables are being centered
 #'
 #' @return The adapted dataframe
+#' @export
 centerNumeric <- function(x){
     numId <- vapply(x, FUN.VALUE = TRUE, is.numeric)
     for(i in which(numId)){

@@ -99,7 +99,7 @@ fitLMMsSingle <- function(obj, pi, fixedVars, randomVars, verbose, returnModels,
     stop("Design variables ", paste(designVars[id], collapse = " "), " not found in object.")
   }
   Formula <- buildFormula(Formula, fixedVars, randomVars)
-  MM <- any(grepl("\\|", formChar <- characterFormula(Formula)))
+  MM <- length(findbars(Formula)) > 0
   if (verbose) {
     message("Fitted formula for pi ", pi, ":\n", formChar)
   }
@@ -241,6 +241,10 @@ fitSingleLmmModel <- function(ff, y, Control, Terms, modMat, MM, Assign, weights
 #' @param Terms,Assign Added to the object
 #'
 #' @returns A object of class lm
+#' @export
+#' @examples
+#' example(lm.wfit, "stats")
+#' lm_from_wfit(lmw)
 lm_from_wfit <- function(obj, y, Terms, Assign) {
   # Create a minimal lm object
   obj <- c(obj, list(y = y, terms = Terms))
