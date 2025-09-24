@@ -177,6 +177,10 @@ crossdistWrapper <- function(x, y) {
 #'
 #' @return The adapted dataframe
 #' @export
+#' @examples
+#' df = data.frame(a = rnorm(10), b = sample(c(TRUE, FALSE), 10, replace = TRUE))
+#' dfCen = centerNumeric(df)
+#' mean(dfCen$a)
 centerNumeric <- function(x){
     numId <- vapply(x, FUN.VALUE = TRUE, is.numeric)
     for(i in which(numId)){
