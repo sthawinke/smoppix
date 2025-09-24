@@ -101,7 +101,7 @@ fitLMMsSingle <- function(obj, pi, fixedVars, randomVars, verbose, returnModels,
   Formula <- buildFormula(Formula, fixedVars, randomVars)
   MM <- length(findbars(Formula)) > 0
   if (verbose) {
-    message("Fitted formula for pi ", pi, ":\n", formChar)
+    message("Fitted formula for pi ", pi, ":\n", characterFormula(Formula))
   }
   Control <- lmerControl(
     check.conv.grad = .makeCC("ignore", tol = 0.002, relTol = NULL),
@@ -243,8 +243,15 @@ fitSingleLmmModel <- function(ff, y, Control, Terms, modMat, MM, Assign, weights
 #' @returns A object of class lm
 #' @export
 #' @examples
-#' example(lm.wfit, "stats")
-#' lm_from_wfit(lmw)
+#' n <- 7 ; p <- 2
+#' X <- matrix(rnorm(n * p), n, p) # no intercept!
+#' y <- rnorm(n)
+#' w <- rnorm(n)^2
+#' lmw <- lm.wfit(x = X, y = y, w = w)
+#' lmObject <- lm_from_wfit(lmw, y = y, Terms = terms(Y~X), 
+#' Assign = attr(model.matrix(~X), "assign"))
+#' summary(lmObject)
+#' anova(lmObject)
 lm_from_wfit <- function(obj, y, Terms, Assign) {
   # Create a minimal lm object
   obj <- c(obj, list(y = y, terms = Terms))

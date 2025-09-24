@@ -412,7 +412,7 @@ if(reqFunky){
 
 A schematic overview of the _smoppix_ pipeline, starting from a hyperframe, with corresponding functions is shown below:
 
-<img src='inst/tikzPic.jpg' align='centre' height='100%' width='100%'/>
+<img src='inst/tikzPic.jpg' align='centre' height='80%' width='80%'/>
 
 # Troubleshooting
 

@@ -132,3 +132,7 @@ output: github_document
  - Remove memory intensive looping over features in data preparation for mixed-effect modelling
  - Depend on Rfast package for fast rowsorting
  - Include tikzpicture as schematic oerview in readme
+ 
+# 1.1.8
+
+ - Export some convenience functions for 

@@ -118,4 +118,4 @@ writeToXlsx(allModsNN, file = "myfile.xlsx")
 
 A schematic representation of the *smoppix* pipeline is shown below:
 
-<img src='inst/tikzPic.jpg' align='centre' height='75%' width='75%'/>
+<img src='inst/tikzPic.jpg' align='centre' height='100%' width='100%'/>
