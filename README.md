@@ -116,6 +116,13 @@ Finally write the results to a spreadsheet:
 writeToXlsx(allModsNN, file = "myfile.xlsx")
 ```
 
+A more extensive description of the *smoppix* functionality can be found
+in the vignette, which can be accessed by calling
+
+``` r
+browseVignettes("smoppix")
+```
+
 A schematic representation of the *smoppix* pipeline is shown below:
 
 <img src='inst/tikzPic.jpg' align='centre' height='100%' width='100%'/>

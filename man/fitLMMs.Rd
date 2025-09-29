@@ -92,7 +92,7 @@ but the safest is to construct the formula yourself and pass it onto fitLMMs.
 It is by default assumed that random effects are nested within the point
  patterns. This means for instance that cells with the same name but from
  different point patterns are assigned to different random effects. Set
- 'randomNested' to FALSE to override this behaviour.
+'randomNested' to FALSE to override this behaviour.
 }
 \examples{
 example(addWeightFunction, "smoppix")
