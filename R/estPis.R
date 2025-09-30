@@ -40,7 +40,7 @@
 #' For 'background', the observed distributions of all genes is used. Alternatively,
 #' for null = 'CSR', Monte-Carlo simulation under complete spatial randomness
 #' is performed within the given window to find the null distribution of the distance under study.
-#' See \insertCite{Hawinkel2025b}{smoppix} for precise definition of the PI.
+#' See \insertCite{Hawinkel2025b;nobrackets}{smoppix} for precise definition of the PI.
 #'
 #' The 'nn' prefix indicates that nearest neighbour distances are being used,
 #' either univariately or bivariately.
@@ -52,6 +52,8 @@
 #'
 #' It can be useful to set the minObsNN higher than the default of 5 for calculations within cells when the number of events is low,
 #' not to waste computation time on gene (pairs) with very variable PI estimates.
+#' @references
+#' \insertAllCited{}
 estPis <- function(
     hypFrame, pis = c("nn", "nnPair", "edge", "centroid", "nnCell",
         "nnPairCell"), verbose = TRUE, null = c("background", "CSR"),
