@@ -12,7 +12,7 @@ the vignette.
 The package can be installed from Bioconductor as follows:
 
 ``` r
-library(Biocmanager)
+library(BiocManager)
 install("smoppix")
 ```
 
