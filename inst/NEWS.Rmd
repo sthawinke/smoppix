@@ -140,4 +140,4 @@ output: github_document
 # 1.1.9
 
  - Added citation file to refer to the preprint directly
- - Make sure vignettes are build and mentioned upon installation
+ - Make sure vignettes are build upon installation and mentioned in readme

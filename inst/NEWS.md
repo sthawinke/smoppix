@@ -136,7 +136,7 @@
 - Remove memory intensive looping over features in data preparation for
   mixed-effect modelling
 - Depend on Rfast package for fast rowsorting
-- Include tikzpicture as schematic oerview in readme
+- Include tikzpicture as schematic overview in readme
 
 # 1.1.8
 
@@ -145,3 +145,5 @@
 # 1.1.9
 
 - Added citation file to refer to the preprint directly
+- Make sure vignettes are build upon installation and mentioned in
+  readme
