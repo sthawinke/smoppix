@@ -137,3 +137,11 @@
   mixed-effect modelling
 - Depend on Rfast package for fast rowsorting
 - Include tikzpicture as schematic oerview in readme
+
+# 1.1.8
+
+- Export some convenience functions for other packages
+
+# 1.1.9
+
+- Added citation file to refer to the preprint directly

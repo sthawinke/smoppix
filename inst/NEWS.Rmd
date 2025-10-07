@@ -135,4 +135,8 @@ output: github_document
  
 # 1.1.8
 
- - Export some convenience functions for 
+ - Export some convenience functions for other packages
+ 
+# 1.1.9
+
+ - Added citation file to refer to the preprint directly

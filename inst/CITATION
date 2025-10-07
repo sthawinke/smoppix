@@ -1,4 +1,3 @@
 citHeader("To cite smoppix in citations, please use:")
-bib <- bibtex::read.bib(system.file("REFERENCES.bib", package = "smoppix"))[["Hawinkel2025b"]]
-bib$eprint = bib$url = NULL
-bib
+bibtex::read.bib(system.file("REFERENCES.bib", package = "smoppix"))[["Hawinkel2025b"]]
+
