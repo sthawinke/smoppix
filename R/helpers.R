@@ -66,6 +66,9 @@ subSampleP <- function(p, nSims, returnId = FALSE) {
 #' @importFrom stats contr.sum
 #' @return The matrix of contrasts
 #' @export
+#' @examples
+#' fac = sample(c(TRUE, FALSE), 10, replace = TRUE)
+#' named.contr.sum(fac)
 named.contr.sum <- function(x, ...) {
     lev <- x
     x <- contr.sum(x, ...)
