@@ -31,7 +31,7 @@
 #' @param nucCol The colour for the nucleus window
 #' @param Nrow Number of rows of the facet plot. Will be calculated if missing.
 #' @param Cols colours vector named by features. If missing a default palette is used
-#' @param scaleBarVec A vector of length 2 defining the width and height of the scale bar,
+#' @param scaleBarSize A vector of length 2 defining the width and height of the scale bar,
 #'  which is placed at the bottom left edge of the window
 #' @note palCols sets the pseudo-continuous scale to colour cells.
 #' @return Plots a facet of point patterns to output
@@ -43,7 +43,7 @@
 #' @examples
 #' example(buildHyperFrame, "smoppix")
 #' plotExplore(hypYang)
-#' plotExplore(hypYang, titleVar = "day", scaleBarVec = c(20, 500))
+#' plotExplore(hypYang, titleVar = "day", scaleBarSize = c(20, 500))
 #' plotExplore(hypYang, features = c("SmRBRb", "SmTMO5b", "SmWER--SmAHK4f"))
 plotExplore <- function(
     hypFrame, features = getFeatures(hypFrame)[seq_len(6)], ppps, numPps,
@@ -51,7 +51,7 @@ plotExplore <- function(
     plotNuclei = !is.null(hypFrame$nuclei), piEsts = NULL,
     Xlim = NULL, Ylim = NULL, Cex.main = 1.1, Mar = c(0.5, 0.1, 0.9, 0.1), titleVar = NULL,
     piColourCell = NULL, palCols = c("blue", "yellow"), nucCol ="lightblue", border = NULL, 
-    CexLegend = 1.4, CexLegendMain = 1.7, Nrow, Cols, scaleBarVec = NULL) {
+    CexLegend = 1.4, CexLegendMain = 1.7, Nrow, Cols, scaleBarSize = NULL) {
     if (!is.hyperframe(hypFrame)) {
         hypFrame <- hypFrame$hypFrame
     }
@@ -65,7 +65,7 @@ plotExplore <- function(
         is.hyperframe(hypFrame), is.character(features), is.numeric(maxPlot),
         is.null(titleVar) || titleVar %in% getPPPvars(hypFrame),
         missing(numPps) || (length(numPps) == 1 && length(features) <= 2),
-        is.null(scaleBarVec) || (is.numeric(scaleBarVec) && length(scaleBarVec)==2)
+        is.null(scaleBarSize) || (is.numeric(scaleBarSize) && length(scaleBarSize)==2)
     )
     if (colourCells <- !is.null(piColourCell) && plotWindows) {
         featsplit <- sund(features)
@@ -122,13 +122,8 @@ plotExplore <- function(
         ordVec <- order(colVec != "grey")
         Xlim <- if(!is.null(Xlim)) {
           Xlim 
-        } else if(!is.null(scaleBarVec)){
-          c(min(cordMat[, "x"]) - scaleBarVec[1]*2, max(cordMat[, "x"]))
-        } 
-        Ylim <- if(!is.null(Ylim)) {
-          Ylim 
-        } else if(!is.null(scaleBarVec)){
-          c(min(cordMat[, "y"]) - scaleBarVec[2]*0.1, max(cordMat[, "y"]))
+        } else if(!is.null(scaleBarSize)){
+          c(min(cordMat[, "x"]) - scaleBarSize[1]*3, max(cordMat[, "x"]))
         } 
         plot(cordMat[ordVec, ],
             main = paste(hypFrame$image[i], if (!is.null(titleVar)) {
@@ -162,11 +157,11 @@ plotExplore <- function(
         if (plotPoints) {
             points(cordMat[ordVec, ], pch = ".", col = colVec[ordVec], cex = Cex)
         }
-        if(!is.null(scaleBarVec)){
-          xShift <- PPPsub$window$xrange[1]
+        if(!is.null(scaleBarSize)){
+          xShift <- PPPsub$window$xrange[1]- scaleBarSize[1]*2
           yShift <- PPPsub$window$yrange[1]
-          rect(xShift - scaleBarVec[1], yShift, xShift, scaleBarVec[2] + yShift, 
-               col = "black")
+          rect(xShift - scaleBarSize[1], yShift + scaleBarSize[2]*0.2, xShift, 
+               scaleBarSize[2]*1.2 + yShift, col = "black")
         }
     })
     plot(c(0, 1), c(0, 1), type = "n", xlab = "", ylab = "", xaxt = "n", yaxt = "n")
