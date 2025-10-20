@@ -141,3 +141,7 @@ output: github_document
 
  - Added citation file to refer to the preprint directly
  - Make sure vignettes are build upon installation and mentioned in readme
+ 
+# 1.1.10
+
+ - Allow addition of scale bars
