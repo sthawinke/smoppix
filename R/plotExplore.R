@@ -123,7 +123,7 @@ plotExplore <- function(
         Xlim <- if(!is.null(Xlim)) {
           Xlim 
         } else if(!is.null(scaleBarSize)){
-          c(min(cordMat[, "x"]) - scaleBarSize[1]*3, max(cordMat[, "x"]))
+          c(min(cordMat[, "x"]) - scaleBarSize[1]*4, max(cordMat[, "x"]))
         } 
         plot(cordMat[ordVec, ],
             main = paste(hypFrame$image[i], if (!is.null(titleVar)) {
