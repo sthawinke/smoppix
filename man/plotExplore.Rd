@@ -28,7 +28,7 @@ plotExplore(
   CexLegendMain = 1.7,
   Nrow,
   Cols,
-  scaleBarVec = NULL
+  scaleBarSize = NULL
 )
 }
 \arguments{
@@ -75,7 +75,7 @@ respectively}
 
 \item{Cols}{colours vector named by features. If missing a default palette is used}
 
-\item{scaleBarVec}{A vector of length 2 defining the width and height of the scale bar,
+\item{scaleBarSize}{A vector of length 2 defining the width and height of the scale bar,
 which is placed at the bottom left edge of the window}
 }
 \value{
@@ -99,6 +99,6 @@ palCols sets the pseudo-continuous scale to colour cells.
 \examples{
 example(buildHyperFrame, "smoppix")
 plotExplore(hypYang)
-plotExplore(hypYang, titleVar = "day", scaleBarVec = c(20, 500))
+plotExplore(hypYang, titleVar = "day", scaleBarSize = c(20, 500))
 plotExplore(hypYang, features = c("SmRBRb", "SmTMO5b", "SmWER--SmAHK4f"))
 }

@@ -158,7 +158,7 @@ plotExplore <- function(
             points(cordMat[ordVec, ], pch = ".", col = colVec[ordVec], cex = Cex)
         }
         if(!is.null(scaleBarSize)){
-          xShift <- PPPsub$window$xrange[1]- scaleBarSize[1]*2
+          xShift <- PPPsub$window$xrange[1]- scaleBarSize[1]
           yShift <- PPPsub$window$yrange[1]
           rect(xShift - scaleBarSize[1], yShift + scaleBarSize[2]*0.2, xShift, 
                scaleBarSize[2]*1.2 + yShift, col = "black")
