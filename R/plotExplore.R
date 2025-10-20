@@ -125,6 +125,11 @@ plotExplore <- function(
         } else if(!is.null(scaleBarVec)){
           c(min(cordMat[, "x"]) - scaleBarVec[1]*2, max(cordMat[, "x"]))
         } 
+        Ylim <- if(!is.null(Ylim)) {
+          Ylim 
+        } else if(!is.null(scaleBarVec)){
+          c(min(cordMat[, "y"]) - scaleBarVec[2]*0.1, max(cordMat[, "y"]))
+        } 
         plot(cordMat[ordVec, ],
             main = paste(hypFrame$image[i], if (!is.null(titleVar)) {
                 hypFrame[[i, titleVar]]
