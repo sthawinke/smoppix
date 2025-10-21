@@ -3,7 +3,7 @@ test_that("Plotting hyperframes proceeds without errors", {
     expect_silent(plotExplore(hypYang))
     expect_silent(plotExplore(hypYang, features = getFeatures(hypYang)[seq_len(2)], numPps = 5))
     expect_silent(plotExplore(hypFrame2))
-    expect_silent(plotExplore(hypFrame2,
+    expect_silent(plotExplore(hypFrame2, scaleBarSize = c(0.01, 0.1),
         piEsts = objCSR, piColourCell = "edge", feature = "gene1"
     ))
     expect_silent(plotExplore(hypFrame2,
@@ -26,4 +26,5 @@ test_that("Plotting hyperframes throws warning when appropriate", {
     expect_error(plotExplore(hypFrame2,
         piEsts = objCSR, piColourCell = "nnCell", feature = "gene1--gene2"
     ))
+    expect_error(plotExplore(hypYang, scaleBarSize = c(3,4,5)))
 })
