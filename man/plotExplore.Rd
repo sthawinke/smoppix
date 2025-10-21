@@ -44,7 +44,7 @@ Ignored is pps is given.}
 
 \item{maxPlot}{The maximum number of events plotted per point pattern}
 
-\item{Cex, Cex.main}{Point and title expansion factors, repsectively}
+\item{Cex, Cex.main}{Point and title expansion factors, respectively}
 
 \item{plotWindows}{A boolean, should windows be plotted too?}
 

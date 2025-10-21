@@ -15,7 +15,7 @@
 #' @param numPps The number of point patterns with highest expression to be shown.
 #' Ignored is pps is given.
 #' @param maxPlot The maximum number of events plotted per point pattern
-#' @param Cex,Cex.main Point and title expansion factors, repsectively
+#' @param Cex,Cex.main Point and title expansion factors, respectively
 #' @param plotWindows A boolean, should windows be plotted too?
 #' @param plotPoints A boolean, should the molecules be plotted as points?
 #' @param Mar the margins

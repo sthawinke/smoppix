@@ -62,11 +62,12 @@ here, but the spatial location of the cells in the point pattern is lost!
 The choice and ranking of cells is one of decreasing gene (pair) expression.
 }
 \details{
-The scale bar will be resized together with the cells. 
+The width of the scale bar (first element of scaleBarSize) is fixed and the same for all scalebars.
+The height of the scale bar will be resized together with the cells to always represent the same physical distance. 
 Adding scale bars tacitly assumes that all point patterns are on the same scale.
 }
 \examples{
 example(addCell, "smoppix")
 plotCells(hypFrame2, "gene1")
-plotCells(hypFrame2, "gene1", borderColVar = "condition", nCells = 10, scaleBarSize = c(.01, .1))
+plotCells(hypFrame2, "gene1", borderColVar = "condition", nCells = 10, scaleBarSize = c(.008, .1))
 }

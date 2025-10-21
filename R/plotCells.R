@@ -27,12 +27,13 @@
 #' @export
 #' @importFrom spatstat.geom plot.owin subset.ppp owin
 #' @importFrom graphics points text rect
-#' @details The scale bar will be resized together with the cells. 
+#' @details The width of the scale bar (first element of scaleBarSize) is fixed and the same for all scalebars.
+#' The height of the scale bar will be resized together with the cells to always represent the same physical distance. 
 #' Adding scale bars tacitly assumes that all point patterns are on the same scale.
 #' @examples
 #' example(addCell, "smoppix")
 #' plotCells(hypFrame2, "gene1")
-#' plotCells(hypFrame2, "gene1", borderColVar = "condition", nCells = 10, scaleBarSize = c(.01, .1))
+#' plotCells(hypFrame2, "gene1", borderColVar = "condition", nCells = 10, scaleBarSize = c(.008, .1))
 plotCells <- function(obj, features = getFeatures(obj)[seq_len(3)], nCells = 100,
     Cex = 1.5, borderColVar = NULL, borderCols = rev(palette()), Mar = c(0.5, 0.1,0.75, 0.1), 
     warnPosition = TRUE, summaryFun = "min",
@@ -125,7 +126,7 @@ plotCells <- function(obj, features = getFeatures(obj)[seq_len(3)], nCells = 100
                          ppp = subset.ppp(ppp, cell == namIn),
                          Shift = shiftVec(counter, Ceils[1]),
                          nuclei = if(plotNuclei) obj[[nam, "nuclei"]][namIn],
-                         scaleBar = if(addScaleBar) {scaleBarSize})
+                         scaleBarSize = if(addScaleBar) scaleBarSize)
             plot.owin(shifted$owin, add = TRUE, border = borderCols[[i]][[j]])
             if(plotNuclei){
               for(nn in shifted$nuclei){
@@ -173,7 +174,8 @@ toUnitSquare <- function(win, ppp, Shift, nuclei, scaleBarSize) {
          nuclei = if(any(idNuc <- !vapply(nuclei, FUN.VALUE = TRUE, is.null))){
            lapply(nuclei[idNuc], affine.owin, ds, vec)
          },
-         scaleBar = if(sb) affine.owin(scaleBar, ds, vec - c(sbShift, 0)))
+         scaleBar = if(sb) affine.owin(scaleBar, diag(c(1, shrink[2])), 
+                                       -c(win$xrange[1], win$yrange[1]) * c(1, shrink[2]) + Shift - c(sbShift, 0)))
 }
 shiftVec <- function(counter, Ceil) {
     c(counter %% Ceil, counter %/% Ceil)

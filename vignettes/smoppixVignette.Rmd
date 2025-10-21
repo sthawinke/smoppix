@@ -312,8 +312,7 @@ allModsNNcell <- fitLMMs(engPis, fixedVars = "experiment")
 For the "edge" and "centroid" options, each individual RNA-molecule is an observation in the model, and random effects are added for both cell and image. For "nnCell" and "nnPairCell", the observations are averaged per cell, and so only a random effect common to all cells of a single image remains. Now we plot the genes with the strongest remoteness from the cell edge:
 
 ```{r plotEdgeEng, fig.height = 6.5}
-plotTopResults(hypEng,
-    results = allModsNNcell, pi = "edge", what = "far",
+plotTopResults(hypEng, results = allModsNNcell, pi = "edge", what = "far",
     numFeats = 1)
 ```
 
@@ -348,7 +347,7 @@ The molecules are shown in red, while the yellow-blue scale indicates the PI est
 Another biologically interesting spatial pattern are gradients. Again, they can be estimated image-wide or within cells. Parametric model fitting of Poisson point processes is provided in the [spatstat.model](http://book.spatstat.org/) package by @Baddeley2015, we wrap it here for convenience. Detecting presence of gradients over different point patterns is done by fitting a model including interaction terms between x and y coordinates and image identifiers. If this interactions are significant, this implies existence of gradients in the different point patterns, albeit with different directions. The fitting process is quite computation intensive, so we limit ourselves to a subset of the data. By default both overall gradients and within-cell gradients are fitted.
 
 ```{r enggrads}
-engGrads <- estGradients(hypEng[seq_len(2), ], features = feat <- getFeatures(hypEng)[seq_len(3)])
+engGrads <- estGradients(hypEng[seq_len(2), ], features = getFeatures(hypEng)[seq_len(3)])
 pValsGrads <- getPvaluesGradient(engGrads, "cell")
 ```
 
