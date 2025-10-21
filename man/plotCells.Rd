@@ -68,5 +68,5 @@ Adding scale bars tacitly assumes that all point patterns are on the same scale.
 \examples{
 example(addCell, "smoppix")
 plotCells(hypFrame2, "gene1")
-plotCells(hypFrame2, "gene1", borderColVar = "condition", nCells = 10, scaleBarSize = c(20, 100))
+plotCells(hypFrame2, "gene1", borderColVar = "condition", nCells = 10, scaleBarSize = c(.01, .1))
 }
