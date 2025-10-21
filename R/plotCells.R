@@ -161,8 +161,8 @@ toUnitSquare <- function(win, ppp, Shift, nuclei, scaleBarSize) {
     shrink <- 1 / rep(Max <- max(diff(win$xrange), diff(win$yrange)), 2)
     if(sb <- !is.null(scaleBarSize)){ 
       #Make additional space for the scale bar by shrinking x a bit more, and shifting everything right
-      Shift[1] <- Shift[1] + (sbShift <- 1.5*scaleBarSize[1]/Max)
-      shrink[1] <- shrink[1]*(Max/(Max+3*scaleBarSize[1]))
+      Shift[1] <- Shift[1] + (sbShift <- 2.5*scaleBarSize[1]/Max)
+      shrink[1] <- shrink[1]*(Max/(Max+5*scaleBarSize[1]))
       scaleBar <- owin(xrange = c(win$xrange[1], win$xrange[1] + scaleBarSize[1]), 
            yrange = c(win$yrange[1], win$yrange[1] + scaleBarSize[2]))
     }
@@ -173,7 +173,7 @@ toUnitSquare <- function(win, ppp, Shift, nuclei, scaleBarSize) {
          nuclei = if(any(idNuc <- !vapply(nuclei, FUN.VALUE = TRUE, is.null))){
            lapply(nuclei[idNuc], affine.owin, ds, vec)
          },
-         scaleBar = if(sb) affine.owin(scaleBar, ds, vec - c(sbShift, 0)))
+         scaleBar = if(sb) affine.owin(scaleBar, ds vec - c(sbShift, 0)))
 }
 shiftVec <- function(counter, Ceil) {
     c(counter %% Ceil, counter %/% Ceil)
