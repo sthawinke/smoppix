@@ -16,6 +16,7 @@ plotCells(
   summaryFun = "min",
   plotNuclei = !is.null(getHypFrame(obj)$nuclei),
   nucCol = "lightblue",
+  scaleBarSize = NULL,
   ...
 )
 }
@@ -46,6 +47,9 @@ of the combination of genes}
 
 \item{nucCol}{A character string, the colour in which the nucleus' boundary is plotted}
 
+\item{scaleBarSize}{A vector of length 2 with the width and height of the scale bars,
+in the units of the original point patterns. See details.}
+
 \item{...}{Additional arguments, currently ignored}
 }
 \value{
@@ -57,8 +61,12 @@ look at the cells with the most events for certain genes. These are plotted
 here, but the spatial location of the cells in the point pattern is lost!
 The choice and ranking of cells is one of decreasing gene (pair) expression.
 }
+\details{
+The scale bar will be resized together with the cells. 
+Adding scale bars tacitly assumes that all point patterns are on the same scale.
+}
 \examples{
 example(addCell, "smoppix")
 plotCells(hypFrame2, "gene1")
-plotCells(hypFrame2, "gene1", borderColVar = "condition", nCells = 10)
+plotCells(hypFrame2, "gene1", borderColVar = "condition", nCells = 10, scaleBarSize = c(20, 100))
 }

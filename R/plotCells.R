@@ -18,29 +18,34 @@
 #' of the combination of genes
 #' @param plotNuclei A boolean, should nuclei be added?
 #' @param nucCol A character string, the colour in which the nucleus' boundary is plotted
+#' @param scaleBarSize A vector of length 2 with the width and height of the scale bars,
+#'  in the units of the original point patterns. See details.
 #' @param ... Additional arguments, currently ignored
 #' @inheritParams plotExplore
-#'
+#' 
 #' @return Plots cells with highest expression to the plotting window, returns invisible
 #' @export
-#' @importFrom spatstat.geom plot.owin subset.ppp
-#' @importFrom graphics points text
-#'
+#' @importFrom spatstat.geom plot.owin subset.ppp owin
+#' @importFrom graphics points text rect
+#' @details The scale bar will be resized together with the cells. 
+#' Adding scale bars tacitly assumes that all point patterns are on the same scale.
 #' @examples
 #' example(addCell, "smoppix")
 #' plotCells(hypFrame2, "gene1")
-#' plotCells(hypFrame2, "gene1", borderColVar = "condition", nCells = 10)
+#' plotCells(hypFrame2, "gene1", borderColVar = "condition", nCells = 10, scaleBarSize = c(20, 100))
 plotCells <- function(
     obj, features = getFeatures(obj)[seq_len(3)], nCells = 100,
     Cex = 1.5, borderColVar = NULL, borderCols = rev(palette()), Mar = c(0.5, 0.1,0.75, 0.1), 
     warnPosition = TRUE, summaryFun = "min",
-    plotNuclei = !is.null(getHypFrame(obj)$nuclei), nucCol = "lightblue", ...) {
+    plotNuclei = !is.null(getHypFrame(obj)$nuclei), nucCol = "lightblue", scaleBarSize = NULL, ...) {
     if (!is.hyperframe(obj)) {
         obj <- getHypFrame(obj)
     }
     if(is.null(obj$owins)){
       stop("No windows present in object! Add them using addCells() first.")
     }
+    addScaleBar <- !is.null(scaleBarSize)
+    stopifnot(!addScaleBar || length(scaleBarSize) == 2)
     summaryFun <- match.fun(summaryFun)
     colourBorder <- !is.null(borderColVar)
     old.par <- par(no.readonly = TRUE)
@@ -117,20 +122,27 @@ plotCells <- function(
         ppp <- subset.ppp(obj[[nam, "ppp"]], gene %in% features)
         for (j in seq_along(tablesCell[[nam]])) {
             namIn <- names(tablesCell[[nam]])[j]
-            shifted <- toUnitSquare(obj[[nam, "owins"]][[namIn]],
-                                    ppp = subset.ppp(ppp, cell == namIn),
-                                    Shift = shiftVec(counter, Ceils[1]),
-                                    nuclei = if(plotNuclei) obj[[nam, "nuclei"]][namIn])
+            win = obj[[nam, "owins"]][[namIn]]
+            shifted <- toUnitSquare(win,
+                         ppp = subset.ppp(ppp, cell == namIn),
+                         Shift = shiftVec(counter, Ceils[1]),
+                         nuclei = if(plotNuclei) obj[[nam, "nuclei"]][namIn],
+                         scaleBar = if(addScaleBar) {
+                            owin(xrange = c(win$xrange[1], win$xrange[1] + scaleBarSize[1]), 
+                                 yrange = c(win$yrange[1], win$yrange[1] + scaleBarSize[2]))
+                         })
             plot.owin(shifted$owin, add = TRUE, border = borderCols[[i]][[j]])
             if(plotNuclei){
               for(nn in shifted$nuclei){
                 plot.owin(nn, add = TRUE, border = nucCol)
               }
             }
-            points(coords(shifted$ppp),
-                col = Cols[marks(shifted$ppp, drop = FALSE)$gene],
-                pch = ".", cex = Cex
-            )
+            points(coords(shifted$ppp),col = Cols[marks(shifted$ppp, drop = FALSE)$gene],
+                pch = ".", cex = Cex)
+            if(addScaleBar){
+                rect(shifted$scaleBar$xrange[1], shifted$scaleBar$yrange[1], 
+                     shifted$scaleBar$xrange[2], shifted$scaleBar$yrange[2], col = "black")
+            }
             counter <- counter + 1
         }
     }
@@ -149,14 +161,15 @@ plotCells <- function(
     invisible()
 }
 #' @importFrom spatstat.geom affine.owin affine.ppp
-toUnitSquare <- function(owin, ppp, Shift, nuclei) {
+toUnitSquare <- function(owin, ppp, Shift, nuclei, scaleBar) {
     shrink <- 1 / rep(max(diff(owin$xrange), diff(owin$yrange)), 2)
     vec <- -c(owin$xrange[1], owin$yrange[1]) * shrink + Shift
     list(owin = affine.owin(owin, diag(shrink), vec),
          ppp = affine.ppp(ppp, diag(shrink),vec),
          nuclei = if(any(idNuc <- !vapply(nuclei, FUN.VALUE = TRUE, is.null))){
            lapply(nuclei[idNuc], affine.owin, diag(shrink), vec)
-         })
+         },
+         scaleBar = if(!is.null(scaleBar)) affine.owin(scaleBar, diag(shrink), vec))
 }
 shiftVec <- function(counter, Ceil) {
     c(counter %% Ceil, counter %/% Ceil)

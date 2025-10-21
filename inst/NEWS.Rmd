@@ -144,4 +144,4 @@ output: github_document
  
 # 1.1.10
 
- - Allow addition of scale bars
+ - Allow addition of scale bars in plotExplore and plotCells
