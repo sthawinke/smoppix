@@ -173,7 +173,7 @@ toUnitSquare <- function(win, ppp, Shift, nuclei, scaleBarSize) {
          nuclei = if(any(idNuc <- !vapply(nuclei, FUN.VALUE = TRUE, is.null))){
            lapply(nuclei[idNuc], affine.owin, ds, vec)
          },
-         scaleBar = if(sb) affine.owin(scaleBar, ds vec - c(sbShift, 0)))
+         scaleBar = if(sb) affine.owin(scaleBar, ds, vec - c(sbShift, 0)))
 }
 shiftVec <- function(counter, Ceil) {
     c(counter %% Ceil, counter %/% Ceil)
