@@ -122,7 +122,7 @@ plotCells <- function(
         ppp <- subset.ppp(obj[[nam, "ppp"]], gene %in% features)
         for (j in seq_along(tablesCell[[nam]])) {
             namIn <- names(tablesCell[[nam]])[j]
-            win = obj[[nam, "owins"]][[namIn]]
+            win <- obj[[nam, "owins"]][[namIn]]
             shifted <- toUnitSquare(win,
                          ppp = subset.ppp(ppp, cell == namIn),
                          Shift = shiftVec(counter, Ceils[1]),
