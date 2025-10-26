@@ -193,7 +193,7 @@ fitLMMsSingle <- function(obj, pi, fixedVars, randomVars, verbose, returnModels,
         fitSingleLmmModel(ff = ff, y = mat[id, "pi"], Terms = terms(Formula), modMat = modMat[id,,drop = FALSE],
                     weights = mat[id, "weights"], Control = Control, MM = MM, Assign = Assign)
       }
-      #return(out)
+      return(out)
     })
   }
   names(models) <- Features
