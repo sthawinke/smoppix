@@ -20,6 +20,8 @@
 #' @param nucCol A character string, the colour in which the nucleus' boundary is plotted
 #' @param scaleBarSize A vector of length 2 with the width and height of the scale bars,
 #'  in the units of the original point patterns. See details.
+#'  @param scaleBarSpace Space reserved for the scale bars. Enlarge this when the 
+#'  scale bars appear attached to the edge of the cell
 #' @param ... Additional arguments, currently ignored
 #' @inheritParams plotExplore
 #' 
@@ -37,7 +39,8 @@
 plotCells <- function(obj, features = getFeatures(obj)[seq_len(3)], nCells = 100,
     Cex = 1.5, borderColVar = NULL, borderCols = rev(palette()), Mar = c(0.5, 0.1,0.75, 0.1), 
     warnPosition = TRUE, summaryFun = "min",
-    plotNuclei = !is.null(getHypFrame(obj)$nuclei), nucCol = "lightblue", scaleBarSize = NULL, ...) {
+    plotNuclei = !is.null(getHypFrame(obj)$nuclei), nucCol = "lightblue", 
+    scaleBarSize = NULL, scaleBarSpace = 10, ...) {
     if (!is.hyperframe(obj)) {
         obj <- getHypFrame(obj)
     }
@@ -158,12 +161,12 @@ plotCells <- function(obj, features = getFeatures(obj)[seq_len(3)], nCells = 100
     invisible()
 }
 #' @importFrom spatstat.geom affine.owin affine.ppp
-toUnitSquare <- function(win, ppp, Shift, nuclei, scaleBarSize) {
+toUnitSquare <- function(win, ppp, Shift, nuclei, scaleBarSize, scaleBarSpace) {
     shrink <- 1 / rep(Max <- max(diff(win$xrange), diff(win$yrange)), 2)
     if(sb <- !is.null(scaleBarSize)){ 
       #Make additional space for the scale bar by shrinking x a bit more, and shifting everything right
-      Shift[1] <- Shift[1] + (sbShift <- 2.5*scaleBarSize[1]/Max)
-      shrink[1] <- shrink[1]*(Max/(Max+5*scaleBarSize[1]))
+      Shift[1] <- Shift[1] + (sbShift <- (scaleBarSpace/2*scaleBarSize[1]/Max))
+      shrink[1] <- shrink[1]*(Max/(Max+scaleBarSpace*scaleBarSize[1]))
       scaleBar <- owin(xrange = c(win$xrange[1], win$xrange[1] + scaleBarSize[1]), 
            yrange = c(win$yrange[1], win$yrange[1] + scaleBarSize[2]))
     }
@@ -174,8 +177,7 @@ toUnitSquare <- function(win, ppp, Shift, nuclei, scaleBarSize) {
          nuclei = if(any(idNuc <- !vapply(nuclei, FUN.VALUE = TRUE, is.null))){
            lapply(nuclei[idNuc], affine.owin, ds, vec)
          },
-         scaleBar = if(sb) affine.owin(scaleBar, diag(c(1, shrink[2])), 
-                                       -c(win$xrange[1], win$yrange[1]) * c(1, shrink[2]) + Shift - c(sbShift, 0)))
+         scaleBar = if(sb) affine.owin(scaleBar,ds, vec - c(sbShift, 0)))
 }
 shiftVec <- function(counter, Ceil) {
     c(counter %% Ceil, counter %/% Ceil)

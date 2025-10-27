@@ -17,6 +17,7 @@ plotCells(
   plotNuclei = !is.null(getHypFrame(obj)$nuclei),
   nucCol = "lightblue",
   scaleBarSize = NULL,
+  scaleBarSpace = 10,
   ...
 )
 }
@@ -48,7 +49,9 @@ of the combination of genes}
 \item{nucCol}{A character string, the colour in which the nucleus' boundary is plotted}
 
 \item{scaleBarSize}{A vector of length 2 with the width and height of the scale bars,
-in the units of the original point patterns. See details.}
+in the units of the original point patterns. See details.
+@param scaleBarSpace Space reserved for the scale bars. Enlarge this when the 
+scale bars appear attached to the edge of the cell}
 
 \item{...}{Additional arguments, currently ignored}
 }
