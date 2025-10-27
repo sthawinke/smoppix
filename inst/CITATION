@@ -1,3 +1,16 @@
-citHeader("To cite smoppix in citations, please use:")
-bibtex::read.bib(system.file("REFERENCES.bib", package = "smoppix"))[["Hawinkel2025b"]]
+note <- sprintf("R package version %s", meta$Version)
 
+bibentry(bibtype = "Article",
+         author = c(person("Stijn", "Hawinkel"),
+                    person("Xilan", "Yang"),
+                    person("Ward", "Poelmans"),
+                    person("Hans", "Motte"),
+                    person("Tom", "Beeckman"),
+                    person("Steven", "Maere")
+                    ),
+                    title = "Unified nonparametric analysis of single-molecule spatial omics data using probabilistic indices",
+                    journal      = "bioRxiv",
+                    year         = "2025",
+                    publisher    = "Cold Spring Harbor Laboratory",
+                    doi          = "10.1101/2025.05.20.654270",
+                    header = "To cite smoppix in publications please use:")
