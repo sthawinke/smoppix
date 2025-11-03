@@ -99,10 +99,10 @@ setMethod("buildHyperFrame", "list", function(
 #' @importFrom SpatialExperiment SpatialExperiment spatialCoords
 #' @importFrom SummarizedExperiment colData
 setMethod("buildHyperFrame", "SpatialExperiment", function(
-    x, imageVars, pointVars, imageIdentifier = imageVars,
-    ...) {
+    x, imageVars, pointVars, imageIdentifier = imageVars, ...) {
     buildHyperFrame(spatialCoords(x),
                     imageVars = as.data.frame(colData(x)[, imageVars, drop = FALSE]),
                     imageIdentifier = as.data.frame(colData(x)[, imageIdentifier,drop = FALSE]),
-                    covariates = cbind("gene" = rownames(colData(x)), as.data.frame(colData(x))[,pointVars,drop = FALSE]))
+                    covariates = as.data.frame(colData(x))[,pointVars,drop = FALSE],
+                    ...)
 })

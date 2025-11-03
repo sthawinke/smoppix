@@ -64,7 +64,7 @@ plotExplore <- function(
     stopifnot(
         is.hyperframe(hypFrame), is.character(features), is.numeric(maxPlot),
         is.null(titleVar) || titleVar %in% getPPPvars(hypFrame),
-        missing(numPps) || (length(numPps) == 1 && length(features) <= 2),
+        missing(numPps) || length(numPps) == 1,
         is.null(scaleBarSize) || (is.numeric(scaleBarSize) && length(scaleBarSize)==2)
     )
     if (colourCells <- !is.null(piColourCell) && plotWindows) {

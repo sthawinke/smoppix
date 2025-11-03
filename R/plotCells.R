@@ -31,7 +31,8 @@
 #' @importFrom graphics points text rect
 #' @details The width of the scale bar (first element of scaleBarSize) is fixed and the same for all scalebars.
 #' The height of the scale bar will be resized together with the cells to always represent the same physical distance. 
-#' Adding scale bars tacitly assumes that all point patterns are on the same scale.
+#' Adding scale bars tacitly assumes that all point patterns are on the same scale. 
+#' The scale bar units are the same as for the rest of the hyperframe.
 #' @examples
 #' example(addCell, "smoppix")
 #' plotCells(hypFrame2, "gene1")
@@ -129,7 +130,7 @@ plotCells <- function(obj, features = getFeatures(obj)[seq_len(3)], nCells = 100
                          ppp = subset.ppp(ppp, cell == namIn),
                          Shift = shiftVec(counter, Ceils[1]),
                          nuclei = if(plotNuclei) obj[[nam, "nuclei"]][namIn],
-                         scaleBarSize = if(addScaleBar) scaleBarSize)
+                         scaleBarSize = if(addScaleBar) scaleBarSize, scaleBarSpace = scaleBarSpace)
             plot.owin(shifted$owin, add = TRUE, border = borderCols[[i]][[j]])
             if(plotNuclei){
               for(nn in shifted$nuclei){

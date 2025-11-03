@@ -23,7 +23,9 @@ library(SpatialExperiment)
 library(DropletUtils)
 example(read10xVisium)
 test_that("Reading in SpatialExperiment class proceeds without errors", {
-    expect_message(hypFrame4 <- buildHyperFrame(spe, imageVars = "sample_id", pointVars = "in_tissue"))
+    expect_message(hypFrame4 <- buildHyperFrame(spe, imageVars = "sample_id", 
+                                                pointVars = c("array_row", "in_tissue"), featureName = "array_row"))
+  #Silly feature name for testing purposes
 })
 hypFrame5 <- addCell(hypFrame, wList)
 test_that("Adding cells works", {

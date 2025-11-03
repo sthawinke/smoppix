@@ -67,7 +67,8 @@ The choice and ranking of cells is one of decreasing gene (pair) expression.
 \details{
 The width of the scale bar (first element of scaleBarSize) is fixed and the same for all scalebars.
 The height of the scale bar will be resized together with the cells to always represent the same physical distance. 
-Adding scale bars tacitly assumes that all point patterns are on the same scale.
+Adding scale bars tacitly assumes that all point patterns are on the same scale. 
+The scale bar units are the same as for the rest of the hyperframe.
 }
 \examples{
 example(addCell, "smoppix")

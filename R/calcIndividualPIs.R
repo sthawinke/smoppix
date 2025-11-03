@@ -108,7 +108,8 @@ calcIndividualPIs <- function(p, tabObs, pis, pSubLeft, owins, centroids, null,
         midPointDistPI <- if (any(pis == "centroid")) {
             calcWindowDistPI(pSub, centroids = centroids, ecdfAll = ecdfsCell, pi = "centroid")
         }
-        list(windowDists = list(edge = edgeDistPI, centroid = midPointDistPI), pointDists = list(nn = nnPI, nnPair = nnPIpair))
+        list(windowDists = list(edge = edgeDistPI, centroid = midPointDistPI), 
+             pointDists = list(nn = nnPI, nnPair = nnPIpair))
     })
     names(piList) <- features
     return(piList)
