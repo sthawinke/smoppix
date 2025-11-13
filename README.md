@@ -20,7 +20,7 @@ The latest version can be installed from this Github repo as:
 
 ``` r
 library(devtools)
-install_github("sthawinke/smoppix", buildVignettes = TRUE)
+install_github("sthawinke/smoppix", build_vignettes = TRUE)
 ```
 
 Once installed, you can load the package
