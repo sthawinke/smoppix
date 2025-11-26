@@ -105,7 +105,7 @@ fitLMMsSingle <- function(obj, pi, fixedVars, randomVars, verbose, returnModels,
   }
   Control <- lmerControl(
     check.conv.grad = .makeCC("ignore", tol = 0.002, relTol = NULL),
-    check.conv.singular = .makeCC(action = "ignore", tol = formals(isSingular)$tol),
+    check.conv.singular = .makeCC(action = "ignore", tol =  getSingTol()),
     check.conv.hess = .makeCC(action = "ignore", tol = 1e-06)
   )
   Features <- if (grepl("Pair", pi)){makePairs(features)} else {features}
