@@ -147,3 +147,11 @@
 - Added citation file to refer to the preprint directly
 - Make sure vignettes are build upon installation and mentioned in
   readme
+
+# 1.1.10
+
+- Allow addition of scale bars in plotExplore and plotCells
+
+# 1.3.1
+
+- Anticipate coming changes to lme4
