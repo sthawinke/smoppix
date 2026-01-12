@@ -149,3 +149,7 @@ output: github_document
 # 1.2.1
 
  - Anticipate coming changes to lme4
+ 
+# 1.2.2
+
+ - Take negative hypergeometric functions in-house upon the extraDistr package's orphaning

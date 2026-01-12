@@ -9,3 +9,11 @@ findRanksDist <- function(coords, coordsLeft, NNDist) {
     .Call(`_smoppix_findRanksDist`, coords, coordsLeft, NNDist)
 }
 
+cpp_pnhyper <- function(x, n, m, r, lower_tail = TRUE, log_prob = FALSE) {
+    .Call(`_smoppix_cpp_pnhyper`, x, n, m, r, lower_tail, log_prob)
+}
+
+# Register entry points for exported C++ functions
+methods::setLoadAction(function(ns) {
+    .Call(`_smoppix_RcppExport_registerCCallable`)
+})
