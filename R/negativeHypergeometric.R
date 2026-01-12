@@ -14,6 +14,7 @@
 #'                   otherwise, \eqn{P[X > x]}.
 #'
 #' @return The evaluation of the negative hypergeometric cdf
+#' @source \url{https://cran.r-project.org/web/packages/extraDistr/index.html}
 #' @details
 #'
 #' Negative hypergeometric distribution describes number of balls \eqn{x} observed
@@ -61,12 +62,12 @@
 #' UNLV Theses, Dissertations, Professional Papers, and Capstones. Paper 1846.
 #' \url{https://digitalscholarship.unlv.edu/cgi/viewcontent.cgi?referer=&httpsredir=1&article=2847&context=thesesdissertations}
 #'
-#' @seealso \code{\link[stats]{Hypergeometric}}
+#' @note The code was adapted from the extraDistr package upon orphaning
 #'
 #' @examples
 #'
 #' xx <- seq(0, 100, by = 0.01)
-#' plot(ecdf(x))
+#' plot(ecdf(xx))
 #' lines(xx, pnhyper(xx, 60, 35, 15), col = "red", lwd = 2)
 #'
 #' @name NegHyper

@@ -155,3 +155,7 @@
 # 1.3.1
 
 - Anticipate coming changes to lme4
+
+# 1.3.2
+
+- Adapt code for negative hypergeometric from the orphaned extraDistr package and take it in-house

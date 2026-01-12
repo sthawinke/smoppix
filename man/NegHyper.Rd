@@ -4,10 +4,16 @@
 \alias{NegHyper}
 \alias{pnhyper}
 \title{Negative hypergeometric distribution (taken from orphaned extraDistr package)}
+\source{
+\url{https://cran.r-project.org/web/packages/extraDistr/index.html}
+}
 \usage{
 pnhyper(q, n, m, r, lower.tail = TRUE, log.p = FALSE)
 }
 \arguments{
+\item{q}{vector of quantiles representing the number of balls drawn without
+replacement from an urn which contains both black and white balls.}
+
 \item{n}{the number of black balls in the urn.}
 
 \item{m}{the number of white balls in the urn.}
@@ -18,15 +24,10 @@ to be stopped.}
 \item{lower.tail}{logical; if TRUE (default), probabilities are \eqn{P[X \le x]}
 otherwise, \eqn{P[X > x]}.}
 
-\item{x, q}{vector of quantiles representing the number of balls drawn without
-replacement from an urn which contains both black and white balls.}
-
-\item{p}{vector of probabilities.}
-
-\item{nn}{number of observations. If \code{length(n) > 1},
-the length is taken to be the number required.}
-
-\item{log, log.p}{logical; if TRUE, probabilities p are given as log(p).}
+\item{log.p}{logical; if TRUE, probabilities p are given as log(p).}
+}
+\value{
+The evaluation of the negative hypergeometric cdf
 }
 \description{
 Probability mass function, distribution function, quantile function and random generation
@@ -49,10 +50,13 @@ cumulative distribution function and quantile function is based
 on Fortran program NHYPERG created by Berry and Mielke (1996, 1998).
 Random generation is done by inverse transform sampling.
 }
+\note{
+The code was adapted from the extraDistr package upon orphaning
+}
 \examples{
 
 xx <- seq(0, 100, by = 0.01)
-plot(ecdf(x))
+plot(ecdf(xx))
 lines(xx, pnhyper(xx, 60, 35, 15), col = "red", lwd = 2)
 
 }
@@ -80,9 +84,6 @@ International Journal of Mathematical Education in Science and Technology, 24(4)
 Jones, S.N. (2013). A Gaming Application of the Negative Hypergeometric Distribution.
 UNLV Theses, Dissertations, Professional Papers, and Capstones. Paper 1846.
 \url{https://digitalscholarship.unlv.edu/cgi/viewcontent.cgi?referer=&httpsredir=1&article=2847&context=thesesdissertations}
-}
-\seealso{
-\code{\link[stats]{Hypergeometric}}
 }
 \concept{Discrete}
 \concept{Univariate}
