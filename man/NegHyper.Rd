@@ -30,8 +30,7 @@ otherwise, \eqn{P[X > x]}.}
 The evaluation of the negative hypergeometric cdf
 }
 \description{
-Probability mass function, distribution function, quantile function and random generation
-for the negative hypergeometric distribution.
+Distribution function of the negative hypergeometric distribution.
 }
 \details{
 Negative hypergeometric distribution describes number of balls \eqn{x} observed
@@ -45,10 +44,8 @@ f(x) = \frac{{x-1 \choose r-1}{m+n-x \choose m-r}}{{m+n \choose n}}
 f(x) = choose(x-1, r-1)*choose(m+n-x, m-r)/choose(m+n, n)
 }
 
-The algorithm used for calculating probability mass function,
-cumulative distribution function and quantile function is based
+The algorithm used for calculating the cumulative distribution function is based
 on Fortran program NHYPERG created by Berry and Mielke (1996, 1998).
-Random generation is done by inverse transform sampling.
 }
 \note{
 The code was adapted from the extraDistr package upon orphaning
