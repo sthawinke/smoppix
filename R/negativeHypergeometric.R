@@ -3,20 +3,17 @@
 #' Probability mass function, distribution function, quantile function and random generation
 #' for the negative hypergeometric distribution.
 #'
-#' @param x,q        vector of quantiles representing the number of balls drawn without
+#' @param q        vector of quantiles representing the number of balls drawn without
 #'                   replacement from an urn which contains both black and white balls.
-#' @param p	         vector of probabilities.
-#' @param nn         number of observations. If \code{length(n) > 1},
-#'                   the length is taken to be the number required.
 #' @param m          the number of white balls in the urn.
 #' @param n          the number of black balls in the urn.
 #' @param r          the number of white balls that needs to be drawn for the sampling
 #'                   to be stopped.
-#' @param log,log.p  logical; if TRUE, probabilities p are given as log(p).
+#' @param log.p  logical; if TRUE, probabilities p are given as log(p).
 #' @param lower.tail logical; if TRUE (default), probabilities are \eqn{P[X \le x]}
 #'                   otherwise, \eqn{P[X > x]}.
 #'
-#'
+#' @return The evaluation of the negative hypergeometric cdf
 #' @details
 #'
 #' Negative hypergeometric distribution describes number of balls \eqn{x} observed

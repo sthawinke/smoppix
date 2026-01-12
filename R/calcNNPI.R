@@ -11,10 +11,9 @@
 #' @param ties The number of times the observed distance is equal to a null distance,
 #' of the same length as Ranks
 #' @details Ties are counted half to match the definition of the PI.
-#' @importFrom extraDistr pnhyper
 #' @return A vector of evaluations of the negative hypergeometric distribution
 #' function
-#' @seealso \link[extraDistr]{pnhyper}, \link{calcIndividualPIs}
+#' @seealso \link{calcIndividualPIs}
 calcNNPI <- function(Ranks, n, m, ties, r = 1) {
     tmp <- pnhyper(Ranks, n = n, m = m, r = r)
     if (!is.null(ties)) {

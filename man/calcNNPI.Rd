@@ -31,5 +31,5 @@ using the negative hypergeometric distribution
 Ties are counted half to match the definition of the PI.
 }
 \seealso{
-\link[extraDistr]{pnhyper}, \link{calcIndividualPIs}
+\link{calcIndividualPIs}
 }
