@@ -25,7 +25,7 @@ yangPims <- estPis(hypYang, pis = "nn",
 features = getFeatures(hypYang)[12:19], nPointsAll = 5e2)
 # First Build the weighting function
 yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))
-evalWeightFunction(yangObj$Wfs$nn, newdata = data.frame("NP" = 2))
+evalWeightFunction(yangObj$Wfs$nn, newdata = data.frame("NP" = c(2,3)))
 }
 \seealso{
 \link[scam]{predict.scam}, \link{addWeightFunction}
