@@ -59,7 +59,8 @@ fitLMMs <- function(
 #' @return For fitLMMsSingle(), a list of test results, if requested also the linear models are returned
 #' @importFrom lmerTest lmer
 #' @importFrom stats formula terms model.matrix
-#' @importFrom lme4 lmerControl .makeCC isSingular lFormula mkReTrms findbars
+#' @importFrom lme4 lmerControl .makeCC isSingular lFormula
+#' @importFrom reformulas mkReTrms findbars
 #' @importFrom methods is
 #' @rdname fitLMMs
 #' @order 2

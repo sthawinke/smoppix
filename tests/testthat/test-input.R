@@ -21,7 +21,14 @@ test_that("Reading in data proceeds without errors", {
 # Read in spatial experiment
 library(SpatialExperiment)
 library(DropletUtils)
-example(read10xVisium)
+library(VisiumIO)
+#example(read10xVisium)
+dir <- system.file(file.path("extdata", "10xVisium"), package = "SpatialExperiment")
+sample_ids <- c("section1", "section2")
+samples <- file.path(dir, sample_ids, "outs")
+(spe <- TENxVisium(samples, sample_ids, 
+                      type = "sparse", data = "raw", 
+                      images = "lowres", load = FALSE))
 test_that("Reading in SpatialExperiment class proceeds without errors", {
     expect_message(hypFrame4 <- buildHyperFrame(spe, imageVars = "sample_id", 
                                                 pointVars = c("array_row", "in_tissue"), featureName = "array_row"))

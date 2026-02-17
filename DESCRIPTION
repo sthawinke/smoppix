@@ -12,8 +12,8 @@ Description: Test for univariate and bivariate spatial patterns in
     biological specimens. Tests for aggregation, colocalization, gradients and vicinity to cell edge or centroid are provided.
 License: GPL-2
 Encoding: UTF-8
-Imports: spatstat.geom(>= 3.2.0),spatstat.random,methods,BiocParallel,SummarizedExperiment,SpatialExperiment,scam,Rdpack,stats,utils,lmerTest,lme4,ggplot2,graphics,grDevices,Rcpp (>= 1.0.11),spatstat.model,openxlsx,Rfast
-Suggests: testthat,rmarkdown,knitr,DropletUtils,polyCub,RImageJROI,sp,ape,htmltools,funkycells,glmnet,doParallel
+Imports: spatstat.geom(>= 3.2.0),spatstat.random,methods,BiocParallel,SummarizedExperiment,SpatialExperiment,scam,Rdpack,stats,utils,lmerTest,lme4,ggplot2,graphics,grDevices,Rcpp (>= 1.0.11),spatstat.model,openxlsx,Rfast,reformulas
+Suggests: testthat,rmarkdown,knitr,DropletUtils,polyCub,RImageJROI,sp,ape,htmltools,funkycells,glmnet,doParallel,VisiumIO
 RdMacros: Rdpack
 RoxygenNote: 7.3.3
 biocViews: Transcriptomics, Spatial, SingleCell
