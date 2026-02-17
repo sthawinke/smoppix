@@ -14,8 +14,8 @@ gs <- paste0("gene", seq(ng))
 gene <- sample(gs, n, TRUE)
 fov <- as.character(sample(nfov, n, TRUE))
 condition <- as.character(sample(conditions, n, TRUE))
-f = paste(fov, condition, sep = "_")
-age = unsplit(lapply(split(integer(n), f = f), function(x) {rep(runif(1, 18, 98))}), f = f)
+f <- paste(fov, condition, sep = "_")
+age <- unsplit(lapply(split(integer(n), f = f), function(x) {rep(runif(1, 18, 98))}), f = f)
 # construct data.frame of molecule coordinates
 df <- data.frame(gene, x, y, fov, condition = condition, age = age)
 # A list of point patterns

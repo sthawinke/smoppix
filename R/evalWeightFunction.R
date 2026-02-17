@@ -15,7 +15,7 @@
 #' features = getFeatures(hypYang)[12:19], nPointsAll = 5e2)
 #' # First Build the weighting function
 #' yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))
-#' evalWeightFunction(yangObj$Wfs$nn, newdata = data.frame("NP" = c(2,3)))
+#' evalWeightFunction(yangObj$Wfs$nn, newdata = data.frame("NP" = 2))
 #' @seealso \link[scam]{predict.scam}, \link{addWeightFunction}
 evalWeightFunction <- function(wf, newdata) {
     1 / exp(predict.scam(wf, newdata = as.data.frame(newdata)))
