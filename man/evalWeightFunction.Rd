@@ -22,10 +22,10 @@ data(Yang)
 hypYang <- buildHyperFrame(Yang, coordVars = c("x", "y"),
     imageVars = c("day", "root", "section"))
 yangPims <- estPis(hypYang, pis = "nn", 
-features = getFeatures(hypYang)[12:19], nPointsAll = 5e2)
+features = getFeatures(hypYang)[10:19], nPointsAll = 8e2)
 # First Build the weighting function
 yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))
-evalWeightFunction(yangObj$Wfs$nn, newdata = data.frame("NP" = c(2,3)))
+evalWeightFunction(yangObj$Wfs$nn, newdata = data.frame("NP" = 2))
 }
 \seealso{
 \link[scam]{predict.scam}, \link{addWeightFunction}
