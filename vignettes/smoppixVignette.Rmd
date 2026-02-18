@@ -57,13 +57,13 @@ library(smoppix)
 
 The _smoppix_ package can be computationally intensive, especially since the number transcript pairs grows quadratically with the number of transcripts. For this reason we provide multithreading through the _BiocParallel_ package. 
 
-```{r}
+```{r biocparallel}
 library(BiocParallel)
 ```
 
 All the user needs to do, is choose the number of cores: 
 
-```{r}
+```{r nCores}
 nCores <- 2 # The number of CPUs
 ```
 
@@ -164,13 +164,13 @@ nnObj <- addWeightFunction(nnObj, designVars = c("day", "root"))
 
 The fitted trend can be plotted:
 
-```{r}
+```{r plotwfnn}
 plotWf(nnObj, pi = "nn")
 ```
 
 As expected the weight increases with the number of observations; quickly at first but latter plateauing. This relation between number of observations and variance will provide weights for a linear (mixed) model to be fitted per feature. A built-in function prepares the dataframe for a specified gene (here _SmAHK4e_):
 
-```{r}
+```{r builddf}
 dfUniNN <- buildDataFrame(nnObj, gene = "SmAHK4e", pi = "nn")
 ```
 
@@ -218,13 +218,13 @@ plotWf(nnObj, pi = "nnPair")
 
 The least expressed gene or minority gene has the strongest influence on the weight. The dataframe is built in a similar way as before, separating the gene pair through a double hyphen:
 
-```{r builddf}
+```{r builddfbi}
 dfBiNN <- buildDataFrame(nnObj, gene = "SmVND2--SmPINR", pi = "nnPair")
 ```
 
 Finally for the mixed model:
 
-```{r}
+```{r mixmodfit}
 #Make sure to nest root within day, without including a random effect for day
 dfBiNN$dayRoot = paste0(dfBiNN$day, dfBiNN$root)
 lmeModNN <- lmerTest::lmer(pi - 0.5 ~ day + (1 | dayRoot),

@@ -4,7 +4,7 @@
 #' @param resList A results list, from a call to estPis().
 #' @param designVars A character vector containing all design factors
 #' (both fixed and random), that are also present as variables in hypFrame.
-#' @param ... Additional arguments passed on to the \link[scam]{scam} function, fitting the spline
+#' @param ... Additional arguments passed on to the \link[mgcv]{scasm} function, fitting the spline
 #' @param maxObs,maxFeatures The maximum number of observations respectively
 #' features for fitting the weighting function. See details.
 #' @param pis The PIs to be estimated or for which weighting functions is to be added
@@ -26,7 +26,7 @@
 #'
 #' @return For addWeightFunction(), the input object 'resList' with a slot 'Wfs' added containing the weighting
 #' functions.
-#' @importFrom scam scam
+#' @importFrom mgcv scasm
 #' @importFrom stats formula
 #' @export
 #' @seealso \link{buildDataFrame}, \link{estPis}
@@ -164,12 +164,12 @@ addWeightFunction <- function(resList, pis = resList$pis, designVars, lowestLeve
             varElMat <- varElMat[sample(nrow(varElMat), maxObs), ]
         }
         scamForm <- formula(paste("log(quadDeps) ~", if (pairId) {
-            "s(log(minP), bs = 'mpd') + s(log(maxP), bs = 'mpd')"
+            "s(log(minP), bs = 'ps', xt = 'm+') + s(log(maxP), bs = 'ps', xt = 'm+')"
         } else {
-            "s(log(NP), bs = 'mpd')"
+            "s(log(NP), bs = 'ps', xt = 'm+')"
         }))
         # Fit a spline
-        scamMod <- scam(scamForm, data = data.frame(varElMat), ...)
+        scamMod <- scasm(scamForm, data = data.frame(varElMat), ...)
         attr(scamMod, "pis") <- pi
         return(scamMod)
     })

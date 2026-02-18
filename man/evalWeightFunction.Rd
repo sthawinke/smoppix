@@ -28,5 +28,5 @@ yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))
 evalWeightFunction(yangObj$Wfs$nn, newdata = data.frame("NP" = 2))
 }
 \seealso{
-\link[scam]{predict.scam}, \link{addWeightFunction}
+\link[mgcv]{predict.gam}, \link{addWeightFunction}
 }

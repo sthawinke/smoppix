@@ -159,3 +159,7 @@
 # 1.3.2
 
 - Adapt code for negative hypergeometric from the orphaned extraDistr package and take it in-house
+
+# 1.3.3
+
+ - Switch to mgcv::scasm for monotonically decreasing p-splines

@@ -5,7 +5,7 @@
 #' @param wf The weighting function
 #' @param newdata A data frame with new data
 #' @return A vector of weights, so the inverse of predicted variances, unnormalized
-#' @importFrom scam predict.scam
+#' @importFrom mgcv predict.gam
 #' @export
 #' @examples
 #' data(Yang)
@@ -16,8 +16,8 @@
 #' # First Build the weighting function
 #' yangObj <- addWeightFunction(yangPims, designVars = c("day", "root"))
 #' evalWeightFunction(yangObj$Wfs$nn, newdata = data.frame("NP" = 2))
-#' @seealso \link[scam]{predict.scam}, \link{addWeightFunction}
+#' @seealso \link[mgcv]{predict.gam}, \link{addWeightFunction}
 evalWeightFunction <- function(wf, newdata) {
-    1 / exp(predict.scam(wf, newdata = rbind(as.data.frame(newdata), 1))[-(NROW(newdata)+1)])
+    1 / exp(predict.gam(wf, newdata = as.data.frame(newdata)))
   #Dirty fix
 }

@@ -13,7 +13,7 @@
 #' @param prepMat,prepTab,prepCells Preconstructed objects to save computation time, for internal use
 #' @return A dataframe with estimated PIs and covariates
 #' @export
-#' @importFrom scam predict.scam
+#' @importFrom mgcv predict.gam
 #' @seealso \link{addWeightFunction}
 #' @examples
 #' example(addWeightFunction, "smoppix")

@@ -74,7 +74,7 @@ Matters mainly for within-cell calculations: cells with too few events are skipp
 \item{features}{A character vector, for which features should the
 probabilistic indices be calculated?}
 
-\item{...}{Additional arguments passed on to the \link[scam]{scam} function, fitting the spline}
+\item{...}{Additional arguments passed on to the \link[mgcv]{scasm} function, fitting the spline}
 
 \item{p}{The point pattern}
 
