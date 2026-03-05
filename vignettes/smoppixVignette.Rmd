@@ -85,7 +85,7 @@ if(.Platform$OS.type == "unix"){
 Wherever applicable, the registered backend will be used throughout the analysis.
 For serial calculations, for instance if memory is limiting, choose
 
-```{r , eval = FALSE}
+```{r serialparam, eval = FALSE}
 register(SerialParam())
 ```
 
@@ -93,19 +93,19 @@ register(SerialParam())
 
 As example dataset we use the data from a [publication](https://doi.org/10.1016/j.cub.2023.08.030) by @Yang2023 on _Selaginella moellendorffii_ . Only a subset of the data, consisting of sections 1-5 of roots 1-3 is included for computational reasons. The data is loaded as follows.
 
-```{r}
+```{r loadYang}
 data(Yang)
 ```
 
 A quick glimpse ...
 
-```{r}
+```{r headYang}
 head(Yang)
 ```
 
 It is a dataframe containing molecule locations (x- and y-variables), gene identity and covariates: day, root and section. At each day, 3 roots are included, with up to 5 sections for each root. The analysis will need to account for this nested design. The first step in the analysis is to build a hyperframe as provided in the _spatstat_ package, which consists of all different point patterns and their covariates
 
-```{r}
+```{r hypYangs}
 hypYang <- buildHyperFrame(Yang,
     coordVars = c("x", "y"),
     imageVars = c("day", "root", "section")
@@ -114,7 +114,7 @@ hypYang <- buildHyperFrame(Yang,
 
 As printed by the code, `r nrow(hypYang)` images or point patterns were found. We take a closer look at the hyperframe
 
-```{r}
+```{r headHypYang}
 head(hypYang)
 ```
 
@@ -127,7 +127,7 @@ We see the following elements:
  
  Zooming in on the first point pattern:
  
-```{r}
+```{r zoomin}
 hypYang$ppp[[1]]
 ```
 
@@ -158,7 +158,7 @@ nnObj <- estPis(hypYang,
 
 A data-driven weighting function is now fitted to the estimates of all transcripts to share information on variances across features. This requires information on the design too: all variables that will be included in the final modelling should be provided to 'designVars'. This excludes the lowest level of the design variable, 'section' in this case. The variance is estimated over the different sections of the same day and root. If there are no design variables, i.e. all point patterns are replicates of the exact same condition, no variable needs to be provided.
 
-```{r}
+```{r adWf}
 nnObj <- addWeightFunction(nnObj, designVars = c("day", "root"))
 ```
 
@@ -176,7 +176,7 @@ dfUniNN <- buildDataFrame(nnObj, gene = "SmAHK4e", pi = "nn")
 
 This dataframe can then be used for mixed modelling, either in R or in an other software package. We present an example analysis below using the _lmerTest_ package, which enhances the _lmer_ package by providing approximate p-values. We fit the following linear mixed model (LMM) for once manually, before automating it. The day variable enters the model as a fixed effect, the root as a random effect (a random intercept). We use sum coding for the day variable, meaning that two dummies are created, one for "day0" and one for "day3", so without a reference level. Instead the corresponding parameters are constrained to sum to zero, i.e. to be each other's opposite in this case. This maintains the interpretability of the intercept as the baseline pi, from which the different days can depart, and allows meaningful inference on the intercept.
 
-```{r}
+```{r lmerManual}
 library(lmerTest, quietly = TRUE)
 #Make sure to nest root within day, without including a random effect for day
 dfUniNN$dayRoot = paste0(dfUniNN$day, dfUniNN$root)
@@ -285,7 +285,7 @@ plotExplore(hypEng)
 
 First, we test for vicinity of the RNA molecules to cell boundaries or centroids, and for localization patterns within the cell. For this we pass different PI arguments to the _estPis()_ function. As null hypothesis, we choose complete spatial randomness (CSR) within the cell, which seems most natural, although the "background" option is also available. The suffix "Cell" indicates that aggregation and colocalization is tested within the same cell only, so not across the tissue.
 
-```{r}
+```{r engpis}
 engPis <- estPis(hypEng, pis = c("edge", "centroid", "nnCell", "nnPairCell"),
     null = "CSR", verbose = FALSE)
 ```
@@ -299,7 +299,7 @@ engPis <- addWeightFunction(engPis)
 
 We the bivariate weight function as an example:
 
-```{r, fig.height = 5}
+```{r plotWfEng, fig.height = 5}
 plotWf(engPis, "nnPairCell")
 ```
 
@@ -324,7 +324,7 @@ plotTopResults(hypEng, results = allModsNNcell, pi = "nnCell", numFeats = 1)
 
 And finally the gene pair with the strongest antilocalization:
 
-```{r a, fig.height = 6.5}
+```{r antiEng, fig.height = 6.5}
 plotTopResults(hypEng,
     results = allModsNNcell, pi = "nnPairCell", numFeats = 1,
     what = "anti"
@@ -411,7 +411,7 @@ if(reqFunky){
 
 A schematic overview of the _smoppix_ pipeline, starting from a hyperframe, with corresponding functions is shown below:
 
-```{r, echo=FALSE}
+```{r schematic, echo=FALSE}
 htmltools::img(src = knitr::image_uri("../inst/tikzPic.jpg"),
                alt = 'scheme', width = "800px", heigth = "800px")
 ```
