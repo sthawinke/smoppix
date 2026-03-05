@@ -160,6 +160,11 @@
 
 - Adapt code for negative hypergeometric from the orphaned extraDistr package and take it in-house
 
-# 1.2.3
+# 1.4.3
 
  - Switch to mgcv::scasm for monotonically decreasing p-splines
+
+# 1.4.4
+
+ - Fix bugs when only a single feature is being tested for
+ - Add missing chunk labels in vignette

@@ -24,7 +24,7 @@ extractResults <- function(models, hypFrame, fixedVars = NULL, method = "BH") {
       colnames(ints) <- c("Estimate", "SE", "pVal")
       ints[, "Estimate"] <- ints[, "Estimate"] + 0.5
       intMat <- cbind(ints, pAdj = p.adjust(ints[, "pVal"], method = method))[order(ints[
-          ,"pVal"]), ]
+          ,"pVal"]), , drop = FALSE]
       # Order by p-value
       AnovaTabs <- loadBalanceBplapply(models[id], anova)
       fixedOut <- lapply(fixedVars, function(Var) {
@@ -66,7 +66,7 @@ extractResults <- function(models, hypFrame, fixedVars = NULL, method = "BH") {
                   coefMat[i, naMat[i, ]] <- -coefMat[i, !naMat[i, ]]
               }
           }
-          cbind(coefMat, pVal = pVal, pAdj = p.adjust(pVal, method = method))[order(pVal), ]
+          cbind(coefMat, pVal = pVal, pAdj = p.adjust(pVal, method = method))[order(pVal), ,drop = FALSE]
       })
       names(fixedOut) <- fixedVars
       list(Intercept = intMat, fixedEffects = fixedOut)
