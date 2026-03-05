@@ -102,61 +102,61 @@
 
 - Limit number of features to avoid windows timeout
 
-# 1.1.1
+# 1.2.1
 
 - Allow to pass own colours to plotExplore
 
-# 1.1.2
+# 1.2.2
 
 - Calculate nnPair PIs only between desired features
 
-# 1.1.3
+# 1.2.3
 
 - Some speedups in the buildDataFrame function
 - With reference to bioRxiv preprint
 
-# 1.1.4
+# 1.2.4
 
 - Optimize addWeightFunction
 
-# 1.1.5
+# 1.2.5
 
 - Export loadBalanceBplappy for use in other packages
 - Mention Bioconductor installer in README
 
-# 1.1.6
+# 1.2.6
 
 - Removing functionality related to Moran’s I
 - Speed up and reduce memory requirements of linear (mixed) model
   fitting by preparing design matrices only once
 - Correct bug in weighting for cell-wise nn distributions
 
-# 1.1.7
+# 1.2.7
 
 - Remove memory intensive looping over features in data preparation for
   mixed-effect modelling
 - Depend on Rfast package for fast rowsorting
 - Include tikzpicture as schematic overview in readme
 
-# 1.1.8
+# 1.2.8
 
 - Export some convenience functions for other packages
 
-# 1.1.9
+# 1.2.9
 
 - Added citation file to refer to the preprint directly
 - Make sure vignettes are build upon installation and mentioned in
   readme
 
-# 1.1.10
+# 1.2.10
 
 - Allow addition of scale bars in plotExplore and plotCells
 
-# 1.2.1
+# 1.4.1
 
 - Anticipate coming changes to lme4
 
-# 1.2.2
+# 1.4.2
 
 - Adapt code for negative hypergeometric from the orphaned extraDistr package and take it in-house
 
