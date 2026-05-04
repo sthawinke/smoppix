@@ -6,3 +6,4 @@ tmp*
 *.o
 *.so
 smoppix.Rproj
+.positai

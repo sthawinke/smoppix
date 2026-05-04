@@ -19,5 +19,10 @@ Useful links:
 \author{
 \strong{Maintainer}: Stijn Hawinkel \email{stijn.hawinkel@psb.ugent.be} (\href{https://orcid.org/0000-0002-4501-5180}{ORCID})
 
+Authors:
+\itemize{
+  \item Stijn Hawinkel \email{stijn.hawinkel@psb.ugent.be} (\href{https://orcid.org/0000-0002-4501-5180}{ORCID})
+}
+
 }
 \keyword{internal}
