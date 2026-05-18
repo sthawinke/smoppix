@@ -7,7 +7,7 @@
 loadBalanceBplapply(
   iterator,
   func,
-  loopFun = if (bpparam()$workers == 1) "lapply" else "bplapply"
+  loopFun = if (bpnworkers(bpparam()) == 1) "lapply" else "bplapply"
 )
 }
 \arguments{
