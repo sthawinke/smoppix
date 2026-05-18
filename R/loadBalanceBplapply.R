@@ -13,7 +13,7 @@
 #' @examples
 #' library(BiocParallel)
 #' loadBalanceBplapply(LETTERS, length)
-loadBalanceBplapply <- function(iterator, func, loopFun = if(bpparam()$workers==1) "lapply" else "bplapply"){
+loadBalanceBplapply <- function(iterator, func, loopFun = if(bpnworkers(bpparam())==1) "lapply" else "bplapply"){
     loopFunMatched <- match.fun(loopFun)
     if (loopFun == "lapply") {
         loopFunMatched(iterator, func)
