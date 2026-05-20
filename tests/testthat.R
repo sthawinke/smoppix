@@ -69,15 +69,12 @@ names(nList) <- names(nList2) <- rownames(hypFrame) # Matching names is necessar
 hypFrame2 <- addNuclei(hypFrame2, nList, verbose = FALSE)
 # Register the parallel backend
 nCores <- 2
-if(.Platform$OS.type == "unix"){
-  #On unix-based systems, use MulticoreParam
+if (.Platform$OS.type == "unix") {
+  # On unix-based systems (linux and macOS), use MulticoreParam
   register(MulticoreParam(nCores))
 } else {
-  #On windows, use makeCluster
-  library(doParallel)
-  Clus = makeCluster(nCores)
-  registerDoParallel(Clus)
-  register(DoparParam(), default = TRUE)
+  # On windows, use SnowParam
+  register(SnowParam(workers = nCores, type = "SOCK"))
 }
 #register(SerialParam()) # Switch on when mapping test coverage
 pis <- c("nn", "nnPair", "edge", "centroid", "nnCell", "nnPairCell")

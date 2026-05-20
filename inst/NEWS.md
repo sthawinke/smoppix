@@ -168,3 +168,7 @@
 
  - Fix bugs when only a single feature is being tested for
  - Add missing chunk labels in vignette
+ 
+# 1.5.1
+
+ - Switch to SnowParam for multithreading on windows

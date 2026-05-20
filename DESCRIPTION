@@ -1,7 +1,7 @@
 Package: smoppix
 Type: Package
 Title: Analyze Single Molecule Spatial Omics Data Using the Probabilistic Index
-Version: 1.5.0
+Version: 1.5.1
 Authors@R: 
     c(person(given = "Stijn", family = "Hawinkel", 
     email = "stijn.hawinkel@psb.ugent.be", 
@@ -13,7 +13,7 @@ Description: Test for univariate and bivariate spatial patterns in
 License: GPL-2
 Encoding: UTF-8
 Imports: spatstat.geom(>= 3.2.0),spatstat.random,methods,BiocParallel,SummarizedExperiment,SpatialExperiment,Rdpack,stats,utils,lmerTest,lme4,ggplot2,graphics,grDevices,Rcpp (>= 1.0.11),spatstat.model,openxlsx,Rfast,reformulas,mgcv
-Suggests: testthat,rmarkdown,knitr,DropletUtils,polyCub,RImageJROI,sp,ape,htmltools,funkycells,glmnet,doParallel
+Suggests: testthat,rmarkdown,knitr,DropletUtils,polyCub,RImageJROI,sp,ape,htmltools,funkycells,glmnet
 RdMacros: Rdpack
 biocViews: Transcriptomics, Spatial, SingleCell
 Depends: R (>= 4.5.0)
