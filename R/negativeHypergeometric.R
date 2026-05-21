@@ -13,7 +13,7 @@
 #'                   otherwise, \eqn{P[X > x]}.
 #'
 #' @return The evaluation of the negative hypergeometric cdf
-#' @source \url{https://cran.r-project.org/web/packages/extraDistr/index.html}
+#' @source \url{http://cran.r-project.org/web/packages/extraDistr/index.html}
 #' @details
 #'
 #' Negative hypergeometric distribution describes number of balls \eqn{x} observed

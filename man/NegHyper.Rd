@@ -5,7 +5,7 @@
 \alias{pnhyper}
 \title{Negative hypergeometric distribution (taken from orphaned extraDistr package)}
 \source{
-\url{https://cran.r-project.org/web/packages/extraDistr/index.html}
+\url{http://cran.r-project.org/web/packages/extraDistr/index.html}
 }
 \usage{
 pnhyper(q, n, m, r, lower.tail = TRUE, log.p = FALSE)
