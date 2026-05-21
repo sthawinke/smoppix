@@ -73,11 +73,12 @@ and prepare the parallel backend. The code is different for windows or unix-base
 param <- if (.Platform$OS.type == "unix") {
     # On unix-based systems (linux and macOS), use MulticoreParam
     MulticoreParam(nCores)
-} else {
-    # On windows, use SnowParam
-    # SnowParam(workers = nCores, type = "SOCK")
-    # #But to avoid vignette problems, we do
+} else if (identical(Sys.getenv("_R_CHECK_LIMIT_CORES_"), "TRUE")) {
+    # On windows, build vignette without multithreading
     SerialParam()
+} else {
+    # On windows, once the package is installed, we can use SnowParam for multithreading
+    SnowParam(workers = nCores, type = "SOCK")
 }
 register(param)
 ```
