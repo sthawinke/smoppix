@@ -172,3 +172,7 @@
 # 1.5.1
 
  - Switch to SnowParam for multithreading on windows
+ 
+# 1.5.2
+
+ - When building the vignette, use serial processing on windows
