@@ -5,9 +5,9 @@ IndeX
 
 This repo provides code for analyzing single-molecule spatial omics data
 and cell type location data using probabilistic indices as introduced in
-our [preprint](https://doi.org/10.1101/2025.05.20.654270). A simple
-use-case is shown below, more extensive documentation can be found in
-the vignette.
+our [Genome biology paper](https://doi.org/10.1186/s13059-026-03976-5).
+A simple use-case is shown below, more extensive documentation can be
+found in the vignette.
 
 The package can be installed from Bioconductor as follows:
 
