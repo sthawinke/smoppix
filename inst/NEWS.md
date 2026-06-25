@@ -176,3 +176,7 @@
 # 1.5.2
 
  - When building the vignette, use serial processing on windows
+ 
+# 1.5.3
+
+ - Update citation file to main publication
