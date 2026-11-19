@@ -257,7 +257,7 @@ fitSingleLmmModel <- function(ff, y, Control, Terms, modMat, MM, Assign, weights
                     rho = environment(devfun), opt = opt,
                     reTrms = ff$reTrms, fr = fr
                 )
-                out <- lmerTest:::as_lmerModLT(out, devfun = devfun)
+                out <- lmerTest:::as_lmerModLT(out, devfun = devfun)#as_lmerModLmerTest
             },
             silent = TRUE
         )

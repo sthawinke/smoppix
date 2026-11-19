@@ -16,7 +16,7 @@ bibliography: ../inst/REFERENCES.bib
 
 ```{r smoppiximage, echo=FALSE}
 htmltools::img(
-    src = knitr::image_uri("../inst/Smoppix.jpg"),
+    src = knitr::image_uri(system.file("Smoppix.jpg", package = "smoppix")),
     style = "position:absolute; top:0; right:0; padding:10px;",
     alt = "logo", width = "200px", heigth = "200px"
 )
@@ -275,11 +275,11 @@ Plotting an overview
 plotExplore(hypEng)
 ```
 
-Next, the cell boundaries are added, as a list with names corresponding to the rownames of the hyperframe. Different formats are allowed to provide windows in case the correct packages are installed, see _?addCell_. Based on these cells, every event is assigned to a cell. Although available for this dataset, also nuclei can be added analogously via the _addNuclei_ functions.
+Next, the cell boundaries are added, as a list with names corresponding to the rownames of the hyperframe. Different formats are allowed to provide windows in case the correct packages are installed, see _?addCell_. Based on these cells, every event is assigned to a cell. Although available for this dataset, also nuclei can be added analogously via the _addNuclei_ functions. Note that the optional package _RImageJROI_ is needed for this and subsequent steps.
 
 ```{r CellEngData}
 # Add cell identifiers
-hypEng <- addCell(hypEng, EngRois, verbose = FALSE)
+hypEng <- addCell(hypEng, EngRois, verbose = FALSE)   
 ```
 
 Now plot the complete hyperframe with cell boundaries:
@@ -434,7 +434,7 @@ A schematic overview of the _smoppix_ pipeline, starting from a hyperframe, with
 
 ```{r schematic, echo=FALSE}
 htmltools::img(
-    src = knitr::image_uri("../inst/tikzPic.jpg"),
+    src = knitr::image_uri(system.file("tikzPic.jpg", package = "smoppix")),
     alt = "scheme", width = "800px", heigth = "800px"
 )
 ```

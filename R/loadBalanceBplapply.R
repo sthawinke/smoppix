@@ -21,7 +21,7 @@ loadBalanceBplapply <- function(iterator, func, loopFun = if (bpnworkers(bpparam
         splitFac <- rep(seq_len(bpnworkers(bpparam())), length.out = length(iterator))
         # Divide the work over the available workers
         out <- unsplit(f = splitFac, loopFunMatched(
-            split(iterator, f = splitFac),
+            suppressWarnings(split(iterator, f = splitFac)),
             function(ss) {
                 out <- lapply(selfName(ss), func)
                 return(out)
