@@ -1,4 +1,3 @@
-context("Large scale mixed model fitting")
 test_that("Fitting linear mixed models proceeds without errors", {
     expect_is(
         linModsNNint <- fitLMMs(yangPims, pi = "nn", features = getFeatures(yangPims)[15:18]),

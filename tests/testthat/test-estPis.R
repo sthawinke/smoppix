@@ -1,4 +1,3 @@
-context("Test PI calculation smoppix package")
 test_that("Calculating pims proceeds without errors", {
     expect_is(piEstsCSR, "list")
     expect_is(piEstsBG, "list")

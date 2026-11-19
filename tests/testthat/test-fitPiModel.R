@@ -1,4 +1,3 @@
-context("Fitting models works in any setting")
 n <- 100
 library(lmerTest)
 library(lme4)
