@@ -1,4 +1,3 @@
-context("Plotting of top results")
 linModsMP <- fitLMMs(objBG,
     returnModels = TRUE, features = getFeatures(objBG)[1:5],
     fixedVars = "condition", pi = "centroid"

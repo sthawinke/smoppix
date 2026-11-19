@@ -1,4 +1,3 @@
-context("Test input smoppix package")
 test_that("Reading in data proceeds without errors", {
     expect_message(buildHyperFrame(df, coordVars = c("x", "y"), imageVars = "fov"))
     # Should work also with single image variable
@@ -20,17 +19,6 @@ test_that("Reading in data proceeds without errors", {
         covariatesDf = df[!duplicated(df[, c("fov", "condition")]), c("fov", "condition")]
     ))
 })
-# Read in spatial experiment
-library(SpatialExperiment)
-library(DropletUtils)
-example(read10xVisium)
-test_that("Reading in SpatialExperiment class proceeds without errors", {
-    expect_message(hypFrame4 <- buildHyperFrame(spe,
-        imageVars = "sample_id",
-        pointVars = c("array_row", "in_tissue"), featureName = "array_row"
-    ))
-    # Silly feature name for testing purposes
-})
 hypFrame5 <- addCell(hypFrame, wList)
 test_that("Adding cells works", {
     expect_s3_class(hypFrame5, "hyperframe")
@@ -42,10 +30,6 @@ test_that("Adding cells works", {
     expect_error(addCell(hypFrame, wList2, findOverlappingOwins = TRUE)) # Detect overlap
     expect_type(marks(hypFrame5[[1, "ppp"]])$cell, "character")
     expect_type(marks(hypFrame6[[1, "ppp"]])$cellType, "character")
-    expect_error(hypFrame4 <- buildHyperFrame(spe,
-        imageVars = c("sample_id", "in_tissue"),
-        coVars = "in_tissue"
-    ))
 })
 test_that("Adding cells throws errors when appropriate", {
     wListNoNames <- wList
@@ -65,3 +49,21 @@ test_that("Adding nuclei throws errors when appropriate", {
     expect_error(addNuclei(hypFrame, nList, verbose = FALSE))
     expect_error(addNuclei(hypFrame6, nList))
 })
+# Read in spatial experiment
+library(SpatialExperiment)
+skip_if_not_installed("DropletUtils")
+library(DropletUtils)
+example(read10xVisium)
+test_that("Reading in SpatialExperiment class proceeds without errors", {
+    expect_message(hypFrame4 <- buildHyperFrame(spe,
+                                                imageVars = "sample_id",
+                                                pointVars = c("array_row", "in_tissue"), featureName = "array_row"
+    ))
+    # Silly feature name for testing purposes
+})
+test_that("Reading in SpatialExperiment class fails where appropriate", {
+    expect_error(buildHyperFrame(spe,
+                                 imageVars = c("sample_id", "in_tissue"),
+                                 coVars = "in_tissue"
+    ))
+}

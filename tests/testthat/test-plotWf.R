@@ -1,4 +1,3 @@
-context("Adding and plotting the weight function")
 test_that("Plotting the weight function works", {
     expect_silent(plotWf(yangPims, "nn"))
     expect_is(plotWf(yangPims, "nnPair"), "ggplot")

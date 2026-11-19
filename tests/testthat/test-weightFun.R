@@ -1,4 +1,3 @@
-context("Constructing the weight function")
 test_that("Adding the weight function works", {
     expect_false(is.null((objBG <- addWeightFunction(piEstsBG, designVars = "condition"))$Wfs))
     expect_false(is.null((objCSR <- addWeightFunction(piEstsCSR, designVars = "condition"))$Wfs))

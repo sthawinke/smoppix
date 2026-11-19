@@ -1,4 +1,3 @@
-context("Writing results to spreadsheets")
 test_that("Sheet naming works", {
     expect_identical(makeSheetName("edge", "Intercept", TRUE), "Close to edge_baseline")
     expect_identical(makeSheetName("centroid", "Intercept", FALSE), "Far from centroid_baseline")

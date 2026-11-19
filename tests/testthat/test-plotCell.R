@@ -1,4 +1,3 @@
-context("Test plotCell function")
 test_that("Plotting cells proceeds without errors", {
     expect_silent(plotCells(hypFrame2, "gene1"))
     expect_silent(plotCells(hypFrame2, "gene1", borderColVar = "condition"))

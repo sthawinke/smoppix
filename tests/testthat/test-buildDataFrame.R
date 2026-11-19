@@ -1,4 +1,3 @@
-context("Test building of dataframes of probabilistic indices for mixed model building")
 test_that("Building data frames for mixed modelling proceeds without errors", {
     expect_silent(dfBG0 <- buildDataFrame(objBG, gene = "gene1", pi = "nn"))
     expect_s3_class(dfBG1 <- buildDataFrame(objBG, gene = "gene1", pi = "nn"), "data.frame")

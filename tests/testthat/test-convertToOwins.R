@@ -1,4 +1,3 @@
-context("Test conversion to owins")
 if (requireNamespace("RImageJROI")) {
     path <- system.file("extdata", "ijroi", package = "RImageJROI")
     rect <- RImageJROI::read.ijroi(file.path(path, "rect.roi"))
