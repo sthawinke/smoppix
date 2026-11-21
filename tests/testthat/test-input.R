@@ -66,4 +66,4 @@ test_that("Reading in SpatialExperiment class fails where appropriate", {
                                  imageVars = c("sample_id", "in_tissue"),
                                  coVars = "in_tissue"
     ))
-}
+})
